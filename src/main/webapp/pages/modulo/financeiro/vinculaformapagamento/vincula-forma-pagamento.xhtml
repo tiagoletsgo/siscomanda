@@ -1,0 +1,26 @@
+<ui:composition template="/WEB-INF/template/template.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+	
+	<ui:param name="md" value="12" />
+	<ui:param name="sm" value="12" />
+	<ui:param name="xs" value="12" />
+	<ui:param name="crudBean" value="#{vinculaFormaPagamentoBean}" />
+	<ui:param name="hideTableList" value="#{crudBean.estadoViewBean.search}" />
+	
+	<ui:define name="title_main"> 
+		<h:panelGroup layout="block" rendered="#{crudBean.estadoViewBean.insert}">Inclusão/Consultar</h:panelGroup>
+	</ui:define>
+	<ui:define name="title_form"> 
+		<h:panelGroup layout="block">Vincula Formas Pagamento</h:panelGroup>
+	</ui:define>
+			
+	<ui:define name="content">
+		<h:panelGroup layout="block" rendered="#{crudBean.estadoViewBean.insert or crudBean.estadoViewBean.update}">
+			<ui:include src="/pages/modulo/financeiro/vinculaformapagamento/cadastro-vincula-forma-pagamento.xhtml" />
+		</h:panelGroup>
+	</ui:define>
+</ui:composition>

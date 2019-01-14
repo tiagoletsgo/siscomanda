@@ -1,0 +1,267 @@
+@charset "UTF-8";
+ @font-face {
+ 	font-family: "montserrat";
+ 	src: url(/napulepizzaria/resources/napule/font/montserrat/Montserrat-Regular.ttf);
+ }
+ 
+ html,
+ body,
+ a,
+ p,
+ label,
+ button, 
+ input[type="reset"], input[type="submit"], input[type="button"], input[type="text"]
+ h1, h2, h3, h4, h5, h6,
+ span,
+ div,
+ legend,
+ select,
+ option {
+ 	font-family: "montserrat";
+ }
+ 
+ input[type="text"], td {
+ 	text-transform: uppercase !important;
+ }
+  
+.ui-button {
+	text-shadow: inherit;
+	box-shadow: inherit;
+	padding: 4px !important;
+	margin-right: 5px !important;
+}
+
+.ui-button:focus {
+	border-color: none !important;
+}
+
+.ui-state-hover.btn-danger,
+.ui-state-hover.btn-warning,
+.ui-state-hover.btn-primary,
+.ui-state-hover.btn-success,
+.ui-state-default.btn-danger,
+.ui-state-default.btn-warning,
+.ui-state-default.btn-primary,
+.ui-state-default.btn-success {
+	background: inherit;
+	box-shadow: inherit;
+}
+
+.ui-button.ui-state-hover.btn-danger {
+	color: #fff !important;
+	background-color:#c9302c !important;
+	border-color:#ac2925 !important;
+    text-shadow: inherit;
+}
+.ui-button.btn-danger {
+	color:#fff !important;
+	background-color: #d9534f !important;
+    border-color: #d43f3a !important;
+	text-shadow: inherit;
+}
+
+.ui-button.ui-state-hover.btn-warning {
+	color:#fff !important;
+	background-color:#ec971f !important;
+	border-color:#d58512 !important;
+    text-shadow: inherit;
+}
+.ui-button.btn-warning {
+	color:#fff !important;
+	background-color:#f0ad4e !important;
+	border-color:#eea236 !important;
+	text-shadow: inherit;
+}
+
+.ui-button.ui-state-hover.btn-primary {
+	color:#fff !important;
+	background-color:#286090 !important;
+	border-color:#204d74 !important;
+    text-shadow: inherit;
+}
+.ui-button.btn-primary {
+	color:#fff !important;
+	background-color:#337ab7 !important;
+	border-color:#2e6da4 !important;
+	text-shadow: inherit;
+}
+
+.ui-button.ui-state-hover.btn-success {
+	color:#fff !important;
+	background-color:#449d44 !important;
+	border-color:#398439 !important;
+    text-shadow: inherit;
+}
+.ui-button.btn-success {
+	color:#fff !important;
+	background-color:#5cb85c !important;
+	border-color:#4cae4c !important;
+	text-shadow: inherit;
+}
+
+.ui-button-text-only .ui-button-text {
+	padding: 3px !important;
+}
+
+.ui-button.btn-xs {
+	padding: 1px 5px !important;
+	line-height: 1.5 !important;
+}
+
+.ui-growl-error {
+	opacity: 1 !important;
+    border-radius: 5px !important;
+	background: #EF5350 !important;
+}
+
+.ui-growl-image-error {
+    background-position: 0px -48px !important;
+}
+
+.ui-growl-info {
+	opacity: 1 !important;
+    border-radius: 5px !important;
+	background: #9CCC65 !important;
+	text-shadow: inherit !important;
+}
+
+.ui-growl-image-info {
+    background-position: 0 -311px !important;
+}
+
+.ui-growl-warn {
+	opacity: 1 !important;
+    border-radius: 5px !important;
+	background: #ffc109!important;
+}
+
+.ui-growl-image-warn {
+    background-position: 0px -444px !important;
+}
+
+.ui-datatable table {
+	font-size: 12px;
+}
+
+.ui-datatable thead th {
+	background: rgba(52,73,94,.94) !important;
+	color: #ECF0F1 !important;
+	border: none;
+	border-radius: 0px;
+	text-shadow: inherit !important;
+}
+
+.ui-datatable-odd.ui-state-hover,
+.ui-datatable-even.ui-state-hover {
+	background-color: #ddd !important;
+}
+
+.ui-datatable tbody td {
+	padding: 8px;
+    line-height: 1.42857143;
+    vertical-align: middle;
+    border-top: 1px solid #ddd;
+	border-style: none !important;
+	text-align: center;
+} 
+
+.ui-state-highlight .ui-icon {
+	background-image: url(/napulepizzaria/javax.faces.resource/images/ui-icons_333333_256x240.png.xhtml?ln=primefaces-bootstrap) !important;
+}
+
+.ui-datatable tr.ui-state-highlight {
+    cursor: pointer;
+    background: #b2aeb3 !important;
+}
+
+.ui-datatable-left,
+.ui-datatable-left input[type=text] {
+	text-align: left !important;
+}
+
+.ui-datatable-center,
+.ui-datatable-center input[type=text] {
+	text-align: center !important;
+}
+
+.ui-datatable-right,
+.ui-datatable-right input[type=text] {
+	text-align: right !important;
+}
+
+.ui-chkbox .ui-chkbox-box {
+	width: 13px !important;
+	height: 13px !important;
+	border-radius: 3px !important;
+}
+
+.ui-icon-check {
+    background-position: -66px -147px !important;
+}
+
+.ui-container-dialog.ui-dialog {
+	position: fixed;
+	right: 153px;
+}
+
+.ui-dialog.ui-widget-content {
+	border-radius: 0px !important;
+	border: 0px !important;
+}
+
+.ui-widget-overlay {
+    background: #f7f7f7 !important;
+}
+
+.ui-dialog.ui-widget-content .ui-dialog-titlebar {
+    padding: 9px 15px;
+    border-bottom: 1px solid #eee;
+    background-color: rgba(52,73,94,.94) !important;
+    border-radius: 0px;
+}
+
+.ui-dialog.ui-widget-content .ui-dialog-title {
+    font-size: 14px !important;
+    font-weight: normal !important;
+    color: #fff;
+}
+
+.ui-shadow {
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.6) !important;
+}
+
+.ui-dialog .ui-dialog-footer {
+    padding: 0.8em 1em !important;
+    border-width: 1px 0 0 0;
+    text-align: left;
+}
+
+.ui-widget-header .ui-icon {
+    display: none!important;
+}
+
+.ui-paginator {
+	text-align: right !important;
+}
+
+.ui-paginator .ui-icon {
+	display: block !important;
+	text-indent: -99999px !important;
+	text-align: left;
+}
+
+.ui-icon-seek-next {
+    background-position: -32px -158px !important;
+}
+
+.ui-icon-seek-end {
+    background-position: -64px -158px !important;
+}
+
+.ui-icon-seek-first {
+    background-position: -80px -158px !important;
+}
+
+.ui-icon-seek-prev {
+    background-position: -48px -158px !important;
+}

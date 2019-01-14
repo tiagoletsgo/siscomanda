@@ -1,0 +1,53 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+	
+	
+		<p:dataTable id="tabelaFormaPagamento" styleClass="table table-striped jambo_table" value="#{crudBean.elements}" var="formaPagamento"
+			selection="#{crudBean.formasPagamentoSelecionados}" rowKey="#{formaPagamento.id}" emptyMessage="Sem dados" reflow="true">
+			
+			<p:column styleClass="ui-datatable-center" selectionMode="multiple" />
+			
+			<p:column styleClass="ui-datatable-left">
+				<f:facet name="header">
+					<h:outputLabel value="Descrição" />
+				</f:facet>
+				<h:outputText value="#{formaPagamento.descricao}"/>
+			</p:column>
+			<p:column>
+				<f:facet name="header">
+					<h:outputLabel value="#" />
+				</f:facet>
+				<h:commandButton styleClass="btn btn-warning btn-xs" value="Editar" action="#{crudBean.btnEditar(formaPagamento)}" />
+			</p:column>
+			<f:facet name="footer">
+				<p:commandButton styleClass="btn btn-danger btn-xs" style="float: left;" oncomplete="PF('dlgConfirmarExclusao').show();" value="Deletar" 
+					rendered="#{crudBean.elements.size() > 0  and not crudBean.estadoViewBean.update}"/>
+				<div class="clearfix"></div>
+			</f:facet>
+		</p:dataTable>
+				
+		<p:dialog widgetVar="dlgConfirmarExclusao" modal="true" responsive="true" showEffect="bounce" hideEffect="bounce"
+			resizable="false" >
+			<f:facet name="header">
+				Confirmar exclusão
+			</f:facet>
+			
+			<div class="col-md-12 col-sm-12 col-xs-12">
+				<span>
+					Tem certeza que deseja remover esse(s) registro(s)?
+				</span>				
+			</div>
+			
+			<f:facet name="footer">
+				<h:form>
+					<h:commandButton type="button"  onclick="PF('dlgConfirmarExclusao').hide();" action="#{crudBean.btnRemover}" styleClass="btn btn-danger btn-xs" value="Sim">
+						<p:ajax update=":crudform:tabelaFormaPagamento" process="@form " />
+					</h:commandButton>
+					<h:commandButton onclick="PF('dlgConfirmarExclusao').hide(); return false;" styleClass="btn btn-success btn-xs" value="Não" />
+				</h:form>
+			</f:facet>
+		</p:dialog>
+</ui:composition>

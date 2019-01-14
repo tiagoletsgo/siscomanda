@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+	<h:head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    	<meta name="viewport" content="width=device-width, initial-scale=1" />
+    	<h:outputStylesheet library="bootstrap" name="css/bootstrap.min.css" />
+    	<h:outputStylesheet library="build" name="css/custom.min.css" />
+    	<h:outputStylesheet library="napule" name="css/napule.css" />
+    	
+		<title>TS-Sistemas</title>
+	</h:head>
+	<h:body styleClass="nav-md">
+		<div class="container body">
+			<div class="main_container">
+				<ui:insert name="menu_bar_lateral_esquerdo">
+					<ui:include src="/WEB-INF/template/menu-bar-lateral-esquerdo.xhtml" />
+				</ui:insert>
+				<ui:insert name="menu_bar_superior">
+					<ui:include src="/WEB-INF/template/menu-bar-superior.xhtml" />
+				</ui:insert>
+				
+				<ui:insert name="dashboard">
+					<!-- Conteudo -->
+					<h:form id="crudform" styleClass="form_horizontal">
+						<div class="right_col" id="coluna_direita">
+							<div class="">
+								<div class="page-title">
+									<div class="title_left">
+										<h3 id="title_form"><ui:insert name="title_main" /></h3>
+										<small class="text-danger">Os campos com ( * ) são obrigatórios!</small>	
+									</div>
+								</div>	
+							</div>
+							<div class="clearfix"></div>
+							
+							<div class="row">
+								<div class="col-md-#{md} col-sm-#{sm} col-xs-#{xs}">
+									<div class="x_panel">
+										<div class="x_title">
+											<h2><ui:insert name="title_form" /></h2>
+											<ul class="nav navbar-right panel_toolbox">
+												<li>
+													<a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+	                     						</li>	
+	                     						<li>
+	                     							<a class="close-link"><i class="fa fa-close"></i></a>
+	                     						</li>
+											</ul>
+											<div class="clearfix"></div>	
+										</div>
+										<div class="x_content">
+											<ui:insert name="content" />	
+										</div>
+									</div>
+								</div>
+							</div>	
+							<div class="clearfix"></div>
+							
+							<h:panelGroup layout="block" rendered="#{hideTableList}">
+								<div class="row">
+									<div class="col-md-12 col-sm-12 col-xs-12">
+										<div class="x_panel">
+											<div class="x_title">
+												<h2><ui:insert name="title_form_table" /></h2>
+												<ul class="nav navbar-right panel_toolbox">
+													<li>
+														<a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+		                     						</li>	
+		                     						<li>
+		                     							<a class="close-link"><i class="fa fa-close"></i></a>
+		                     						</li>
+												</ul>
+												<div class="clearfix"></div>	
+											</div>
+											<div class="x_content">
+												<div class="table-responsive">
+													<ui:insert name="table" />
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</h:panelGroup>	
+						</div>
+					</h:form>
+					
+					<p:ajaxStatus onstart="PF('statusDialog').show();" onsuccess="PF('statusDialog').hide();" />
+					<p:dialog widgetVar="statusDialog" showHeader="false" width="250" showEffect="fade" 
+						closable="false" modal="true" resizable="false" responsive="true">
+						<div class="row">
+							<div class="col-md-4 col-sm-4 col-xs-4">
+								<p:graphicImage library="build" name="images/loading.gif" width="50" height="50" />
+							</div>
+							<div class="col-md-4 col-sm-4 col-xs-4">
+								<span style="position: relative; top: 16px;">Processando...</span>
+							</div>
+						</div>
+					</p:dialog>
+					
+					<p:growl autoUpdate="true" life="6000" />
+					<!-- Fim Conteudo -->	
+				</ui:insert>
+				
+				<ui:insert name="rodape">
+					<ui:include src="/WEB-INF/template/rodape.xhtml" />
+				</ui:insert>
+			</div>
+		</div>
+		
+		<h:panelGroup id="scripts">
+			<h:outputScript library="primefaces" name="jquery/jquery.js" target="body" />
+			<h:outputScript library="bootstrap" name="js/bootstrap.min.js" target="body" />
+			<h:outputScript library="build" name="js/custom.min.js" target="body" />
+			<h:outputScript library="napule" name="js/jquery.maskMoney.js" target="body" />
+			<h:outputScript library="napule" name="js/sistema.js" target="body" />
+			
+			<script>
+			 	/* <![CDATA[ */
+				$(function(){
+					$(".currency").maskMoney({
+						thousands:'.', 
+						decimal:','
+					});
+				});
+				/* ]]> */
+			</script>
+		</h:panelGroup>
+	</h:body>
+</html>

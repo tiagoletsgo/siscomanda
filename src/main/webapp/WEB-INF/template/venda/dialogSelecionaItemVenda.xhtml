@@ -1,0 +1,71 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+	
+	<p:hotkey handler="PF('dlgPesquisaProduto').show();" bind="F2" />
+	<p:hotkey handler="PF('dlgPesquisaProduto').hide();" bind="esc" />
+	<p:dialog widgetVar="dlgPesquisaProduto" modal="true" responsive="true" styleClass="ui-container-dialog" 
+		showEffect="fade" hideEffect="fade" resizable="false" draggable="false">
+		
+		<f:facet name="header">Adiciona produto ao pedido</f:facet>
+		
+		<div class="row">
+			<div class="col-md-12 col-sm-12 col-xs-12">
+				<p:focus for="pesquisar" />
+				<label for="formulario:pesquisar">Pesquisar produto.:</label>
+				<p:inputText type="text" styleClass="form-control" id="pesquisar" />
+			</div>
+			<div class="clearfix"></div>
+			<br />
+		</div>
+		
+		<div class="row">
+			<div class="col-md-12 col-sm-12 col-xs-12">	
+				<div class="table-responsive">
+					<p:dataTable value="#{produtoFactoryBean.produtos}" var="produto" styleClass="table table-striped jambo_table"
+						paginator="true" rows="5" paginatorPosition="bottom" reflow="true" scrollable="true" scrollHeight="200">
+						
+						<p:column styleClass="ui-datatable-left" style="width: 39%; border-radius: 0px">
+							<f:facet name="header"><h:outputLabel value="Produto" /></f:facet>
+							<h:outputText value="#{produto.descricao}" />
+						</p:column>
+		
+						<p:column styleClass="ui-datatable-left" style="width: 15%; border-radius: 0px">
+							<f:facet name="header"><h:outputLabel value="Código Ean" /></f:facet>
+							<h:outputText value="#{produto.codigoEan}" />
+						</p:column>
+						
+						<p:column styleClass="ui-datatable-left" style="width: 10%; border-radius: 0px">
+							<f:facet name="header"><h:outputLabel value="Preço R$" /></f:facet>
+							<h:outputText value="#{produto.precoVenda}">
+								<f:convertNumber type="currency" />
+							</h:outputText>
+						</p:column>
+						
+						<p:column styleClass="ui-datatable-center" style="width: 8%; border-radius: 0px">
+							<f:facet name="header"><h:outputLabel value="Adicionar" /></f:facet>
+							<h:commandLink styleClass="btn btn-round btn-success btn-xs fa fa-plus">
+								<p:ajax update=":crudform:tabelaItemPedido"  global="false" listener="#{crudBean.btnAdicionaItem(produto)}" />
+							</h:commandLink>
+						</p:column>
+						
+						<p:column styleClass="ui-datatable-center" style="width: 8%; border-radius: 0px">
+							<f:facet name="header"><h:outputLabel value="Remover" /></f:facet>
+							<h:commandLink styleClass="btn btn-round btn-danger btn-xs fa fa-minus" />
+						</p:column>
+						
+						<p:column styleClass="ui-datatable-center" style="width: 10%; border-radius: 0px">
+							<f:facet name="header"><h:outputLabel value="Personalizar" /></f:facet>
+							<h:commandLink styleClass="btn btn-round btn-primary btn-xs fa fa-refresh">
+							</h:commandLink>
+						</p:column>
+					</p:dataTable>
+				</div>
+				<h:commandButton onclick="PF('dlgPesquisaProduto').hide(); return false;" styleClass="btn btn-danger btn-xs" value="Fechar" />
+			</div>
+		</div>
+	</p:dialog>
+	
+</ui:composition>

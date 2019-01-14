@@ -1,0 +1,71 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+	
+	<h:panelGroup layout="block" id="headerVenda">
+		<div class="row">
+			<div class="col-md-12 col-sm-12 col-xs-12">
+				<h4 class="page-header">Dados Venda</h4>
+			</div>
+		</div>
+		
+		<div class="row">
+			<div class="col-md-3 col-sm-3 col-xs-12">
+				<label>Nª mesa / comanda.: </label> 
+				<h:outputText value="#{crudBean.entity.mesaOuComanda}" styleClass="form-control">
+					<f:convertNumber maxIntegerDigits="6" pattern="000000" />
+				</h:outputText>
+			</div>
+			
+			<div class="col-md-3 col-sm-3 col-xs-12">
+				<label>Nº Pedido.: </label>
+				<h:outputText value="000001" styleClass="form-control" />
+			</div>
+			
+			<div class="col-md-4 col-sm-4 col-xs-12">
+				<label>Operador.: </label>
+				<h:outputText value="Administrador" styleClass="form-control" />
+			</div>
+			
+			<div class="col-md-2 col-sm-2 col-xs-12">
+				<label>Data / Hora.: </label>
+				<h:outputText value="07/01/2019 21:42" styleClass="form-control" />
+			</div>
+		</div>
+		
+		<div class="row">
+			<div class="col-md-2 col-sm-2 col-xs-12">
+				<label>Status.: </label>
+				<h:outputText value="Em aberto" styleClass="form-control" />
+			</div>
+			
+			<div class="col-md-2 col-sm-2 col-xs-12">
+				<label>Subtotal R$.: </label>
+				<h:outputText value="0,00" styleClass="form-control" />
+			</div>
+			
+			<div class="col-md-2 col-sm-2 col-xs-12">
+				<label>Serviço(+) R$.: </label>
+				<h:outputText value="0,00" styleClass="form-control" />
+			</div>
+			
+			<div class="col-md-2 col-sm-2 col-xs-12">
+				<label>Entrega(+) R$.: </label>
+				<h:outputText value="0,00" styleClass="form-control" />
+			</div>
+			
+			<div class="col-md-2 col-sm-2 col-xs-12">
+				<label>Desconto(-) R$.: </label>
+				<h:outputText value="0,00" styleClass="form-control" />
+			</div>
+			
+			<div class="col-md-2 col-sm-2 col-xs-12">
+				<label>Total R$.: </label>
+				<h:outputText value="0,00" styleClass="form-control" />
+			</div>
+		</div>
+	</h:panelGroup>
+	
+</ui:composition>

@@ -1,0 +1,21 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+	
+	<div class="row">
+		<h:panelGroup layout="block" rendered="#{crudBean.entity.mesaOuComanda > 0}">
+			<div class="col-md-12 col-sm-12 col-xs-12">
+				<p:commandLink value="Localizar Produto" styleClass="btn btn-primary" oncomplete="PF('dlgPesquisaProduto').show();" />
+				<p:commandLink value="Trocar Mesa / Comanda" styleClass="btn btn-warning" oncomplete="PF('dlgSelecionaMesaComanda').show();" />
+			</div>
+		</h:panelGroup>
+		<h:panelGroup layout="block" rendered="#{crudBean.entity.mesaOuComanda == 0}">
+			<div class="col-md-12 col-sm-12 col-xs-12">
+				<p:commandLink value="Seleciona Mesa / Comanda" styleClass="btn btn-primary pull-left" global="false" oncomplete="PF('dlgSelecionaMesaComanda').show();" />
+			</div>
+		</h:panelGroup>
+	</div>
+	
+</ui:composition>

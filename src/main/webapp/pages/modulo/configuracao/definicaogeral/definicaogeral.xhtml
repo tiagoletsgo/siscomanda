@@ -1,0 +1,25 @@
+<ui:composition template="/WEB-INF/template/template.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+	
+	<ui:param name="crudBean" value="#{definicaoGeralBean}" />
+	<ui:param name="hideTableList" value="#{crudBean.estadoViewBean.search}" />
+	
+	<ui:define name="title_main"> 
+		<h:panelGroup layout="block" rendered="#{crudBean.estadoViewBean.insert}">Inclusão</h:panelGroup>
+		<h:panelGroup layout="block" rendered="#{crudBean.estadoViewBean.update}">Edição</h:panelGroup>
+		<h:panelGroup layout="block"  rendered="#{not crudBean.estadoViewBean.insert and not crudBean.estadoViewBean.update}">Consultar</h:panelGroup>
+	</ui:define>
+	<ui:define name="title_form"> 
+		<h:panelGroup layout="block">Definição Geral</h:panelGroup>
+	</ui:define>
+			
+	<ui:define name="content">
+		<h:panelGroup layout="block" rendered="#{crudBean.estadoViewBean.insert or crudBean.estadoViewBean.update}">
+			<ui:include src="/pages/modulo/configuracao/definicaogeral/cadastro-definicao-geral.xhtml" />
+		</h:panelGroup>
+	</ui:define>
+</ui:composition>

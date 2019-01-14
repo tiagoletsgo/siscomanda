@@ -1,0 +1,340 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+	<h:head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    	<meta name="viewport" content="width=device-width, initial-scale=1" />
+    	<h:outputStylesheet library="bootstrap" name="css/bootstrap.min.css" />
+    	<h:outputStylesheet library="build" name="css/custom.min.css" />
+    	
+		<title>TS-Sistemas</title>
+	</h:head>
+	<h:body styleClass="nav-md">
+		<div class="container body">
+			<div class="main_container">
+				<div class="col-md-3 left_col">
+					<div class="left_col scroll-view">
+						<div class="navbar nav_title" style="border: 0;">
+              				<a href="index.xhtml" class="site_title"><i class="fa fa-pie-chart"></i> <span>Napule Pizzaria!</span></a>
+            			</div>
+            			<div class="clearfix"></div>
+            			
+            			<div class="profile clearfix">
+            				<div class="profile_pic">
+            					<img src="images/img.jpg" alt="..." class="img-circle profile_img" />
+            				</div>
+            				<div class="profile_info">
+            					<span>Seja bem-vindo,</span>
+                				<h2>Tiago Sousa</h2>
+            				</div>
+            			</div>
+            			<br />
+            			
+            			<!-- Menu lateral -->
+            			<div id="sidebar-menu" class="main_menu_side hidden-print main_menu">
+            				<div class="menu_section">
+            					<h3>Menu Geral</h3>
+            					<ul class="nav side-menu">
+            						<li>
+            							<a><i class="fa fa-home"></i> Home <span class="fa fa-chevron-down"></span></a>
+					                	<ul class="nav child_menu">
+					                    	<li><a href="index.xhtml">Inicio</a></li>
+					                    </ul>
+					                </li>
+					                
+					                <li>
+					                	<a><i class="fa fa-book"></i> Cadastro <span class="fa fa-chevron-down"></span></a>
+					                    <ul class="nav child_menu">
+					                    	<li><a href="#">Cliente</a></li>
+					                      	<li><a href="#">Fornecedor</a></li>
+					                      	<li><a href="#">Produto</a></li>
+					                      	<li><a href="#">Serviço</a></li>
+					                      	<li><a href="#">Unidade/Medida</a></li>
+					                    </ul>
+					            	</li>
+					            	
+					            	<li>
+					                	<a><i class="fa fa-search"></i> Consultar <span class="fa fa-chevron-down"></span></a>
+					                    <ul class="nav child_menu">
+					                    	<li><a href="#">Cliente</a></li>
+					                      	<li><a href="#">Fornecedor</a></li>
+					                      	<li><a href="#">Produto</a></li>
+					                      	<li><a href="#">Serviço</a></li>
+					                      	<li><a href="#">Unidade/Medida</a></li>
+					                    </ul>
+					            	</li>
+					            	
+					            	<li>
+					                	<a><i class="fa fa-undo"></i> Faturamento <span class="fa fa-chevron-down"></span></a>
+					                    <ul class="nav child_menu">
+					                    	<li><a href="#">Entrada</a></li>
+					                      	<li><a href="#">Estoque</a></li>
+					                      	<li><a href="#">Saída</a></li>
+					                    </ul>
+					            	</li>
+					            	
+					            	<li>
+					                	<a><i class="fa fa-lock"></i> Segurança <span class="fa fa-chevron-down"></span></a>
+					                    <ul class="nav child_menu">
+					                    	<li><a href="#">Perfil</a></li>
+					                      	<li><a href="#">Permissão</a></li>
+					                      	<li><a href="#">Usuário</a></li>
+					                    </ul>
+					            	</li>
+					            	
+					            	<li>
+					                	<a><i class="fa fa-desktop"></i> Venda <span class="fa fa-chevron-down"></span></a>
+					                    <ul class="nav child_menu">
+					                    	<li><a href="#">PDV</a></li>
+					                    	<li><a href="#">Pedido</a></li>
+					                    </ul>
+					            	</li>
+					            	
+					            	<li>
+					                	<a><i class="fa fa-line-chart"></i> Relatório <span class="fa fa-chevron-down"></span></a>
+					                    <ul class="nav child_menu">
+					                    	<li><a href="#">Venda Balcão</a></li>
+					                    	<li><a href="#">Venda Delivery</a></li>
+					                    	<li><a href="#">Venda Por Entregador</a></li>
+					                    	<li><a href="#">Venda Geral</a></li>
+					                    	<li><a href="#">Venda Por Produto</a></li>
+					                    </ul>
+					            	</li>
+            					</ul>
+            				</div>
+            			</div>
+            			<!-- Fim menu lateral -->
+					
+						<!-- Rodape menu lateral -->
+						<div class="sidebar-footer hidden-small">
+							<a href="#">
+				            	<span class="fa fa-fullscreen" ></span>
+							</a>
+				            <a href="#">
+				            	<span class="fa fa-fullscreen" ></span>
+				            </a>
+				            <a href="#">
+				            	<span class="fa fa-fullscreen" ></span>
+				            </a>
+				            <a href="#">
+				            	<span class="fa fa-power-off"></span>
+							</a>
+						</div>
+						<!-- Fim rodape menu lateral -->
+					</div>
+				</div>
+				
+				<!-- Menu superior -->
+				<div class="top_nav">
+					<div class="nav_menu">
+						<div id="nav">
+							<div class="nav toggle">
+			                	<a id="menu_toggle"><i class="fa fa-bars"></i></a>
+			            	</div>
+			            	
+			            	<ul class="nav navbar-nav navbar-right">
+			            		<li class="">
+			            			<a href="javascript:;" class="user-profile dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+			            				<img src="images/img.jpg" alt="" />Olá Tiago Sousa
+                    					<span class="fa fa-angle-down"></span>
+			            			</a>
+			            			<ul class="dropdown-menu dropdown-usermenu pull-right">
+			            				<li><a href="login.html"><i class="fa fa-sign-out pull-right"></i>Sair</a></li>
+			            			</ul>
+			            		</li>
+			            	</ul>
+						</div>
+					</div>
+				</div>
+				<!-- Fim menu superior -->
+				
+				<!-- Conteudo -->
+				<div class="right_col">
+					<div class="">
+						<div class="page-title">
+							<div class="title_left">
+                				<h3>Cadastro</h3>
+              				</div>
+              				 <div class="title_right">
+              				 	<div class="col-md-5 col-sm-5 col-xs-12 form-group pull-right top_search">
+              				 		<div class="input-group">
+              				 			<input type="text" class="form-control" placeholder="Search for..." />
+              				 			<span class="input-group-btn">
+              				 				<button class="btn btn-default" type="button">Ir!</button>
+              				 			</span>
+              				 		</div>
+              				 	</div>
+              				 </div>
+						</div>
+						<div class="clearfix"></div>
+						
+						<div class="row">
+							<div class="col-md-12 col-sm-12 col-xs-12">
+								<div class="x_panel">
+									<div class="x_title">
+										<h2>Cadastro<small> <span class="fa fa-angle-double-right"></span> Produtos</small></h2>
+										<ul class="nav navbar-right panel_toolbox">
+											<li>
+												<a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                      						</li>
+                      						<li>
+                      							<a class="close-link"><i class="fa fa-close"></i></a>
+                      						</li>
+										</ul>
+										<div class="clearfix"></div>
+									</div>
+									
+									<div class="x_content">
+										<form>
+											<div class="col-md-6 col-sm-6 col-xs-6">
+												<label for="fullname">Descrição * :</label>
+	                      						<input type="text" id="fullname" class="form-control" name="fullname" />
+											</div>
+                      						<div class="col-md-6 col-sm-6 col-xs-6">
+	                      						<label for="email">Email * :</label>
+	   	                   						<input type="text" id="email" class="form-control" name="email" />
+                      						</div>
+                      						
+                      						<div class="form-group"></div>
+                      						<div class="clearfix"></div>
+                      						<div class="ln_solid"></div>
+                      						<div class="form-group">
+                      							<div class="col-md-12 col-sm-12 col-xs-12">
+							                    	<button type="submit" class="btn btn-round btn-success">Salvar</button>
+                      								<button type="button" class="btn btn-round btn-danger">Cancelar</button>
+                      								<button type="button" class="btn btn-round btn-primary pull-right">Consultar</button>
+                      							</div>
+                      						</div>
+										</form>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="clearfix"></div>
+						
+						<div class="row">
+							<div class="col-md-12 col-sm-12 col-xs-12">
+								<div class="x_panel">
+									<div class="x_title">
+										<h2>Consulta<small> <span class="fa fa-angle-double-right"></span> Produtos</small></h2>
+										<ul class="nav navbar-right panel_toolbox">
+											<li>
+												<a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                      						</li>
+                      						<li>
+                      							<a class="close-link"><i class="fa fa-close"></i></a>
+                      						</li>
+										</ul>
+										<div class="clearfix"></div>
+									</div>
+									
+									<div class="x_content">
+										<p>
+											<button type="button" class="btn btn-primary">Novo</button>
+										</p>
+										<div class="table-responsive">
+											<table class="table table-striped jambo_table bulk_action">
+												<thead>
+						                          <tr class="headings">
+						                          	<th>
+						                              <input type="checkbox" id="check-all" class="flat" />
+						                            </th>
+						                            <th class="column-title">Descrição </th>
+						                            <th class="column-title">Data/Hora </th>
+						                            <th class="column-title">Código Barras </th>
+						                            <th class="column-title">Usuário </th>
+						                            <th class="column-title">Status </th>
+						                            <th class="column-title">Preço </th>
+						                            <th class="column-title no-link last"><span class="nobr"></span>
+						                            </th>
+						                            <th class="bulk-actions" colspan="7">
+						                              <a class="antoo" style="color:#fff; font-weight:500;">Bulk Actions ( <span class="action-cnt"> </span> ) <i class="fa fa-chevron-down"></i></a>
+						                            </th>
+						                          </tr>
+						                        </thead>
+						                        <tbody>
+						                        	<tr class="even pointer">
+							                        	<td class="a-center ">
+							                            	<input type="checkbox" class="flat" name="table_records" />
+							                            </td>
+							                            <td class=" ">121000040</td>
+							                            <td class=" ">Out 28, 2018 11:47:56 PM </td>
+							                            <td class=" ">121000210 <i class="success fa fa-long-arrow-up"></i></td>
+							                            <td class=" ">Tiago Sousa</td>
+							                            <td class=" ">Ativo</td>
+							                            <td class="a-right a-right ">$7.45</td>
+							                            <td class=" last">
+							                            	<a href="#" class="btn btn-warning btn-xs">Alterar</a>
+							                            </td>
+							                        </tr>
+							                        <tr class="even pointer">
+							                        	<td class="a-center ">
+							                            	<input type="checkbox" class="flat" name="table_records" />
+							                            </td>
+							                            <td class=" ">121000040</td>
+							                            <td class=" ">Out 28, 2018 11:47:56 PM </td>
+							                            <td class=" ">121000210 <i class="success fa fa-long-arrow-up"></i></td>
+							                            <td class=" ">Tiago Sousa</td>
+							                            <td class=" ">Ativo</td>
+							                            <td class="a-right a-right ">$7.45</td>
+							                            <td class=" last">
+							                            	<a href="#" class="btn btn-warning btn-xs">Alterar</a>
+							                            </td>
+							                        </tr>
+							                        <tr class="even pointer">
+							                        	<td class="a-center ">
+							                            	<input type="checkbox" class="flat" name="table_records" />
+							                            </td>
+							                            <td class=" ">121000040</td>
+							                            <td class=" ">Out 28, 2018 11:47:56 PM </td>
+							                            <td class=" ">121000210 <i class="success fa fa-long-arrow-up"></i></td>
+							                            <td class=" ">Tiago Sousa</td>
+							                            <td class=" ">Ativo</td>
+							                            <td class="a-right a-right ">$7.45</td>
+							                            <td class=" last">
+							                            	<a href="#" class="btn btn-warning btn-xs">Alterar</a>
+							                            </td>
+							                        </tr>
+						                        </tbody>
+											</table>
+										</div>
+										
+										
+										<div class="form-group"></div>
+                   						<div class="clearfix"></div>
+                   						<div class="ln_solid"></div>
+										<div class="form-group">
+	                    					<div class="col-md-12 col-sm-12 col-xs-12">
+						                    	<button type="submit" class="btn btn-round btn-danger">Deletar</button>
+	                   						</div>
+	                   					</div>
+										
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<!-- Fim conteudo -->
+				
+				<!-- Rodape -->
+				<footer id="footer">
+					<div class="pull-right">
+		            	Todos os direitos reservados TS-Sistemas
+		        	</div>
+		          	<div class="clearfix"></div>
+				</footer>
+				<!-- Fim rodape -->
+			</div>
+		</div>
+		
+		<h:outputScript library="primefaces" name="jquery/jquery.js" target="body" />
+		<h:outputScript library="bootstrap" name="js/bootstrap.min.js" target="body" />
+		<h:outputScript library="build" name="js/custom.min.js" target="body" />
+	</h:body>
+</html>

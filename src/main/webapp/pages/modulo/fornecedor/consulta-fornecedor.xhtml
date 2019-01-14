@@ -1,0 +1,50 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+	
+		<div class="row">
+			<div class="col-md-3 col-sm-6 col-xs-12">
+				<label for="crudform:tipoPessoa_c">Tipo Pessoa * :</label>
+				<h:selectOneMenu id="tipoPessoa_c" styleClass="form-control" value="#{crudBean.entity.tipoPessoa}" >
+					<f:selectItem itemLabel="Selecione" noSelectionOption="true" />
+					<f:selectItems value="#{crudBean.tiposPessoa}" var="tipoPessoa" itemLabel="#{tipoPessoa.descricao}" itemValue="#{tipoPessoa}" />
+					<p:ajax event="change" process="@this" update="@form" />
+				</h:selectOneMenu>
+			</div>
+			
+			<div class="col-md-3 col-sm-6 col-xs-12">
+				<h:outputLabel value="CPF/CNPJ * :" rendered="#{crudBean.entity.tipoPessoa == null}" />
+				<p:inputText type="text" disabled="true" styleClass="form-control" rendered="#{crudBean.entity.tipoPessoa == null}" />
+				
+				<h:outputLabel for="cpfcnpj_1_c" value="CPF * :" rendered="#{crudBean.entity.tipoPessoa eq 'FISICA'}" />
+				<p:inputMask id="cpfcnpj_1_c" mask="999.999.999-99" type="text" value="#{crudBean.entity.cpfCnpj}" styleClass="form-control" rendered="#{crudBean.entity.tipoPessoa eq 'FISICA'}" />
+				
+				<h:outputLabel for="cpfcnpj_2_c" value="CNPJ * :" rendered="#{crudBean.entity.tipoPessoa eq 'JURIDICA'}" />
+				<p:inputMask id="cpfcnpj_2_c" mask="99.999.999/9999-99" type="text" value="#{crudBean.entity.cpfCnpj}" styleClass="form-control" rendered="#{crudBean.entity.tipoPessoa eq 'JURIDICA'}" />
+			</div>
+			
+			<p:focus for="razaoSocial_c" />
+			<div class="col-md-3 col-sm-6 col-xs-12">
+				<label for="crudform:razaoSocial_c">Razão Social :</label>
+				<p:inputText type="text" id="razaoSocial_c" value="#{crudBean.entity.razaoSocial}" onkeyup="maiuscula(this)" styleClass="form-control" />
+			</div>
+			
+			<div class="col-md-3 col-sm-6 col-xs-12">
+				<label for="crudform:nomeFantasia_c">Nome Fantasia :</label>
+				<p:inputText type="text" id="nomeFantasia_c" value="#{crudBean.entity.nomeFantasia}" onkeyup="maiuscula(this)" styleClass="form-control" />
+			</div>
+		</div>
+				
+		<div class="form-group"></div>
+		<div class="clearfix"></div>
+		<div class="ln_solid"></div>
+		<div class="form-group">
+			<div class="col-md-12 col-sm-12 col-xs-12">
+				<p:commandButton styleClass="btn btn-success" value="Pesquisar" update="@form" action="#{crudBean.btnPesquisar}" />
+				<h:commandLink type="button" value="Novo" styleClass="btn btn-primary pull-right" action="#{crudBean.btnNovo}" />
+			</div>	
+		</div>
+	
+</ui:composition>
