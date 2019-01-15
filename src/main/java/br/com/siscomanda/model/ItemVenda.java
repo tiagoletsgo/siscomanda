@@ -43,11 +43,11 @@ public class ItemVenda extends BaseEntity implements Serializable, Comparable<It
 	public void setSubtotal(double subtotal) {
 		this.subtotal = subtotal;
 	}
-
+	
 	@Override
-	public int compareTo(ItemVenda item) {
-		if(getId() > item.getId()) {
-			return 1;
+	public int compareTo(ItemVenda o) {
+		if(this.getId() < o.getId()) {
+			return -1;
 		}
 		return 0;
 	}

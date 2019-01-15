@@ -7,6 +7,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import br.com.siscomanda.model.DefinicaoGeral;
 import br.com.siscomanda.model.ItemVenda;
 import br.com.siscomanda.model.Produto;
 import br.com.siscomanda.repository.dao.VendaMesaComandaDAO;
@@ -17,6 +18,18 @@ public class VendaMesaComandaService implements Serializable {
 	
 	@Inject
 	private VendaMesaComandaDAO dao;
+	
+	@Inject
+	private DefinicaoGeralService definicaoGeralService;
+	
+	public List<Integer> geraMesasComandas() {
+		List<Integer> mesas = new ArrayList<>();
+		int qtdMesasComandas = definicaoGeralService.carregaDefinicaoSistema().getQtdMesaComanda();
+		for(int i = 0; i < qtdMesasComandas; i++) {
+			mesas.add(i + 1);
+		}
+		return mesas;
+	}
 	
 	public Long setIdTemporarioItem(List<ItemVenda> itens) {
 		Long id = 1L;
