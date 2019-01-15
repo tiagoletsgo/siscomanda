@@ -1,7 +1,7 @@
 @charset "UTF-8";
  @font-face {
  	font-family: "montserrat";
- 	src: url(/napulepizzaria/resources/napule/font/montserrat/Montserrat-Regular.ttf);
+ 	src: url(/siscomanda/resources/siscomanda/font/montserrat/Montserrat-Regular.ttf);
  }
  
  html,
@@ -166,7 +166,7 @@
 } 
 
 .ui-state-highlight .ui-icon {
-	background-image: url(/napulepizzaria/javax.faces.resource/images/ui-icons_333333_256x240.png.xhtml?ln=primefaces-bootstrap) !important;
+	background-image: url(/siscomanda/javax.faces.resource/images/ui-icons_333333_256x240.png.xhtml?ln=primefaces-bootstrap) !important;
 }
 
 .ui-datatable tr.ui-state-highlight {
