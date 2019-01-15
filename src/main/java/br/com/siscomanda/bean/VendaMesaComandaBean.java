@@ -1,6 +1,7 @@
 package br.com.siscomanda.bean;
 
 import java.io.Serializable;
+import java.util.Collections;
 import java.util.List;
 
 import javax.faces.application.FacesMessage;
@@ -34,11 +35,11 @@ public class VendaMesaComandaBean extends BaseBean<Venda> implements Serializabl
 	@Override
 	protected void init() {
 		DefinicaoGeral definicao = definicaoGeralService.carregaDefinicaoSistema();
-		System.out.println("teste...");
-//		int qtdMesasComandas = definicaoGeralService.carregaDefinicaoSistema().getQtdMesaComanda();
-//		for(int i = 0; i < qtdMesasComandas; i++) {
-//			mesasComandas.add(i + 1);
-//		}
+		int qtdMesasComandas = definicaoGeralService.carregaDefinicaoSistema().getQtdMesaComanda();
+		for(int i = 0; i < qtdMesasComandas; i++) {
+			mesasComandas.add(i + 1);
+		}
+		Collections.sort(mesasComandas);
 	}
 	
 	public void carregaMesasComandas() {

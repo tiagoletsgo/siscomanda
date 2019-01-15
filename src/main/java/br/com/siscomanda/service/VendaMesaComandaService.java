@@ -1,6 +1,8 @@
 package br.com.siscomanda.service;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -33,7 +35,20 @@ public class VendaMesaComandaService implements Serializable {
 	}
 	
 	public List<ItemVenda> ordenarItemMenorParaMaior(List<ItemVenda> itens) {
-//		itens.sort((item1, item2) -> item1.getId().compareTo(item2.getId()));
+		Collections.sort(itens);
 		return itens;
+	}
+	
+	public static void main(String[] args) {
+		List<Integer> mesas = new ArrayList<>();
+		mesas.add(5);
+		mesas.add(1);
+		mesas.add(4);
+		mesas.add(2);
+		mesas.add(3);
+		Collections.sort(mesas);
+		for(Integer i : mesas) {
+			System.out.println(i);
+		}
 	}
 }
