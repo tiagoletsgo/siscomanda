@@ -6,7 +6,7 @@ import br.com.siscomanda.base.model.BaseEntity;
 
 //@Entity
 //@Table(name = "item_venda")
-public class ItemVenda extends BaseEntity implements Serializable {
+public class ItemVenda extends BaseEntity implements Serializable, Comparable<ItemVenda> {
 
 	private static final long serialVersionUID = 7754528961077613833L;
 	
@@ -42,5 +42,13 @@ public class ItemVenda extends BaseEntity implements Serializable {
 
 	public void setSubtotal(double subtotal) {
 		this.subtotal = subtotal;
+	}
+	
+	@Override
+	public int compareTo(ItemVenda o) {
+		if(this.getId() < o.getId()) {
+			return -1;
+		}
+		return 0;
 	}
 }
