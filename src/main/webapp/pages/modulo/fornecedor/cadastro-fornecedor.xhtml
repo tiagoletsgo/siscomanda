@@ -10,7 +10,7 @@
 				<h:selectOneMenu id="tipoPessoa" styleClass="form-control" value="#{crudBean.entity.tipoPessoa}" >
 					<f:selectItem itemLabel="Selecione" noSelectionOption="true" />
 					<f:selectItems value="#{crudBean.tiposPessoa}" var="tipoPessoa" itemLabel="#{tipoPessoa.descricao}" itemValue="#{tipoPessoa}" />
-					<p:ajax event="change" process="@this" update="@form" />
+					<p:ajax event="change" process="@this" update="@form" global="false" />
 				</h:selectOneMenu>
 			</div>
 			

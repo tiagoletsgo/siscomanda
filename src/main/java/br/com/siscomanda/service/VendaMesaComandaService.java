@@ -1,10 +1,13 @@
 package br.com.siscomanda.service;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.inject.Inject;
 
+import br.com.siscomanda.model.DefinicaoGeral;
 import br.com.siscomanda.model.ItemVenda;
 import br.com.siscomanda.model.Produto;
 import br.com.siscomanda.repository.dao.VendaMesaComandaDAO;
@@ -15,6 +18,18 @@ public class VendaMesaComandaService implements Serializable {
 	
 	@Inject
 	private VendaMesaComandaDAO dao;
+	
+	@Inject
+	private DefinicaoGeralService definicaoGeralService;
+	
+	public List<Integer> geraMesasComandas() {
+		List<Integer> mesas = new ArrayList<>();
+		int qtdMesasComandas = definicaoGeralService.carregaDefinicaoSistema().getQtdMesaComanda();
+		for(int i = 0; i < qtdMesasComandas; i++) {
+			mesas.add(i + 1);
+		}
+		return mesas;
+	}
 	
 	public Long setIdTemporarioItem(List<ItemVenda> itens) {
 		Long id = 1L;
@@ -33,7 +48,7 @@ public class VendaMesaComandaService implements Serializable {
 	}
 	
 	public List<ItemVenda> ordenarItemMenorParaMaior(List<ItemVenda> itens) {
-//		itens.sort((item1, item2) -> item1.getId().compareTo(item2.getId()));
+		Collections.sort(itens);
 		return itens;
 	}
 }
