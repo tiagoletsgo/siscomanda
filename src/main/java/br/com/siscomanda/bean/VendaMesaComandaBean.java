@@ -1,6 +1,7 @@
 package br.com.siscomanda.bean;
 
 import java.io.Serializable;
+import java.util.Collections;
 import java.util.List;
 
 import javax.faces.application.FacesMessage;

@@ -51,4 +51,17 @@ public class VendaMesaComandaService implements Serializable {
 		Collections.sort(itens);
 		return itens;
 	}
+	
+	public static void main(String[] args) {
+		List<Integer> mesas = new ArrayList<>();
+		mesas.add(5);
+		mesas.add(1);
+		mesas.add(4);
+		mesas.add(2);
+		mesas.add(3);
+		Collections.sort(mesas);
+		for(Integer i : mesas) {
+			System.out.println(i);
+		}
+	}
 }
