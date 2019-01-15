@@ -12,3 +12,6 @@ Project ->
 		                 Marcar a opção Dynamic Web Module e clicar no link "Funther configuration available..."
 		                 no campo content directory incluir o caminho src/main/webapp e marcar Generate web.xml deployment descriptor clicar no botão OK e depois Apply.
 		                 Marcar a opção JavaServer Faces no link "Funther configuration available..."  adicionar a url-pattern como /*.xhtml.
+
+Após terminado a configuração realizar um Maven update no projeto para que as configurações sejam comtempladas.
+forma de realizar.: click com o botão direito do mouse em cima do nome projeto.: Maven ->  Update Project ou (Alt + F5)
