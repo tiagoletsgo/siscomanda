@@ -31,6 +31,21 @@ public class VendaMesaComandaService implements Serializable {
 		return mesas;
 	}
 	
+	public void adicionaItem(List<ItemVenda> itens, ItemVenda item) {
+		boolean itemEncontrado = false;
+		for(ItemVenda itemVenda : itens) {
+			if(itemVenda.getProduto().equals(item.getProduto())) {
+				itemVenda.setQuantidade(itemVenda.getQuantidade() + 1);
+				itemVenda.setSubtotal(itemVenda.getQuantidade() * itemVenda.getProduto().getPrecoVenda());
+				itemEncontrado = true;
+				break;
+			}
+		}
+		if(!itens.contains(item) && !itemEncontrado) {
+			itens.add(item);
+		}
+	}
+	
 	public Long setIdTemporarioItem(List<ItemVenda> itens) {
 		Long id = 1L;
 		for(ItemVenda item : itens) {
