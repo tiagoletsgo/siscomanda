@@ -1,7 +1,7 @@
 package br.com.siscomanda.bean;
 
 import java.io.Serializable;
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.faces.application.FacesMessage;
@@ -35,8 +35,7 @@ public class VendaMesaComandaBean extends BaseBean<Venda> implements Serializabl
 	public void btnAdicionaItem(Produto produto) {
 		ItemVenda item = service.adicionaItemPedidoVenda(produto);
 		item.setId(service.setIdTemporarioItem(getEntity().getItens()));
-		getEntity().getItens().add(item);
-		
+		service.adicionaItem(getEntity().getItens(), item);
 		service.ordenarItemMenorParaMaior(getEntity().getItens());
 	}
 	
