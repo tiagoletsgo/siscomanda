@@ -5,14 +5,14 @@ import java.util.List;
 import javax.persistence.NoResultException;
 import javax.persistence.TypedQuery;
 
-import br.com.siscomanda.exception.NapuleException;
+import br.com.siscomanda.exception.SiscomandaException;
 import br.com.siscomanda.model.Produto;
 import br.com.siscomanda.repository.base.GenericDAO;
 import br.com.siscomanda.util.StringUtil;
 
 public class ProdutoDAO extends GenericDAO<Produto> {
 	
-	public Produto porCodigo(Produto produto) throws NapuleException {
+	public Produto porCodigo(Produto produto) throws SiscomandaException {
 		try {
 			StringBuilder sql = new StringBuilder();
 			sql.append("FROM Produto produto ");
@@ -30,7 +30,7 @@ public class ProdutoDAO extends GenericDAO<Produto> {
 			
 		}
 		catch(NoResultException e) {
-			throw new NapuleException("Não encontrou nenhum resultado na pesquisa.");
+			throw new SiscomandaException("Não encontrou nenhum resultado na pesquisa.");
 		}
 	}
 	

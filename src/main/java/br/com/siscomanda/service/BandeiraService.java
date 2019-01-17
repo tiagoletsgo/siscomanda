@@ -7,7 +7,7 @@ import javax.faces.application.FacesMessage;
 import javax.inject.Inject;
 
 import br.com.siscomanda.config.jpa.Transactional;
-import br.com.siscomanda.exception.NapuleException;
+import br.com.siscomanda.exception.SiscomandaException;
 import br.com.siscomanda.model.Bandeira;
 import br.com.siscomanda.repository.dao.BandeiraDAO;
 import br.com.siscomanda.util.JSFUtil;
@@ -21,7 +21,7 @@ public class BandeiraService implements Serializable {
 	@Inject
 	private BandeiraDAO dao;
 	
-	public List<Bandeira> pesquisar(Bandeira bandeira) throws NapuleException {
+	public List<Bandeira> pesquisar(Bandeira bandeira) throws SiscomandaException {
 		List<Bandeira> list = null;
 		if(list == null && !bandeira.getDescricao().isEmpty()) {
 			list = dao.porDescricao(bandeira.getDescricao(), Bandeira.class);
@@ -35,7 +35,7 @@ public class BandeiraService implements Serializable {
 	}
 	
 	@Transactional
-	public Bandeira salvar(Bandeira bandeira) throws NapuleException {
+	public Bandeira salvar(Bandeira bandeira) throws SiscomandaException {
 		bandeira = validacao(bandeira);
 		if(bandeira.isNovo()) {
 			bandeira = dao.salvar(bandeira);
@@ -48,14 +48,14 @@ public class BandeiraService implements Serializable {
 		return dao.salvar(bandeira);
 	}
 	
-	private Bandeira validacao(Bandeira bandeira) throws NapuleException {
+	private Bandeira validacao(Bandeira bandeira) throws SiscomandaException {
 		if(StringUtil.isEmpty(bandeira.getDescricao())) {
-			throw new NapuleException("É necessário informar uma descrição para a bandeira.!");
+			throw new SiscomandaException("É necessário informar uma descrição para a bandeira.!");
 		}
 		
 		if(bandeira.isNovo()) {
 			if(dao.isExists(bandeira.getDescricao(), Bandeira.class)) {
-				throw new NapuleException("Essa bandeira já se encontra cadastro no sistema.!");
+				throw new SiscomandaException("Essa bandeira já se encontra cadastro no sistema.!");
 			}
 		}
 		
@@ -67,9 +67,9 @@ public class BandeiraService implements Serializable {
 	}
 	
 	@Transactional
-	public void remover(List<Bandeira> bandeiras) throws NapuleException {
+	public void remover(List<Bandeira> bandeiras) throws SiscomandaException {
 		if(bandeiras == null || bandeiras.isEmpty()) {
-			throw new NapuleException("Selecione pelo menos 1 registro para ser excluído.!");
+			throw new SiscomandaException("Selecione pelo menos 1 registro para ser excluído.!");
 		}
 		
 		try {
@@ -77,8 +77,8 @@ public class BandeiraService implements Serializable {
 				dao.remover(Bandeira.class, bandeira.getId());
 			}
 		}
-		catch(NapuleException e) {
-			throw new NapuleException(e.getMessage(), e);
+		catch(SiscomandaException e) {
+			throw new SiscomandaException(e.getMessage(), e);
 		}
 	}
 }

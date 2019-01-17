@@ -9,7 +9,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import br.com.siscomanda.base.bean.BaseBean;
-import br.com.siscomanda.exception.NapuleException;
+import br.com.siscomanda.exception.SiscomandaException;
 import br.com.siscomanda.model.Cliente;
 import br.com.siscomanda.service.ClienteService;
 import br.com.siscomanda.util.JSFUtil;
@@ -38,7 +38,7 @@ public class ClienteBean extends BaseBean<Cliente> implements Serializable {
 			clienteService.remover(getClientesSelecionados());
 			getElements().removeAll(getClientesSelecionados());
 			JSFUtil.addMessage(FacesMessage.SEVERITY_INFO, "Registro(s) removido(s) com sucesso.");
-		} catch (NapuleException e) {
+		} catch (SiscomandaException e) {
 			JSFUtil.addMessage(FacesMessage.SEVERITY_ERROR, "Erro ao remover. " + e.getMessage());
 		}
 	}
@@ -53,7 +53,7 @@ public class ClienteBean extends BaseBean<Cliente> implements Serializable {
 				getEstadoViewBean().setUpdate(false);
 			}
 		}
-		catch(NapuleException e) {
+		catch(SiscomandaException e) {
 			JSFUtil.addMessage(FacesMessage.SEVERITY_ERROR, "Erro ao salvar. " + e.getMessage());
 		}
 	}
@@ -62,7 +62,7 @@ public class ClienteBean extends BaseBean<Cliente> implements Serializable {
 		try {	
 			setElements(clienteService.pesquisar(getEntity()));
 		}
-		catch(NapuleException e) {
+		catch(SiscomandaException e) {
 			JSFUtil.addMessage(FacesMessage.SEVERITY_WARN, e.getMessage());
 		}
 	}
@@ -75,7 +75,7 @@ public class ClienteBean extends BaseBean<Cliente> implements Serializable {
 			
 			getEstadoViewBean().setCurrentView(false, true, false, true);
 		}
-		catch(NapuleException e) {
+		catch(SiscomandaException e) {
 			JSFUtil.addMessage(FacesMessage.SEVERITY_ERROR, e.getMessage());
 		}
 	}

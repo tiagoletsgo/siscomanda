@@ -7,7 +7,7 @@ import javax.faces.application.FacesMessage;
 import javax.inject.Inject;
 
 import br.com.siscomanda.config.jpa.Transactional;
-import br.com.siscomanda.exception.NapuleException;
+import br.com.siscomanda.exception.SiscomandaException;
 import br.com.siscomanda.model.DefinicaoGeral;
 import br.com.siscomanda.repository.dao.DefinicaoGeralDAO;
 import br.com.siscomanda.util.JSFUtil;
@@ -21,7 +21,7 @@ public class DefinicaoGeralService implements Serializable {
 	private DefinicaoGeralDAO dao;
 	
 	@Transactional
-	public DefinicaoGeral salvar(DefinicaoGeral definicaoGeral) throws NapuleException {
+	public DefinicaoGeral salvar(DefinicaoGeral definicaoGeral) throws SiscomandaException {
 		definicaoGeral = validacao(definicaoGeral);
 		if(definicaoGeral.isNovo()) {
 			definicaoGeral = dao.salvar(definicaoGeral);
@@ -42,45 +42,45 @@ public class DefinicaoGeralService implements Serializable {
 		return new DefinicaoGeral();
 	}
 	
-	private DefinicaoGeral validacao(DefinicaoGeral definicaoGeral) throws NapuleException {
+	private DefinicaoGeral validacao(DefinicaoGeral definicaoGeral) throws SiscomandaException {
 		if(definicaoGeral == null) {
-			throw new NapuleException("Por gentileza preencha corretamente os campos.");
+			throw new SiscomandaException("Por gentileza preencha corretamente os campos.");
 		}
 		
 		if(StringUtil.isEmpty(definicaoGeral.getNomeFantasia())) {
-			throw new NapuleException("É necessário informar o nome fantasia.!");
+			throw new SiscomandaException("É necessário informar o nome fantasia.!");
 		}
 		
 		if(StringUtil.isEmpty(definicaoGeral.getRazaoSocial())) {
-			throw new NapuleException("É necessário informar o razão social.!");
+			throw new SiscomandaException("É necessário informar o razão social.!");
 		}
 		
 		if(StringUtil.isEmpty(definicaoGeral.getCnpj())) {
-			throw new NapuleException("É necessário informar o cnpj.!");
+			throw new SiscomandaException("É necessário informar o cnpj.!");
 		}
 		
 		if(StringUtil.isEmpty(definicaoGeral.getEndereco().getEndereco())) {
-			throw new NapuleException("É necessário informar o endereço.!");
+			throw new SiscomandaException("É necessário informar o endereço.!");
 		}
 		
 		if(StringUtil.isEmpty(definicaoGeral.getEndereco().getBairro())) {
-			throw new NapuleException("É necessário informar o bairro.!");
+			throw new SiscomandaException("É necessário informar o bairro.!");
 		}
 		
 		if(StringUtil.isEmpty(definicaoGeral.getEndereco().getCidade())) {
-			throw new NapuleException("É necessário informar a cidade.!");
+			throw new SiscomandaException("É necessário informar a cidade.!");
 		}
 		
 		if(StringUtil.isEmpty(definicaoGeral.getEndereco().getUf())) {
-			throw new NapuleException("É necessário informar o uf.!");
+			throw new SiscomandaException("É necessário informar o uf.!");
 		}
 		
 		if(StringUtil.isEmpty(definicaoGeral.getFonePrincipal())) {
-			throw new NapuleException("É necessário informar o telefone principal.!");
+			throw new SiscomandaException("É necessário informar o telefone principal.!");
 		}
 		
 		if(definicaoGeral.getQtdMesaComanda() == 0) {
-			throw new NapuleException("A quantidade zero não é permitida para o sistema de mesa / comanda.!");
+			throw new SiscomandaException("A quantidade zero não é permitida para o sistema de mesa / comanda.!");
 		}
 		
 		return definicaoGeral;

@@ -8,7 +8,7 @@ import javax.faces.application.FacesMessage;
 import javax.inject.Inject;
 
 import br.com.siscomanda.config.jpa.Transactional;
-import br.com.siscomanda.exception.NapuleException;
+import br.com.siscomanda.exception.SiscomandaException;
 import br.com.siscomanda.model.Produto;
 import br.com.siscomanda.repository.dao.ProdutoDAO;
 import br.com.siscomanda.util.JSFUtil;
@@ -22,14 +22,14 @@ public class ProdutoService implements Serializable {
 	@Inject
 	private ProdutoDAO dao;
 		
-	public List<Produto> pesquisar(Produto produto) throws NapuleException {
+	public List<Produto> pesquisar(Produto produto) throws SiscomandaException {
 		List<Produto> list = null;
 		verificaCampoSelecionado(produto);
 		list = dao.buscaPor(produto);	
 		return list;
 	}
 	
-	private void verificaCampoSelecionado(Produto produto) throws NapuleException {
+	private void verificaCampoSelecionado(Produto produto) throws SiscomandaException {
 		StringUtil.maisDeUmCampoPreenchido(Arrays.asList(
 					produto.getDescricao(),
 					produto.getCodigoEan()
@@ -37,7 +37,7 @@ public class ProdutoService implements Serializable {
 	}
 	
 	@Transactional
-	public Produto salvar(Produto produto) throws NapuleException {
+	public Produto salvar(Produto produto) throws SiscomandaException {
 		produto = validacao(produto);
 		if(produto.isNovo()) {
 			produto = dao.salvar(produto);
@@ -50,47 +50,47 @@ public class ProdutoService implements Serializable {
 		return dao.salvar(produto);
 	}
 	
-	public Produto porCodigo(Produto produto) throws NapuleException {
+	public Produto porCodigo(Produto produto) throws SiscomandaException {
 		return dao.porCodigo(produto);
 	}
 	
-	private Produto validacao(Produto produto) throws NapuleException {
+	private Produto validacao(Produto produto) throws SiscomandaException {
 		
 		if(StringUtil.isEmpty(produto.getDescricao())) {
-			throw new NapuleException("É necessário informar o nome do produto.!");
+			throw new SiscomandaException("É necessário informar o nome do produto.!");
 		}
 		
 		if(StringUtil.isEmpty(produto.getCodigoEan())) {
-			throw new NapuleException("É necessário informar o código do produto.!");
+			throw new SiscomandaException("É necessário informar o código do produto.!");
 		}
 		
 		if(produto.getEmbalagem() == null) {
-			throw new NapuleException("É necessário informar qual a embalagem.!");
+			throw new SiscomandaException("É necessário informar qual a embalagem.!");
 		}
 		
 		if(produto.getFornecedor() == null) {
-			throw new NapuleException("É necessário informar o fornecedor.!");
+			throw new SiscomandaException("É necessário informar o fornecedor.!");
 		}
 		
 		if(produto.getCategoria() == null) {
-			throw new NapuleException("É necessário informar a categoria.!");
+			throw new SiscomandaException("É necessário informar a categoria.!");
 		}
 		
 		if(produto.getSubCategoria() == null) {
-			throw new NapuleException("É necessário informar a subcategoria.!");
+			throw new SiscomandaException("É necessário informar a subcategoria.!");
 		}
 		
 		if(produto.getControlaEstoque() == null) {
-			throw new NapuleException("Informe se este produto controla ou não estoque.!");
+			throw new SiscomandaException("Informe se este produto controla ou não estoque.!");
 		}
 		
 		if(produto.getPrecoVenda().equals(new Double("0"))) {
-			throw new NapuleException("Informe o preço de venda.!");
+			throw new SiscomandaException("Informe o preço de venda.!");
 		}
 		
 		if(produto.isNovo()) {
 			if(dao.isExists(produto)) {
-				throw new NapuleException("Esse produto já se encontra cadastro no sistema.!");
+				throw new SiscomandaException("Esse produto já se encontra cadastro no sistema.!");
 			}
 		}
 		
@@ -102,9 +102,9 @@ public class ProdutoService implements Serializable {
 	}
 	
 	@Transactional
-	public void remover(List<Produto> produtos) throws NapuleException {
+	public void remover(List<Produto> produtos) throws SiscomandaException {
 		if(produtos == null || produtos.isEmpty()) {
-			throw new NapuleException("Selecione pelo menos 1 registro para ser excluído.!");
+			throw new SiscomandaException("Selecione pelo menos 1 registro para ser excluído.!");
 		}
 		
 		try {
@@ -112,8 +112,8 @@ public class ProdutoService implements Serializable {
 				dao.remover(Produto.class, produto.getId());
 			}
 		}
-		catch(NapuleException e) {
-			throw new NapuleException(e.getMessage(), e);
+		catch(SiscomandaException e) {
+			throw new SiscomandaException(e.getMessage(), e);
 		}
 	}
 }

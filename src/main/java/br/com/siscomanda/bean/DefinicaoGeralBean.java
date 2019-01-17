@@ -7,7 +7,7 @@ import javax.inject.Named;
 
 import br.com.siscomanda.base.bean.BaseBean;
 import br.com.siscomanda.enumeration.ESistema;
-import br.com.siscomanda.exception.NapuleException;
+import br.com.siscomanda.exception.SiscomandaException;
 import br.com.siscomanda.exception.NoImplementationException;
 import br.com.siscomanda.model.DefinicaoGeral;
 import br.com.siscomanda.service.DefinicaoGeralService;
@@ -31,7 +31,7 @@ public class DefinicaoGeralBean extends BaseBean<DefinicaoGeral> {
 		try {			
 			definicaoGeralService.salvar(getEntity());
 		}
-		catch(NapuleException e) {
+		catch(SiscomandaException e) {
 			JSFUtil.addMessage(FacesMessage.SEVERITY_ERROR, "Erro ao salvar. " + e.getMessage());
 		}
 	}

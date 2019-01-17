@@ -9,7 +9,7 @@ import javax.faces.application.FacesMessage;
 import javax.inject.Inject;
 
 import br.com.siscomanda.config.jpa.Transactional;
-import br.com.siscomanda.exception.NapuleException;
+import br.com.siscomanda.exception.SiscomandaException;
 import br.com.siscomanda.model.Cliente;
 import br.com.siscomanda.repository.dao.ClienteDAO;
 import br.com.siscomanda.util.JSFUtil;
@@ -23,14 +23,14 @@ public class ClienteService implements Serializable {
 	@Inject
 	private ClienteDAO dao;
 	
-	public List<Cliente> pesquisar(Cliente cliente) throws NapuleException {
+	public List<Cliente> pesquisar(Cliente cliente) throws SiscomandaException {
 		List<Cliente> list = null;
 		verificaCampoSelecionado(cliente);
 		list = dao.buscaPor(cliente);				
 		return list;
 	}
 	
-	private void verificaCampoSelecionado(Cliente cliente) throws NapuleException {
+	private void verificaCampoSelecionado(Cliente cliente) throws SiscomandaException {
 		StringUtil.maisDeUmCampoPreenchido(Arrays.asList(
 					cliente.getNomeCompleto(),
 					cliente.getRg(),
@@ -40,7 +40,7 @@ public class ClienteService implements Serializable {
 	}
 	
 	@Transactional
-	public Cliente salvar(Cliente cliente) throws NapuleException {
+	public Cliente salvar(Cliente cliente) throws SiscomandaException {
 		cliente = validacao(cliente);
 		if(cliente.isNovo()) {
 			cliente = dao.salvar(cliente);
@@ -53,31 +53,31 @@ public class ClienteService implements Serializable {
 		return dao.salvar(cliente);
 	}
 	
-	public Cliente porCodigo(Cliente cliente) throws NapuleException {
+	public Cliente porCodigo(Cliente cliente) throws SiscomandaException {
 		return dao.porCodigo(cliente);
 	}
 	
-	private Cliente validacao(Cliente cliente) throws NapuleException {
+	private Cliente validacao(Cliente cliente) throws SiscomandaException {
 		if(StringUtil.isEmpty(cliente.getNomeCompleto())) {
-			throw new NapuleException("É necessário informar o nome do cliente.!");
+			throw new SiscomandaException("É necessário informar o nome do cliente.!");
 		}
 		
 		if(StringUtil.isEmpty(cliente.getEndereco().getEndereco()) || StringUtil.isEmpty(cliente.getEndereco().getBairro())
 				|| StringUtil.isEmpty(cliente.getEndereco().getCidade())) {
-			throw new NapuleException("É necessário informar endereço, bairro e cidade.!");
+			throw new SiscomandaException("É necessário informar endereço, bairro e cidade.!");
 		}
 
 		if(StringUtil.isEmpty(cliente.getTelefoneCelular()) && StringUtil.isEmpty(cliente.getTelefoneFixo())) {
-			throw new NapuleException("É necessário informar pelo menos um número para contato.!");
+			throw new SiscomandaException("É necessário informar pelo menos um número para contato.!");
 		}
 		
 		if(!Objects.nonNull(cliente.getServico())) {
-			throw new NapuleException("É necessário informar a taxa de serviço.!");
+			throw new SiscomandaException("É necessário informar a taxa de serviço.!");
 		}
 		
 		if(cliente.isNovo()) {
 			if(dao.isExists(cliente)) {
-				throw new NapuleException("Esse cliente já se encontra cadastro no sistema.!");
+				throw new SiscomandaException("Esse cliente já se encontra cadastro no sistema.!");
 			}
 		}
 		
@@ -94,9 +94,9 @@ public class ClienteService implements Serializable {
 	}
 	
 	@Transactional
-	public void remover(List<Cliente> clientes) throws NapuleException {
+	public void remover(List<Cliente> clientes) throws SiscomandaException {
 		if(clientes == null || clientes.isEmpty()) {
-			throw new NapuleException("Selecione pelo menos 1 registro para ser excluído.!");
+			throw new SiscomandaException("Selecione pelo menos 1 registro para ser excluído.!");
 		}
 		
 		try {
@@ -104,8 +104,8 @@ public class ClienteService implements Serializable {
 				dao.remover(Cliente.class, cliente.getId());
 			}
 		}
-		catch(NapuleException e) {
-			throw new NapuleException(e.getMessage(), e);
+		catch(SiscomandaException e) {
+			throw new SiscomandaException(e.getMessage(), e);
 		}
 	}
 }

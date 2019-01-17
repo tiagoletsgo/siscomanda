@@ -53,7 +53,9 @@
 						
 						<p:column styleClass="ui-datatable-center" style="width: 8%; border-radius: 0px">
 							<f:facet name="header"><h:outputLabel value="Remover" /></f:facet>
-							<h:commandLink styleClass="btn btn-round btn-danger btn-xs fa fa-minus" />
+							<h:commandLink styleClass="btn btn-round btn-danger btn-xs fa fa-minus">
+								<p:ajax update=":crudform:tabelaItemPedido"  global="false" listener="#{crudBean.btnRemoveItem(null, produto)}" />
+							</h:commandLink>
 						</p:column>
 						
 						<p:column styleClass="ui-datatable-center" style="width: 10%; border-radius: 0px">
@@ -63,9 +65,12 @@
 						</p:column>
 					</p:dataTable>
 				</div>
-				<h:commandButton onclick="PF('dlgPesquisaProduto').hide(); return false;" styleClass="btn btn-danger btn-xs" value="Fechar" />
 			</div>
 		</div>
+		
+		<f:facet name="footer">
+			<h:commandButton onclick="PF('dlgPesquisaProduto').hide(); return false;" styleClass="btn btn-danger btn-xs" value="Fechar" />
+		</f:facet>
 	</p:dialog>
 	
 </ui:composition>

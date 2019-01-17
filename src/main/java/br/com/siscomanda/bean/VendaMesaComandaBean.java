@@ -1,10 +1,8 @@
 package br.com.siscomanda.bean;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 
-import javax.faces.application.FacesMessage;
 import javax.faces.bean.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -14,7 +12,6 @@ import br.com.siscomanda.model.ItemVenda;
 import br.com.siscomanda.model.Produto;
 import br.com.siscomanda.model.Venda;
 import br.com.siscomanda.service.VendaMesaComandaService;
-import br.com.siscomanda.util.JSFUtil;
 
 @Named
 @ViewScoped
@@ -24,6 +21,8 @@ public class VendaMesaComandaBean extends BaseBean<Venda> implements Serializabl
 	
 	@Inject
 	private VendaMesaComandaService service;
+	
+	private ItemVenda itemSelecionado;
 	
 	private List<Integer> mesasComandas;
 	
@@ -39,9 +38,8 @@ public class VendaMesaComandaBean extends BaseBean<Venda> implements Serializabl
 		service.ordenarItemMenorParaMaior(getEntity().getItens());
 	}
 	
-	public void btnRemoveItem(ItemVenda item) {
-		getEntity().getItens().remove(item);
-		JSFUtil.addMessage(FacesMessage.SEVERITY_INFO, "Registro removido com sucesso.");
+	public void btnRemoveItem(ItemVenda itemVenda, Produto produto) {
+		service.removeItem(getEntity().getItens(), itemVenda, produto);
 	}
 	
 	@Override
@@ -50,5 +48,13 @@ public class VendaMesaComandaBean extends BaseBean<Venda> implements Serializabl
 	
 	public List<Integer> getQuantidadeMesasComandas() {
 		return mesasComandas;
+	}
+
+	public ItemVenda getItemSelecionado() {
+		return itemSelecionado;
+	}
+
+	public void setItemSelecionado(ItemVenda itemSelecionado) {
+		this.itemSelecionado = itemSelecionado;
 	}
 }

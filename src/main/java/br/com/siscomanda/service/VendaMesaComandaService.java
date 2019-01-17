@@ -1,6 +1,7 @@
 package br.com.siscomanda.service;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -43,6 +44,23 @@ public class VendaMesaComandaService implements Serializable {
 		}
 		if(!itens.contains(item) && !itemEncontrado) {
 			itens.add(item);
+		}
+	}
+	
+	public void removeItem(List<ItemVenda> itens, ItemVenda item, Produto produto) {
+		List<ItemVenda> itensVendasTemp = itens;
+		for(ItemVenda itemVenda : itensVendasTemp) {
+			if(produto != null) {		
+				if(itemVenda.getProduto().equals(produto)) {
+					if(itemVenda.getQuantidade() == new Integer(1)) {
+						itens.remove(itemVenda);
+						break;
+					}
+					itemVenda.setQuantidade(itemVenda.getQuantidade() - 1);
+					itemVenda.setSubtotal(itemVenda.getQuantidade() * itemVenda.getProduto().getPrecoVenda());
+					break;
+				}
+			}
 		}
 	}
 	
