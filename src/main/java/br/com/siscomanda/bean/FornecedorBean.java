@@ -10,7 +10,7 @@ import javax.inject.Named;
 
 import br.com.siscomanda.base.bean.BaseBean;
 import br.com.siscomanda.enumeration.ETipoPessoa;
-import br.com.siscomanda.exception.NapuleException;
+import br.com.siscomanda.exception.SiscomandaException;
 import br.com.siscomanda.model.Fornecedor;
 import br.com.siscomanda.service.FornecedorService;
 import br.com.siscomanda.util.JSFUtil;
@@ -39,7 +39,7 @@ public class FornecedorBean extends BaseBean<Fornecedor> implements Serializable
 			fornecedorSevice.remover(getFornecedoresSelecionados());
 			getElements().removeAll(getFornecedoresSelecionados());
 			JSFUtil.addMessage(FacesMessage.SEVERITY_INFO, "Registro(s) removido(s) com sucesso.");
-		} catch (NapuleException e) {
+		} catch (SiscomandaException e) {
 			JSFUtil.addMessage(FacesMessage.SEVERITY_ERROR, "Erro ao remover. " + e.getMessage());
 		}
 	}
@@ -50,7 +50,7 @@ public class FornecedorBean extends BaseBean<Fornecedor> implements Serializable
 			setEntity(new Fornecedor());
 			getEstadoViewBean().setUpdate(false);
 		}
-		catch(NapuleException e) {
+		catch(SiscomandaException e) {
 			JSFUtil.addMessage(FacesMessage.SEVERITY_ERROR, "Erro ao salvar. " + e.getMessage());
 		}
 	}
@@ -59,7 +59,7 @@ public class FornecedorBean extends BaseBean<Fornecedor> implements Serializable
 		try {	
 			setElements(fornecedorSevice.pesquisar(getEntity()));
 		}
-		catch(NapuleException e) {
+		catch(SiscomandaException e) {
 			JSFUtil.addMessage(FacesMessage.SEVERITY_WARN, e.getMessage());
 		}
 	}

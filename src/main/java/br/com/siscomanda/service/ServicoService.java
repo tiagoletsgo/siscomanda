@@ -7,7 +7,7 @@ import javax.faces.application.FacesMessage;
 import javax.inject.Inject;
 
 import br.com.siscomanda.config.jpa.Transactional;
-import br.com.siscomanda.exception.NapuleException;
+import br.com.siscomanda.exception.SiscomandaException;
 import br.com.siscomanda.model.Servico;
 import br.com.siscomanda.repository.dao.ServicoDAO;
 import br.com.siscomanda.util.JSFUtil;
@@ -21,7 +21,7 @@ public class ServicoService implements Serializable {
 	@Inject
 	private ServicoDAO dao;
 	
-	public List<Servico> pesquisar(Servico servico) throws NapuleException {
+	public List<Servico> pesquisar(Servico servico) throws SiscomandaException {
 		List<Servico> list = null;
 		if(list == null && !servico.getDescricao().isEmpty()) {
 			list = dao.porDescricao(servico.getDescricao(), Servico.class);
@@ -35,7 +35,7 @@ public class ServicoService implements Serializable {
 	}
 	
 	@Transactional
-	public Servico salvar(Servico servico) throws NapuleException {
+	public Servico salvar(Servico servico) throws SiscomandaException {
 		servico = validacao(servico);
 		if(servico.isNovo()) {
 			servico = dao.salvar(servico);
@@ -48,14 +48,14 @@ public class ServicoService implements Serializable {
 		return dao.salvar(servico);
 	}
 	
-	private Servico validacao(Servico servico) throws NapuleException {
+	private Servico validacao(Servico servico) throws SiscomandaException {
 		if(StringUtil.isEmpty(servico.getDescricao())) {
-			throw new NapuleException("É necessário informar uma descrição para este serviço.!");
+			throw new SiscomandaException("É necessário informar uma descrição para este serviço.!");
 		}
 		
 		if(servico.isNovo()) {
 			if(dao.isExists(servico.getDescricao(), Servico.class)) {
-				throw new NapuleException("Esse serviço já se encontra cadastro no sistema.!");
+				throw new SiscomandaException("Esse serviço já se encontra cadastro no sistema.!");
 			}
 		}
 		
@@ -67,9 +67,9 @@ public class ServicoService implements Serializable {
 	}
 	
 	@Transactional
-	public void remover(List<Servico> servicos) throws NapuleException {
+	public void remover(List<Servico> servicos) throws SiscomandaException {
 		if(servicos == null || servicos.isEmpty()) {
-			throw new NapuleException("Selecione pelo menos 1 registro para ser excluído.!");
+			throw new SiscomandaException("Selecione pelo menos 1 registro para ser excluído.!");
 		}
 		
 		try {
@@ -77,8 +77,8 @@ public class ServicoService implements Serializable {
 				dao.remover(Servico.class, servico.getId());
 			}
 		}
-		catch(NapuleException e) {
-			throw new NapuleException(e.getMessage(), e);
+		catch(SiscomandaException e) {
+			throw new SiscomandaException(e.getMessage(), e);
 		}
 	}
 }

@@ -9,7 +9,7 @@ import javax.faces.application.FacesMessage;
 import javax.inject.Inject;
 
 import br.com.siscomanda.config.jpa.Transactional;
-import br.com.siscomanda.exception.NapuleException;
+import br.com.siscomanda.exception.SiscomandaException;
 import br.com.siscomanda.model.Fornecedor;
 import br.com.siscomanda.repository.dao.FornecedorDAO;
 import br.com.siscomanda.util.JSFUtil;
@@ -23,14 +23,14 @@ public class FornecedorService implements Serializable {
 	@Inject
 	private FornecedorDAO dao;
 	
-	public List<Fornecedor> pesquisar(Fornecedor fornecedor) throws NapuleException {
+	public List<Fornecedor> pesquisar(Fornecedor fornecedor) throws SiscomandaException {
 		List<Fornecedor> list = null;
 		verificaCampoSelecionado(fornecedor);
 		list = dao.buscaPor(fornecedor);
 		return list;
 	}
 	
-	private void verificaCampoSelecionado(Fornecedor fornecedor) throws NapuleException {
+	private void verificaCampoSelecionado(Fornecedor fornecedor) throws SiscomandaException {
 		StringUtil.maisDeUmCampoPreenchido(Arrays.asList(
 					fornecedor.getRazaoSocial(),
 					fornecedor.getNomeFantasia(),
@@ -39,7 +39,7 @@ public class FornecedorService implements Serializable {
 	}
 	
 	@Transactional
-	public Fornecedor salvar(Fornecedor fornecedor) throws NapuleException {
+	public Fornecedor salvar(Fornecedor fornecedor) throws SiscomandaException {
 		fornecedor = validacao(fornecedor);
 		if(fornecedor.isNovo()) {
 			fornecedor = dao.salvar(fornecedor);
@@ -52,22 +52,22 @@ public class FornecedorService implements Serializable {
 		return dao.salvar(fornecedor);
 	}
 	
-	private Fornecedor validacao(Fornecedor fornecedor) throws NapuleException {
+	private Fornecedor validacao(Fornecedor fornecedor) throws SiscomandaException {
 		if(!Objects.nonNull(fornecedor.getTipoPessoa())) {
-			throw new NapuleException("É necessário informar o tipo de pessoa.!");
+			throw new SiscomandaException("É necessário informar o tipo de pessoa.!");
 		}
 		
 		if(StringUtil.isEmpty(fornecedor.getRazaoSocial())) {
-			throw new NapuleException("É necessário informar a razão social.!");
+			throw new SiscomandaException("É necessário informar a razão social.!");
 		}
 		
 		if(StringUtil.isEmpty(fornecedor.getCpfCnpj())) {
-			throw new NapuleException("É necessário informar o cpf/cnpj.!");
+			throw new SiscomandaException("É necessário informar o cpf/cnpj.!");
 		}
 		
 		if(fornecedor.isNovo()) {
 			if(dao.isExists(fornecedor)) {
-				throw new NapuleException("Esse fornecedor já se encontra cadastro no sistema.!");
+				throw new SiscomandaException("Esse fornecedor já se encontra cadastro no sistema.!");
 			}
 		}
 		
@@ -83,9 +83,9 @@ public class FornecedorService implements Serializable {
 	}
 	
 	@Transactional
-	public void remover(List<Fornecedor> fornecedores) throws NapuleException {
+	public void remover(List<Fornecedor> fornecedores) throws SiscomandaException {
 		if(fornecedores == null || fornecedores.isEmpty()) {
-			throw new NapuleException("Selecione pelo menos 1 registro para ser excluído.!");
+			throw new SiscomandaException("Selecione pelo menos 1 registro para ser excluído.!");
 		}
 		
 		try {
@@ -93,8 +93,8 @@ public class FornecedorService implements Serializable {
 				dao.remover(Fornecedor.class, fornecedor.getId());
 			}
 		}
-		catch(NapuleException e) {
-			throw new NapuleException(e.getMessage(), e);
+		catch(SiscomandaException e) {
+			throw new SiscomandaException(e.getMessage(), e);
 		}
 	}
 }

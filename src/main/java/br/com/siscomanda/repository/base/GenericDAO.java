@@ -7,7 +7,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 
 import br.com.siscomanda.base.model.BaseEntity;
-import br.com.siscomanda.exception.NapuleException;
+import br.com.siscomanda.exception.SiscomandaException;
 
 public abstract class GenericDAO<T extends BaseEntity> {
 	
@@ -20,14 +20,14 @@ public abstract class GenericDAO<T extends BaseEntity> {
 		return entityManager.merge(entity);
 	}
 		
-	public void remover(Class<T> typeClazz, Long codigo) throws NapuleException {
+	public void remover(Class<T> typeClazz, Long codigo) throws SiscomandaException {
 		try {			
 			this.entity = porCodigo(codigo, typeClazz);
 			entityManager.remove(entity);
 			entityManager.flush();
 		}
 		catch(Exception e) {
-			throw new NapuleException(e.getMessage(), e);
+			throw new SiscomandaException(e.getMessage(), e);
 		}
 	}
 	
@@ -46,7 +46,7 @@ public abstract class GenericDAO<T extends BaseEntity> {
 		return false;
 	}
 	
-	public List<T> porDescricao(String descricao, Class<T> typeClazz) throws NapuleException {
+	public List<T> porDescricao(String descricao, Class<T> typeClazz) throws SiscomandaException {
 		try {
 			StringBuilder sql = new StringBuilder();
 			sql.append("FROM " + typeClazz.getSimpleName() + " entity WHERE entity.descricao LIKE :descricao ");
@@ -55,7 +55,7 @@ public abstract class GenericDAO<T extends BaseEntity> {
 			return query.getResultList();
 		}
 		catch(Exception e) {
-			throw new NapuleException("Nenhum registro encontrado. " + e.getMessage());
+			throw new SiscomandaException("Nenhum registro encontrado. " + e.getMessage());
 		}
 	}
 	

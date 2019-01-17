@@ -7,7 +7,7 @@ import javax.faces.application.FacesMessage;
 import javax.inject.Inject;
 
 import br.com.siscomanda.config.jpa.Transactional;
-import br.com.siscomanda.exception.NapuleException;
+import br.com.siscomanda.exception.SiscomandaException;
 import br.com.siscomanda.model.Embalagem;
 import br.com.siscomanda.repository.dao.EmbalagemDAO;
 import br.com.siscomanda.util.JSFUtil;
@@ -20,7 +20,7 @@ public class EmbalagemService implements Serializable {
 	@Inject
 	private EmbalagemDAO dao;
 	
-	public List<Embalagem> pesquisar(Embalagem embalagem) throws NapuleException {
+	public List<Embalagem> pesquisar(Embalagem embalagem) throws SiscomandaException {
 		List<Embalagem> list = null;
 		if(list == null && !embalagem.getDescricao().isEmpty()) {
 			list = dao.porDescricao(embalagem.getDescricao(), Embalagem.class);
@@ -34,7 +34,7 @@ public class EmbalagemService implements Serializable {
 	}
 	
 	@Transactional
-	public Embalagem salvar(Embalagem embalagem) throws NapuleException {
+	public Embalagem salvar(Embalagem embalagem) throws SiscomandaException {
 		embalagem = validacao(embalagem);
 		if(embalagem.isNovo()) {
 			embalagem = dao.salvar(embalagem);
@@ -47,14 +47,14 @@ public class EmbalagemService implements Serializable {
 		return dao.salvar(embalagem);
 	}
 	
-	private Embalagem validacao(Embalagem embalagem) throws NapuleException {
+	private Embalagem validacao(Embalagem embalagem) throws SiscomandaException {
 		if(StringUtil.isEmpty(embalagem.getDescricao())) {
-			throw new NapuleException("É necessário informar uma descrição para a embalagem.!");
+			throw new SiscomandaException("É necessário informar uma descrição para a embalagem.!");
 		}
 		
 		if(embalagem.isNovo()) {
 			if(dao.isExists(embalagem)) {
-				throw new NapuleException("Essa embalagem já se encontra cadastro no sistema.!");
+				throw new SiscomandaException("Essa embalagem já se encontra cadastro no sistema.!");
 			}
 		}
 		
@@ -66,9 +66,9 @@ public class EmbalagemService implements Serializable {
 	}
 	
 	@Transactional
-	public void remover(List<Embalagem> embalagens) throws NapuleException {
+	public void remover(List<Embalagem> embalagens) throws SiscomandaException {
 		if(embalagens == null || embalagens.isEmpty()) {
-			throw new NapuleException("Selecione pelo menos 1 registro para ser excluído.!");
+			throw new SiscomandaException("Selecione pelo menos 1 registro para ser excluído.!");
 		}
 		
 		try {
@@ -76,8 +76,8 @@ public class EmbalagemService implements Serializable {
 				dao.remover(Embalagem.class, embalagem.getId());
 			}
 		}
-		catch(NapuleException e) {
-			throw new NapuleException(e.getMessage(), e);
+		catch(SiscomandaException e) {
+			throw new SiscomandaException(e.getMessage(), e);
 		}
 	}
 }

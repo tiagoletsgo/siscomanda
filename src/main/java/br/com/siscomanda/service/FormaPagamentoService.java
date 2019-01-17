@@ -7,7 +7,7 @@ import javax.faces.application.FacesMessage;
 import javax.inject.Inject;
 
 import br.com.siscomanda.config.jpa.Transactional;
-import br.com.siscomanda.exception.NapuleException;
+import br.com.siscomanda.exception.SiscomandaException;
 import br.com.siscomanda.model.FormaPagamento;
 import br.com.siscomanda.repository.dao.FormaPagamentoDAO;
 import br.com.siscomanda.util.JSFUtil;
@@ -21,7 +21,7 @@ public class FormaPagamentoService implements Serializable {
 	@Inject
 	private FormaPagamentoDAO dao;
 	
-	public List<FormaPagamento> pesquisar(FormaPagamento formaPagamento) throws NapuleException {
+	public List<FormaPagamento> pesquisar(FormaPagamento formaPagamento) throws SiscomandaException {
 		List<FormaPagamento> list = null;
 		if(list == null && !formaPagamento.getDescricao().isEmpty()) {
 			list = dao.porDescricao(formaPagamento.getDescricao(), FormaPagamento.class);
@@ -35,7 +35,7 @@ public class FormaPagamentoService implements Serializable {
 	}
 	
 	@Transactional
-	public FormaPagamento salvar(FormaPagamento formaPagamento) throws NapuleException {
+	public FormaPagamento salvar(FormaPagamento formaPagamento) throws SiscomandaException {
 		formaPagamento = validacao(formaPagamento);
 		if(formaPagamento.isNovo()) {
 			formaPagamento = dao.salvar(formaPagamento);
@@ -48,14 +48,14 @@ public class FormaPagamentoService implements Serializable {
 		return dao.salvar(formaPagamento);
 	}
 	
-	private FormaPagamento validacao(FormaPagamento formaPagamento) throws NapuleException {
+	private FormaPagamento validacao(FormaPagamento formaPagamento) throws SiscomandaException {
 		if(StringUtil.isEmpty(formaPagamento.getDescricao())) {
-			throw new NapuleException("É necessário informar uma descrição para forma de pagamento.!");
+			throw new SiscomandaException("É necessário informar uma descrição para forma de pagamento.!");
 		}
 		
 		if(formaPagamento.isNovo()) {
 			if(dao.isExists(formaPagamento.getDescricao(), FormaPagamento.class)) {
-				throw new NapuleException("Essa forma de pagamento já se encontra cadastro no sistema.!");
+				throw new SiscomandaException("Essa forma de pagamento já se encontra cadastro no sistema.!");
 			}
 		}
 		
@@ -67,9 +67,9 @@ public class FormaPagamentoService implements Serializable {
 	}
 	
 	@Transactional
-	public void remover(List<FormaPagamento> formasPagamento) throws NapuleException {
+	public void remover(List<FormaPagamento> formasPagamento) throws SiscomandaException {
 		if(formasPagamento == null || formasPagamento.isEmpty()) {
-			throw new NapuleException("Selecione pelo menos 1 registro para ser excluído.!");
+			throw new SiscomandaException("Selecione pelo menos 1 registro para ser excluído.!");
 		}
 		
 		try {
@@ -77,8 +77,8 @@ public class FormaPagamentoService implements Serializable {
 				dao.remover(FormaPagamento.class, formaPagamento.getId());
 			}
 		}
-		catch(NapuleException e) {
-			throw new NapuleException(e.getMessage(), e);
+		catch(SiscomandaException e) {
+			throw new SiscomandaException(e.getMessage(), e);
 		}
 	}
 }

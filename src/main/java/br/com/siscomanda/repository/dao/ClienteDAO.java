@@ -5,14 +5,14 @@ import java.util.List;
 import javax.persistence.NoResultException;
 import javax.persistence.TypedQuery;
 
-import br.com.siscomanda.exception.NapuleException;
+import br.com.siscomanda.exception.SiscomandaException;
 import br.com.siscomanda.model.Cliente;
 import br.com.siscomanda.repository.base.GenericDAO;
 import br.com.siscomanda.util.StringUtil;
 
 public class ClienteDAO extends GenericDAO<Cliente> {
 	
-	public Cliente porCodigo(Cliente cliente) throws NapuleException {
+	public Cliente porCodigo(Cliente cliente) throws SiscomandaException {
 		try {
 			StringBuilder sql = new StringBuilder();
 			sql.append("FROM Cliente cliente ");
@@ -25,7 +25,7 @@ public class ClienteDAO extends GenericDAO<Cliente> {
 			return cliente;
 		}
 		catch(NoResultException e) {
-			throw new NapuleException("Não encontrou nenhum resultado na pesquisa.");
+			throw new SiscomandaException("Não encontrou nenhum resultado na pesquisa.");
 		}
 	}
 	
@@ -89,7 +89,7 @@ public class ClienteDAO extends GenericDAO<Cliente> {
 		return clientes;
 	}
 	
-	public Cliente porNome(Cliente cliente) throws NapuleException {
+	public Cliente porNome(Cliente cliente) throws SiscomandaException {
 		try {			
 			StringBuilder sql = new StringBuilder();
 			sql.append(" FROM Cliente cli ");
@@ -100,11 +100,11 @@ public class ClienteDAO extends GenericDAO<Cliente> {
 			return query.getSingleResult();
 		}
 		catch(Exception e) {
-			throw new NapuleException("Nenhum registro encontrado. " + e.getMessage());
+			throw new SiscomandaException("Nenhum registro encontrado. " + e.getMessage());
 		}
 	}
 	
-	public Cliente porRG(Cliente cliente) throws NapuleException {
+	public Cliente porRG(Cliente cliente) throws SiscomandaException {
 		try {			
 			StringBuilder sql = new StringBuilder();
 			sql.append(" FROM Cliente cli ");
@@ -115,11 +115,11 @@ public class ClienteDAO extends GenericDAO<Cliente> {
 			return query.getSingleResult();
 		}
 		catch(Exception e) {
-			throw new NapuleException("Nenhum registro encontrado. " + e.getMessage());
+			throw new SiscomandaException("Nenhum registro encontrado. " + e.getMessage());
 		}
 	}
 	
-	public Cliente porCPF(Cliente cliente) throws NapuleException {
+	public Cliente porCPF(Cliente cliente) throws SiscomandaException {
 		try {			
 			StringBuilder sql = new StringBuilder();
 			sql.append(" FROM Cliente cli ");
@@ -130,11 +130,11 @@ public class ClienteDAO extends GenericDAO<Cliente> {
 			return query.getSingleResult();
 		}
 		catch(Exception e) {
-			throw new NapuleException("Nenhum registro encontrado. " + e.getMessage());
+			throw new SiscomandaException("Nenhum registro encontrado. " + e.getMessage());
 		}
 	}
 	
-	public Cliente porCelular(Cliente cliente) throws NapuleException {
+	public Cliente porCelular(Cliente cliente) throws SiscomandaException {
 		try {			
 			StringBuilder sql = new StringBuilder();
 			sql.append(" FROM Cliente cli ");
@@ -145,7 +145,7 @@ public class ClienteDAO extends GenericDAO<Cliente> {
 			return query.getSingleResult();
 		}
 		catch(Exception e) {
-			throw new NapuleException("Nenhum registro encontrado. " + e.getMessage());
+			throw new SiscomandaException("Nenhum registro encontrado. " + e.getMessage());
 		}
 	}
 }

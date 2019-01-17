@@ -9,7 +9,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import br.com.siscomanda.base.bean.BaseBean;
-import br.com.siscomanda.exception.NapuleException;
+import br.com.siscomanda.exception.SiscomandaException;
 import br.com.siscomanda.model.Embalagem;
 import br.com.siscomanda.service.EmbalagemService;
 import br.com.siscomanda.util.JSFUtil;
@@ -38,7 +38,7 @@ public class EmbalagemBean extends BaseBean<Embalagem> implements Serializable {
 			embalagemService.remover(getEmbalagensSelecionados());
 			getElements().removeAll(getEmbalagensSelecionados());
 			JSFUtil.addMessage(FacesMessage.SEVERITY_INFO, "Registro(s) removido(s) com sucesso.");
-		} catch (NapuleException e) {
+		} catch (SiscomandaException e) {
 			JSFUtil.addMessage(FacesMessage.SEVERITY_ERROR, "Erro ao remover. " + e.getMessage());
 		}
 	}
@@ -49,7 +49,7 @@ public class EmbalagemBean extends BaseBean<Embalagem> implements Serializable {
 			setEntity(new Embalagem());
 			getEstadoViewBean().setUpdate(false);
 		}
-		catch(NapuleException e) {
+		catch(SiscomandaException e) {
 			JSFUtil.addMessage(FacesMessage.SEVERITY_ERROR, "Erro ao salvar. " + e.getMessage());
 		}
 	}
@@ -58,7 +58,7 @@ public class EmbalagemBean extends BaseBean<Embalagem> implements Serializable {
 		try {	
 			setElements(embalagemService.pesquisar(getEntity()));
 		}
-		catch(NapuleException e) {
+		catch(SiscomandaException e) {
 			JSFUtil.addMessage(FacesMessage.SEVERITY_WARN, e.getMessage());
 		}
 	}

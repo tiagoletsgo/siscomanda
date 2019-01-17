@@ -4,7 +4,7 @@ import java.util.List;
 
 import javax.persistence.TypedQuery;
 
-import br.com.siscomanda.exception.NapuleException;
+import br.com.siscomanda.exception.SiscomandaException;
 import br.com.siscomanda.model.SubCategoria;
 import br.com.siscomanda.repository.base.GenericDAO;
 
@@ -25,7 +25,7 @@ public class SubCategoriaDAO extends GenericDAO<SubCategoria> {
 		return false;
 	}
 	
-	public List<SubCategoria> porDescricao(String descricao) throws NapuleException {
+	public List<SubCategoria> porDescricao(String descricao) throws SiscomandaException {
 		try {
 			StringBuilder sql = new StringBuilder();
 			sql.append("FROM SubCategoria subcategoria WHERE subcategoria.descricao LIKE :descricao");
@@ -34,7 +34,7 @@ public class SubCategoriaDAO extends GenericDAO<SubCategoria> {
 			return query.getResultList();
 		}
 		catch(Exception e) {
-			throw new NapuleException("Nenhum registro encontrado. " + e.getMessage());
+			throw new SiscomandaException("Nenhum registro encontrado. " + e.getMessage());
 		}
 	}
 }

@@ -9,7 +9,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import br.com.siscomanda.base.bean.BaseBean;
-import br.com.siscomanda.exception.NapuleException;
+import br.com.siscomanda.exception.SiscomandaException;
 import br.com.siscomanda.model.Bandeira;
 import br.com.siscomanda.model.FormaPagamento;
 import br.com.siscomanda.model.VinculaFormaPagamento;
@@ -54,7 +54,7 @@ public class VinculaFormaPagamentoBean extends BaseBean<VinculaFormaPagamento> i
 		try {
 			vinculaFormaPagamentoService.salvar(getElements(), formaPagamentoSelecionado);
 		}
-		catch(NapuleException e) {
+		catch(SiscomandaException e) {
 			JSFUtil.addMessage(FacesMessage.SEVERITY_ERROR, "Erro ao salvar. " + e.getMessage());
 		}
 	}

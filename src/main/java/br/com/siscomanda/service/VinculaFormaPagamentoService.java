@@ -8,7 +8,7 @@ import javax.faces.application.FacesMessage;
 import javax.inject.Inject;
 
 import br.com.siscomanda.config.jpa.Transactional;
-import br.com.siscomanda.exception.NapuleException;
+import br.com.siscomanda.exception.SiscomandaException;
 import br.com.siscomanda.model.Bandeira;
 import br.com.siscomanda.model.FormaPagamento;
 import br.com.siscomanda.model.VinculaFormaPagamento;
@@ -23,9 +23,9 @@ public class VinculaFormaPagamentoService implements Serializable {
 	private VinculaFormaPagamentoDAO dao;
 	
 	@Transactional
-	public void salvar(List<VinculaFormaPagamento> vinculaFormasPagamento, FormaPagamento formaPagamento) throws NapuleException {
+	public void salvar(List<VinculaFormaPagamento> vinculaFormasPagamento, FormaPagamento formaPagamento) throws SiscomandaException {
 		if(formaPagamento == null) {
-			throw new NapuleException("Selecione uma forma de pagamento.");
+			throw new SiscomandaException("Selecione uma forma de pagamento.");
 		}
 		
 		for(VinculaFormaPagamento vinculaFormaPagamento : vinculaFormasPagamento) {

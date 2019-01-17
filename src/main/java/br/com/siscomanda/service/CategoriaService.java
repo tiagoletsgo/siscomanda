@@ -7,7 +7,7 @@ import javax.faces.application.FacesMessage;
 import javax.inject.Inject;
 
 import br.com.siscomanda.config.jpa.Transactional;
-import br.com.siscomanda.exception.NapuleException;
+import br.com.siscomanda.exception.SiscomandaException;
 import br.com.siscomanda.model.Categoria;
 import br.com.siscomanda.repository.dao.CategoriaDAO;
 import br.com.siscomanda.util.JSFUtil;
@@ -21,7 +21,7 @@ public class CategoriaService implements Serializable {
 	@Inject
 	private CategoriaDAO dao;
 	
-	public List<Categoria> pesquisar(Categoria categoria) throws NapuleException {
+	public List<Categoria> pesquisar(Categoria categoria) throws SiscomandaException {
 		List<Categoria> list = null;
 		if(list == null && !categoria.getDescricao().isEmpty()) {
 			list = dao.porDescricao(categoria.getDescricao(), Categoria.class);
@@ -35,7 +35,7 @@ public class CategoriaService implements Serializable {
 	}
 	
 	@Transactional
-	public Categoria salvar(Categoria categoria) throws NapuleException {
+	public Categoria salvar(Categoria categoria) throws SiscomandaException {
 		categoria = validacao(categoria);
 		if(categoria.isNovo()) {
 			categoria = dao.salvar(categoria);
@@ -48,14 +48,14 @@ public class CategoriaService implements Serializable {
 		return dao.salvar(categoria);
 	}
 	
-	private Categoria validacao(Categoria categoria) throws NapuleException {
+	private Categoria validacao(Categoria categoria) throws SiscomandaException {
 		if(StringUtil.isEmpty(categoria.getDescricao())) {
-			throw new NapuleException("É necessário informar uma descrição para a categoria.!");
+			throw new SiscomandaException("É necessário informar uma descrição para a categoria.!");
 		}
 		
 		if(categoria.isNovo()) {
 			if(dao.isExists(categoria.getDescricao(), Categoria.class)) {
-				throw new NapuleException("Essa categoria já se encontra cadastro no sistema.!");
+				throw new SiscomandaException("Essa categoria já se encontra cadastro no sistema.!");
 			}
 		}
 		
@@ -67,9 +67,9 @@ public class CategoriaService implements Serializable {
 	}
 	
 	@Transactional
-	public void remover(List<Categoria> categorias) throws NapuleException {
+	public void remover(List<Categoria> categorias) throws SiscomandaException {
 		if(categorias == null || categorias.isEmpty()) {
-			throw new NapuleException("Selecione pelo menos 1 registro para ser excluído.!");
+			throw new SiscomandaException("Selecione pelo menos 1 registro para ser excluído.!");
 		}
 		
 		try {
@@ -77,8 +77,8 @@ public class CategoriaService implements Serializable {
 				dao.remover(Categoria.class, categoria.getId());
 			}
 		}
-		catch(NapuleException e) {
-			throw new NapuleException(e.getMessage(), e);
+		catch(SiscomandaException e) {
+			throw new SiscomandaException(e.getMessage(), e);
 		}
 	}
 }

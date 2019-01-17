@@ -2,11 +2,11 @@ package br.com.siscomanda.util;
 
 import java.util.List;
 
-import br.com.siscomanda.exception.NapuleException;
+import br.com.siscomanda.exception.SiscomandaException;
 
 public class StringUtil {
 	
-	public static void maisDeUmCampoPreenchido(List<String> campos) throws NapuleException {
+	public static void maisDeUmCampoPreenchido(List<String> campos) throws SiscomandaException {
 		Integer selecionado = 0;
 		for(String s : campos) {
 			if(!s.isEmpty()) {
@@ -15,7 +15,7 @@ public class StringUtil {
 		}
 		
 		if(selecionado > 1) {
-			throw new NapuleException("Não é permitido pesquisar com multiplos campos preenchidos.");
+			throw new SiscomandaException("Não é permitido pesquisar com multiplos campos preenchidos.");
 		}
 	}
 	
