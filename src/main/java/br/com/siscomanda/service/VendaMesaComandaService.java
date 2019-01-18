@@ -8,6 +8,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import br.com.siscomanda.exception.SiscomandaRuntimeException;
 import br.com.siscomanda.model.DefinicaoGeral;
 import br.com.siscomanda.model.ItemVenda;
 import br.com.siscomanda.model.Produto;
@@ -22,6 +23,18 @@ public class VendaMesaComandaService implements Serializable {
 	
 	@Inject
 	private DefinicaoGeralService definicaoGeralService;
+	
+	public ItemVenda clonaItemVenda(ItemVenda itemVenda, Produto produto, Integer quantidade) {
+		if(produto == null) {
+			ItemVenda item = new ItemVenda();
+			
+			item = itemVenda;
+			item.setQuantidade(quantidade);
+			item.setSubtotal(item.getQuantidade() * item.getProduto().getPrecoVenda());
+			return item;
+		}
+		return itemVenda;
+	}
 	
 	public List<Integer> geraMesasComandas() {
 		List<Integer> mesas = new ArrayList<>();
@@ -50,16 +63,17 @@ public class VendaMesaComandaService implements Serializable {
 	public void removeItem(List<ItemVenda> itens, ItemVenda item, Produto produto) {
 		List<ItemVenda> itensVendasTemp = itens;
 		for(ItemVenda itemVenda : itensVendasTemp) {
-			if(produto != null) {		
-				if(itemVenda.getProduto().equals(produto)) {
-					if(itemVenda.getQuantidade() == new Integer(1)) {
-						itens.remove(itemVenda);
-						break;
-					}
-					itemVenda.setQuantidade(itemVenda.getQuantidade() - 1);
-					itemVenda.setSubtotal(itemVenda.getQuantidade() * itemVenda.getProduto().getPrecoVenda());
+			if(itemVenda.getProduto().equals(produto == null ? item.getProduto() : produto)) {
+				if(item.getQuantidade() > itemVenda.getQuantidade()) {
+					throw new SiscomandaRuntimeException("A quantidade informada não pode ser maior que a quantidade do pedido.");
+				}
+				if(itemVenda.getQuantidade() == new Integer(1)) {
+					itens.remove(itemVenda);
 					break;
 				}
+				itemVenda.setQuantidade(itemVenda.getQuantidade() - 1);
+				itemVenda.setSubtotal(itemVenda.getQuantidade() * itemVenda.getProduto().getPrecoVenda());
+				break;
 			}
 		}
 	}

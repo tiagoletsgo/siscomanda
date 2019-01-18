@@ -77,7 +77,9 @@
 		<div class="row">
 			<div class="col-md-12 col-sm-12 col-xs-12">
 				<label for="crudform:quantidade">Confirmar a quantidade de item(ns) à ser removido .: </label>
-				<h:inputText value="#{crudBean.itemSelecionado.quantidade}" styleClass="form-control" />
+				<h:inputText value="#{crudBean.quantidade}" styleClass="form-control">
+					<p:ajax event="change" process="@this" global="false" />
+				</h:inputText>
 			</div>
 			<div class="clearfix"></div>
 			<br />
@@ -85,11 +87,9 @@
 		
 		<f:facet name="footer">
 			<h:commandButton styleClass="btn btn-success btn-xs" value="Salvar">
-				<p:ajax event="click" update=":crudform:tabelaItemPedido" listener="#{crudBean.btnRemoveItem(crudBean.itemSelecionado, null)}" />
+				<p:ajax event="click" process="@this" listener="#{crudBean.btnRemoveItem(crudBean.itemSelecionado, null)}" />
 			</h:commandButton>
 			<h:commandButton onclick="PF('dlgConfirmExcluirProduto').hide(); return false;" styleClass="btn btn-danger btn-xs" value="Fechar" />
 		</f:facet>
-		
 	</p:dialog>
-	
 </ui:composition>

@@ -1,6 +1,7 @@
 package br.com.siscomanda.bean;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.List;
 
 import javax.faces.bean.ViewScoped;
@@ -24,11 +25,14 @@ public class VendaMesaComandaBean extends BaseBean<Venda> implements Serializabl
 	
 	private ItemVenda itemSelecionado;
 	
+	private Integer quantidade;
+	
 	private List<Integer> mesasComandas;
 	
 	@Override
 	protected void init() {
 		mesasComandas = service.geraMesasComandas();
+		quantidade = BigDecimal.ZERO.intValue();
 	}
 		
 	public void btnAdicionaItem(Produto produto) {
@@ -39,7 +43,9 @@ public class VendaMesaComandaBean extends BaseBean<Venda> implements Serializabl
 	}
 	
 	public void btnRemoveItem(ItemVenda itemVenda, Produto produto) {
-		service.removeItem(getEntity().getItens(), itemVenda, produto);
+		ItemVenda item = new ItemVenda();
+		item = service.clonaItemVenda(itemVenda, produto, quantidade);
+		service.removeItem(getEntity().getItens(), item, produto);
 	}
 	
 	@Override
@@ -51,10 +57,22 @@ public class VendaMesaComandaBean extends BaseBean<Venda> implements Serializabl
 	}
 
 	public ItemVenda getItemSelecionado() {
+		getEntity();
+		if(itemSelecionado == null) {
+			itemSelecionado = new ItemVenda();
+		}
 		return itemSelecionado;
 	}
 
 	public void setItemSelecionado(ItemVenda itemSelecionado) {
 		this.itemSelecionado = itemSelecionado;
+	}
+
+	public Integer getQuantidade() {
+		return quantidade;
+	}
+
+	public void setQuantidade(Integer quantidade) {
+		this.quantidade = quantidade;
 	}
 }
