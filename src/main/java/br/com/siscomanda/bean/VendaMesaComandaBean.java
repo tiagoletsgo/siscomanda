@@ -1,17 +1,21 @@
 package br.com.siscomanda.bean;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.List;
 
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
 import br.com.siscomanda.base.bean.BaseBean;
+import br.com.siscomanda.exception.SiscomandaException;
 import br.com.siscomanda.model.ItemVenda;
 import br.com.siscomanda.model.Produto;
 import br.com.siscomanda.model.Venda;
 import br.com.siscomanda.service.VendaMesaComandaService;
+import br.com.siscomanda.util.JSFUtil;
 
 @Named
 @ViewScoped
@@ -24,11 +28,16 @@ public class VendaMesaComandaBean extends BaseBean<Venda> implements Serializabl
 	
 	private ItemVenda itemSelecionado;
 	
+	private Integer quantidade;
+	
 	private List<Integer> mesasComandas;
 	
 	@Override
 	protected void init() {
-		mesasComandas = service.geraMesasComandas();
+		if(mesasComandas == null || mesasComandas.isEmpty()) {			
+			mesasComandas = service.geraMesasComandas();
+		}
+		quantidade = BigDecimal.ZERO.intValue();
 	}
 		
 	public void btnAdicionaItem(Produto produto) {
@@ -39,7 +48,13 @@ public class VendaMesaComandaBean extends BaseBean<Venda> implements Serializabl
 	}
 	
 	public void btnRemoveItem(ItemVenda itemVenda, Produto produto) {
-		service.removeItem(getEntity().getItens(), itemVenda, produto);
+		try {
+			itemVenda = service.clonaItemVenda(itemVenda, produto, getQuantidade());
+			service.removeItem(getEntity().getItens(), itemVenda, produto);
+		}
+		catch(SiscomandaException e) {
+			JSFUtil.addMessage(FacesMessage.SEVERITY_ERROR, e.getMessage());
+		}
 	}
 	
 	@Override
@@ -51,10 +66,22 @@ public class VendaMesaComandaBean extends BaseBean<Venda> implements Serializabl
 	}
 
 	public ItemVenda getItemSelecionado() {
+		getEntity();
+		if(itemSelecionado == null) {
+			itemSelecionado = new ItemVenda();
+		}
 		return itemSelecionado;
 	}
 
 	public void setItemSelecionado(ItemVenda itemSelecionado) {
 		this.itemSelecionado = itemSelecionado;
+	}
+
+	public Integer getQuantidade() {
+		return quantidade;
+	}
+
+	public void setQuantidade(Integer quantidade) {
+		this.quantidade = quantidade;
 	}
 }

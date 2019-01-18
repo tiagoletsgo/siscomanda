@@ -1,14 +1,13 @@
 package br.com.siscomanda.service;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 import javax.inject.Inject;
 
-import br.com.siscomanda.model.DefinicaoGeral;
+import br.com.siscomanda.exception.SiscomandaException;
 import br.com.siscomanda.model.ItemVenda;
 import br.com.siscomanda.model.Produto;
 import br.com.siscomanda.repository.dao.VendaMesaComandaDAO;
@@ -22,6 +21,25 @@ public class VendaMesaComandaService implements Serializable {
 	
 	@Inject
 	private DefinicaoGeralService definicaoGeralService;
+	
+	public ItemVenda clonaItemVenda(ItemVenda itemVenda, Produto produto, Integer quantidade) {
+		ItemVenda item = null;
+		if(produto == null) {
+			item = new ItemVenda();
+			item.setQuantidade(quantidade);
+			item.setProduto(itemVenda.getProduto());
+			item.setSubtotal(item.getQuantidade() * item.getProduto().getPrecoVenda());
+			return item;
+		}
+		if(itemVenda == null) {
+			item = new ItemVenda();
+			item.setProduto(produto);
+			item.setQuantidade(1);
+			return item;
+		}
+		
+		return itemVenda;
+	}
 	
 	public List<Integer> geraMesasComandas() {
 		List<Integer> mesas = new ArrayList<>();
@@ -47,19 +65,22 @@ public class VendaMesaComandaService implements Serializable {
 		}
 	}
 	
-	public void removeItem(List<ItemVenda> itens, ItemVenda item, Produto produto) {
+	public void removeItem(List<ItemVenda> itens, ItemVenda item, Produto produto) throws SiscomandaException {
+		item = clonaItemVenda(item, produto, produto == null ? item.getQuantidade() : 1);
 		List<ItemVenda> itensVendasTemp = itens;
+		
 		for(ItemVenda itemVenda : itensVendasTemp) {
-			if(produto != null) {		
-				if(itemVenda.getProduto().equals(produto)) {
-					if(itemVenda.getQuantidade() == new Integer(1)) {
-						itens.remove(itemVenda);
-						break;
-					}
-					itemVenda.setQuantidade(itemVenda.getQuantidade() - 1);
-					itemVenda.setSubtotal(itemVenda.getQuantidade() * itemVenda.getProduto().getPrecoVenda());
+			if(itemVenda.getProduto().equals(produto == null ? item.getProduto() : produto)) {
+				if(item.getQuantidade() > itemVenda.getQuantidade()) {
+					throw new SiscomandaException("Somente " + itemVenda.getQuantidade() + " iten(s) pode(m) ser removido(s)!");
+				}
+				if(itemVenda.getQuantidade() == new Integer(1) || itemVenda.getQuantidade() == item.getQuantidade()) {
+					itens.remove(itemVenda);
 					break;
 				}
+				itemVenda.setQuantidade(itemVenda.getQuantidade() -1);
+				itemVenda.setSubtotal(itemVenda.getQuantidade() * itemVenda.getProduto().getPrecoVenda());
+				break;
 			}
 		}
 	}
