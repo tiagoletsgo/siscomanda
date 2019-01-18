@@ -4,15 +4,18 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.List;
 
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
 import br.com.siscomanda.base.bean.BaseBean;
+import br.com.siscomanda.exception.SiscomandaException;
 import br.com.siscomanda.model.ItemVenda;
 import br.com.siscomanda.model.Produto;
 import br.com.siscomanda.model.Venda;
 import br.com.siscomanda.service.VendaMesaComandaService;
+import br.com.siscomanda.util.JSFUtil;
 
 @Named
 @ViewScoped
@@ -31,7 +34,9 @@ public class VendaMesaComandaBean extends BaseBean<Venda> implements Serializabl
 	
 	@Override
 	protected void init() {
-		mesasComandas = service.geraMesasComandas();
+		if(mesasComandas == null || mesasComandas.isEmpty()) {			
+			mesasComandas = service.geraMesasComandas();
+		}
 		quantidade = BigDecimal.ZERO.intValue();
 	}
 		
@@ -43,9 +48,13 @@ public class VendaMesaComandaBean extends BaseBean<Venda> implements Serializabl
 	}
 	
 	public void btnRemoveItem(ItemVenda itemVenda, Produto produto) {
-		ItemVenda item = new ItemVenda();
-		item = service.clonaItemVenda(itemVenda, produto, quantidade);
-		service.removeItem(getEntity().getItens(), item, produto);
+		try {
+			itemVenda = service.clonaItemVenda(itemVenda, produto, getQuantidade());
+			service.removeItem(getEntity().getItens(), itemVenda, produto);
+		}
+		catch(SiscomandaException e) {
+			JSFUtil.addMessage(FacesMessage.SEVERITY_ERROR, e.getMessage());
+		}
 	}
 	
 	@Override

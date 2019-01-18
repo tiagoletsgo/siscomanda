@@ -61,7 +61,7 @@
 						<f:facet name="header">
 							<h:outputLabel value="#" />
 						</f:facet>
-						<p:commandButton update="@form" process="@this" oncomplete="PF('dlgConfirmExcluirProduto').show();" styleClass="btn btn-danger btn-xs" value="Excluir">
+						<p:commandButton update="@form" process="@this" oncomplete="PF('dlgConfirmExcluirProduto').show();" actionListener="#{crudBean.init}" styleClass="btn btn-danger btn-xs" value="Excluir">
 							<f:setPropertyActionListener value="#{item}" target="#{crudBean.itemSelecionado}" />
 						</p:commandButton>
 					</p:column>
@@ -86,8 +86,8 @@
 		</div>
 		
 		<f:facet name="footer">
-			<h:commandButton styleClass="btn btn-success btn-xs" value="Salvar">
-				<p:ajax event="click" process="@this" listener="#{crudBean.btnRemoveItem(crudBean.itemSelecionado, null)}" />
+			<h:commandButton styleClass="btn btn-success btn-xs" value="Salvar" onclick="PF('dlgConfirmExcluirProduto').hide();">
+				<p:ajax event="click" update="crudform:tabelaItemPedido" process="@this" listener="#{crudBean.btnRemoveItem(crudBean.itemSelecionado, null)}" />
 			</h:commandButton>
 			<h:commandButton onclick="PF('dlgConfirmExcluirProduto').hide(); return false;" styleClass="btn btn-danger btn-xs" value="Fechar" />
 		</f:facet>
