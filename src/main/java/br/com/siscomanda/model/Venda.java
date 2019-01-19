@@ -26,7 +26,17 @@ public class Venda extends BaseEntity implements Serializable {
 	
 	private Date finalizado;
 	
-	private double total;
+	private Double subtotal;
+	
+	private Double taxaServico;
+	
+	private Double taxaEntrega;
+	
+	private Double desconto;
+
+//	private Usuario operador
+	
+	private Double total;
 	
 	private int mesaOuComanda;
 
@@ -86,11 +96,35 @@ public class Venda extends BaseEntity implements Serializable {
 		this.finalizado = finalizado;
 	}
 
-	public double getTotal() {
+	public Double getSubtotal() {
+		return subtotal;
+	}
+
+	public void setSubtotal(Double subtotal) {
+		this.subtotal = subtotal;
+	}
+
+	public Double getTaxaServico() {
+		return taxaServico;
+	}
+
+	public void setTaxaServico(Double taxaServico) {
+		this.taxaServico = taxaServico;
+	}
+
+	public Double getDesconto() {
+		return desconto;
+	}
+
+	public void setDesconto(Double desconto) {
+		this.desconto = desconto;
+	}
+
+	public Double getTotal() {
 		return total;
 	}
 
-	public void setTotal(double total) {
+	public void setTotal(Double total) {
 		this.total = total;
 	}
 
@@ -100,5 +134,13 @@ public class Venda extends BaseEntity implements Serializable {
 
 	public void setMesaOuComanda(int mesaOuComanda) {
 		this.mesaOuComanda = mesaOuComanda;
+	}
+
+	public Double getTaxaEntrega() {
+		return taxaEntrega;
+	}
+
+	public void setTaxaEntrega(Double taxaEntrega) {
+		this.taxaEntrega = taxaEntrega;
 	}
 }

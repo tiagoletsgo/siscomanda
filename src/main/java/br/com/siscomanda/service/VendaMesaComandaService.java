@@ -26,7 +26,7 @@ public class VendaMesaComandaService implements Serializable {
 		ItemVenda item = null;
 		if(produto == null) {
 			item = new ItemVenda();
-			item.setQuantidade(quantidade);
+			item.setQuantidade(quantidade == null ? 0 : quantidade);
 			item.setProduto(itemVenda.getProduto());
 			item.setSubtotal(item.getQuantidade() * item.getProduto().getPrecoVenda());
 			return item;
@@ -55,12 +55,14 @@ public class VendaMesaComandaService implements Serializable {
 		for(ItemVenda itemVenda : itens) {
 			if(itemVenda.getProduto().equals(item.getProduto())) {
 				itemVenda.setQuantidade(itemVenda.getQuantidade() + 1);
+				itemVenda.setPrecoVenda(item.getProduto().getPrecoVenda());
 				itemVenda.setSubtotal(itemVenda.getQuantidade() * itemVenda.getProduto().getPrecoVenda());
 				itemEncontrado = true;
 				break;
 			}
 		}
 		if(!itens.contains(item) && !itemEncontrado) {
+			item.setPrecoVenda(item.getProduto().getPrecoVenda());
 			itens.add(item);
 		}
 	}
@@ -71,6 +73,9 @@ public class VendaMesaComandaService implements Serializable {
 		
 		for(ItemVenda itemVenda : itensVendasTemp) {
 			if(itemVenda.getProduto().equals(produto == null ? item.getProduto() : produto)) {
+				if(item.getQuantidade() <= new Integer(0)) {
+					throw new SiscomandaException("Não são permitidos valores negativos, zerados ou vazios.");
+				}
 				if(item.getQuantidade() > itemVenda.getQuantidade()) {
 					throw new SiscomandaException("Somente " + itemVenda.getQuantidade() + " iten(s) pode(m) ser removido(s)!");
 				}
@@ -78,7 +83,8 @@ public class VendaMesaComandaService implements Serializable {
 					itens.remove(itemVenda);
 					break;
 				}
-				itemVenda.setQuantidade(itemVenda.getQuantidade() -1);
+				
+				itemVenda.setQuantidade(itemVenda.getQuantidade() - (produto == null ? item.getQuantidade() : 1));
 				itemVenda.setSubtotal(itemVenda.getQuantidade() * itemVenda.getProduto().getPrecoVenda());
 				break;
 			}

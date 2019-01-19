@@ -15,10 +15,13 @@ public class ItemVenda extends BaseEntity implements Serializable, Comparable<It
 	private Produto produto;
 	
 //	@Column(name = "quantidade", nullable = false)
-	private int quantidade;
+	private Integer quantidade;
 	
 //	@Column(name = "subtotal", nullable = false)
-	private double subtotal;
+	private Double subtotal;
+	
+//	@Column(name = "preco_venda", nullable = false)
+	private Double precoVenda;
 
 	public Produto getProduto() {
 		return produto;
@@ -32,18 +35,26 @@ public class ItemVenda extends BaseEntity implements Serializable, Comparable<It
 		return quantidade;
 	}
 
-	public void setQuantidade(int quantidade) {
+	public void setQuantidade(Integer quantidade) {
 		this.quantidade = quantidade;
 	}
 
-	public double getSubtotal() {
+	public Double getSubtotal() {
 		return subtotal;
 	}
 
-	public void setSubtotal(double subtotal) {
+	public void setSubtotal(Double subtotal) {
 		this.subtotal = subtotal;
 	}
 	
+	public Double getPrecoVenda() {
+		return precoVenda;
+	}
+
+	public void setPrecoVenda(Double precoVenda) {
+		this.precoVenda = precoVenda;
+	}
+
 	@Override
 	public int compareTo(ItemVenda o) {
 		if(this.getId() < o.getId()) {

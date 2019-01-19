@@ -31,14 +31,16 @@
 			
 			<div class="col-md-2 col-sm-2 col-xs-12">
 				<label>Data / Hora.: </label>
-				<h:outputText value="07/01/2019 21:42" styleClass="form-control" />
+				<h:outputText value="#{crudBean.entity.iniciado}" styleClass="form-control">
+					<f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss" />
+				</h:outputText>
 			</div>
 		</div>
 		
 		<div class="row">
 			<div class="col-md-2 col-sm-2 col-xs-12">
 				<label>Status.: </label>
-				<h:outputText value="Em aberto" styleClass="form-control" />
+				<h:outputText value="#{crudBean.entity.status.descricao}" styleClass="form-control" />
 			</div>
 			
 			<div class="col-md-2 col-sm-2 col-xs-12">
