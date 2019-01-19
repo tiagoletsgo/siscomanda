@@ -2,6 +2,7 @@ package br.com.siscomanda.bean;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 
 import javax.faces.application.FacesMessage;
@@ -10,6 +11,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import br.com.siscomanda.base.bean.BaseBean;
+import br.com.siscomanda.enumeration.EStatus;
 import br.com.siscomanda.exception.SiscomandaException;
 import br.com.siscomanda.model.ItemVenda;
 import br.com.siscomanda.model.Produto;
@@ -37,7 +39,9 @@ public class VendaMesaComandaBean extends BaseBean<Venda> implements Serializabl
 		if(mesasComandas == null || mesasComandas.isEmpty()) {			
 			mesasComandas = service.geraMesasComandas();
 		}
-		quantidade = BigDecimal.ZERO.intValue();
+		quantidade = new BigDecimal(1).intValue();
+		getEntity().setStatus(EStatus.EM_ABERTO);
+		getEntity().setIniciado(new Date());
 	}
 		
 	public void btnAdicionaItem(Produto produto) {

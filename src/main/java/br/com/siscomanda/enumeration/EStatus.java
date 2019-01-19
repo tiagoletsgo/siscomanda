@@ -8,7 +8,8 @@ public enum EStatus {
 	LIVRE("Livre"),
 	PENDENTE("Pendente"),
 	SAIU_PARA_ENTREGA("Saiu p/Entrega"),
-	FINALIZADO_ENTREGUE("Finalizado/Entregue");
+	FINALIZADO_ENTREGUE("Finalizado/Entregue"),
+	EM_ABERTO("Em aberto");
 	
 	private String descricao;
 	

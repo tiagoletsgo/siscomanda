@@ -43,7 +43,7 @@
 						<f:facet name="header">
 							<h:outputLabel value="Preço Un" />
 						</f:facet>
-						<h:outputText value="#{item.produto.precoVenda}">
+						<h:outputText value="#{item.precoVenda}">
 							<f:convertNumber type="currency" maxFractionDigits="2" minFractionDigits="2" />
 						</h:outputText>
 					</p:column>
@@ -77,7 +77,7 @@
 		<div class="row">
 			<div class="col-md-12 col-sm-12 col-xs-12">
 				<label for="crudform:quantidade">Confirmar a quantidade de item(ns) à ser removido .: </label>
-				<h:inputText value="#{crudBean.quantidade}" styleClass="form-control">
+				<h:inputText value="#{crudBean.quantidade}" styleClass="form-control somente-numero" onkeyup="somenteNumero(this)" maxlength="3">
 					<p:ajax event="change" process="@this" global="false" />
 				</h:inputText>
 			</div>
