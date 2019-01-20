@@ -1,13 +1,14 @@
 package br.com.siscomanda.enumeration;
 
-public enum EControlaEstoque {
+public enum ETamanho {
 	
-	SIM("SIM"),
-	NAO("NÃO");
+	PEQUENA("PEQUENA"),
+	MEDIA("MÉDIA"),
+	GRANDE("GRANDE");
 	
 	private String descricao;
 	
-	private EControlaEstoque(String descricao) {
+	private ETamanho(String descricao) {
 		this.descricao = descricao;
 	}
 

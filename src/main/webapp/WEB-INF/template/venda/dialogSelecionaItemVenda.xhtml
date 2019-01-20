@@ -59,8 +59,9 @@
 						
 						<p:column styleClass="ui-datatable-center" style="width: 10%; border-radius: 0px">
 							<f:facet name="header"><h:outputLabel value="Personalizar" /></f:facet>
-							<h:commandLink styleClass="btn btn-round btn-primary btn-xs fa fa-refresh">
-							</h:commandLink>
+							<p:commandLink styleClass="btn btn-round btn-primary btn-xs fa fa-refresh" oncomplete="PF('dlgPersonalizaItemVenda').show();" disabled="#{not produto.permiteMeioAmeio}">
+								<f:setPropertyActionListener value="#{item}" target="#{crudBean.itemSelecionado}" />
+							</p:commandLink>
 						</p:column>
 					</p:dataTable>
 				</div>

@@ -9,7 +9,6 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import br.com.siscomanda.base.bean.BaseBean;
-import br.com.siscomanda.enumeration.EControlaEstoque;
 import br.com.siscomanda.exception.SiscomandaException;
 import br.com.siscomanda.model.Produto;
 import br.com.siscomanda.service.ProdutoService;
@@ -116,9 +115,5 @@ public class ProdutoBean extends BaseBean<Produto> implements Serializable {
 
 	public List<Produto> getProdutos() {
 		return produtos;
-	}
-	
-	public EControlaEstoque[] getControlaEstoque() {
-		return EControlaEstoque.values();
 	}
 }

@@ -12,6 +12,7 @@ import javax.inject.Named;
 
 import br.com.siscomanda.base.bean.BaseBean;
 import br.com.siscomanda.enumeration.EStatus;
+import br.com.siscomanda.enumeration.ETamanho;
 import br.com.siscomanda.exception.SiscomandaException;
 import br.com.siscomanda.model.ItemVenda;
 import br.com.siscomanda.model.Produto;
@@ -33,6 +34,10 @@ public class VendaMesaComandaBean extends BaseBean<Venda> implements Serializabl
 	private Integer quantidade;
 	
 	private List<Integer> mesasComandas;
+	
+	private ETamanho tamanho;
+	
+	private List<Produto> itemsPersonalizados;
 	
 	@Override
 	protected void init() {
@@ -68,6 +73,14 @@ public class VendaMesaComandaBean extends BaseBean<Venda> implements Serializabl
 		}
 	}
 	
+	public void btnPersonalizar() {
+		System.out.println("teste");
+	}
+	
+	public ETamanho[] getTamanhos() {
+		return ETamanho.values();
+	}
+	
 	private void afterAction() {		
 		getEntity().setSubtotal(service.calculaSubtotal(getEntity().getItens()));
 		getEntity().setTaxaServico(getEntity().getSubtotal() * service.getTaxaServico());		
@@ -100,5 +113,21 @@ public class VendaMesaComandaBean extends BaseBean<Venda> implements Serializabl
 
 	public void setQuantidade(Integer quantidade) {
 		this.quantidade = quantidade;
+	}
+
+	public List<Produto> getItemsPersonalizados() {
+		return itemsPersonalizados;
+	}
+
+	public void setItemsPersonalizados(List<Produto> itemsPersonalizados) {
+		this.itemsPersonalizados = itemsPersonalizados;
+	}
+
+	public void setTamanho(ETamanho tamanho) {
+		this.tamanho = tamanho;
+	}
+
+	public ETamanho getTamanho() {
+		return tamanho;
 	}
 }

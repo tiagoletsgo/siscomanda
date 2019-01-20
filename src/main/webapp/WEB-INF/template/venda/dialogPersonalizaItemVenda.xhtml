@@ -1,0 +1,49 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+	
+	<p:dialog id="personalizaItemVenda" widgetVar="dlgPersonalizaItemVenda" modal="true" responsive="true" styleClass="ui-container-dialog" 
+			showEffect="fade" hideEffect="fade" resizable="false" draggable="false" height="200">
+			
+		<f:facet name="header">Personaliza item pedido</f:facet>
+		
+		<div class="row">
+			<div class="col-md-12 col-sm-12 col-xs-12">
+				<label>Produto principal.:</label>
+				<h:outputText value="PIZZA CALABRESA MEDIA" styleClass="form-control" />
+			</div>
+		</div>
+		
+		<div class="row">
+			<div class="col-md-6 col-sm-6 col-xs-12">
+				<p:focus for="produtoPersonalizado" />
+				<label for="crudform:produtoPersonalizado">Produto.:</label>
+				<h:inputText styleClass="form-control" id="produtoPersonalizado" />
+			</div>
+			
+			<div class="col-md-6 col-sm-6 col-xs-12">
+				<label for="crudform:tamanho">Tamanho.:</label>
+				<h:selectOneMenu id="tamanho" value="#{crudBean.tamanho}" styleClass="form-control">
+					<f:selectItem noSelectionOption="true" itemLabel="Selecione" />
+					<f:selectItems value="#{crudBean.tamanhos}" var="tamanho" itemLabel="#{tamanho.descricao}" itemValue="#{tamanho}" />
+				</h:selectOneMenu>
+			</div>
+		</div>
+		
+		<div class="row">
+			<div class="col-md-12 col-sm-12 col-xs-12">
+				<p:selectManyCheckbox value="#{crudBean.itemsPersonalizados}" columns="2" layout="grid">
+					<f:selectItems value="#{produtoFactoryBean.produtos}" var="produto" itemLabel="#{produto.descricao}" itemValue="#{produto}" />
+					<p:ajax event="click" process="@this" />
+				</p:selectManyCheckbox>
+			</div>
+		</div>
+		
+		<f:facet name="footer">
+			<h:commandButton onclick="PF('dlgPersonalizaItemVenda').hide(); return false;" styleClass="btn btn-danger btn-xs" value="Fechar" />
+		</f:facet>
+	</p:dialog>
+	
+</ui:composition>
