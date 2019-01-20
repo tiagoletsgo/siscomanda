@@ -61,7 +61,7 @@
 						<f:facet name="header">
 							<h:outputLabel value="#" />
 						</f:facet>
-						<p:commandButton update="@form" process="@this" oncomplete="PF('dlgConfirmExcluirProduto').show();" actionListener="#{crudBean.init}" styleClass="btn btn-danger btn-xs" value="Excluir">
+						<p:commandButton update="crudform:dialogExcluirProduto" process="@this" oncomplete="PF('dlgConfirmExcluirProduto').show();" styleClass="btn btn-danger btn-xs" value="Excluir">
 							<f:setPropertyActionListener value="#{item}" target="#{crudBean.itemSelecionado}" />
 						</p:commandButton>
 					</p:column>
@@ -70,7 +70,7 @@
 		</div>	
 	</h:panelGroup>
 	
-	<p:dialog widgetVar="dlgConfirmExcluirProduto" modal="true" responsive="true" styleClass="ui-container-dialog" 
+	<p:dialog id="dialogExcluirProduto" widgetVar="dlgConfirmExcluirProduto" modal="true" responsive="true" styleClass="ui-container-dialog" 
 		showEffect="fade" hideEffect="fade" resizable="false" draggable="false">
 		
 		<f:facet name="header">#{crudBean.itemSelecionado.produto.descricao}</f:facet>
@@ -87,7 +87,7 @@
 		
 		<f:facet name="footer">
 			<h:commandButton styleClass="btn btn-success btn-xs" value="Salvar" onclick="PF('dlgConfirmExcluirProduto').hide();">
-				<p:ajax event="click" update="crudform:tabelaItemPedido" process="@this" listener="#{crudBean.btnRemoveItem(crudBean.itemSelecionado, null)}" />
+				<p:ajax event="click" update="crudform:tabelaItemPedido :crudform:headerVenda" process="@this" listener="#{crudBean.btnRemoveItem(crudBean.itemSelecionado, null)}" />
 			</h:commandButton>
 			<h:commandButton onclick="PF('dlgConfirmExcluirProduto').hide(); return false;" styleClass="btn btn-danger btn-xs" value="Fechar" />
 		</f:facet>

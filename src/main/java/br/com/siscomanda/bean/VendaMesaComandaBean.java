@@ -12,6 +12,7 @@ import javax.inject.Named;
 
 import br.com.siscomanda.base.bean.BaseBean;
 import br.com.siscomanda.enumeration.EStatus;
+import br.com.siscomanda.enumeration.ETamanho;
 import br.com.siscomanda.exception.SiscomandaException;
 import br.com.siscomanda.model.ItemVenda;
 import br.com.siscomanda.model.Produto;
@@ -34,14 +35,23 @@ public class VendaMesaComandaBean extends BaseBean<Venda> implements Serializabl
 	
 	private List<Integer> mesasComandas;
 	
+	private ETamanho tamanho;
+	
+	private List<Produto> itemsPersonalizados;
+	
 	@Override
 	protected void init() {
 		if(mesasComandas == null || mesasComandas.isEmpty()) {			
 			mesasComandas = service.geraMesasComandas();
 		}
-		quantidade = new BigDecimal(1).intValue();
 		getEntity().setStatus(EStatus.EM_ABERTO);
 		getEntity().setIniciado(new Date());
+		getEntity().setSubtotal(new Double(0));
+		getEntity().setTotal(new Double(0));
+		getEntity().setTaxaServico(new Double(0));
+		getEntity().setTaxaEntrega(new Double(0));
+		getEntity().setDesconto(new Double(0));
+		setQuantidade(new BigDecimal(1).intValue());
 	}
 		
 	public void btnAdicionaItem(Produto produto) {
@@ -49,16 +59,32 @@ public class VendaMesaComandaBean extends BaseBean<Venda> implements Serializabl
 		item.setId(service.setIdTemporarioItem(getEntity().getItens()));
 		service.adicionaItem(getEntity().getItens(), item);
 		service.ordenarItemMenorParaMaior(getEntity().getItens());
+		afterAction();
 	}
 	
 	public void btnRemoveItem(ItemVenda itemVenda, Produto produto) {
 		try {
 			itemVenda = service.clonaItemVenda(itemVenda, produto, getQuantidade());
 			service.removeItem(getEntity().getItens(), itemVenda, produto);
+			afterAction();
 		}
 		catch(SiscomandaException e) {
 			JSFUtil.addMessage(FacesMessage.SEVERITY_ERROR, e.getMessage());
 		}
+	}
+	
+	public void btnPersonalizar() {
+		System.out.println("teste");
+	}
+	
+	public ETamanho[] getTamanhos() {
+		return ETamanho.values();
+	}
+	
+	private void afterAction() {		
+		getEntity().setSubtotal(service.calculaSubtotal(getEntity().getItens()));
+		getEntity().setTaxaServico(getEntity().getSubtotal() * service.getTaxaServico());		
+		getEntity().setTotal(service.calculaTotal(getEntity()));
 	}
 	
 	@Override
@@ -87,5 +113,21 @@ public class VendaMesaComandaBean extends BaseBean<Venda> implements Serializabl
 
 	public void setQuantidade(Integer quantidade) {
 		this.quantidade = quantidade;
+	}
+
+	public List<Produto> getItemsPersonalizados() {
+		return itemsPersonalizados;
+	}
+
+	public void setItemsPersonalizados(List<Produto> itemsPersonalizados) {
+		this.itemsPersonalizados = itemsPersonalizados;
+	}
+
+	public void setTamanho(ETamanho tamanho) {
+		this.tamanho = tamanho;
+	}
+
+	public ETamanho getTamanho() {
+		return tamanho;
 	}
 }

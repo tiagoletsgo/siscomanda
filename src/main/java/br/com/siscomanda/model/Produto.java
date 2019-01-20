@@ -5,15 +5,12 @@ import java.math.BigDecimal;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import br.com.siscomanda.base.model.BaseEntity;
-import br.com.siscomanda.enumeration.EControlaEstoque;
 
 @Entity
 @Table(name = "produto")
@@ -43,9 +40,8 @@ public class Produto extends BaseEntity implements Serializable {
 	@JoinColumn(name = "subcategoria_id", nullable = false)
 	private SubCategoria subCategoria;
 	
-	@Enumerated(EnumType.STRING)
 	@Column(name = "controla_estoque")
-	private EControlaEstoque controlaEstoque;
+	private boolean controlaEstoque;
 	
 	@Column(name = "preco_custo", nullable = false)
 	private Double precoCusto = BigDecimal.ZERO.doubleValue();
@@ -58,6 +54,9 @@ public class Produto extends BaseEntity implements Serializable {
 	
 	@Column(name = "estoque_maximo")
 	private Double estoqueMaximo = BigDecimal.ZERO.doubleValue();
+	
+	@Column(name = "permite_meio_a_meio", nullable = false)
+	private boolean permiteMeioAmeio;
 
 	public String getDescricao() {
 		return descricao;
@@ -107,11 +106,11 @@ public class Produto extends BaseEntity implements Serializable {
 		this.subCategoria = subCategoria;
 	}
 
-	public EControlaEstoque getControlaEstoque() {
+	public boolean getControlaEstoque() {
 		return controlaEstoque;
 	}
 
-	public void setControlaEstoque(EControlaEstoque controlaEstoque) {
+	public void setControlaEstoque(boolean controlaEstoque) {
 		this.controlaEstoque = controlaEstoque;
 	}
 
@@ -145,5 +144,13 @@ public class Produto extends BaseEntity implements Serializable {
 
 	public void setEstoqueMaximo(Double estoqueMaximo) {
 		this.estoqueMaximo = estoqueMaximo;
+	}
+
+	public boolean isPermiteMeioAmeio() {
+		return permiteMeioAmeio;
+	}
+
+	public void setPermiteMeioAmeio(boolean permiteMeioAmeio) {
+		this.permiteMeioAmeio = permiteMeioAmeio;
 	}
 }

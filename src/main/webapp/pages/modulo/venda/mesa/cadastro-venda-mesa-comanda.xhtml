@@ -4,6 +4,12 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:p="http://primefaces.org/ui">
 		
+		<style>
+			.page-header {
+			    margin: 10px 0 20px !important;
+			}
+		</style>
+		
 		<h:panelGroup layout="block" id="groupVendaMesaComanda">
 			
 			<ui:include src="/WEB-INF/template/venda/buttons.xhtml" />
@@ -14,6 +20,7 @@
 			
 			<h:panelGroup id="groupSelecionaItemVenda" rendered="#{crudBean.entity.mesaOuComanda > 0}" layout="block">
 				<ui:include src="/WEB-INF/template/venda/dialogSelecionaItemVenda.xhtml" />
+				<ui:include src="/WEB-INF/template/venda/dialogPersonalizaItemVenda.xhtml" />
 			</h:panelGroup>
 		</h:panelGroup>
 		
