@@ -13,8 +13,7 @@
 		
 		<div class="row">
 			<div class="col-md-12 col-sm-12 col-xs-12">
-				<p:focus for="pesquisar" />
-				<label for="formulario:pesquisar">Pesquisar produto.:</label>
+				<label for="crudform:pesquisar">Pesquisar produto.:</label>
 				<p:inputText type="text" styleClass="form-control" id="pesquisar" />
 			</div>
 			<div class="clearfix"></div>
@@ -47,14 +46,14 @@
 						<p:column styleClass="ui-datatable-center" style="width: 8%; border-radius: 0px">
 							<f:facet name="header"><h:outputLabel value="Adicionar" /></f:facet>
 							<h:commandLink styleClass="btn btn-round btn-success btn-xs fa fa-plus">
-								<p:ajax update=":crudform:tabelaItemPedido"  global="false" listener="#{crudBean.btnAdicionaItem(produto)}" />
+								<p:ajax update=":crudform:tabelaItemPedido :crudform:headerVenda"  global="false" listener="#{crudBean.btnAdicionaItem(produto)}" />
 							</h:commandLink>
 						</p:column>
 						
 						<p:column styleClass="ui-datatable-center" style="width: 8%; border-radius: 0px">
 							<f:facet name="header"><h:outputLabel value="Remover" /></f:facet>
 							<h:commandLink styleClass="btn btn-round btn-danger btn-xs fa fa-minus">
-								<p:ajax update=":crudform:tabelaItemPedido"  global="false" listener="#{crudBean.btnRemoveItem(null, produto)}" />
+								<p:ajax update=":crudform:tabelaItemPedido :crudform:headerVenda"  global="false" listener="#{crudBean.btnRemoveItem(null, produto)}" />
 							</h:commandLink>
 						</p:column>
 						

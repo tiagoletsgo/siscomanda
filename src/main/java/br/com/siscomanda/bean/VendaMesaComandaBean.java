@@ -39,9 +39,14 @@ public class VendaMesaComandaBean extends BaseBean<Venda> implements Serializabl
 		if(mesasComandas == null || mesasComandas.isEmpty()) {			
 			mesasComandas = service.geraMesasComandas();
 		}
-		quantidade = new BigDecimal(1).intValue();
 		getEntity().setStatus(EStatus.EM_ABERTO);
 		getEntity().setIniciado(new Date());
+		getEntity().setSubtotal(new Double(0));
+		getEntity().setTotal(new Double(0));
+		getEntity().setTaxaServico(new Double(0));
+		getEntity().setTaxaEntrega(new Double(0));
+		getEntity().setDesconto(new Double(0));
+		setQuantidade(new BigDecimal(1).intValue());
 	}
 		
 	public void btnAdicionaItem(Produto produto) {
@@ -49,16 +54,24 @@ public class VendaMesaComandaBean extends BaseBean<Venda> implements Serializabl
 		item.setId(service.setIdTemporarioItem(getEntity().getItens()));
 		service.adicionaItem(getEntity().getItens(), item);
 		service.ordenarItemMenorParaMaior(getEntity().getItens());
+		afterAction();
 	}
 	
 	public void btnRemoveItem(ItemVenda itemVenda, Produto produto) {
 		try {
 			itemVenda = service.clonaItemVenda(itemVenda, produto, getQuantidade());
 			service.removeItem(getEntity().getItens(), itemVenda, produto);
+			afterAction();
 		}
 		catch(SiscomandaException e) {
 			JSFUtil.addMessage(FacesMessage.SEVERITY_ERROR, e.getMessage());
 		}
+	}
+	
+	private void afterAction() {		
+		getEntity().setSubtotal(service.calculaSubtotal(getEntity().getItens()));
+		getEntity().setTaxaServico(getEntity().getSubtotal() * service.getTaxaServico());		
+		getEntity().setTotal(service.calculaTotal(getEntity()));
 	}
 	
 	@Override

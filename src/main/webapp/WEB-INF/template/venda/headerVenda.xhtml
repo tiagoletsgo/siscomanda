@@ -32,7 +32,7 @@
 			<div class="col-md-2 col-sm-2 col-xs-12">
 				<label>Data / Hora.: </label>
 				<h:outputText value="#{crudBean.entity.iniciado}" styleClass="form-control">
-					<f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss" />
+					<f:convertDateTime pattern="dd/MM/yyyy HH:mm" />
 				</h:outputText>
 			</div>
 		</div>
@@ -45,27 +45,37 @@
 			
 			<div class="col-md-2 col-sm-2 col-xs-12">
 				<label>Subtotal R$.: </label>
-				<h:outputText value="0,00" styleClass="form-control" />
+				<h:outputText id="subtotal" value="#{crudBean.entity.subtotal}" styleClass="form-control">
+					<f:convertNumber maxFractionDigits="2" minFractionDigits="2" />
+				</h:outputText>
 			</div>
 			
 			<div class="col-md-2 col-sm-2 col-xs-12">
 				<label>Serviço(+) R$.: </label>
-				<h:outputText value="0,00" styleClass="form-control" />
+				<h:outputText value="#{crudBean.entity.taxaServico}" styleClass="form-control">
+					<f:convertNumber maxFractionDigits="2" minFractionDigits="2" />
+				</h:outputText>
 			</div>
 			
 			<div class="col-md-2 col-sm-2 col-xs-12">
 				<label>Entrega(+) R$.: </label>
-				<h:outputText value="0,00" styleClass="form-control" />
+				<h:outputText value="#{crudBean.entity.taxaEntrega}" styleClass="form-control">
+					<f:convertNumber maxFractionDigits="2" minFractionDigits="2" />
+				</h:outputText>
 			</div>
 			
 			<div class="col-md-2 col-sm-2 col-xs-12">
 				<label>Desconto(-) R$.: </label>
-				<h:outputText value="0,00" styleClass="form-control" />
+				<h:outputText value="#{crudBean.entity.desconto}" styleClass="form-control">
+					<f:convertNumber maxFractionDigits="2" minFractionDigits="2" />
+				</h:outputText>
 			</div>
 			
 			<div class="col-md-2 col-sm-2 col-xs-12">
 				<label>Total R$.: </label>
-				<h:outputText value="0,00" styleClass="form-control" />
+				<h:outputText value="#{crudBean.entity.total}" styleClass="form-control">
+					<f:convertNumber maxFractionDigits="2" minFractionDigits="2" />
+				</h:outputText>
 			</div>
 		</div>
 	</h:panelGroup>
