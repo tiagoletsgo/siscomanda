@@ -14,7 +14,9 @@
 		<div class="row">
 			<div class="col-md-12 col-sm-12 col-xs-12">
 				<label for="crudform:pesquisar">Pesquisar produto.:</label>
-				<p:inputText type="text" styleClass="form-control" id="pesquisar" />
+				<p:inputText type="text" styleClass="form-control" id="pesquisar" value="#{produtoFactoryBean.pesquisar}">
+					<p:ajax event="keyup" update="tabelaProdutos" process="@this" listener="#{produtoFactoryBean.ajaxPesquisar}" global="false" />
+				</p:inputText>
 			</div>
 			<div class="clearfix"></div>
 			<br />
@@ -23,7 +25,7 @@
 		<div class="row">
 			<div class="col-md-12 col-sm-12 col-xs-12">	
 				<div class="table-responsive">
-					<p:dataTable value="#{produtoFactoryBean.produtos}" var="produto" styleClass="table table-striped jambo_table"
+					<p:dataTable id="tabelaProdutos" value="#{produtoFactoryBean.produtos}" var="produto" styleClass="table table-striped jambo_table"
 						paginator="true" rows="5" paginatorPosition="bottom" reflow="true" scrollable="true" scrollHeight="200">
 						
 						<p:column styleClass="ui-datatable-left" style="width: 39%; border-radius: 0px">

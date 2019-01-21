@@ -79,11 +79,7 @@ public class ProdutoService implements Serializable {
 		if(produto.getSubCategoria() == null) {
 			throw new SiscomandaException("É necessário informar a subcategoria.!");
 		}
-		
-//		if(produto.getControlaEstoque() == null) {
-//			throw new SiscomandaException("Informe se este produto controla ou não estoque.!");
-//		}
-		
+			
 		if(produto.getPrecoVenda().equals(new Double("0"))) {
 			throw new SiscomandaException("Informe o preço de venda.!");
 		}
