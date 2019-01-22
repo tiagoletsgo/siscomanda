@@ -1,17 +1,45 @@
 package br.com.siscomanda.base.service;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import javax.inject.Inject;
 
 import br.com.siscomanda.exception.SiscomandaException;
 import br.com.siscomanda.model.ItemVenda;
 import br.com.siscomanda.model.Produto;
 import br.com.siscomanda.model.Venda;
+import br.com.siscomanda.service.DefinicaoGeralService;
 
 public abstract class VendaService implements Serializable {
 
 	private static final long serialVersionUID = -8273876283694756574L;
+	
+	@Inject
+	private DefinicaoGeralService definicaoGeralService;
+	
+	public Double getTaxaServico() {
+		Double valor = definicaoGeralService.carregaDefinicaoSistema().getTaxaServico();
+		return (valor / 100);
+	}
+	
+	public boolean validaQuantidadePermitida(List<Produto> produtos) throws SiscomandaException {
+		if(produtos.size() > definicaoGeralService.carregaDefinicaoSistema().getPermiteQuantoSabores()) {
+			throw new SiscomandaException("A quantidade de sabores selecionado excede o limite configurado.");
+		}
+		return false;
+	}
+	
+	public List<Integer> geraMesasComandas() {
+		List<Integer> mesas = new ArrayList<>();
+		int qtdMesasComandas = definicaoGeralService.carregaDefinicaoSistema().getQtdMesaComanda();
+		for(int i = 0; i < qtdMesasComandas; i++) {
+			mesas.add(i + 1);
+		}
+		return mesas;
+	}
 	
 	public Double calculaSubtotal(List<ItemVenda> itens) {
 		Double subtotal = new Double(0);

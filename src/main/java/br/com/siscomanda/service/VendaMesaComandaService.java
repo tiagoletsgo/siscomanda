@@ -1,8 +1,6 @@
 package br.com.siscomanda.service;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.inject.Inject;
 
@@ -16,20 +14,24 @@ public class VendaMesaComandaService extends VendaService implements Serializabl
 	@Inject
 	private VendaMesaComandaDAO dao;
 	
-	@Inject
-	private DefinicaoGeralService definicaoGeralService;
+//	public List<Integer> geraMesasComandas() {
+//		List<Integer> mesas = new ArrayList<>();
+//		int qtdMesasComandas = definicaoGeralService.carregaDefinicaoSistema().getQtdMesaComanda();
+//		for(int i = 0; i < qtdMesasComandas; i++) {
+//			mesas.add(i + 1);
+//		}
+//		return mesas;
+//	}
 	
-	public List<Integer> geraMesasComandas() {
-		List<Integer> mesas = new ArrayList<>();
-		int qtdMesasComandas = definicaoGeralService.carregaDefinicaoSistema().getQtdMesaComanda();
-		for(int i = 0; i < qtdMesasComandas; i++) {
-			mesas.add(i + 1);
-		}
-		return mesas;
-	}
-	
-	public Double getTaxaServico() {
-		Double valor = definicaoGeralService.carregaDefinicaoSistema().getTaxaServico();
-		return (valor / 100);
-	}
+//	public Double getTaxaServico() {
+//		Double valor = definicaoGeralService.carregaDefinicaoSistema().getTaxaServico();
+//		return (valor / 100);
+//	}
+//	
+//	public boolean validaQuantidadePermitida(List<ItemVenda> items) throws SiscomandaException {
+//		if(items.size() > definicaoGeralService.carregaDefinicaoSistema().getPermiteQuantoSabores()) {
+//			throw new SiscomandaException("A quantidade de sabores selecionado excede o limite configurado.");
+//		}
+//		return false;
+//	}
 }

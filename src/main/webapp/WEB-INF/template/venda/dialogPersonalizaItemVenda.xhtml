@@ -21,7 +21,7 @@
 				<p:focus for="produtoPersonalizado" />
 				<label for="crudform:produtoPersonalizado">Produto.:</label>
 				<p:inputText styleClass="form-control" id="produtoPersonalizado" value="#{produtoFactoryBean.pesquisar}">
-					<p:ajax event="keyup" update=":crudform:selectItemsSelecionados" process="@this" resetValues="true" listener="#{produtoFactoryBean.ajaxPesquisar}" global="false" />
+					<p:ajax event="keyup" update=":crudform:selectItemsSelecionados" process="@this" listener="#{produtoFactoryBean.ajaxPesquisar}" global="false" />
 				</p:inputText>
 			</div>
 			
@@ -36,9 +36,9 @@
 		
 		<div class="row">
 			<div class="col-md-12 col-sm-12 col-xs-12">
-				<p:selectManyCheckbox value="#{crudBean.itemsPersonalizados}" id="selectItemsSelecionados" columns="2" layout="grid">
+				<p:selectManyCheckbox value="#{crudBean.itemsPersonalizados}" id="selectItemsSelecionados">
 					<f:selectItems value="#{produtoFactoryBean.produtos}" var="produto" itemLabel="#{produto.descricao}" itemValue="#{produto}" />
-					<p:ajax event="click" process="@this" />
+					<p:ajax event="change" process="@this" listener="#{crudBean.ajaxValidaQuantidadePermitida}" update=":crudform:selectItemsSelecionados" />
 				</p:selectManyCheckbox>
 			</div>
 		</div>
