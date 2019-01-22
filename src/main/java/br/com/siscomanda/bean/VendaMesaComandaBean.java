@@ -83,6 +83,16 @@ public class VendaMesaComandaBean extends BaseBean<Venda> implements Serializabl
 		return ETamanho.values();
 	}
 	
+	public void ajaxValidaQuantidadePermitida() {
+		try {
+			service.validaQuantidadePermitida(itemsPersonalizados);
+		}
+		catch(SiscomandaException e) {
+			itemsPersonalizados.remove(itemsPersonalizados.get(1));
+			JSFUtil.addMessage(FacesMessage.SEVERITY_ERROR, e.getMessage());
+		}
+	}
+	
 	private void afterAction() {		
 		getEntity().setSubtotal(service.calculaSubtotal(getEntity().getItens()));
 		getEntity().setTaxaServico(getEntity().getSubtotal() * service.getTaxaServico());		
