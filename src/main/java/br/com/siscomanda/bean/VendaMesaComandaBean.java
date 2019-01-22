@@ -31,6 +31,8 @@ public class VendaMesaComandaBean extends BaseBean<Venda> implements Serializabl
 	
 	private ItemVenda itemSelecionado;
 	
+	private Produto produtoSelecionado;
+	
 	private Integer quantidade;
 	
 	private List<Integer> mesasComandas;
@@ -74,7 +76,7 @@ public class VendaMesaComandaBean extends BaseBean<Venda> implements Serializabl
 	}
 	
 	public void btnPersonalizar() {
-		System.out.println("teste");
+		System.out.println("teste" + itemSelecionado.getProduto().getDescricao());
 	}
 	
 	public ETamanho[] getTamanhos() {
@@ -105,6 +107,14 @@ public class VendaMesaComandaBean extends BaseBean<Venda> implements Serializabl
 
 	public void setItemSelecionado(ItemVenda itemSelecionado) {
 		this.itemSelecionado = itemSelecionado;
+	}
+
+	public Produto getProdutoSelecionado() {
+		return produtoSelecionado;
+	}
+
+	public void setProdutoSelecionado(Produto produtoSelecionado) {
+		this.produtoSelecionado = produtoSelecionado;
 	}
 
 	public Integer getQuantidade() {

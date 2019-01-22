@@ -4,7 +4,7 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:p="http://primefaces.org/ui">
 	
-	<p:dialog id="personalizaItemVenda" widgetVar="dlgPersonalizaItemVenda" modal="true" responsive="true" styleClass="ui-container-dialog" 
+	<p:dialog id="dialogPersonalizaItemVenda" widgetVar="dlgPersonalizaItemVenda" modal="true" responsive="true" styleClass="ui-container-dialog" 
 			showEffect="fade" hideEffect="fade" resizable="false" draggable="false" height="200">
 			
 		<f:facet name="header">Personaliza item pedido</f:facet>
@@ -12,7 +12,7 @@
 		<div class="row">
 			<div class="col-md-12 col-sm-12 col-xs-12">
 				<label>Produto principal.:</label>
-				<h:outputText value="PIZZA CALABRESA MEDIA" styleClass="form-control" />
+				<h:outputText value="#{crudBean.produtoSelecionado.descricao}" styleClass="form-control" />
 			</div>
 		</div>
 		
@@ -20,7 +20,9 @@
 			<div class="col-md-6 col-sm-6 col-xs-12">
 				<p:focus for="produtoPersonalizado" />
 				<label for="crudform:produtoPersonalizado">Produto.:</label>
-				<h:inputText styleClass="form-control" id="produtoPersonalizado" />
+				<p:inputText styleClass="form-control" id="produtoPersonalizado" value="#{produtoFactoryBean.pesquisar}">
+					<p:ajax event="keyup" update=":crudform:selectItemsSelecionados" process="@this" resetValues="true" listener="#{produtoFactoryBean.ajaxPesquisar}" global="false" />
+				</p:inputText>
 			</div>
 			
 			<div class="col-md-6 col-sm-6 col-xs-12">
@@ -34,7 +36,7 @@
 		
 		<div class="row">
 			<div class="col-md-12 col-sm-12 col-xs-12">
-				<p:selectManyCheckbox value="#{crudBean.itemsPersonalizados}" columns="2" layout="grid">
+				<p:selectManyCheckbox value="#{crudBean.itemsPersonalizados}" id="selectItemsSelecionados" columns="2" layout="grid">
 					<f:selectItems value="#{produtoFactoryBean.produtos}" var="produto" itemLabel="#{produto.descricao}" itemValue="#{produto}" />
 					<p:ajax event="click" process="@this" />
 				</p:selectManyCheckbox>

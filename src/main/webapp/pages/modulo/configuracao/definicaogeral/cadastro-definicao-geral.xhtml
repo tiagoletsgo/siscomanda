@@ -82,7 +82,7 @@
 	                 	
 	                 	<div class="col-md-2 col-sm-2 col-xs-12">
 	                 		<label for="crudform:sistema">Quantidade:</label>
-							<p:inputText type="text" id="quantidade" styleClass="form-control" maxlength="999" value="#{crudBean.entity.qtdMesaComanda}" />
+							<p:inputText type="text" id="quantidade" onkeyup="somenteNumero(this)" styleClass="form-control" maxlength="2" value="#{crudBean.entity.qtdMesaComanda}" />
 	                 	</div>
 	                 	
 	                 	<div class="col-md-2 col-sm-2 col-xs-12">
@@ -90,6 +90,11 @@
 							<p:inputText type="text" id="taxaServico" value="#{crudBean.entity.taxaServico}" styleClass="form-control currency" >
 								<f:convertNumber minFractionDigits="2" maxFractionDigits="2" />
 							</p:inputText>
+	                 	</div>
+	                 	
+	                 	<div class="col-md-3 col-sm-3 col-xs-12">
+	                 		<label for="crudform:permiteQuantosSabores">Permite até quantos sabores:</label>
+							<p:inputText type="text" id="permiteQuantosSabores" styleClass="form-control" maxlength="2" onkeyup="somenteNumero(this)" value="#{crudBean.entity.permiteQuantoSabores}" />
 	                 	</div>
 	                </div>
                 </div>

@@ -47,6 +47,9 @@ public class DefinicaoGeral extends BaseEntity implements Serializable {
 	@Column(name = "taxa_servico")
 	private Double taxaServico = BigDecimal.ZERO.doubleValue();
 	
+	@Column(name = "permite_quantos_sabores")
+	private Integer permiteQuantoSabores;
+	
 	public DefinicaoGeral() {
 		setEndereco(new Endereco());
 	}
@@ -121,5 +124,13 @@ public class DefinicaoGeral extends BaseEntity implements Serializable {
 
 	public void setTaxaServico(Double taxaServico) {
 		this.taxaServico = taxaServico;
+	}
+
+	public Integer getPermiteQuantoSabores() {
+		return permiteQuantoSabores;
+	}
+
+	public void setPermiteQuantoSabores(Integer permiteQuantoSabores) {
+		this.permiteQuantoSabores = permiteQuantoSabores;
 	}
 }

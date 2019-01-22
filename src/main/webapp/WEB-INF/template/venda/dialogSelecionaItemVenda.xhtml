@@ -15,7 +15,7 @@
 			<div class="col-md-12 col-sm-12 col-xs-12">
 				<label for="crudform:pesquisar">Pesquisar produto.:</label>
 				<p:inputText type="text" styleClass="form-control" id="pesquisar" value="#{produtoFactoryBean.pesquisar}">
-					<p:ajax event="keyup" update="tabelaProdutos" process="@this" listener="#{produtoFactoryBean.ajaxPesquisar}" global="false" />
+					<p:ajax event="keyup" update="tabelaProdutos" process="@this" resetValues="true" listener="#{produtoFactoryBean.ajaxPesquisar}" global="false" />
 				</p:inputText>
 			</div>
 			<div class="clearfix"></div>
@@ -61,8 +61,8 @@
 						
 						<p:column styleClass="ui-datatable-center" style="width: 10%; border-radius: 0px">
 							<f:facet name="header"><h:outputLabel value="Personalizar" /></f:facet>
-							<p:commandLink styleClass="btn btn-round btn-primary btn-xs fa fa-refresh" oncomplete="PF('dlgPersonalizaItemVenda').show();" disabled="#{not produto.permiteMeioAmeio}">
-								<f:setPropertyActionListener value="#{item}" target="#{crudBean.itemSelecionado}" />
+							<p:commandLink process="@this" update=":crudform:dialogPersonalizaItemVenda" styleClass="btn btn-round btn-primary btn-xs fa fa-refresh" oncomplete="PF('dlgPersonalizaItemVenda').show();" disabled="#{not produto.permiteMeioAmeio}">
+								<f:setPropertyActionListener value="#{produto}" target="#{crudBean.produtoSelecionado}" />
 							</p:commandLink>
 						</p:column>
 					</p:dataTable>
