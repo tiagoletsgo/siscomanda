@@ -21,7 +21,7 @@
 				<p:focus for="produtoPersonalizado" />
 				<label for="crudform:produtoPersonalizado">Produto.:</label>
 				<p:inputText styleClass="form-control" id="produtoPersonalizado" value="#{produtoFactoryBean.pesquisar}">
-					<p:ajax event="keyup" update=":crudform:selectItemsSelecionados" process="@this" listener="#{produtoFactoryBean.ajaxPesquisar}" global="false" />
+					<p:ajax event="keyup" update=":crudform:selectItemsSelecionados" process="@this" resetValues="true" listener="#{produtoFactoryBean.ajaxPesquisar}" global="false" />
 				</p:inputText>
 			</div>
 			

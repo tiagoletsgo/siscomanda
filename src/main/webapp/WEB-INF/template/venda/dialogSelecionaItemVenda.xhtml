@@ -15,7 +15,7 @@
 			<div class="col-md-12 col-sm-12 col-xs-12">
 				<label for="crudform:pesquisar">Pesquisar produto.:</label>
 				<p:inputText type="text" styleClass="form-control" id="pesquisar" value="#{produtoFactoryBean.pesquisar}">
-					<p:ajax event="keyup" update="tabelaProdutos" process="@this" listener="#{produtoFactoryBean.ajaxPesquisar}" global="false" />
+					<p:ajax event="keyup" update="tabelaProdutos" process="@this" resetValues="true" listener="#{produtoFactoryBean.ajaxPesquisar}" global="false" />
 				</p:inputText>
 			</div>
 			<div class="clearfix"></div>
