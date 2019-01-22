@@ -33,6 +33,7 @@ public class ProdutoFactoryBean implements Serializable {
 	public void ajaxPesquisar() {
 		try {
 			Produto produto = new Produto();
+			
 			produto.setCodigoEan("");
 			produto.setDescricao(pesquisar);
 			List<Produto> produtos = service.pesquisar(produto);
