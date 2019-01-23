@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import javax.faces.application.FacesMessage;
 import javax.inject.Inject;
 
 import br.com.siscomanda.exception.SiscomandaException;
@@ -12,6 +13,7 @@ import br.com.siscomanda.model.ItemVenda;
 import br.com.siscomanda.model.Produto;
 import br.com.siscomanda.model.Venda;
 import br.com.siscomanda.service.DefinicaoGeralService;
+import br.com.siscomanda.util.JSFUtil;
 
 public abstract class VendaService implements Serializable {
 
@@ -25,11 +27,25 @@ public abstract class VendaService implements Serializable {
 		return (valor / 100);
 	}
 	
-	public boolean validaQuantidadePermitida(List<Produto> produtos) throws SiscomandaException {
-		if(produtos.size() > definicaoGeralService.carregaDefinicaoSistema().getPermiteQuantoSabores()) {
-			throw new SiscomandaException("A quantidade de sabores selecionado excede o limite configurado.");
+	public List<Produto> validaQuantidadePermitida(List<Produto> produtos, List<Produto> temp) {
+		
+		Produto produto = new Produto();
+		
+		for(Produto p : produtos) {
+			if(!temp.contains(p)) {
+				produto = p;
+				temp.add(produto);
+			}
 		}
-		return false;
+		
+		if(produtos.size() > definicaoGeralService.carregaDefinicaoSistema().getPermiteQuantoSabores()) {
+//			temp.remove(produto);
+			produtos.remove(produto);
+			JSFUtil.addMessage(FacesMessage.SEVERITY_ERROR, "A quantidade de sabores selecionado excede o limite configurado.");
+		}
+		
+		return produtos;
+		
 	}
 	
 	public List<Integer> geraMesasComandas() {
