@@ -73,7 +73,7 @@ public class ProdutoDAO extends GenericDAO<Produto> {
 			query.setParameter("codigoEan", "%" + descricaoProduto.toUpperCase() + "%");
 		}
 		
-		query.setParameter("subcategoria", new SubCategoria(5L));
+		query.setParameter("subcategoria", new SubCategoria(1L));
 		query.setParameter("permiteMeioAmeio", true);
 		List<Produto> produtos = query.getResultList();
 		
