@@ -22,30 +22,39 @@ public abstract class VendaService implements Serializable {
 	@Inject
 	private DefinicaoGeralService definicaoGeralService;
 	
+	private List<Produto> listTemp = new ArrayList<>();
+	
 	public Double getTaxaServico() {
 		Double valor = definicaoGeralService.carregaDefinicaoSistema().getTaxaServico();
 		return (valor / 100);
 	}
 	
-	public List<Produto> validaQuantidadePermitida(List<Produto> produtos, List<Produto> temp) {
+	public List<Produto> validaQuantidadePermitida(List<Produto> produtos) {
 		
-		Produto produto = new Produto();
+		Produto produtoCheck = new Produto();
 		
-		for(Produto p : produtos) {
-			if(!temp.contains(p)) {
-				produto = p;
-				temp.add(produto);
+		if(produtos.size() < listTemp.size()) {
+			listTemp.clear();
+			listTemp.addAll(produtos);
+		}
+		
+		if(produtos.size() > listTemp.size()) {
+			for(Produto produto : produtos) {
+				if(!listTemp.contains(produto)) {
+					produtoCheck = produto;
+					listTemp.add(produtoCheck);
+					break;
+				}
 			}
 		}
 		
 		if(produtos.size() > definicaoGeralService.carregaDefinicaoSistema().getPermiteQuantoSabores()) {
-//			temp.remove(produto);
-			produtos.remove(produto);
+			listTemp.remove(produtoCheck);
+			produtos.remove(produtoCheck);
 			JSFUtil.addMessage(FacesMessage.SEVERITY_ERROR, "A quantidade de sabores selecionado excede o limite configurado.");
 		}
 		
 		return produtos;
-		
 	}
 	
 	public List<Integer> geraMesasComandas() {

@@ -2,7 +2,6 @@ package br.com.siscomanda.bean;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -40,15 +39,14 @@ public class VendaMesaComandaBean extends BaseBean<Venda> implements Serializabl
 	
 	private ETamanho tamanho;
 	
-	private List<Produto> itemsPersonalizados;
+	private List<Produto> selectManyCheckBoxProdutos;
 	
-	private List<Produto> temp;
+	private List<Produto> produtos;
+	
+	private String filterPesquisar;
 	
 	@Override
 	protected void init() {
-		if(mesasComandas == null || mesasComandas.isEmpty()) {			
-			mesasComandas = service.geraMesasComandas();
-		}
 		getEntity().setStatus(EStatus.EM_ABERTO);
 		getEntity().setIniciado(new Date());
 		getEntity().setSubtotal(new Double(0));
@@ -57,7 +55,9 @@ public class VendaMesaComandaBean extends BaseBean<Venda> implements Serializabl
 		getEntity().setTaxaEntrega(new Double(0));
 		getEntity().setDesconto(new Double(0));
 		setQuantidade(new BigDecimal(1).intValue());
-		temp = new ArrayList<Produto>();
+		
+		mesasComandas = service.geraMesasComandas();
+		produtos = service.buscaProduto(null);
 	}
 		
 	public void btnAdicionaItem(Produto produto) {
@@ -66,6 +66,14 @@ public class VendaMesaComandaBean extends BaseBean<Venda> implements Serializabl
 		service.adicionaItem(getEntity().getItens(), item);
 		service.ordenarItemMenorParaMaior(getEntity().getItens());
 		afterAction();
+	}
+	
+	public void btnAdicionar() {
+		
+	}
+	
+	public void ajaxPesquisar() {
+		produtos = service.buscaProduto(filterPesquisar);
 	}
 	
 	public void btnRemoveItem(ItemVenda itemVenda, Produto produto) {
@@ -88,7 +96,7 @@ public class VendaMesaComandaBean extends BaseBean<Venda> implements Serializabl
 	}
 	
 	public void ajaxValidaQuantidadePermitida() {
-		itemsPersonalizados = service.validaQuantidadePermitida(itemsPersonalizados, temp);
+		selectManyCheckBoxProdutos = service.validaQuantidadePermitida(selectManyCheckBoxProdutos);
 	}
 	
 	private void afterAction() {		
@@ -133,27 +141,31 @@ public class VendaMesaComandaBean extends BaseBean<Venda> implements Serializabl
 		this.quantidade = quantidade;
 	}
 
-	public List<Produto> getItemsPersonalizados() {
-		return itemsPersonalizados;
-	}
-
-	public void setItemsPersonalizados(List<Produto> itemsPersonalizados) {
-		this.itemsPersonalizados = itemsPersonalizados;
-	}
-
 	public void setTamanho(ETamanho tamanho) {
 		this.tamanho = tamanho;
+	}
+
+	public List<Produto> getSelectManyCheckBoxProdutos() {
+		return selectManyCheckBoxProdutos;
+	}
+
+	public void setSelectManyCheckBoxProdutos(List<Produto> selectManyCheckBoxProdutos) {
+		this.selectManyCheckBoxProdutos = selectManyCheckBoxProdutos;
+	}
+	
+	public List<Produto> getProdutos() {
+		return produtos;
 	}
 
 	public ETamanho getTamanho() {
 		return tamanho;
 	}
 
-	public List<Produto> getTemp() {
-		return temp;
+	public String getFilterPesquisar() {
+		return filterPesquisar;
 	}
 
-	public void setTemp(List<Produto> temp) {
-		this.temp = temp;
+	public void setFilterPesquisar(String filterPesquisar) {
+		this.filterPesquisar = filterPesquisar;
 	}
 }

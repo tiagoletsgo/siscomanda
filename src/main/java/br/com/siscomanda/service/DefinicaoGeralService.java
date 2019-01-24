@@ -83,6 +83,10 @@ public class DefinicaoGeralService implements Serializable {
 			throw new SiscomandaException("A quantidade zero não é permitida para o sistema de mesa / comanda.!");
 		}
 		
+		if(definicaoGeral.getPermiteQuantoSabores() == null || definicaoGeral.getPermiteQuantoSabores() == 0) {
+			throw new SiscomandaException("Zero/Nulo não é permitido para este campo!");
+		}
+		
 		return definicaoGeral;
 	}
 }
