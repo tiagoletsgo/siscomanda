@@ -39,7 +39,11 @@ public class VendaMesaComandaBean extends BaseBean<Venda> implements Serializabl
 	
 	private ETamanho tamanho;
 	
-	private List<Produto> itemsPersonalizados;
+	private List<Produto> selectManyCheckBoxProdutos;
+	
+	private List<Produto> produtos;
+	
+	private String filterPesquisar;
 	
 	@Override
 	protected void init() {
@@ -53,6 +57,7 @@ public class VendaMesaComandaBean extends BaseBean<Venda> implements Serializabl
 		setQuantidade(new BigDecimal(1).intValue());
 		
 		mesasComandas = service.geraMesasComandas();
+		produtos = service.buscaProduto(null);
 	}
 		
 	public void btnAdicionaItem(Produto produto) {
@@ -65,6 +70,10 @@ public class VendaMesaComandaBean extends BaseBean<Venda> implements Serializabl
 	
 	public void btnAdicionar() {
 		
+	}
+	
+	public void ajaxPesquisar() {
+		produtos = service.buscaProduto(filterPesquisar);
 	}
 	
 	public void btnRemoveItem(ItemVenda itemVenda, Produto produto) {
@@ -87,7 +96,7 @@ public class VendaMesaComandaBean extends BaseBean<Venda> implements Serializabl
 	}
 	
 	public void ajaxValidaQuantidadePermitida() {
-		itemsPersonalizados = service.validaQuantidadePermitida(itemsPersonalizados);
+		selectManyCheckBoxProdutos = service.validaQuantidadePermitida(selectManyCheckBoxProdutos);
 	}
 	
 	private void afterAction() {		
@@ -132,19 +141,31 @@ public class VendaMesaComandaBean extends BaseBean<Venda> implements Serializabl
 		this.quantidade = quantidade;
 	}
 
-	public List<Produto> getItemsPersonalizados() {
-		return itemsPersonalizados;
-	}
-
-	public void setItemsPersonalizados(List<Produto> itemsPersonalizados) {
-		this.itemsPersonalizados = itemsPersonalizados;
-	}
-
 	public void setTamanho(ETamanho tamanho) {
 		this.tamanho = tamanho;
 	}
 
+	public List<Produto> getSelectManyCheckBoxProdutos() {
+		return selectManyCheckBoxProdutos;
+	}
+
+	public void setSelectManyCheckBoxProdutos(List<Produto> selectManyCheckBoxProdutos) {
+		this.selectManyCheckBoxProdutos = selectManyCheckBoxProdutos;
+	}
+	
+	public List<Produto> getProdutos() {
+		return produtos;
+	}
+
 	public ETamanho getTamanho() {
 		return tamanho;
+	}
+
+	public String getFilterPesquisar() {
+		return filterPesquisar;
+	}
+
+	public void setFilterPesquisar(String filterPesquisar) {
+		this.filterPesquisar = filterPesquisar;
 	}
 }

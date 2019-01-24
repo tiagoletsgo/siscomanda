@@ -56,20 +56,27 @@ public class ProdutoDAO extends GenericDAO<Produto> {
 	
 	public List<Produto> buscaPorSubCategoria(String descricaoProduto) {
 		StringBuilder sql = new StringBuilder();
-		sql.append("SELECT produto Produto produto ");
+		sql.append("SELECT produto FROM Produto produto ");
 		sql.append("INNER JOIN FETCH produto.subCategoria subCategoria ");
 		sql.append("INNER JOIN FETCH subCategoria.categoria categoria ");
 		sql.append("WHERE 1 = 1 ");
-		sql.append("  AND produto.descricao LIKE :descricao ");
-		sql.append("  AND produto.codigoEan LIKE :codigoEan ");
+		sql.append(descricaoProduto != null ? "  AND produto.descricao LIKE :descricao " : "");
 		sql.append("  AND subCategoria = :subcategoria ");
+		sql.append("  AND produto.permiteMeioAmeio = :permiteMeioAmeio ");
+		sql.append(descricaoProduto != null ? "   OR produto.codigoEan LIKE :codigoEan " : "");
+		sql.append("  AND subCategoria = :subcategoria ");
+		sql.append("  AND produto.permiteMeioAmeio = :permiteMeioAmeio ");
 		
 		TypedQuery<Produto> query = getEntityManager().createQuery(sql.toString(), Produto.class);
-		query.setParameter("descricao", "%" + descricaoProduto + "%");
-		query.setParameter("codigoEan", "%" + descricaoProduto + "%");
-		query.setParameter("subcategoria", new SubCategoria(5L));
+		if(descricaoProduto != null) {
+			query.setParameter("descricao", "%" + descricaoProduto.toUpperCase() + "%");
+			query.setParameter("codigoEan", "%" + descricaoProduto.toUpperCase() + "%");
+		}
 		
+		query.setParameter("subcategoria", new SubCategoria(5L));
+		query.setParameter("permiteMeioAmeio", true);
 		List<Produto> produtos = query.getResultList();
+		
 		return produtos;
 	}
 	

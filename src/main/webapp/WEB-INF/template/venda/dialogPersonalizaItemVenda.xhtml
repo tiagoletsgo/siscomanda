@@ -20,8 +20,8 @@
 			<div class="col-md-6 col-sm-6 col-xs-12">
 				<p:focus for="produtoPersonalizado" />
 				<label for="crudform:produtoPersonalizado">Produto.:</label>
-				<p:inputText styleClass="form-control" id="produtoPersonalizado" value="#{produtoFactoryBean.pesquisar}">
-					<p:ajax event="keyup" update=":crudform:selectItemsSelecionados" process="@this" listener="#{produtoFactoryBean.ajaxPesquisar}" global="false" />
+				<p:inputText styleClass="form-control" id="produtoPersonalizado" value="#{crudBean.filterPesquisar}">
+					<p:ajax event="keyup" update=":crudform:selectManyCheckbox" process="@this" listener="#{crudBean.ajaxPesquisar}" global="false" />
 				</p:inputText>
 			</div>
 			
@@ -36,9 +36,9 @@
 		
 		<div class="row">
 			<div class="col-md-12 col-sm-12 col-xs-12">
-				<p:selectManyCheckbox value="#{crudBean.itemsPersonalizados}" id="selectItemsSelecionados" layout="grid" columns="1" converter="entityConverter">
-					<f:selectItems value="#{produtoFactoryBean.produtos}" var="produto" itemLabel="#{produto.descricao}" itemValue="#{produto}" />
-					<p:ajax event="change" process="@this" listener="#{crudBean.ajaxValidaQuantidadePermitida}" global="false" update=":crudform:selectItemsSelecionados" />
+				<p:selectManyCheckbox value="#{crudBean.selectManyCheckBoxProdutos}" id="selectManyCheckbox" layout="grid" columns="1" converter="entityConverter">
+					<f:selectItems value="#{crudBean.produtos}" var="produto" itemLabel="#{produto.descricao}" itemValue="#{produto}" />
+					<p:ajax event="change" process="@this" listener="#{crudBean.ajaxValidaQuantidadePermitida}" global="false" update=":crudform:selectManyCheckbox" />
 				</p:selectManyCheckbox>
 			</div>
 		</div>
