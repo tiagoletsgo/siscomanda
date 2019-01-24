@@ -1,10 +1,13 @@
 package br.com.siscomanda.service;
 
 import java.io.Serializable;
+import java.util.List;
 
 import javax.inject.Inject;
 
 import br.com.siscomanda.base.service.VendaService;
+import br.com.siscomanda.model.Produto;
+import br.com.siscomanda.repository.dao.ProdutoDAO;
 import br.com.siscomanda.repository.dao.VendaMesaComandaDAO;
 
 public class VendaMesaComandaService extends VendaService implements Serializable {
@@ -13,6 +16,13 @@ public class VendaMesaComandaService extends VendaService implements Serializabl
 	
 	@Inject
 	private VendaMesaComandaDAO dao;
+	
+	@Inject
+	private ProdutoDAO produtoDAO;
+	
+	public List<Produto> buscaProduto(String descricao) {
+		return produtoDAO.buscaPorSubCategoria(descricao);
+	}
 	
 //	public List<Integer> geraMesasComandas() {
 //		List<Integer> mesas = new ArrayList<>();

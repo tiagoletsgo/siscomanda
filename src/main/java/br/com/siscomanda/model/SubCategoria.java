@@ -23,7 +23,13 @@ public class SubCategoria extends BaseEntity implements Serializable {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "categoria_id", nullable = false)
 	private Categoria categoria;
-
+	
+	public SubCategoria() {}
+	
+	public SubCategoria(Long id) {
+		setId(id);
+	}
+	
 	public String getDescricao() {
 		return descricao;
 	}

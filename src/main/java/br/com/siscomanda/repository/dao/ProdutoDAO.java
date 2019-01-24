@@ -7,6 +7,7 @@ import javax.persistence.TypedQuery;
 
 import br.com.siscomanda.exception.SiscomandaException;
 import br.com.siscomanda.model.Produto;
+import br.com.siscomanda.model.SubCategoria;
 import br.com.siscomanda.repository.base.GenericDAO;
 import br.com.siscomanda.util.StringUtil;
 
@@ -53,6 +54,25 @@ public class ProdutoDAO extends GenericDAO<Produto> {
 		}
 	}
 	
+	public List<Produto> buscaPorSubCategoria(String descricaoProduto) {
+		StringBuilder sql = new StringBuilder();
+		sql.append("SELECT produto Produto produto ");
+		sql.append("INNER JOIN FETCH produto.subCategoria subCategoria ");
+		sql.append("INNER JOIN FETCH subCategoria.categoria categoria ");
+		sql.append("WHERE 1 = 1 ");
+		sql.append("  AND produto.descricao LIKE :descricao ");
+		sql.append("  AND produto.codigoEan LIKE :codigoEan ");
+		sql.append("  AND subCategoria = :subcategoria ");
+		
+		TypedQuery<Produto> query = getEntityManager().createQuery(sql.toString(), Produto.class);
+		query.setParameter("descricao", "%" + descricaoProduto + "%");
+		query.setParameter("codigoEan", "%" + descricaoProduto + "%");
+		query.setParameter("subcategoria", new SubCategoria(5L));
+		
+		List<Produto> produtos = query.getResultList();
+		return produtos;
+	}
+	
 	public List<Produto> buscaPor(Produto produto) {
 		StringBuilder sql = new StringBuilder();
 		sql.append("FROM Produto produto WHERE 1 = 1 ");
@@ -70,6 +90,5 @@ public class ProdutoDAO extends GenericDAO<Produto> {
 		
 		List<Produto> produtos = query.getResultList();
 		return produtos;
-		
 	}
 }

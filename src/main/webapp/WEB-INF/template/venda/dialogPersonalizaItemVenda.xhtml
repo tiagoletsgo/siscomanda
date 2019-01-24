@@ -5,7 +5,7 @@
 	xmlns:p="http://primefaces.org/ui">
 	
 	<p:dialog id="dialogPersonalizaItemVenda" widgetVar="dlgPersonalizaItemVenda" modal="true" responsive="true" styleClass="ui-container-dialog" 
-			showEffect="fade" hideEffect="fade" resizable="false" draggable="false" height="200">
+			showEffect="fade" hideEffect="fade" resizable="false" draggable="false" height="400">
 			
 		<f:facet name="header">Personaliza item pedido</f:facet>
 		
@@ -36,7 +36,7 @@
 		
 		<div class="row">
 			<div class="col-md-12 col-sm-12 col-xs-12">
-				<p:selectManyCheckbox value="#{crudBean.itemsPersonalizados}" id="selectItemsSelecionados" converter="entityConverter">
+				<p:selectManyCheckbox value="#{crudBean.itemsPersonalizados}" id="selectItemsSelecionados" layout="grid" columns="1" converter="entityConverter">
 					<f:selectItems value="#{produtoFactoryBean.produtos}" var="produto" itemLabel="#{produto.descricao}" itemValue="#{produto}" />
 					<p:ajax event="change" process="@this" listener="#{crudBean.ajaxValidaQuantidadePermitida}" global="false" update=":crudform:selectItemsSelecionados" />
 				</p:selectManyCheckbox>
@@ -44,6 +44,7 @@
 		</div>
 		
 		<f:facet name="footer">
+			<h:commandButton onclick="PF('dlgPersonalizaItemVenda').hide(); return false;" styleClass="btn btn-success btn-xs" value="Adicionar" />
 			<h:commandButton onclick="PF('dlgPersonalizaItemVenda').hide(); return false;" styleClass="btn btn-danger btn-xs" value="Fechar" />
 		</f:facet>
 	</p:dialog>

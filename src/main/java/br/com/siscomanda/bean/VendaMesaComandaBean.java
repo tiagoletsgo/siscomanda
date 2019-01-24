@@ -2,7 +2,6 @@ package br.com.siscomanda.bean;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -42,13 +41,8 @@ public class VendaMesaComandaBean extends BaseBean<Venda> implements Serializabl
 	
 	private List<Produto> itemsPersonalizados;
 	
-	private List<Produto> temp;
-	
 	@Override
 	protected void init() {
-		if(mesasComandas == null || mesasComandas.isEmpty()) {			
-			mesasComandas = service.geraMesasComandas();
-		}
 		getEntity().setStatus(EStatus.EM_ABERTO);
 		getEntity().setIniciado(new Date());
 		getEntity().setSubtotal(new Double(0));
@@ -57,7 +51,8 @@ public class VendaMesaComandaBean extends BaseBean<Venda> implements Serializabl
 		getEntity().setTaxaEntrega(new Double(0));
 		getEntity().setDesconto(new Double(0));
 		setQuantidade(new BigDecimal(1).intValue());
-		temp = new ArrayList<Produto>();
+		
+		mesasComandas = service.geraMesasComandas();
 	}
 		
 	public void btnAdicionaItem(Produto produto) {
@@ -66,6 +61,10 @@ public class VendaMesaComandaBean extends BaseBean<Venda> implements Serializabl
 		service.adicionaItem(getEntity().getItens(), item);
 		service.ordenarItemMenorParaMaior(getEntity().getItens());
 		afterAction();
+	}
+	
+	public void btnAdicionar() {
+		
 	}
 	
 	public void btnRemoveItem(ItemVenda itemVenda, Produto produto) {
@@ -88,7 +87,7 @@ public class VendaMesaComandaBean extends BaseBean<Venda> implements Serializabl
 	}
 	
 	public void ajaxValidaQuantidadePermitida() {
-		itemsPersonalizados = service.validaQuantidadePermitida(itemsPersonalizados, temp);
+		itemsPersonalizados = service.validaQuantidadePermitida(itemsPersonalizados);
 	}
 	
 	private void afterAction() {		
@@ -147,13 +146,5 @@ public class VendaMesaComandaBean extends BaseBean<Venda> implements Serializabl
 
 	public ETamanho getTamanho() {
 		return tamanho;
-	}
-
-	public List<Produto> getTemp() {
-		return temp;
-	}
-
-	public void setTemp(List<Produto> temp) {
-		this.temp = temp;
 	}
 }
