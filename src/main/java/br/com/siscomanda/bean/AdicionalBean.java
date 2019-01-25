@@ -24,7 +24,6 @@ public class AdicionalBean extends BaseBean<Adicional> implements Serializable {
 	protected void init() {
 		getEntity().setPrecoVenda(new Double("0"));
 		getEntity().setPrecoCusto(new Double("0"));
-		getEntity().setFatorMedida(EFatorMedida.UN);
 	}
 
 	@Override

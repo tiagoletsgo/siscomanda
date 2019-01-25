@@ -289,9 +289,21 @@
     top: -3px;
 }
 
+.ui-selectcheckboxmenu-multiple-container.ui-inputfield {
+    border-radius: 0;
+    height: 30px;
+    width: 101%;
+    margin: -2px;
+}
+
 .ui-selectcheckboxmenu-token {
     background-color: #337ab7;
- 			border-color: #2e6da4;
+ 	border-color: #2e6da4;
+    margin: 4px !important;
+}
+
+.ui-selectcheckboxmenu-token span,
+.ui-selectcheckboxmenu-token-label {
     color: #fff;
-    text-shadow: inherit !important;
+    text-shadow: none !important;
 }

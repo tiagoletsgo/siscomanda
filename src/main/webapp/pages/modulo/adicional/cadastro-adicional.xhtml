@@ -19,22 +19,13 @@
 		</div>
 		
 		<div class="row">
-			<div class="col-md-10 col-sm-10 col-xs-12">
+			<div class="col-md-6 col-sm-6 col-xs-12">
 				<label for="crudform:categoria">Categoria * :</label><br/>
 				<p:selectCheckboxMenu multiple="true" id="categoria" label="Selecione" styleClass="form-control" panelStyle="width: 250px;">
 					<f:selectItems value="#{categoriaFactoryBean.categorias}" var="categoria" itemValue="#{categoria}" itemLabel="#{categoria.descricao}" />
 				</p:selectCheckboxMenu>
 			</div>
 			
-			<div class="col-md-2 col-sm-2 col-xs-12">
-				<label for="crudform:fatorMedida">Medida * :</label>
-				<h:selectOneRadio value="#{crudBean.entity.fatorMedida}" layout="lineDirection">
-					<f:selectItems value="#{crudBean.fatorMedida}" var="medida" itemValue="#{medida}" itemLabel="#{medida.descricao}" />
-				</h:selectOneRadio>
-			</div>
-		</div>
-		
-		<div class="row">
 			<div class="col-md-2 col-sm-2 col-xs-12">
 				<label for="crudform:precocusto">Preço Custo R$ * :</label>
 				<p:inputText type="text" id="precocusto" value="#{crudBean.entity.precoCusto}" styleClass="form-control currency" >
@@ -47,13 +38,20 @@
 				<p:inputText type="text" id="precovenda" value="#{crudBean.entity.precoVenda}" styleClass="form-control currency" >
 					<f:convertNumber minFractionDigits="2" maxFractionDigits="2" />
 				</p:inputText>
-			</div>			
+			</div>	
+			
+			<div class="col-md-2 col-sm-2 col-xs-12">
+				<label for="crudform:fatorMedida">Medida * :</label>
+				<h:selectOneMenu value="#{crudBean.entity.fatorMedida}" styleClass="form-control">
+					<f:selectItem itemLabel="Selecione" noSelectionOption="true" />
+					<f:selectItems value="#{crudBean.fatorMedida}" var="medida" itemValue="#{medida}" itemLabel="#{medida.descricao}" />
+				</h:selectOneMenu>
+			</div>
 		</div>
-		
+						
 		<div class="row">
 			<div class="col-md-3 col-sm-3 col-xs-12">
 				<div>	
-					<br />
 					<h:selectBooleanCheckbox id="controlaEstoque" value="#{crudBean.entity.controlaEstoque}" />
 					<label for="crudform:controlaEstoque">Controla Estoque</label>
 				</div>
