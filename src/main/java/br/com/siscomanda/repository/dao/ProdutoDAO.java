@@ -1,5 +1,6 @@
 package br.com.siscomanda.repository.dao;
 
+import java.io.Serializable;
 import java.util.List;
 
 import javax.persistence.NoResultException;
@@ -11,8 +12,10 @@ import br.com.siscomanda.model.SubCategoria;
 import br.com.siscomanda.repository.base.GenericDAO;
 import br.com.siscomanda.util.StringUtil;
 
-public class ProdutoDAO extends GenericDAO<Produto> {
-	
+public class ProdutoDAO extends GenericDAO<Produto> implements Serializable {
+
+	private static final long serialVersionUID = 5453891974123756212L;
+
 	public Produto porCodigo(Produto produto) throws SiscomandaException {
 		try {
 			StringBuilder sql = new StringBuilder();
@@ -73,7 +76,7 @@ public class ProdutoDAO extends GenericDAO<Produto> {
 			query.setParameter("codigoEan", "%" + descricaoProduto.toUpperCase() + "%");
 		}
 		
-		query.setParameter("subcategoria", new SubCategoria(1L));
+		query.setParameter("subcategoria", new SubCategoria(5L));
 		query.setParameter("permiteMeioAmeio", true);
 		List<Produto> produtos = query.getResultList();
 		

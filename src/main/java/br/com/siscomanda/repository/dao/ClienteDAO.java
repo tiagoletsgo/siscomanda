@@ -1,5 +1,6 @@
 package br.com.siscomanda.repository.dao;
 
+import java.io.Serializable;
 import java.util.List;
 
 import javax.persistence.NoResultException;
@@ -10,8 +11,10 @@ import br.com.siscomanda.model.Cliente;
 import br.com.siscomanda.repository.base.GenericDAO;
 import br.com.siscomanda.util.StringUtil;
 
-public class ClienteDAO extends GenericDAO<Cliente> {
+public class ClienteDAO extends GenericDAO<Cliente> implements Serializable {
 	
+	private static final long serialVersionUID = -6082187174703990591L;
+
 	public Cliente porCodigo(Cliente cliente) throws SiscomandaException {
 		try {
 			StringBuilder sql = new StringBuilder();

@@ -1,13 +1,17 @@
 package br.com.siscomanda.repository.dao;
 
+import java.io.Serializable;
+
 import javax.persistence.NoResultException;
 import javax.persistence.TypedQuery;
 
 import br.com.siscomanda.model.Embalagem;
 import br.com.siscomanda.repository.base.GenericDAO;
 
-public class EmbalagemDAO extends GenericDAO<Embalagem> {
+public class EmbalagemDAO extends GenericDAO<Embalagem> implements Serializable {
 	
+	private static final long serialVersionUID = 8796936221641740958L;
+
 	public boolean isExists(Embalagem embalagem) {
 		try {			
 			StringBuilder sql = new StringBuilder();

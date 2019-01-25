@@ -1,5 +1,6 @@
 package br.com.siscomanda.repository.dao;
 
+import java.io.Serializable;
 import java.util.List;
 
 import javax.persistence.TypedQuery;
@@ -8,8 +9,10 @@ import br.com.siscomanda.exception.SiscomandaException;
 import br.com.siscomanda.model.SubCategoria;
 import br.com.siscomanda.repository.base.GenericDAO;
 
-public class SubCategoriaDAO extends GenericDAO<SubCategoria> {
+public class SubCategoriaDAO extends GenericDAO<SubCategoria> implements Serializable {
 	
+	private static final long serialVersionUID = -846964487147811788L;
+
 	public boolean isExists(SubCategoria subCategoria) {
 		StringBuilder sql = new StringBuilder();
 		sql.append("FROM SubCategoria subcategoria WHERE subcategoria.descricao = :descricao");
