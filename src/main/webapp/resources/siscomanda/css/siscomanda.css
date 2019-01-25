@@ -265,3 +265,33 @@
 .ui-icon-seek-prev {
     background-position: -48px -158px !important;
 }
+
+.ui-selectcheckboxmenu {
+	width: 100% !important;
+}
+
+.ui-selectcheckboxmenu .ui-selectcheckboxmenu-label {
+	padding: 0px 26px 0px 5px !important;
+}
+
+.ui-selectcheckboxmenu-label.ui-state-hover {
+	background: transparent !important;
+}
+
+.ui-selectcheckboxmenu .ui-selectcheckboxmenu-trigger {
+    padding: 5px 0px !important;
+    border-radius: 0;
+}
+
+.ui-selectcheckboxmenu-multiple-container.ui-inputfield {
+    position: relative;
+    left: -9px;
+    top: -3px;
+}
+
+.ui-selectcheckboxmenu-token {
+    background-color: #337ab7;
+ 			border-color: #2e6da4;
+    color: #fff;
+    text-shadow: inherit !important;
+}

@@ -19,7 +19,7 @@
 		<div class="row">
 			<div class="col-md-6 col-sm-6 col-xs-12">
 				<p:focus for="produtoPersonalizado" />
-				<label for="crudform:produtoPersonalizado">Produto.:</label>
+				<label for="crudform:produtoPersonalizado">Descrição Produto / Código.:</label>
 				<p:inputText styleClass="form-control" id="produtoPersonalizado" value="#{crudBean.filterPesquisar}">
 					<p:ajax event="keyup" update=":crudform:selectManyCheckboxProdutos" delay="1000" process="@this" listener="#{crudBean.ajaxPesquisar}" global="false" />
 				</p:inputText>

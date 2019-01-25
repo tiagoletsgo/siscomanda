@@ -1,5 +1,6 @@
 package br.com.siscomanda.repository.dao;
 
+import java.io.Serializable;
 import java.util.List;
 
 import javax.persistence.NoResultException;
@@ -9,8 +10,10 @@ import br.com.siscomanda.model.Fornecedor;
 import br.com.siscomanda.repository.base.GenericDAO;
 import br.com.siscomanda.util.StringUtil;
 
-public class FornecedorDAO extends GenericDAO<Fornecedor> {
+public class FornecedorDAO extends GenericDAO<Fornecedor> implements Serializable {
 	
+	private static final long serialVersionUID = -7551869310437425802L;
+
 	public List<Fornecedor> buscaPor(Fornecedor fornecedor) {
 		StringBuilder sql = new StringBuilder();
 		sql.append("FROM Fornecedor fornecedor WHERE 1 = 1  ");
