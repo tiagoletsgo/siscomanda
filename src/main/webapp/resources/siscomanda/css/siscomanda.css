@@ -307,3 +307,7 @@
     color: #fff;
     text-shadow: none !important;
 }
+
+.ui-selectcheckboxmenu-header {
+    background-color: rgba(52,73,94,.94) !important;
+}
