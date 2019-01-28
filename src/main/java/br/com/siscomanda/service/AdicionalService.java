@@ -4,6 +4,8 @@ import java.io.Serializable;
 
 import javax.inject.Inject;
 
+import br.com.siscomanda.config.jpa.Transactional;
+import br.com.siscomanda.model.Adicional;
 import br.com.siscomanda.repository.dao.AdicionalDAO;
 
 public class AdicionalService implements Serializable {
@@ -12,4 +14,9 @@ public class AdicionalService implements Serializable {
 	
 	@Inject
 	private AdicionalDAO dao;
+	
+	@Transactional
+	public void salvar(Adicional adicional) {
+		dao.salvar(adicional);
+	}
 }
