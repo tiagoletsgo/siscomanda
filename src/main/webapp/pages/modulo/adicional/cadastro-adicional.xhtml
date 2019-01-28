@@ -21,7 +21,7 @@
 		<div class="row">
 			<div class="col-md-6 col-sm-6 col-xs-12">
 				<label for="crudform:categoria">Categoria * :</label><br/>
-				<p:selectCheckboxMenu multiple="true" id="categoria" label="Selecione" styleClass="form-control" panelStyle="width: 250px;">
+				<p:selectCheckboxMenu value="#{crudBean.entity.categorias}" multiple="true" id="categoria" label="Selecione" styleClass="form-control" panelStyle="width: 250px;" converter="entityConverter">
 					<f:selectItems value="#{categoriaFactoryBean.categorias}" var="categoria" itemValue="#{categoria}" itemLabel="#{categoria.descricao}" />
 				</p:selectCheckboxMenu>
 			</div>
