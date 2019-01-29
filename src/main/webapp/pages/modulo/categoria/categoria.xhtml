@@ -24,18 +24,23 @@
 	</ui:define>
 		
 	<ui:define name="content">
-		<h:panelGroup layout="block" rendered="#{crudBean.estadoViewBean.insert or crudBean.estadoViewBean.update}">
-			<ui:include src="/pages/modulo/categoria/cadastro-categoria.xhtml" />
+		<h:panelGroup layout="block" id="formcadastro">
+			<h:panelGroup layout="block" rendered="#{crudBean.estadoViewBean.insert or crudBean.estadoViewBean.update}">
+				<ui:include src="/pages/modulo/categoria/cadastro-categoria.xhtml" />
+			</h:panelGroup>
 		</h:panelGroup>
-		
-		<h:panelGroup layout="block" rendered="#{not crudBean.estadoViewBean.insert and not crudBean.estadoViewBean.update}">
-			<ui:include src="/pages/modulo/categoria/consulta-categoria.xhtml" />
+		<h:panelGroup layout="block" id="formconsulta">
+			<h:panelGroup layout="block" rendered="#{not crudBean.estadoViewBean.insert and not crudBean.estadoViewBean.update}">
+				<ui:include src="/pages/modulo/categoria/consulta-categoria.xhtml" />
+			</h:panelGroup>
 		</h:panelGroup>
 	</ui:define>
 	
 	<ui:define name="table">
-		<h:panelGroup layout="block" rendered="#{crudBean.estadoViewBean.search}">
-			<ui:include src="/pages/modulo/categoria/tabela-categoria.xhtml" />
+		<h:panelGroup layout="block" id="formtabela">
+			<h:panelGroup layout="block" rendered="#{crudBean.estadoViewBean.search}">
+				<ui:include src="/pages/modulo/categoria/tabela-categoria.xhtml" />
+			</h:panelGroup>
 		</h:panelGroup>
 	</ui:define>
 </ui:composition>
