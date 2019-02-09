@@ -26,7 +26,7 @@ public class AdicionalBean extends BaseBean<Adicional> implements Serializable {
 		getEntity().setPrecoCusto(new Double("0"));
 	}
 	
-	public void btnSalvar() {
+	public void  btnSalvar() {
 		service.salvar(getEntity());
 	}
 
