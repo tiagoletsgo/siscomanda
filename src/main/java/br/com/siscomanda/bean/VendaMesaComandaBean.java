@@ -57,7 +57,7 @@ public class VendaMesaComandaBean extends BaseBean<Venda> implements Serializabl
 		setQuantidade(new BigDecimal(1).intValue());
 		
 		mesasComandas = service.geraMesasComandas();
-		produtos = service.buscaProduto(null);
+//		produtos = service.buscaProduto(null, null);
 	}
 		
 	public void btnAdicionaItem(Produto produto) {
@@ -73,7 +73,8 @@ public class VendaMesaComandaBean extends BaseBean<Venda> implements Serializabl
 	}
 	
 	public void ajaxPesquisar() {
-		produtos = service.buscaProduto(filterPesquisar);
+		Produto produto = service.buscaProduto(produtoSelecionado);
+		produtos = service.buscaProduto(filterPesquisar, produto.getSubCategoria());
 	}
 	
 	public void btnRemoveItem(ItemVenda itemVenda, Produto produto) {

@@ -57,7 +57,7 @@ public class ProdutoDAO extends GenericDAO<Produto> implements Serializable {
 		}
 	}
 	
-	public List<Produto> buscaPorSubCategoria(String descricaoProduto) {
+	public List<Produto> buscaPorSubCategoria(String descricaoProduto, SubCategoria subCategoria) throws SiscomandaException {
 		StringBuilder sql = new StringBuilder();
 		sql.append("SELECT produto FROM Produto produto ");
 		sql.append("INNER JOIN FETCH produto.subCategoria subCategoria ");
@@ -76,9 +76,13 @@ public class ProdutoDAO extends GenericDAO<Produto> implements Serializable {
 			query.setParameter("codigoEan", "%" + descricaoProduto.toUpperCase() + "%");
 		}
 		
-		query.setParameter("subcategoria", new SubCategoria(5L));
+		query.setParameter("subcategoria", subCategoria);
 		query.setParameter("permiteMeioAmeio", true);
 		List<Produto> produtos = query.getResultList();
+		
+		if(produtos.isEmpty() || produtos == null) {
+			throw new SiscomandaException("Busca não retornou nenhum resultado.");
+		}
 		
 		return produtos;
 	}
