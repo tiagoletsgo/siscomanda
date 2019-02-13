@@ -5,8 +5,8 @@
 	xmlns:p="http://primefaces.org/ui">
 	
 	
-		<p:dataTable id="tabelaCategoria" styleClass="table table-striped jambo_table" value="#{crudBean.elements}" var="categoria"
-			selection="#{crudBean.categoriasSelecionados}" rowKey="#{categoria.id}" emptyMessage="Sem dados" reflow="true">
+		<p:dataTable id="tabelaAdicional" styleClass="table table-striped jambo_table" value="#{crudBean.elements}" var="adicional"
+			selection="#{crudBean.adicionaisSelecionados}" rowKey="#{adicional.id}" emptyMessage="Sem dados" reflow="true">
 			
 			<p:column styleClass="ui-datatable-center" selectionMode="multiple" />
 			
@@ -14,13 +14,35 @@
 				<f:facet name="header">
 					<h:outputLabel value="Descrição" />
 				</f:facet>
-				<h:outputText value="#{categoria.descricao}"/>
+				<h:outputText value="#{adicional.descricao}"/>
+			</p:column>
+			<p:column styleClass="ui-datatable-left">
+				<f:facet name="header">
+					<h:outputLabel value="Categorias Vinculadas" />
+				</f:facet>
+				<h:outputText value="#{adicional.descricaoCategoria}"/>
+			</p:column>
+			<p:column styleClass="ui-datatable-right">
+				<f:facet name="header">
+					<h:outputLabel value="Preço Custo R$" />
+				</f:facet>
+				<h:outputText value="#{adicional.precoCusto}" styleClass="text-danger">
+					<f:convertNumber type="currency" maxFractionDigits="2" minFractionDigits="2" />
+				</h:outputText>
+			</p:column>
+			<p:column styleClass="ui-datatable-right">
+				<f:facet name="header">
+					<h:outputLabel value="Preço Venda R$" />
+				</f:facet>
+				<h:outputText value="#{adicional.precoVenda}">
+					<f:convertNumber type="currency" maxFractionDigits="2" minFractionDigits="2" />
+				</h:outputText>
 			</p:column>
 			<p:column>
 				<f:facet name="header">
 					<h:outputLabel value="#" />
 				</f:facet>
-				<h:commandButton styleClass="btn btn-warning btn-xs" value="Editar" action="#{crudBean.btnEditar(categoria)}" />
+				<h:commandButton styleClass="btn btn-warning btn-xs" value="Editar" action="#{crudBean.btnEditar(adicional)}" />
 			</p:column>
 			<f:facet name="footer">
 				<p:commandButton styleClass="btn btn-danger btn-xs" style="float: left;" oncomplete="PF('dlgConfirmarExclusao').show();" value="Deletar" 
@@ -29,7 +51,7 @@
 			</f:facet>
 		</p:dataTable>
 				
-		<p:dialog widgetVar="dlgConfirmarExclusao" modal="true" responsive="true" showEffect="bounce" hideEffect="bounce"
+		<p:dialog widgetVar="dlgConfirmarExclusao" modal="true" responsive="true" showEffect="fade" hideEffect="fade"
 			resizable="false" >
 			<f:facet name="header">
 				Confirmar exclusão
@@ -44,7 +66,7 @@
 			<f:facet name="footer">
 				<h:form>
 					<h:commandButton type="button"  onclick="PF('dlgConfirmarExclusao').hide();" action="#{crudBean.btnRemover}" styleClass="btn btn-danger btn-xs" value="Sim">
-						<p:ajax update=":crudform:tabelaCategoria" process="@form " />
+						<p:ajax update=":crudform:tabelaAdicional" process="@form" />
 					</h:commandButton>
 					<h:commandButton onclick="PF('dlgConfirmarExclusao').hide(); return false;" styleClass="btn btn-success btn-xs" value="Não" />
 				</h:form>

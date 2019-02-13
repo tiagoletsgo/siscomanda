@@ -22,7 +22,7 @@ public class DefinicaoGeralService implements Serializable {
 	
 	@Transactional
 	public DefinicaoGeral salvar(DefinicaoGeral definicaoGeral) throws SiscomandaException {
-		definicaoGeral = validacao(definicaoGeral);
+		validacao(definicaoGeral);
 		if(definicaoGeral.isNovo()) {
 			definicaoGeral = dao.salvar(definicaoGeral);
 			JSFUtil.addMessage(FacesMessage.SEVERITY_INFO, "Registro salvo com sucesso.");
@@ -42,7 +42,7 @@ public class DefinicaoGeralService implements Serializable {
 		return new DefinicaoGeral();
 	}
 	
-	private DefinicaoGeral validacao(DefinicaoGeral definicaoGeral) throws SiscomandaException {
+	private void validacao(DefinicaoGeral definicaoGeral) throws SiscomandaException {
 		if(definicaoGeral == null) {
 			throw new SiscomandaException("Por gentileza preencha corretamente os campos.");
 		}
@@ -86,7 +86,5 @@ public class DefinicaoGeralService implements Serializable {
 		if(definicaoGeral.getPermiteQuantoSabores() == null || definicaoGeral.getPermiteQuantoSabores() == 0) {
 			throw new SiscomandaException("Zero/Nulo não é permitido para este campo!");
 		}
-		
-		return definicaoGeral;
 	}
 }

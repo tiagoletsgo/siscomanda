@@ -38,7 +38,7 @@ public class ProdutoService implements Serializable {
 	
 	@Transactional
 	public Produto salvar(Produto produto) throws SiscomandaException {
-		produto = validacao(produto);
+		validacao(produto);
 		if(produto.isNovo()) {
 			produto = dao.salvar(produto);
 			JSFUtil.addMessage(FacesMessage.SEVERITY_INFO, "Registro salvo com sucesso.");
@@ -54,7 +54,7 @@ public class ProdutoService implements Serializable {
 		return dao.porCodigo(produto);
 	}
 	
-	private Produto validacao(Produto produto) throws SiscomandaException {
+	private void validacao(Produto produto) throws SiscomandaException {
 		
 		if(StringUtil.isEmpty(produto.getDescricao())) {
 			throw new SiscomandaException("É necessário informar o nome do produto.!");
@@ -88,9 +88,7 @@ public class ProdutoService implements Serializable {
 			if(dao.isExists(produto)) {
 				throw new SiscomandaException("Esse produto já se encontra cadastro no sistema.!");
 			}
-		}
-		
-		return produto;
+		}		
 	}
 	
 	public List<Produto> todos() {

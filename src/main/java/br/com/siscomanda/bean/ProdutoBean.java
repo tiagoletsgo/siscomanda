@@ -50,9 +50,8 @@ public class ProdutoBean extends BaseBean<Produto> implements Serializable {
 			
 			if(getEstadoViewBean().getUpdate()) {
 				setElements(produtoService.todos());
+				getEstadoViewBean().setUpdate(false);
 			}
-			
-			getEstadoViewBean().setUpdate(false);
 		}
 		catch(SiscomandaException e) {
 			JSFUtil.addMessage(FacesMessage.SEVERITY_ERROR, "Erro ao salvar. " + e.getMessage());
