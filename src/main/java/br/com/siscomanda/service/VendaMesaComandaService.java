@@ -9,6 +9,7 @@ import br.com.siscomanda.base.service.VendaService;
 import br.com.siscomanda.exception.SiscomandaRuntimeException;
 import br.com.siscomanda.model.Produto;
 import br.com.siscomanda.model.SubCategoria;
+import br.com.siscomanda.repository.dao.AdicionalDAO;
 import br.com.siscomanda.repository.dao.ProdutoDAO;
 import br.com.siscomanda.repository.dao.VendaMesaComandaDAO;
 
@@ -21,6 +22,9 @@ public class VendaMesaComandaService extends VendaService implements Serializabl
 	
 	@Inject
 	private ProdutoDAO produtoDAO;
+	
+	@Inject
+	private AdicionalDAO adicionalDAO;
 	
 	public Produto buscaProduto(Produto produto) {
 		try {			
