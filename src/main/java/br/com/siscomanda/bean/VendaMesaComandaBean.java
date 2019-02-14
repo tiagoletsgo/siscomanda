@@ -2,6 +2,8 @@ package br.com.siscomanda.bean;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -14,11 +16,13 @@ import br.com.siscomanda.base.bean.BaseBean;
 import br.com.siscomanda.enumeration.EStatus;
 import br.com.siscomanda.enumeration.ETamanho;
 import br.com.siscomanda.exception.SiscomandaException;
+import br.com.siscomanda.model.Adicional;
 import br.com.siscomanda.model.ItemVenda;
 import br.com.siscomanda.model.Produto;
 import br.com.siscomanda.model.Venda;
 import br.com.siscomanda.service.VendaMesaComandaService;
 import br.com.siscomanda.util.JSFUtil;
+import br.com.siscomanda.util.StringUtil;
 
 @Named
 @ViewScoped
@@ -41,7 +45,11 @@ public class VendaMesaComandaBean extends BaseBean<Venda> implements Serializabl
 	
 	private List<Produto> selectManyCheckBoxProdutos;
 	
+	private List<Adicional> selectManyCheckBoxAdicionais;
+	
 	private List<Produto> produtos;
+	
+	private List<Adicional> adicionais;
 	
 	private String filterPesquisar;
 	
@@ -57,7 +65,14 @@ public class VendaMesaComandaBean extends BaseBean<Venda> implements Serializabl
 		setQuantidade(new BigDecimal(1).intValue());
 		
 		mesasComandas = service.geraMesasComandas();
+		adicionais = service.getAdicionais();
 //		produtos = service.buscaProduto(null, null);
+	}
+	
+	public static void main(String[] args) {
+		double valor = 1.99;
+		DecimalFormat format = new DecimalFormat("#.##");
+		System.out.println("R$" + format.format(valor));
 	}
 		
 	public void btnAdicionaItem(Produto produto) {
@@ -121,6 +136,10 @@ public class VendaMesaComandaBean extends BaseBean<Venda> implements Serializabl
 		}
 		return itemSelecionado;
 	}
+	
+	public String formatMoeda(Double valor) {
+		return "R$ " + StringUtil.parseDouble(valor);
+	}
 
 	public void setItemSelecionado(ItemVenda itemSelecionado) {
 		this.itemSelecionado = itemSelecionado;
@@ -154,8 +173,20 @@ public class VendaMesaComandaBean extends BaseBean<Venda> implements Serializabl
 		this.selectManyCheckBoxProdutos = selectManyCheckBoxProdutos;
 	}
 	
+	public List<Adicional> getSelectManyCheckBoxAdicionais() {
+		return selectManyCheckBoxAdicionais;
+	}
+
+	public void setSelectManyCheckBoxAdicionais(List<Adicional> selectManyCheckBoxAdicionais) {
+		this.selectManyCheckBoxAdicionais = selectManyCheckBoxAdicionais;
+	}
+
 	public List<Produto> getProdutos() {
 		return produtos;
+	}
+	
+	public List<Adicional> getAdicionais() {
+		return adicionais;
 	}
 
 	public ETamanho getTamanho() {

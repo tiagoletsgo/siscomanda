@@ -49,9 +49,9 @@
 				<div class="panel panel-default">
 					<div class="panel-heading">Adicionais</div>
 					<div class="panel-body">					
-						<p:selectManyCheckbox value="#{crudBean.selectManyCheckBoxProdutos}" id="selectManyCheckboxAdicionais" layout="grid" columns="1" converter="entityConverter">
-							<f:selectItems value="#{crudBean.produtos}" var="produto" itemLabel="#{produto.descricao}" itemValue="#{produto}" />
-							<p:ajax event="change" process="@this" listener="#{crudBean.ajaxValidaQuantidadePermitida}" global="false" update=":crudform:selectManyCheckboxProdutos" />
+						<p:selectManyCheckbox value="#{crudBean.selectManyCheckBoxAdicionais}" id="selectManyCheckboxAdicionais" layout="grid" columns="1" converter="entityConverter">
+							<f:selectItems value="#{crudBean.adicionais}" var="adicional" itemLabel="#{adicional.descricao} - #{crudBean.formatMoeda(adicional.precoVenda)}" itemValue="#{adicional}" />
+							<p:ajax event="change" process="@this" global="false" update=":crudform:selectManyCheckboxAdicionais" />
 						</p:selectManyCheckbox>
 					</div>
 				</div>

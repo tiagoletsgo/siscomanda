@@ -1,10 +1,16 @@
 package br.com.siscomanda.util;
 
+import java.text.DecimalFormat;
 import java.util.List;
 
 import br.com.siscomanda.exception.SiscomandaException;
 
 public class StringUtil {
+	
+	public static String parseDouble(Double valor) {
+		DecimalFormat decimalFormat = new DecimalFormat("#.##");
+		return decimalFormat.format(valor);
+	}
 	
 	public static void maisDeUmCampoPreenchido(List<String> campos) throws SiscomandaException {
 		Integer selecionado = 0;
