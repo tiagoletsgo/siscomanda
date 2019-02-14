@@ -42,12 +42,7 @@ public abstract class BaseBean<T> implements Serializable {
 			e.printStackTrace();
 		}
 	}
-	
-	public static void main(String[] args) {
-		String clazz = "bandeiraBean";
-		System.out.println(clazz.contains("Bean"));
-	}
-	
+		
 	@PostConstruct
 	protected abstract void init();
 	
