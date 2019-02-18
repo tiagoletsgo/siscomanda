@@ -66,7 +66,7 @@ public class VendaMesaComandaBean extends BaseBean<Venda> implements Serializabl
 		
 		mesasComandas = service.geraMesasComandas();
 		adicionais = service.getAdicionais();
-//		produtos = service.buscaProduto(null, null);
+		produtos = service.buscaProduto("PIZZA");
 	}
 	
 	public static void main(String[] args) {

@@ -13,7 +13,6 @@ import br.com.siscomanda.model.SubCategoria;
 import br.com.siscomanda.repository.dao.AdicionalDAO;
 import br.com.siscomanda.repository.dao.ProdutoDAO;
 import br.com.siscomanda.repository.dao.VendaMesaComandaDAO;
-import br.com.siscomanda.util.StringUtil;
 
 public class VendaMesaComandaService extends VendaService implements Serializable {
 
@@ -40,6 +39,10 @@ public class VendaMesaComandaService extends VendaService implements Serializabl
 		catch(Exception e) {
 			throw new SiscomandaRuntimeException(e.getMessage());
 		}
+	}
+	
+	public List<Produto> buscaProduto(String nomeSubCategoria) {
+		return produtoDAO.porDescricaoSubCategoria(nomeSubCategoria);
 	}
 	
 	public List<Produto> buscaProduto(String descricao, SubCategoria subCategoria) {
