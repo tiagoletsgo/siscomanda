@@ -32,6 +32,11 @@ public class VendaMesaComandaService extends VendaService implements Serializabl
 		return adicionais;
 	}
 	
+	public List<Adicional> buscaAdicionalPor(String descricao) {
+		List<Adicional> adicionais = adicionalDAO.buscaPor(descricao);
+		return adicionais;
+	}
+	
 	public Produto buscaProduto(Produto produto) {
 		try {			
 			return produtoDAO.porCodigo(produto);

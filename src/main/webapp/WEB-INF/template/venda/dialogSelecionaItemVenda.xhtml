@@ -45,25 +45,26 @@
 							</h:outputText>
 						</p:column>
 						
-						<p:column styleClass="ui-datatable-center" style="width: 8%; border-radius: 0px">
-							<f:facet name="header"><h:outputLabel value="Adicionar" /></f:facet>
-							<h:commandLink styleClass="btn btn-round btn-success btn-xs fa fa-plus">
-								<p:ajax update=":crudform:tabelaItemPedido :crudform:headerVenda"  global="false" listener="#{crudBean.btnAdicionaItem(produto)}" />
-							</h:commandLink>
+						<p:column styleClass="ui-datatable-center" style="width: 12%; border-radius: 0px">
+							<f:facet name="header"><h:outputLabel value="Inteiro (+1)" /></f:facet>
+							<p:commandLink actionListener="#{crudBean.actionListenerQuantidade(1.0)}" styleClass="btn btn-round btn-success btn-xs fa fa-plus" oncomplete="PF('dlgSelecionaAdicional').show();" update=":crudform:dialogSelecionaAdicional">
+								<f:setPropertyActionListener value="#{produto}" target="#{crudBean.produtoSelecionado}" />
+							</p:commandLink>
 						</p:column>
 						
+						<p:column styleClass="ui-datatable-center" style="width: 14%; border-radius: 0px">
+							<f:facet name="header"><h:outputLabel value="Metade (+&#189;)" /></f:facet>
+							<p:commandLink actionListener="#{crudBean.actionListenerQuantidade(.5)}" styleClass="btn btn-round btn-success btn-xs fa fa-plus" disabled="#{not produto.permiteMeioAmeio}" oncomplete="PF('dlgSelecionaAdicional').show();"
+								update=":crudform:dialogSelecionaAdicional">
+								<f:setPropertyActionListener value="#{produto}" target="#{crudBean.produtoSelecionado}" />
+							</p:commandLink>
+						</p:column>
+												
 						<p:column styleClass="ui-datatable-center" style="width: 8%; border-radius: 0px">
 							<f:facet name="header"><h:outputLabel value="Remover" /></f:facet>
 							<h:commandLink styleClass="btn btn-round btn-danger btn-xs fa fa-minus">
 								<p:ajax update=":crudform:tabelaItemPedido :crudform:headerVenda"  global="false" listener="#{crudBean.btnRemoveItem(null, produto)}" />
 							</h:commandLink>
-						</p:column>
-						
-						<p:column styleClass="ui-datatable-center" style="width: 10%; border-radius: 0px">
-							<f:facet name="header"><h:outputLabel value="Personalizar" /></f:facet>
-							<p:commandLink process="@this" update=":crudform:dialogPersonalizaItemVenda" styleClass="btn btn-round btn-primary btn-xs fa fa-refresh" oncomplete="PF('dlgPersonalizaItemVenda').show();" disabled="#{not produto.permiteMeioAmeio}">
-								<f:setPropertyActionListener value="#{produto}" target="#{crudBean.produtoSelecionado}" />
-							</p:commandLink>
 						</p:column>
 					</p:dataTable>
 				</div>
@@ -74,5 +75,4 @@
 			<h:commandButton onclick="PF('dlgPesquisaProduto').hide(); return false;" styleClass="btn btn-danger btn-xs" value="Fechar" />
 		</f:facet>
 	</p:dialog>
-	
 </ui:composition>

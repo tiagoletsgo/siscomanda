@@ -2,8 +2,7 @@ package br.com.siscomanda.bean;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -14,7 +13,6 @@ import javax.inject.Named;
 
 import br.com.siscomanda.base.bean.BaseBean;
 import br.com.siscomanda.enumeration.EStatus;
-import br.com.siscomanda.enumeration.ETamanho;
 import br.com.siscomanda.exception.SiscomandaException;
 import br.com.siscomanda.model.Adicional;
 import br.com.siscomanda.model.ItemVenda;
@@ -35,23 +33,21 @@ public class VendaMesaComandaBean extends BaseBean<Venda> implements Serializabl
 	
 	private ItemVenda itemSelecionado;
 	
-	private Produto produtoSelecionado;
-	
-	private Integer quantidade;
+	private Double quantidade;
 	
 	private List<Integer> mesasComandas;
 	
-	private ETamanho tamanho;
-	
-	private List<Produto> selectManyCheckBoxProdutos;
-	
-	private List<Adicional> selectManyCheckBoxAdicionais;
-	
-	private List<Produto> produtos;
-	
 	private List<Adicional> adicionais;
 	
+	private List<Adicional> selectManyCheckBoxAdicionais;
+
+	private Produto produtoSelecionado;
+
+	private List<Produto> produtos;
+	
 	private String filterPesquisar;
+	
+	private static String ADICIONAL = "adicional";
 	
 	@Override
 	protected void init() {
@@ -62,39 +58,45 @@ public class VendaMesaComandaBean extends BaseBean<Venda> implements Serializabl
 		getEntity().setTaxaServico(new Double(0));
 		getEntity().setTaxaEntrega(new Double(0));
 		getEntity().setDesconto(new Double(0));
-		setQuantidade(new BigDecimal(1).intValue());
+		setQuantidade(new BigDecimal(1).doubleValue());
 		
 		mesasComandas = service.geraMesasComandas();
-		adicionais = service.getAdicionais();
 		produtos = service.buscaProduto("PIZZA");
+		adicionais = service.getAdicionais();
 	}
-	
-	public static void main(String[] args) {
-		double valor = 1.99;
-		DecimalFormat format = new DecimalFormat("#.##");
-		System.out.println("R$" + format.format(valor));
-	}
-		
-	public void btnAdicionaItem(Produto produto) {
-		ItemVenda item = service.adicionaItemPedidoVenda(produto);
+			
+	public void btnAdicionaItem() {
+		ItemVenda item = new ItemVenda();
 		item.setId(service.setIdTemporarioItem(getEntity().getItens()));
-		service.adicionaItem(getEntity().getItens(), item);
-		service.ordenarItemMenorParaMaior(getEntity().getItens());
+		item.setProduto(produtoSelecionado);
+		item.setQuantidade(quantidade);
+		item.setPrecoVenda(produtoSelecionado.getPrecoVenda());
+		item.setObservacao(itemSelecionado.getObservacao());
+		item.setSubtotal(item.getQuantidade() * item.getPrecoVenda());
+		getEntity().getItens().add(item);
+		
+		for(Adicional adicional : selectManyCheckBoxAdicionais) {			
+			item = new ItemVenda();
+			Produto prod = new Produto();
+			prod.setDescricao(adicional.getDescricao().concat(" (").concat(ADICIONAL.toUpperCase()).concat(")"));
+			item.setId(service.setIdTemporarioItem(getEntity().getItens()));
+			item.setPrecoVenda(adicional.getPrecoVenda());
+			item.setProduto(prod);
+			item.setQuantidade(new Double(1));
+			item.setSubtotal(item.getQuantidade() * item.getPrecoVenda());
+			getEntity().getItens().add(item);
+		}
+		
+//		ItemVenda item = service.adicionaItemPedidoVenda(produto);
+//		item.setId(service.setIdTemporarioItem(getEntity().getItens()));
+//		service.adicionaItem(getEntity().getItens(), item);
+//		service.ordenarItemMenorParaMaior(getEntity().getItens());
 		afterAction();
 	}
-	
-	public void btnAdicionar() {
 		
-	}
-	
-	public void ajaxPesquisar() {
-		Produto produto = service.buscaProduto(produtoSelecionado);
-		produtos = service.buscaProduto(filterPesquisar, produto.getSubCategoria());
-	}
-	
 	public void btnRemoveItem(ItemVenda itemVenda, Produto produto) {
 		try {
-			itemVenda = service.clonaItemVenda(itemVenda, produto, getQuantidade());
+//			itemVenda = service.clonaItemVenda(itemVenda, produto, getQuantidade());
 			service.removeItem(getEntity().getItens(), itemVenda, produto);
 			afterAction();
 		}
@@ -102,23 +104,28 @@ public class VendaMesaComandaBean extends BaseBean<Venda> implements Serializabl
 			JSFUtil.addMessage(FacesMessage.SEVERITY_ERROR, e.getMessage());
 		}
 	}
-	
-	public void btnPersonalizar() {
-		System.out.println("teste" + itemSelecionado.getProduto().getDescricao());
+
+	public void ajaxPesquisar() {
+		Produto produto = service.buscaProduto(produtoSelecionado);
+		produtos = service.buscaProduto(filterPesquisar, produto.getSubCategoria());
 	}
 	
-	public ETamanho[] getTamanhos() {
-		return ETamanho.values();
+	public void ajaxPesquisaAdicional() {
+		adicionais = service.buscaAdicionalPor(filterPesquisar);
 	}
 	
-	public void ajaxValidaQuantidadePermitida() {
-		selectManyCheckBoxProdutos = service.validaQuantidadePermitida(selectManyCheckBoxProdutos);
+	public void actionListenerQuantidade(double valor) {
+		this.quantidade = valor;
 	}
 	
 	private void afterAction() {		
 		getEntity().setSubtotal(service.calculaSubtotal(getEntity().getItens()));
 		getEntity().setTaxaServico(getEntity().getSubtotal() * service.getTaxaServico());		
 		getEntity().setTotal(service.calculaTotal(getEntity()));
+		
+		itemSelecionado = null;
+		produtoSelecionado = null;
+		selectManyCheckBoxAdicionais = null;
 	}
 	
 	@Override
@@ -138,7 +145,19 @@ public class VendaMesaComandaBean extends BaseBean<Venda> implements Serializabl
 	}
 	
 	public String formatMoeda(Double valor) {
-		return "R$ " + StringUtil.parseDouble(valor);
+		return StringUtil.parseDouble(valor);
+	}
+	
+	public String converter(Double valor) {
+		return StringUtil.converterDouble(valor);
+	}
+	
+	public String getQuantidadeConverter() {
+		return StringUtil.converterDouble(quantidade);
+	}
+	
+	public void setQuantidadeConverter(String valor) {
+		this.quantidade = Double.parseDouble(valor);
 	}
 
 	public void setItemSelecionado(ItemVenda itemSelecionado) {
@@ -153,26 +172,14 @@ public class VendaMesaComandaBean extends BaseBean<Venda> implements Serializabl
 		this.produtoSelecionado = produtoSelecionado;
 	}
 
-	public Integer getQuantidade() {
+	public Double getQuantidade() {
 		return quantidade;
 	}
-
-	public void setQuantidade(Integer quantidade) {
+	
+	public void setQuantidade(Double quantidade) {
 		this.quantidade = quantidade;
 	}
 
-	public void setTamanho(ETamanho tamanho) {
-		this.tamanho = tamanho;
-	}
-
-	public List<Produto> getSelectManyCheckBoxProdutos() {
-		return selectManyCheckBoxProdutos;
-	}
-
-	public void setSelectManyCheckBoxProdutos(List<Produto> selectManyCheckBoxProdutos) {
-		this.selectManyCheckBoxProdutos = selectManyCheckBoxProdutos;
-	}
-	
 	public List<Adicional> getSelectManyCheckBoxAdicionais() {
 		return selectManyCheckBoxAdicionais;
 	}
@@ -187,10 +194,6 @@ public class VendaMesaComandaBean extends BaseBean<Venda> implements Serializabl
 	
 	public List<Adicional> getAdicionais() {
 		return adicionais;
-	}
-
-	public ETamanho getTamanho() {
-		return tamanho;
 	}
 
 	public String getFilterPesquisar() {

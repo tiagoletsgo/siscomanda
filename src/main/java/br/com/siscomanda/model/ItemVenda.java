@@ -13,15 +13,18 @@ public class ItemVenda extends BaseEntity implements Serializable, Comparable<It
 //	@ManyToOne(fetch = FetchType.LAZY)
 //	@JoinColumn(name = "produto_id", nullable = false)
 	private Produto produto;
-	
+		
 //	@Column(name = "quantidade", nullable = false)
-	private Integer quantidade;
+	private Double quantidade;
 	
 //	@Column(name = "subtotal", nullable = false)
 	private Double subtotal;
 	
 //	@Column(name = "preco_venda", nullable = false)
 	private Double precoVenda;
+	
+//	@Column(name = "observacao")
+	private String observacao;
 
 	public Produto getProduto() {
 		return produto;
@@ -31,11 +34,11 @@ public class ItemVenda extends BaseEntity implements Serializable, Comparable<It
 		this.produto = produto;
 	}
 
-	public int getQuantidade() {
+	public Double getQuantidade() {
 		return quantidade;
 	}
 
-	public void setQuantidade(Integer quantidade) {
+	public void setQuantidade(Double quantidade) {
 		this.quantidade = quantidade;
 	}
 
@@ -53,6 +56,14 @@ public class ItemVenda extends BaseEntity implements Serializable, Comparable<It
 
 	public void setPrecoVenda(Double precoVenda) {
 		this.precoVenda = precoVenda;
+	}
+	
+	public String getObservacao() {
+		return observacao;
+	}
+
+	public void setObservacao(String observacao) {
+		this.observacao = observacao;
 	}
 
 	@Override

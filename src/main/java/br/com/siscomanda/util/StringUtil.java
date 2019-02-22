@@ -7,9 +7,18 @@ import br.com.siscomanda.exception.SiscomandaException;
 
 public class StringUtil {
 	
+	private static String simboloReal = "R$";
+	
 	public static String parseDouble(Double valor) {
 		DecimalFormat decimalFormat = new DecimalFormat("#.##");
-		return decimalFormat.format(valor);
+		return simboloReal.concat(" ").concat(decimalFormat.format(valor));
+	}
+	
+	public static String converterDouble(Double valor) {
+		if(valor.toString().contains(".0")) {
+			return valor.toString().replace(".0", "");
+		}
+		return valor.toString();
 	}
 	
 	public static void maisDeUmCampoPreenchido(List<String> campos) throws SiscomandaException {

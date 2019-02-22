@@ -14,6 +14,7 @@ import br.com.siscomanda.model.Produto;
 import br.com.siscomanda.model.Venda;
 import br.com.siscomanda.service.DefinicaoGeralService;
 import br.com.siscomanda.util.JSFUtil;
+import br.com.siscomanda.util.StringUtil;
 
 public abstract class VendaService implements Serializable {
 
@@ -91,24 +92,24 @@ public abstract class VendaService implements Serializable {
 		return itens;
 	}
 	
-	public ItemVenda clonaItemVenda(ItemVenda itemVenda, Produto produto, Integer quantidade) {
-		ItemVenda item = null;
-		if(produto == null) {
-			item = new ItemVenda();
-			item.setQuantidade(quantidade == null ? 0 : quantidade);
-			item.setProduto(itemVenda.getProduto());
-			item.setSubtotal(item.getQuantidade() * item.getProduto().getPrecoVenda());
-			return item;
-		}
-		if(itemVenda == null) {
-			item = new ItemVenda();
-			item.setProduto(produto);
-			item.setQuantidade(1);
-			return item;
-		}
-		
-		return itemVenda;
-	}
+//	public ItemVenda clonaItemVenda(ItemVenda itemVenda, Produto produto, Double quantidade) {
+//		ItemVenda item = null;
+//		if(produto == null) {
+//			item = new ItemVenda();
+//			item.setQuantidade(quantidade == null ? new Double(0) : quantidade);
+//			item.setProduto(itemVenda.getProduto());
+//			item.setSubtotal(item.getQuantidade() * item.getProduto().getPrecoVenda());
+//			return item;
+//		}
+//		if(itemVenda == null) {
+//			item = new ItemVenda();
+//			item.setProduto(produto);
+//			item.setQuantidade(new Double(1));
+//			return item;
+//		}
+//		
+//		return itemVenda;
+//	}
 	
 	public void adicionaItem(List<ItemVenda> itens, ItemVenda item) {
 		boolean itemEncontrado = false;
@@ -128,18 +129,18 @@ public abstract class VendaService implements Serializable {
 	}
 	
 	public void removeItem(List<ItemVenda> itens, ItemVenda item, Produto produto) throws SiscomandaException {
-		item = clonaItemVenda(item, produto, produto == null ? item.getQuantidade() : 1);
+//		item = clonaItemVenda(item, produto, produto == null ? item.getQuantidade() : new Double(1));
 		List<ItemVenda> itensVendasTemp = itens;
 		
 		for(ItemVenda itemVenda : itensVendasTemp) {
 			if(itemVenda.getProduto().equals(produto == null ? item.getProduto() : produto)) {
-				if(item.getQuantidade() <= new Integer(0)) {
+				if(item.getQuantidade() <= new Double(0)) {
 					throw new SiscomandaException("Não são permitidos valores negativos, zerados ou vazios.");
 				}
 				if(item.getQuantidade() > itemVenda.getQuantidade()) {
-					throw new SiscomandaException("Somente " + itemVenda.getQuantidade() + " iten(s) pode(m) ser removido(s)!");
+					throw new SiscomandaException("Somente " + StringUtil.converterDouble(itemVenda.getQuantidade()) + " iten(s) pode(m) ser removido(s)!");
 				}
-				if(itemVenda.getQuantidade() == new Integer(1) || itemVenda.getQuantidade() == item.getQuantidade()) {
+				if(itemVenda.getQuantidade().equals(new Double(1)) || itemVenda.getQuantidade().equals(item.getQuantidade())) {
 					itens.remove(itemVenda);
 					break;
 				}
@@ -154,7 +155,7 @@ public abstract class VendaService implements Serializable {
 	public ItemVenda adicionaItemPedidoVenda(Produto produto) {
 		ItemVenda item = new ItemVenda();
 		item.setProduto(produto);
-		item.setQuantidade(1);
+		item.setQuantidade(new Double(1));
 		item.setSubtotal(produto.getPrecoVenda() * item.getQuantidade());
 		return item;
 	}
