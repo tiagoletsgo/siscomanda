@@ -9,6 +9,7 @@ import javax.faces.application.FacesMessage;
 import javax.inject.Inject;
 
 import br.com.siscomanda.exception.SiscomandaException;
+import br.com.siscomanda.model.Adicional;
 import br.com.siscomanda.model.ItemVenda;
 import br.com.siscomanda.model.Produto;
 import br.com.siscomanda.model.Venda;
@@ -24,6 +25,8 @@ public abstract class VendaService implements Serializable {
 	private DefinicaoGeralService definicaoGeralService;
 	
 	private List<Produto> listTemp = new ArrayList<>();
+	
+	private static String ADICIONAL = "adicional";
 	
 	public Double getTaxaServico() {
 		Double valor = definicaoGeralService.carregaDefinicaoSistema().getTaxaServico();
@@ -92,44 +95,73 @@ public abstract class VendaService implements Serializable {
 		return itens;
 	}
 	
-//	public ItemVenda clonaItemVenda(ItemVenda itemVenda, Produto produto, Double quantidade) {
-//		ItemVenda item = null;
-//		if(produto == null) {
-//			item = new ItemVenda();
-//			item.setQuantidade(quantidade == null ? new Double(0) : quantidade);
-//			item.setProduto(itemVenda.getProduto());
-//			item.setSubtotal(item.getQuantidade() * item.getProduto().getPrecoVenda());
-//			return item;
+	public ItemVenda clonaItemVenda(ItemVenda itemVenda, Produto produto, Double quantidade) {
+		ItemVenda item = null;
+		if(produto == null) {
+			item = new ItemVenda();
+			item.setQuantidade(quantidade == null ? new Double(0) : quantidade);
+			item.setProduto(itemVenda.getProduto());
+			item.setSubtotal(item.getQuantidade() * item.getProduto().getPrecoVenda());
+			return item;
+		}
+		if(itemVenda == null) {
+			item = new ItemVenda();
+			item.setProduto(produto);
+			item.setQuantidade(new Double(1));
+			return item;
+		}
+		
+		return itemVenda;
+	}
+	
+//	public void adicionaItem(List<ItemVenda> itens, ItemVenda item) {
+//		boolean itemEncontrado = false;
+//		for(ItemVenda itemVenda : itens) {
+//			if(itemVenda.getProduto().equals(item.getProduto())) {
+//				itemVenda.setQuantidade(itemVenda.getQuantidade() + 1);
+//				itemVenda.setPrecoVenda(item.getProduto().getPrecoVenda());
+//				itemVenda.setSubtotal(itemVenda.getQuantidade() * itemVenda.getProduto().getPrecoVenda());
+//				itemEncontrado = true;
+//				break;
+//			}
 //		}
-//		if(itemVenda == null) {
-//			item = new ItemVenda();
-//			item.setProduto(produto);
-//			item.setQuantidade(new Double(1));
-//			return item;
+//		if(!itens.contains(item) && !itemEncontrado) {
+//			item.setPrecoVenda(item.getProduto().getPrecoVenda());
+//			itens.add(item);
 //		}
-//		
-//		return itemVenda;
 //	}
 	
-	public void adicionaItem(List<ItemVenda> itens, ItemVenda item) {
-		boolean itemEncontrado = false;
-		for(ItemVenda itemVenda : itens) {
-			if(itemVenda.getProduto().equals(item.getProduto())) {
-				itemVenda.setQuantidade(itemVenda.getQuantidade() + 1);
-				itemVenda.setPrecoVenda(item.getProduto().getPrecoVenda());
-				itemVenda.setSubtotal(itemVenda.getQuantidade() * itemVenda.getProduto().getPrecoVenda());
-				itemEncontrado = true;
-				break;
-			}
-		}
-		if(!itens.contains(item) && !itemEncontrado) {
-			item.setPrecoVenda(item.getProduto().getPrecoVenda());
+	public void incluirItem(List<ItemVenda> itens, List<Adicional> adicionais, ItemVenda item, Produto produto, Double quantidade) {
+		ItemVenda itemVenda = new ItemVenda();
+		itemVenda.setId(setIdTemporarioItem(itens));
+		itemVenda.setProduto(produto);
+		itemVenda.setQuantidade(quantidade);
+		itemVenda.setPrecoVenda(produto.getPrecoVenda());
+		itemVenda.setObservacao(item.getObservacao());
+		itemVenda.setAdicionais(adicionais);
+		itemVenda.setSubtotal(quantidade * produto.getPrecoVenda());
+		itens.add(itemVenda);
+	}
+	
+	public void incluirAdicionais(List<ItemVenda> itens, List<Adicional> adicionais) {
+		for(Adicional adicional : adicionais) {
+			Produto produto = new Produto();
+			produto.setId(adicional.getId());
+			produto.setCodigoEan("+");
+			produto.setDescricao(adicional.getDescricao().concat(" (").concat(ADICIONAL.toUpperCase()).concat(")"));
+			
+			ItemVenda item = new ItemVenda();
+			item.setId(setIdTemporarioItem(itens));
+			item.setPrecoVenda(adicional.getPrecoVenda());
+			item.setProduto(produto);
+			item.setQuantidade(new Double(1));
+			item.setSubtotal(item.getQuantidade() * item.getPrecoVenda());
 			itens.add(item);
 		}
 	}
 	
 	public void removeItem(List<ItemVenda> itens, ItemVenda item, Produto produto) throws SiscomandaException {
-//		item = clonaItemVenda(item, produto, produto == null ? item.getQuantidade() : new Double(1));
+		item = clonaItemVenda(item, produto, produto == null ? item.getQuantidade() : new Double(1));
 		List<ItemVenda> itensVendasTemp = itens;
 		
 		for(ItemVenda itemVenda : itensVendasTemp) {

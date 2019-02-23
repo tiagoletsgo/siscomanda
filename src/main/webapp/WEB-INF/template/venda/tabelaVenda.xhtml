@@ -15,7 +15,16 @@
 			<div class="col-md-12 col-sm-12 col-xs-12">
 				<p:dataTable id="tabelaItemPedido" styleClass="table table-striped jambo_table" value="#{crudBean.entity.itens}" var="item"
 					emptyMessage="Sem dados" scrollable="true" scrollHeight="350">
-										
+					
+					<p:column styleClass="ui-datatable-center" style="width: 7%; border-radius: 0px;">
+						<f:facet name="header">
+							<h:outputLabel value="Código" />
+						</f:facet>
+						<h:outputText value="#{item.produto.codigoEan}">
+							<f:convertNumber maxIntegerDigits="6" pattern="000000" />
+						</h:outputText>
+					</p:column>
+					
 					<p:column styleClass="ui-datatable-left" style="width: 55%; border-radius: 0px;">
 						<f:facet name="header">
 							<h:outputLabel value="Produto" />

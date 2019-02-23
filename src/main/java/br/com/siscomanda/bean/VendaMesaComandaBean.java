@@ -2,7 +2,6 @@ package br.com.siscomanda.bean;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -47,8 +46,6 @@ public class VendaMesaComandaBean extends BaseBean<Venda> implements Serializabl
 	
 	private String filterPesquisar;
 	
-	private static String ADICIONAL = "adicional";
-	
 	@Override
 	protected void init() {
 		getEntity().setStatus(EStatus.EM_ABERTO);
@@ -66,31 +63,8 @@ public class VendaMesaComandaBean extends BaseBean<Venda> implements Serializabl
 	}
 			
 	public void btnAdicionaItem() {
-		ItemVenda item = new ItemVenda();
-		item.setId(service.setIdTemporarioItem(getEntity().getItens()));
-		item.setProduto(produtoSelecionado);
-		item.setQuantidade(quantidade);
-		item.setPrecoVenda(produtoSelecionado.getPrecoVenda());
-		item.setObservacao(itemSelecionado.getObservacao());
-		item.setSubtotal(item.getQuantidade() * item.getPrecoVenda());
-		getEntity().getItens().add(item);
-		
-		for(Adicional adicional : selectManyCheckBoxAdicionais) {			
-			item = new ItemVenda();
-			Produto prod = new Produto();
-			prod.setDescricao(adicional.getDescricao().concat(" (").concat(ADICIONAL.toUpperCase()).concat(")"));
-			item.setId(service.setIdTemporarioItem(getEntity().getItens()));
-			item.setPrecoVenda(adicional.getPrecoVenda());
-			item.setProduto(prod);
-			item.setQuantidade(new Double(1));
-			item.setSubtotal(item.getQuantidade() * item.getPrecoVenda());
-			getEntity().getItens().add(item);
-		}
-		
-//		ItemVenda item = service.adicionaItemPedidoVenda(produto);
-//		item.setId(service.setIdTemporarioItem(getEntity().getItens()));
-//		service.adicionaItem(getEntity().getItens(), item);
-//		service.ordenarItemMenorParaMaior(getEntity().getItens());
+		service.incluirItem(getEntity().getItens(), getSelectManyCheckBoxAdicionais(), getItemSelecionado(), getProdutoSelecionado(), getQuantidade());
+		service.incluirAdicionais(getEntity().getItens(), getSelectManyCheckBoxAdicionais());
 		afterAction();
 	}
 		

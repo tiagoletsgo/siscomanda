@@ -1,6 +1,8 @@
 package br.com.siscomanda.model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 import br.com.siscomanda.base.model.BaseEntity;
 
@@ -25,6 +27,9 @@ public class ItemVenda extends BaseEntity implements Serializable, Comparable<It
 	
 //	@Column(name = "observacao")
 	private String observacao;
+	
+//	@Transient
+	private List<Adicional> adicionais = new ArrayList<Adicional>();
 
 	public Produto getProduto() {
 		return produto;
@@ -64,6 +69,14 @@ public class ItemVenda extends BaseEntity implements Serializable, Comparable<It
 
 	public void setObservacao(String observacao) {
 		this.observacao = observacao;
+	}
+
+	public List<Adicional> getAdicionais() {
+		return adicionais;
+	}
+
+	public void setAdicionais(List<Adicional> adicionais) {
+		this.adicionais = adicionais;
 	}
 
 	@Override
