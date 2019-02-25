@@ -55,17 +55,28 @@ public class VendaMesaComandaBean extends BaseBean<Venda> implements Serializabl
 		getEntity().setTaxaServico(new Double(0));
 		getEntity().setTaxaEntrega(new Double(0));
 		getEntity().setDesconto(new Double(0));
+		getEntity().setValorPago(new Double(0));
 		setQuantidade(new Double(1));
 		
 		mesasComandas = service.geraMesasComandas();
 		produtos = service.buscaProduto("PIZZA");
 		adicionais = service.getAdicionais();
 	}
-			
+	
+	public void btnSalvar() {		
+		try {
+			Venda venda  = service.salvar(getEntity());
+			getEntity().setId(venda.getId());
+		}
+		catch(SiscomandaException e) {
+			JSFUtil.addMessage(FacesMessage.SEVERITY_ERROR, "Erro ao salvar. " + e.getMessage());
+		}
+	}
+	
 	public void btnAdicionaItem() {
 		try {
-			service.incluirItem(getEntity().getItens(), getSelectManyCheckBoxAdicionais(), getItemSelecionado(), getProdutoSelecionado(), getQuantidade());
-			service.incluirAdicionais(getEntity().getItens(), getSelectManyCheckBoxAdicionais());
+			service.incluirItem(getEntity(), getSelectManyCheckBoxAdicionais(), getItemSelecionado(), getProdutoSelecionado(), getQuantidade());
+			service.incluirAdicionais(getEntity(), getSelectManyCheckBoxAdicionais());
 			afterAction();
 		}
 		catch(SiscomandaException e) {

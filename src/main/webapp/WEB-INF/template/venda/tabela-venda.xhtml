@@ -20,7 +20,7 @@
 						<f:facet name="header">
 							<h:outputLabel value="Código" />
 						</f:facet>
-						<h:outputText value="#{item.produto.codigoEan}">
+						<h:outputText value="#{item.id}">
 							<f:convertNumber maxIntegerDigits="6" pattern="000000" />
 						</h:outputText>
 					</p:column>
@@ -30,7 +30,12 @@
 							<h:outputLabel value="Produto" />
 						</f:facet>
 						<h:outputText value="#{item.produto.descricao}" />
-						<h:outputText value=" (#{item.observacao}) " styleClass="text-danger" rendered="#{not empty item.observacao}" />
+						<small>
+							<i><h:outputText value=" (#{item.observacao}) " styleClass="text-danger" rendered="#{not empty item.observacao}" /></i>
+						</small>
+						<small>
+							<i><h:outputText value=" (Adicional) " styleClass="text-danger" rendered="#{item.produto.codigoEan eq 'ADC000'}" /></i>
+						</small>
 					</p:column>
 					
 					<p:column styleClass="ui-datatable-center" style="width: 10%; border-radius: 0px;">

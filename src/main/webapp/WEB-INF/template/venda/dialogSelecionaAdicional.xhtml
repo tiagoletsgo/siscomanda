@@ -22,26 +22,30 @@
 				</h:inputText>
 			</div>
 			
-			<div class="col-md-12 col-sm-12 col-xs-12">
-				<label>Observação.:</label>
-				<h:inputText value="#{crudBean.itemSelecionado.observacao}" styleClass="form-control" />
-			</div>
+			<h:panelGroup layout="block" id="grid_observacao" rendered="#{crudBean.produtoSelecionado.permiteAdicional}">
+				<div class="col-md-12 col-sm-12 col-xs-12">
+					<label>Observação.:</label>
+					<h:inputText id="dialogSelecionaAdicionalInpObservacao" value="#{crudBean.itemSelecionado.observacao}" styleClass="form-control" onkeyup="maiuscula(this)" disabled="#{!crudBean.produtoSelecionado.permiteAdicional}" />
+				</div>
+			</h:panelGroup>
 		</div>
 		
 		<div class="row">
-			<div class="col-md-12 col-sm-12 col-xs-12">
-				<label>Pesquisa produto adicional.:</label>
-				<h:inputText value="#{crudBean.filterPesquisar}" styleClass="form-control" >
-					<p:ajax event="keyup" process="@this" global="false" delay="400" update=":crudform:selectManyCheckboxAdicionais" listener="#{crudBean.ajaxPesquisaAdicional}" />
-				</h:inputText>
-			</div>
-			
-			<div class="col-md-12 col-sm-12 col-xs-12">
-				<p:selectManyCheckbox value="#{crudBean.selectManyCheckBoxAdicionais}" id="selectManyCheckboxAdicionais" layout="grid" columns="1" converter="entityConverter">
-					<f:selectItems value="#{crudBean.adicionais}" var="adicional" itemLabel="#{adicional.descricao} - #{crudBean.formatMoeda(adicional.precoVenda)}" itemValue="#{adicional}" />
-					<p:ajax event="change" process="@this" global="false" update=":crudform:selectManyCheckboxAdicionais" />
-				</p:selectManyCheckbox>
-			</div>
+			<h:panelGroup layout="block" id="grid_pesquisa_adicional" rendered="#{crudBean.produtoSelecionado.permiteAdicional}">
+				<div class="col-md-12 col-sm-12 col-xs-12">
+					<label>Pesquisa produto adicional.:</label>
+					<h:inputText id="dialogSelecionaAdicionalInpPesquisa" value="#{crudBean.filterPesquisar}" styleClass="form-control" disabled="#{!crudBean.produtoSelecionado.permiteAdicional}" >
+						<p:ajax event="keyup" process="@this" global="false" delay="400" update=":crudform:selectManyCheckboxAdicionais" listener="#{crudBean.ajaxPesquisaAdicional}" />
+					</h:inputText>
+				</div>
+				
+				<div class="col-md-12 col-sm-12 col-xs-12">
+					<p:selectManyCheckbox value="#{crudBean.selectManyCheckBoxAdicionais}" id="selectManyCheckboxAdicionais" layout="grid" columns="1" converter="entityConverter">
+						<f:selectItems value="#{crudBean.adicionais}" var="adicional" itemLabel="#{adicional.descricao} - #{crudBean.formatMoeda(adicional.precoVenda)}" itemValue="#{adicional}" />
+						<p:ajax event="change" process="@this" global="false" update=":crudform:selectManyCheckboxAdicionais" />
+					</p:selectManyCheckbox>
+				</div>
+			</h:panelGroup>
 		</div>
 		
 		<f:facet name="footer">

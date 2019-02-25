@@ -5,39 +5,75 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+
 import br.com.siscomanda.base.model.BaseEntity;
 import br.com.siscomanda.enumeration.EStatus;
 
+@Entity
+@Table(name = "venda")
 public class Venda extends BaseEntity implements Serializable {
 
 	private static final long serialVersionUID = 2583564472683970706L;
 	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "form_pagamento_id", nullable = true)
 	private FormaPagamento formaPagamento;
 	
+	@OneToMany(mappedBy = "venda", fetch = FetchType.LAZY, cascade = CascadeType.ALL, targetEntity = ItemVenda.class)
 	private List<ItemVenda> itens = new ArrayList<>();
 	
+	@Column(name = "pago", nullable = false)
 	private boolean pago;
 	
+	@Enumerated(EnumType.STRING)
+	@Column(name = "status", nullable = false)
 	private EStatus status;
 	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "cliente_id", nullable = true)
 	private Cliente cliente;
 	
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = "data_iniciado", nullable = false)
 	private Date iniciado;
 	
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = "data_finalizado", nullable = true)
 	private Date finalizado;
 	
+	@Column(name = "subtotal", nullable = false)
 	private Double subtotal;
 	
+	@Column(name = "taxa_servico", nullable = false)
 	private Double taxaServico;
 	
+	@Column(name = "taxa_entrega", nullable = false)
 	private Double taxaEntrega;
 	
+	@Column(name = "desconto", nullable = false)
 	private Double desconto;
 
 //	private Usuario operador
 	
+	@Column(name = "total", nullable = false)
 	private Double total;
 	
+	@Column(name = "valor_pago", nullable = false)
+	private Double valorPago;
+	
+	@Column(name = "mesa_comanda", nullable = false)
 	private int mesaOuComanda;
 
 	public FormaPagamento getFormaPagamento() {
@@ -142,5 +178,13 @@ public class Venda extends BaseEntity implements Serializable {
 
 	public void setTaxaEntrega(Double taxaEntrega) {
 		this.taxaEntrega = taxaEntrega;
+	}
+
+	public Double getValorPago() {
+		return valorPago;
+	}
+
+	public void setValorPago(Double valorPago) {
+		this.valorPago = valorPago;
 	}
 }

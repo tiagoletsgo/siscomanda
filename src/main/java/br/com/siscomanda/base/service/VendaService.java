@@ -25,8 +25,6 @@ public abstract class VendaService implements Serializable {
 	
 	private List<Produto> listTemp = new ArrayList<>();
 	
-	private static String ADICIONAL = "adicional";
-	
 	public Double getTaxaServico() {
 		Double valor = definicaoGeralService.carregaDefinicaoSistema().getTaxaServico();
 		return (valor / 100);
@@ -89,54 +87,66 @@ public abstract class VendaService implements Serializable {
 		return id;
 	}
 	
+	public void removeIdTemporarioItem(List<ItemVenda> itens) {
+		for(ItemVenda item : itens) {
+			item.setId(null);
+		}
+	}
+	
 	public List<ItemVenda> ordenarItemMenorParaMaior(List<ItemVenda> itens) {
 		Collections.sort(itens);
 		return itens;
 	}
 			
-	public void incluirItem(List<ItemVenda> itens, List<Adicional> adicionais, ItemVenda item, Produto produto, Double quantidade) throws SiscomandaException {
+	public void incluirItem(Venda venda, List<Adicional> adicionais, ItemVenda item, Produto produto, Double quantidade) throws SiscomandaException {
 		
 		if(quantidade.equals(new Double(0))) {
 			throw new SiscomandaException(produto.getDescricao() + " necessário informar a quantidade antes de salvar. Por favor tente novamente.");
 		}
 		
 		ItemVenda itemVenda = new ItemVenda();
-		itemVenda.setId(setIdTemporarioItem(itens));
+		itemVenda.setId(setIdTemporarioItem(venda.getItens()));
 		itemVenda.setProduto(produto);
 		itemVenda.setQuantidade(quantidade);
 		itemVenda.setPrecoVenda(produto.getPrecoVenda());
 		itemVenda.setObservacao(item.getObservacao());
 		itemVenda.setSubtotal(quantidade * produto.getPrecoVenda());
+		itemVenda.setVenda(venda);
 		
 		List<Adicional> tempAdicionais = new ArrayList<>();
-		for(Adicional adc : adicionais) {
-			Adicional adicional = new Adicional();
-			adicional.setId(adc.getId());
-			adicional.setDescricao(adc.getDescricao());
-			adicional.setPrecoVenda(adc.getPrecoVenda());
-			adicional.setProduto(produto);
-			
-			tempAdicionais.add(adicional);
+		if(adicionais != null) {
+			for(Adicional adc : adicionais) {
+				Adicional adicional = new Adicional();
+				adicional.setId(adc.getId());
+				adicional.setDescricao(adc.getDescricao());
+				adicional.setPrecoVenda(adc.getPrecoVenda());
+				adicional.setProduto(produto);
+				
+				tempAdicionais.add(adicional);
+			}
 		}
 		
 		itemVenda.setAdicionais(tempAdicionais);
-		itens.add(itemVenda);
+		venda.getItens().add(itemVenda);
 	}
 	
-	public void incluirAdicionais(List<ItemVenda> itens, List<Adicional> adicionais) {
-		for(Adicional adicional : adicionais) {
-			Produto produto = new Produto();
-			produto.setId(adicional.getId());
-			produto.setCodigoEan("+");
-			produto.setDescricao(adicional.getDescricao().concat(" (").concat(ADICIONAL.toUpperCase()).concat(")"));
-			
-			ItemVenda item = new ItemVenda();
-			item.setId(setIdTemporarioItem(itens));
-			item.setPrecoVenda(adicional.getPrecoVenda());
-			item.setProduto(produto);
-			item.setQuantidade(new Double(1));
-			item.setSubtotal(item.getQuantidade() * item.getPrecoVenda());
-			itens.add(item);
+	public void incluirAdicionais(Venda venda, List<Adicional> adicionais) {
+		if(adicionais != null) {
+			for(Adicional adicional : adicionais) {
+				Produto produto = new Produto();
+				produto.setId(adicional.getId());
+				produto.setCodigoEan("ADC000");
+				produto.setDescricao(adicional.getDescricao());
+				
+				ItemVenda item = new ItemVenda();
+				item.setId(setIdTemporarioItem(venda.getItens()));
+				item.setPrecoVenda(adicional.getPrecoVenda());
+				item.setProduto(produto);
+				item.setQuantidade(new Double(1));
+				item.setSubtotal(item.getQuantidade() * item.getPrecoVenda());
+				item.setVenda(venda);
+				venda.getItens().add(item);
+			}
 		}
 	}
 	
@@ -179,7 +189,7 @@ public abstract class VendaService implements Serializable {
 	
 	public void removeAdicionais(List<ItemVenda> itens, ItemVenda item, Double quantidade) {
 		
-		if(item.getAdicionais().isEmpty() || quantidade > 1 || quantidade <= new Double(0)) {
+		if(item.getAdicionais().isEmpty() || quantidade > 1 || quantidade <= new Double(0) || quantidade > item.getQuantidade()) {
 			return;
 		}
 		

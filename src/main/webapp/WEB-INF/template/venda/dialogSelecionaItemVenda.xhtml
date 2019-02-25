@@ -62,7 +62,7 @@
 						<p:column styleClass="ui-datatable-center" style="width: 12%; border-radius: 0px">
 							<f:facet name="header"><h:outputLabel value="Incluir" /></f:facet>
 							<p:commandLink styleClass="btn btn-round btn-success btn-xs fa fa-plus" oncomplete="PF('dlgSelecionaAdicional').show();" 
-								update=":crudform:dialogSelecionaAdicional">
+								update=":crudform:dialogSelecionaAdicional :crudform:grid_observacao :crudform:grid_pesquisa_adicional">
 								<f:setPropertyActionListener value="#{produto}" target="#{crudBean.produtoSelecionado}" />
 							</p:commandLink>
 						</p:column>

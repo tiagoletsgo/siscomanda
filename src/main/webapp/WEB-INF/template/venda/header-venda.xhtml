@@ -21,7 +21,9 @@
 			
 			<div class="col-md-3 col-sm-3 col-xs-12">
 				<label>Nº Pedido.: </label>
-				<h:outputText value="000001" styleClass="form-control" />
+				<h:outputText value="#{crudBean.entity.id}" styleClass="form-control">
+					<f:convertNumber maxIntegerDigits="6" pattern="000000" />
+				</h:outputText>
 			</div>
 			
 			<div class="col-md-4 col-sm-4 col-xs-12">

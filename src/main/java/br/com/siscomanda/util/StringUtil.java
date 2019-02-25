@@ -1,6 +1,5 @@
 package br.com.siscomanda.util;
 
-import java.text.DecimalFormat;
 import java.util.List;
 
 import br.com.siscomanda.exception.SiscomandaException;
@@ -10,8 +9,7 @@ public class StringUtil {
 	private static String simboloReal = "R$";
 	
 	public static String parseDouble(Double valor) {
-		DecimalFormat decimalFormat = new DecimalFormat("#.##");
-		return simboloReal.concat(" ").concat(decimalFormat.format(valor));
+		return simboloReal.concat(" ").concat(String.format("%.2f", valor));
 	}
 	
 	public static String converterDouble(Double valor) {

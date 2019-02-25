@@ -4,31 +4,43 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+import javax.persistence.Transient;
+
 import br.com.siscomanda.base.model.BaseEntity;
 
-//@Entity
-//@Table(name = "item_venda")
+@Entity
+@Table(name = "item_venda")
 public class ItemVenda extends BaseEntity implements Serializable, Comparable<ItemVenda> {
 
 	private static final long serialVersionUID = 7754528961077613833L;
 	
-//	@ManyToOne(fetch = FetchType.LAZY)
-//	@JoinColumn(name = "produto_id", nullable = false)
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "produto_id", nullable = false)
 	private Produto produto;
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "venda_id", nullable = false)
+	private Venda venda;
 		
-//	@Column(name = "quantidade", nullable = false)
+	@Column(name = "quantidade", nullable = false)
 	private Double quantidade;
 	
-//	@Column(name = "subtotal", nullable = false)
+	@Column(name = "subtotal", nullable = false)
 	private Double subtotal;
 	
-//	@Column(name = "preco_venda", nullable = false)
+	@Column(name = "preco_venda", nullable = false)
 	private Double precoVenda;
 	
-//	@Column(name = "observacao")
+	@Column(name = "observacao")
 	private String observacao;
 	
-//	@Transient
+	@Transient
 	private List<Adicional> adicionais = new ArrayList<Adicional>();
 
 	public Produto getProduto() {
@@ -77,6 +89,14 @@ public class ItemVenda extends BaseEntity implements Serializable, Comparable<It
 
 	public void setAdicionais(List<Adicional> adicionais) {
 		this.adicionais = adicionais;
+	}
+	
+	public Venda getVenda() {
+		return venda;
+	}
+
+	public void setVenda(Venda venda) {
+		this.venda = venda;
 	}
 
 	@Override
