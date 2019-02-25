@@ -83,7 +83,7 @@ public class VendaMesaComandaBean extends BaseBean<Venda> implements Serializabl
 				item.setQuantidade(itemSelecionado.getQuantidade());
 			}
 			
-			service.removeAdicionais(getEntity().getItens(), item);
+			service.removeAdicionais(getEntity().getItens(), item, quantidade);
 			service.removeItem(getEntity().getItens(), item, quantidade);
 			afterAction();
 		}

@@ -177,9 +177,9 @@ public abstract class VendaService implements Serializable {
 		}
 	}
 	
-	public void removeAdicionais(List<ItemVenda> itens, ItemVenda item) {
+	public void removeAdicionais(List<ItemVenda> itens, ItemVenda item, Double quantidade) {
 		
-		if(item.getAdicionais().isEmpty() || item.getQuantidade() > 1 || item.getQuantidade() <= new Double(0)) {
+		if(item.getAdicionais().isEmpty() || quantidade > 1 || quantidade <= new Double(0)) {
 			return;
 		}
 		
