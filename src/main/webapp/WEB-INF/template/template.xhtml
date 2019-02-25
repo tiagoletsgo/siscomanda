@@ -103,7 +103,7 @@
 						</div>
 					</p:dialog>
 					
-					<p:growl autoUpdate="true" life="6000" />
+					<p:growl autoUpdate="true" life="8000" />
 					<!-- Fim Conteudo -->	
 				</ui:insert>
 				
@@ -125,7 +125,8 @@
 				$(function(){
 					$(".currency").maskMoney({
 						thousands:'.', 
-						decimal:','
+						decimal:',',
+						allowZero: true
 					});
 				});
 			 	

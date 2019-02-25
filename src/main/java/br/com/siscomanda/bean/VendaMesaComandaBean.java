@@ -1,7 +1,7 @@
 package br.com.siscomanda.bean;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -55,7 +55,7 @@ public class VendaMesaComandaBean extends BaseBean<Venda> implements Serializabl
 		getEntity().setTaxaServico(new Double(0));
 		getEntity().setTaxaEntrega(new Double(0));
 		getEntity().setDesconto(new Double(0));
-		setQuantidade(new BigDecimal(1).doubleValue());
+		setQuantidade(new Double(1));
 		
 		mesasComandas = service.geraMesasComandas();
 		produtos = service.buscaProduto("PIZZA");
@@ -63,19 +63,32 @@ public class VendaMesaComandaBean extends BaseBean<Venda> implements Serializabl
 	}
 			
 	public void btnAdicionaItem() {
-		service.incluirItem(getEntity().getItens(), getSelectManyCheckBoxAdicionais(), getItemSelecionado(), getProdutoSelecionado(), getQuantidade());
-		service.incluirAdicionais(getEntity().getItens(), getSelectManyCheckBoxAdicionais());
-		afterAction();
-	}
-		
-	public void btnRemoveItem(ItemVenda itemVenda, Produto produto) {
 		try {
-//			itemVenda = service.clonaItemVenda(itemVenda, produto, getQuantidade());
-			service.removeItem(getEntity().getItens(), itemVenda, produto);
+			service.incluirItem(getEntity().getItens(), getSelectManyCheckBoxAdicionais(), getItemSelecionado(), getProdutoSelecionado(), getQuantidade());
+			service.incluirAdicionais(getEntity().getItens(), getSelectManyCheckBoxAdicionais());
 			afterAction();
 		}
 		catch(SiscomandaException e) {
-			JSFUtil.addMessage(FacesMessage.SEVERITY_ERROR, e.getMessage());
+			JSFUtil.addMessage(FacesMessage.SEVERITY_ERROR, "Erro ao salvar. " + e.getMessage());
+		}
+	}
+		
+	public void btnRemoveItem() {
+		try {
+			ItemVenda item = service.clonar(produtoSelecionado, getSelectManyCheckBoxAdicionais());
+			
+			if(item == null) {
+				item = service.clonar(itemSelecionado.getProduto(), itemSelecionado.getAdicionais());
+				item.setId(itemSelecionado.getId());
+				item.setQuantidade(itemSelecionado.getQuantidade());
+			}
+			
+			service.removeAdicionais(getEntity().getItens(), item);
+			service.removeItem(getEntity().getItens(), item, quantidade);
+			afterAction();
+		}
+		catch(SiscomandaException e) {
+			JSFUtil.addMessage(FacesMessage.SEVERITY_ERROR, "Erro ao remover. " + e.getMessage());
 		}
 	}
 
@@ -96,10 +109,11 @@ public class VendaMesaComandaBean extends BaseBean<Venda> implements Serializabl
 		getEntity().setSubtotal(service.calculaSubtotal(getEntity().getItens()));
 		getEntity().setTaxaServico(getEntity().getSubtotal() * service.getTaxaServico());		
 		getEntity().setTotal(service.calculaTotal(getEntity()));
+		setQuantidade(new Double(1));
 		
 		itemSelecionado = null;
 		produtoSelecionado = null;
-		selectManyCheckBoxAdicionais = null;
+		selectManyCheckBoxAdicionais = new ArrayList<>();
 	}
 	
 	@Override
@@ -124,14 +138,6 @@ public class VendaMesaComandaBean extends BaseBean<Venda> implements Serializabl
 	
 	public String converter(Double valor) {
 		return StringUtil.converterDouble(valor);
-	}
-	
-	public String getQuantidadeConverter() {
-		return StringUtil.converterDouble(quantidade);
-	}
-	
-	public void setQuantidadeConverter(String valor) {
-		this.quantidade = Double.parseDouble(valor);
 	}
 
 	public void setItemSelecionado(ItemVenda itemSelecionado) {

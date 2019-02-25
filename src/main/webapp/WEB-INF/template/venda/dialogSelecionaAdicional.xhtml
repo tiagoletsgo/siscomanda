@@ -17,7 +17,9 @@
 			
 			<div class="col-md-2 col-sm-2 col-xs-12">
 				<label>Quantidade.:</label>
-				<h:outputText value="#{crudBean.converter(crudBean.quantidade)}" styleClass="form-control" />
+				<h:inputText value="#{crudBean.quantidade}" styleClass="form-control currency">
+					<f:convertNumber minFractionDigits="2" maxFractionDigits="2" />
+				</h:inputText>
 			</div>
 			
 			<div class="col-md-12 col-sm-12 col-xs-12">
@@ -48,6 +50,18 @@
 			</h:commandButton>
 			<h:commandButton onclick="PF('dlgSelecionaAdicional').hide(); return false;" styleClass="btn btn-danger btn-xs" value="Cancelar" />
 		</f:facet>
+		
+		<script>
+		 	/* <![CDATA[ */
+			$(function(){
+				$(".currency").maskMoney({
+					thousands:'.', 
+					decimal:',',
+					allowZero: true
+				});
+			});
+			/* ]]> */
+		</script>
 	</p:dialog>
 	
 </ui:composition>

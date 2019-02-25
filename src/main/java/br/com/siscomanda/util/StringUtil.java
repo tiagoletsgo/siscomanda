@@ -15,6 +15,10 @@ public class StringUtil {
 	}
 	
 	public static String converterDouble(Double valor) {
+		if(valor == null) {
+			return new Double(0).toString();
+		}
+		
 		if(valor.toString().contains(".0")) {
 			return valor.toString().replace(".0", "");
 		}

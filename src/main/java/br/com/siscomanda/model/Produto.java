@@ -57,7 +57,18 @@ public class Produto extends BaseEntity implements Serializable {
 	
 	@Column(name = "permite_meio_a_meio", nullable = false)
 	private boolean permiteMeioAmeio;
-
+	
+	public Produto() {	}
+	
+	public Produto(Long id) {
+		setId(id);
+	}
+	
+	public Produto(Long id, String descricao) {
+		setId(id);
+		setDescricao(descricao);
+	}
+	
 	public String getDescricao() {
 		return descricao;
 	}

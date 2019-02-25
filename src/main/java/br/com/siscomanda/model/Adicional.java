@@ -46,6 +46,15 @@ public class Adicional extends BaseEntity implements Serializable {
 	
 	@Transient
 	private String descricaoCategoria;
+	
+	@Transient
+	private Produto produto;
+	
+	public Adicional() {	}
+	
+	public Adicional(Long id) {
+		setId(id);
+	}
 
 	public String getDescricao() {
 		return descricao;
@@ -101,5 +110,13 @@ public class Adicional extends BaseEntity implements Serializable {
 
 	public void setDescricaoCategoria(String descricaoCategoria) {
 		this.descricaoCategoria = descricaoCategoria;
+	}
+
+	public Produto getProduto() {
+		return produto;
+	}
+
+	public void setProduto(Produto produto) {
+		this.produto = produto;
 	}
 }

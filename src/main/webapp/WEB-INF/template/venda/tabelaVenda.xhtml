@@ -15,7 +15,7 @@
 			<div class="col-md-12 col-sm-12 col-xs-12">
 				<p:dataTable id="tabelaItemPedido" styleClass="table table-striped jambo_table" value="#{crudBean.entity.itens}" var="item"
 					emptyMessage="Sem dados" scrollable="true" scrollHeight="350">
-					
+										
 					<p:column styleClass="ui-datatable-center" style="width: 7%; border-radius: 0px;">
 						<f:facet name="header">
 							<h:outputLabel value="Código" />
@@ -48,7 +48,7 @@
 							<f:convertNumber type="currency" maxFractionDigits="2" minFractionDigits="2" />
 						</h:outputText>
 					</p:column>
-					
+										
 					<p:column styleClass="ui-datatable-left" style="width: 12%; border-radius: 0px;">
 						<f:facet name="header">
 							<h:outputLabel value="Subtotal" />
@@ -78,9 +78,10 @@
 		<div class="row">
 			<div class="col-md-12 col-sm-12 col-xs-12">
 				<label for="crudform:quantidade">Confirmar a quantidade de item(ns) à ser removido .: </label>
-				<h:inputText value="#{crudBean.quantidadeConverter}" styleClass="form-control somente-numero" onkeyup="somenteNumero(this)" maxlength="3">
-					<p:ajax event="change" process="@this" global="false" />
-				</h:inputText>
+				<p:inputText value="#{crudBean.quantidade}" styleClass="form-control currency">
+					<f:convertNumber minFractionDigits="2" maxFractionDigits="2" />
+					<p:ajax event="keyup" process="@this" global="false" delay="400" />
+				</p:inputText>
 			</div>
 			<div class="clearfix"></div>
 			<br />
@@ -88,9 +89,21 @@
 		
 		<f:facet name="footer">
 			<h:commandButton styleClass="btn btn-success btn-xs" value="Salvar" onclick="PF('dlgConfirmExcluirProduto').hide();">
-				<p:ajax event="click" update="crudform:tabelaItemPedido :crudform:headerVenda" process="@this" listener="#{crudBean.btnRemoveItem(crudBean.itemSelecionado, null)}" />
+				<p:ajax event="click" update="crudform:tabelaItemPedido :crudform:headerVenda" process="@this" listener="#{crudBean.btnRemoveItem()}" />
 			</h:commandButton>
 			<h:commandButton onclick="PF('dlgConfirmExcluirProduto').hide(); return false;" styleClass="btn btn-danger btn-xs" value="Fechar" />
 		</f:facet>
+		
+		<script>
+		 	/* <![CDATA[ */
+			$(function(){
+				$(".currency").maskMoney({
+					thousands:'.', 
+					decimal:',',
+					allowZero: true
+				});
+			});
+			/* ]]> */
+		</script>
 	</p:dialog>
 </ui:composition>
