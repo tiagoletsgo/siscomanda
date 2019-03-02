@@ -31,7 +31,7 @@ public class Venda extends BaseEntity implements Serializable {
 	@JoinColumn(name = "form_pagamento_id", nullable = true)
 	private FormaPagamento formaPagamento;
 	
-	@OneToMany(mappedBy = "venda", fetch = FetchType.LAZY, cascade = CascadeType.ALL, targetEntity = ItemVenda.class)
+	@OneToMany(mappedBy = "venda", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<ItemVenda> itens = new ArrayList<>();
 	
 	@Column(name = "pago", nullable = false)

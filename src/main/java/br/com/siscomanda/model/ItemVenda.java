@@ -20,11 +20,11 @@ public class ItemVenda extends BaseEntity implements Serializable, Comparable<It
 
 	private static final long serialVersionUID = 7754528961077613833L;
 	
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "produto_id", nullable = false)
 	private Produto produto;
 	
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "venda_id", nullable = false)
 	private Venda venda;
 		
@@ -42,7 +42,7 @@ public class ItemVenda extends BaseEntity implements Serializable, Comparable<It
 	
 	@Transient
 	private List<Adicional> adicionais = new ArrayList<Adicional>();
-
+		
 	public Produto getProduto() {
 		return produto;
 	}

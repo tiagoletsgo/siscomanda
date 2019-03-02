@@ -48,7 +48,7 @@ public class Adicional extends BaseEntity implements Serializable {
 	private String descricaoCategoria;
 	
 	@Transient
-	private Produto produto;
+	private Double quantidade;
 	
 	public Adicional() {	}
 	
@@ -112,11 +112,11 @@ public class Adicional extends BaseEntity implements Serializable {
 		this.descricaoCategoria = descricaoCategoria;
 	}
 
-	public Produto getProduto() {
-		return produto;
+	public Double getQuantidade() {
+		return quantidade;
 	}
 
-	public void setProduto(Produto produto) {
-		this.produto = produto;
+	public void setQuantidade(Double quantidade) {
+		this.quantidade = quantidade;
 	}
 }

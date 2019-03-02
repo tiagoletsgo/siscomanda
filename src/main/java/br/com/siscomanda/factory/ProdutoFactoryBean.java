@@ -44,6 +44,8 @@ public class ProdutoFactoryBean implements Serializable {
 			if(!produtos.isEmpty()) {
 				this.produtos = produtos;
 			}
+			
+			pesquisar = null;
 		} catch (SiscomandaException e) {
 			e.printStackTrace();
 		}

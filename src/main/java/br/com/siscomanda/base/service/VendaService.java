@@ -58,6 +58,20 @@ public abstract class VendaService implements Serializable {
 		return produtos;
 	}
 	
+	public Long setIdTemporarioItem(List<ItemVenda> itens) {
+		Long id = 1L;
+		for(ItemVenda item : itens) {
+			id = item.getId() +1;
+		}
+		return id;
+	}
+	
+	public void removeIdTemporario(List<ItemVenda> itens) {
+		for(ItemVenda item : itens) {
+			item.setId(null);
+		}
+	}
+	
 	public List<Integer> geraMesasComandas() {
 		List<Integer> mesas = new ArrayList<>();
 		int qtdMesasComandas = definicaoGeralService.carregaDefinicaoSistema().getQtdMesaComanda();
@@ -70,27 +84,25 @@ public abstract class VendaService implements Serializable {
 	public Double calculaSubtotal(List<ItemVenda> itens) {
 		Double subtotal = new Double(0);
 		for(ItemVenda item : itens) {
+			for(Adicional adicional : item.getAdicionais()) {
+				subtotal += adicional.getPrecoVenda();
+			}
+			
 			subtotal += item.getSubtotal();
 		}
 		return subtotal;
 	}
 	
+	public Double calculaSubTotalItem(ItemVenda item) {
+		Double subtotal = new Double(0);
+		for(Adicional adicional : item.getAdicionais()) {
+			subtotal += adicional.getPrecoVenda();
+		}
+		return subtotal + item.getPrecoVenda();
+	}
+	
 	public Double calculaTotal(Venda venda) {
 		return (venda.getSubtotal() + venda.getTaxaEntrega() + venda.getTaxaServico()) - venda.getDesconto();
-	}
-	
-	public Long setIdTemporarioItem(List<ItemVenda> itens) {
-		Long id = 1L;
-		for(ItemVenda item : itens) {
-			item.setId(item.getId() + 1);
-		}
-		return id;
-	}
-	
-	public void removeIdTemporarioItem(List<ItemVenda> itens) {
-		for(ItemVenda item : itens) {
-			item.setId(null);
-		}
 	}
 	
 	public List<ItemVenda> ordenarItemMenorParaMaior(List<ItemVenda> itens) {
@@ -120,7 +132,10 @@ public abstract class VendaService implements Serializable {
 				adicional.setId(adc.getId());
 				adicional.setDescricao(adc.getDescricao());
 				adicional.setPrecoVenda(adc.getPrecoVenda());
-				adicional.setProduto(produto);
+				adicional.setCategorias(adc.getCategorias());
+				adicional.setControlaEstoque(adc.getControlaEstoque());
+				adicional.setPrecoVenda(adc.getPrecoVenda());
+				adicional.setQuantidade(new Double(1));
 				
 				tempAdicionais.add(adicional);
 			}
@@ -129,27 +144,7 @@ public abstract class VendaService implements Serializable {
 		itemVenda.setAdicionais(tempAdicionais);
 		venda.getItens().add(itemVenda);
 	}
-	
-	public void incluirAdicionais(Venda venda, List<Adicional> adicionais) {
-		if(adicionais != null) {
-			for(Adicional adicional : adicionais) {
-				Produto produto = new Produto();
-				produto.setId(adicional.getId());
-				produto.setCodigoEan("ADC000");
-				produto.setDescricao(adicional.getDescricao());
-				
-				ItemVenda item = new ItemVenda();
-				item.setId(setIdTemporarioItem(venda.getItens()));
-				item.setPrecoVenda(adicional.getPrecoVenda());
-				item.setProduto(produto);
-				item.setQuantidade(new Double(1));
-				item.setSubtotal(item.getQuantidade() * item.getPrecoVenda());
-				item.setVenda(venda);
-				venda.getItens().add(item);
-			}
-		}
-	}
-	
+		
 	public ItemVenda clonar(Produto produto, List<Adicional> adicionais) {
 		ItemVenda item = null;
 		
@@ -163,7 +158,7 @@ public abstract class VendaService implements Serializable {
 		return item;
 	}
 	
-	public void removeItem(List<ItemVenda> itens, ItemVenda item, Double quantidade) throws SiscomandaException {
+	public List<ItemVenda> removeItem(List<ItemVenda> itens, ItemVenda item, Double quantidade) throws SiscomandaException {
 		List<ItemVenda> itensVenda = new ArrayList<>();
 		itensVenda.addAll(itens);
 		
@@ -185,32 +180,7 @@ public abstract class VendaService implements Serializable {
 				break;
 			}
 		}
-	}
-	
-	public void removeAdicionais(List<ItemVenda> itens, ItemVenda item, Double quantidade) {
 		
-		if(item.getAdicionais().isEmpty() || quantidade > 1 || quantidade <= new Double(0) || quantidade > item.getQuantidade()) {
-			return;
-		}
-		
-		List<Adicional> adicionais = new ArrayList<>();
-		adicionais.addAll(item.getAdicionais());
-		
-		List<ItemVenda> itensVenda = new ArrayList<>();
-		itensVenda.addAll(itens);
-		
-		for(ItemVenda itemVenda : itensVenda) {
-			if(itemVenda.getAdicionais().isEmpty()) {
-				for(Adicional adicional : adicionais) {
-					if(itemVenda.getProduto().getId().equals(adicional.getId()) && item.getProduto().equals(adicional.getProduto())
-							&& !item.getAdicionais().isEmpty()) {
-						
-						itens.remove(itemVenda);
-						item.getAdicionais().remove(adicional);
-						break;
-					}
-				}
-			}
-		}
+		return itens;
 	}
 }

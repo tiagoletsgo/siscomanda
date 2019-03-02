@@ -4,6 +4,12 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:p="http://primefaces.org/ui">
 	
+	<style>
+		.ui-column-title label {
+			text-transform: none !important;
+		}
+	</style>
+	
 	<h:panelGroup layout="block" id="tabelaPedido">
 		<div class="row">
 			<div class="col-md-12 col-sm-12 col-xs-12">
@@ -15,12 +21,19 @@
 			<div class="col-md-12 col-sm-12 col-xs-12">
 				<p:dataTable id="tabelaItemPedido" styleClass="table table-striped jambo_table" value="#{crudBean.entity.itens}" var="item"
 					emptyMessage="Sem dados" scrollable="true" scrollHeight="350">
+					
+					<p:column style="width: 4%; border-radius: 0px;">
+						<f:facet name="header">
+							<h:outputLabel value="#" />
+						</f:facet>
+						<p:rowToggler rendered="#{item.adicionais.size() > 0}" />
+					</p:column>
 										
 					<p:column styleClass="ui-datatable-center" style="width: 7%; border-radius: 0px;">
 						<f:facet name="header">
 							<h:outputLabel value="Código" />
 						</f:facet>
-						<h:outputText value="#{item.id}">
+						<h:outputText value="#{item.produto.id}">
 							<f:convertNumber maxIntegerDigits="6" pattern="000000" />
 						</h:outputText>
 					</p:column>
@@ -58,23 +71,93 @@
 						<f:facet name="header">
 							<h:outputLabel value="Subtotal" />
 						</f:facet>
-						<h:outputText value="#{item.subtotal}">
+						<h:outputText value="#{crudBean.calculaSubTotalItem(item)}">
 							<f:convertNumber type="currency" maxFractionDigits="2" minFractionDigits="2" />
 						</h:outputText>
 					</p:column>
 					
 					<p:column style="width: 13%; border-radius: 0px;">
 						<f:facet name="header">
-							<h:outputLabel value="#" />
+							<h:outputLabel value="Ação" />
 						</f:facet>
 						<p:commandButton update="crudform:dialogExcluirProduto" process="@this" oncomplete="PF('dlgConfirmExcluirProduto').show();" styleClass="btn btn-danger btn-xs" value="Excluir">
 							<f:setPropertyActionListener value="#{item}" target="#{crudBean.itemSelecionado}" />
 						</p:commandButton>
 					</p:column>
+					
+					<p:rowExpansion>
+						<p:dataTable id="tabelaItemAdicional" styleClass="table table-striped jambo_table" value="#{item.adicionais}" var="adicional" >
+							<p:column styleClass="ui-datatable-center" style="width: 7%; border-radius: 0px;">
+								<f:facet name="header">
+									<h:outputLabel value="Código" />
+								</f:facet>
+								<h:outputText value="#{adicional.id}">
+									<f:convertNumber maxIntegerDigits="6" pattern="000000" />
+								</h:outputText>
+							</p:column>
+							
+							<p:column styleClass="ui-datatable-left" style="width: 55%; border-radius: 0px;">
+								<f:facet name="header">
+									<h:outputLabel value="Adicional" />
+								</f:facet>
+								<h:outputText value="#{adicional.descricao}" />
+								<small>
+									<i><h:outputText value=" (Adicional) " styleClass="text-danger" /></i>
+								</small>
+							</p:column>	
+							
+							<p:column styleClass="ui-datatable-center" style="width: 10%; border-radius: 0px;">
+								<f:facet name="header">
+									<h:outputLabel value="Qtd" />
+								</f:facet>
+								<h:outputText value="#{crudBean.converter(adicional.quantidade)}"/>
+							</p:column>
+							
+							<p:column styleClass="ui-datatable-left" style="width: 12%; border-radius: 0px;">
+								<f:facet name="header">
+									<h:outputLabel value="Preço Un" />
+								</f:facet>
+								<h:outputText value="#{adicional.precoVenda}">
+									<f:convertNumber type="currency" maxFractionDigits="2" minFractionDigits="2" />
+								</h:outputText>
+							</p:column>
+							
+							<p:column style="width: 13%; border-radius: 0px;">
+								<f:facet name="header">
+									<h:outputLabel value="Ação" />
+								</f:facet>
+								<p:commandButton update="crudform:dialogExcluirAdicional" process="@this" oncomplete="PF('dlgExcluirAdicional').show();" styleClass="btn btn-danger btn-xs" value="Excluir">
+									<f:setPropertyActionListener value="#{adicional}" target="#{crudBean.adicionalSelecionado}" />
+									<f:setPropertyActionListener value="#{item}" target="#{crudBean.itemSelecionado}" />
+								</p:commandButton>
+							</p:column>
+						</p:dataTable>
+					</p:rowExpansion>
 				</p:dataTable>
 			</div>
 		</div>	
 	</h:panelGroup>
+	
+	<p:dialog id="dialogExcluirAdicional" widgetVar="dlgExcluirAdicional" modal="true" responsive="true" showEffect="fade" hideEffect="fade" resizable="false" >
+		<f:facet name="header">
+			Confirmar exclusão
+		</f:facet>
+		
+		<div class="col-md-12 col-sm-12 col-xs-12">
+			<span>
+				Deseja excluir #{crudBean.adicionalSelecionado.descricao} ?
+			</span>				
+		</div>
+		
+		<f:facet name="footer">
+			<h:form id="formAdicional">
+				<h:commandButton type="button"  onclick="PF('dlgExcluirAdicional').hide();" action="#{crudBean.btnRemoveAdicional()}" styleClass="btn btn-danger btn-xs" value="Sim">
+					<p:ajax update=":crudform:tabelaPedido :crudform:headerVenda" process="@form " />
+				</h:commandButton>
+				<h:commandButton onclick="PF('dlgExcluirAdicional').hide(); return false;" styleClass="btn btn-success btn-xs" value="Não" />
+			</h:form>
+		</f:facet>
+	</p:dialog>
 	
 	<p:dialog id="dialogExcluirProduto" widgetVar="dlgConfirmExcluirProduto" modal="true" responsive="true" styleClass="ui-container-dialog" 
 		showEffect="fade" hideEffect="fade" resizable="false" draggable="false">
