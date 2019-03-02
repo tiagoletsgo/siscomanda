@@ -7,7 +7,7 @@
 	<p:hotkey handler="PF('dlgPesquisaProduto').show();" bind="F2" />
 	<p:hotkey handler="PF('dlgPesquisaProduto').hide();" bind="esc" />
 	<p:dialog widgetVar="dlgPesquisaProduto" modal="true" responsive="true" styleClass="ui-container-dialog" 
-		showEffect="fade" hideEffect="fade" resizable="false" draggable="false">
+		showEffect="fade" hideEffect="fade" resizable="false" draggable="false" id="dialogAdicionaItemPedido">
 		
 		<f:facet name="header">Adiciona produto ao pedido</f:facet>
 		
@@ -15,7 +15,7 @@
 			<div class="col-md-12 col-sm-12 col-xs-12">
 				<label for="crudform:pesquisar">Pesquisar produto.:</label>
 				<p:inputText type="text" styleClass="form-control" id="pesquisar" value="#{produtoFactoryBean.pesquisar}">
-					<p:ajax event="keyup" update="tabelaProdutos" process="@this" delay="1000" listener="#{produtoFactoryBean.ajaxPesquisar}" global="false" />
+					<p:ajax event="keyup" update="tabelaProdutos" process="@this" delay="500" listener="#{produtoFactoryBean.ajaxPesquisar}" global="false" />
 				</p:inputText>
 			</div>
 			<div class="clearfix"></div>
@@ -28,8 +28,15 @@
 					<p:dataTable id="tabelaProdutos" value="#{produtoFactoryBean.produtos}" var="produto" styleClass="table table-striped jambo_table"
 						paginator="true" rows="5" paginatorPosition="bottom" reflow="true" scrollable="true" scrollHeight="200">
 						
+						<p:column styleClass="ui-datatable-left" style="width: 7%; border-radius: 0px">
+							<f:facet name="header"><h:outputLabel value="Código" /></f:facet>
+							<h:outputText value="#{produto.id}">
+								<f:convertNumber pattern="0000000" maxIntegerDigits="6" />
+							</h:outputText>
+						</p:column>
+						
 						<p:column styleClass="ui-datatable-left" style="width: 39%; border-radius: 0px">
-							<f:facet name="header"><h:outputLabel value="Produto" /></f:facet>
+							<f:facet name="header"><h:outputLabel value="Descrição" /></f:facet>
 							<h:outputText value="#{produto.descricao}" />
 						</p:column>
 		
@@ -39,31 +46,36 @@
 						</p:column>
 						
 						<p:column styleClass="ui-datatable-left" style="width: 10%; border-radius: 0px">
-							<f:facet name="header"><h:outputLabel value="Preço R$" /></f:facet>
-							<h:outputText value="#{produto.precoVenda}">
+							<f:facet name="header"><h:outputLabel value="Custo R$" /></f:facet>
+							<h:outputText value="#{produto.precoCusto}" styleClass="text-danger">
 								<f:convertNumber type="currency" />
 							</h:outputText>
 						</p:column>
 						
-						<p:column styleClass="ui-datatable-center" style="width: 8%; border-radius: 0px">
-							<f:facet name="header"><h:outputLabel value="Adicionar" /></f:facet>
-							<h:commandLink styleClass="btn btn-round btn-success btn-xs fa fa-plus">
-								<p:ajax update=":crudform:tabelaItemPedido :crudform:headerVenda"  global="false" listener="#{crudBean.btnAdicionaItem(produto)}" />
-							</h:commandLink>
+						<p:column styleClass="ui-datatable-left" style="width: 10%; border-radius: 0px">
+							<f:facet name="header"><h:outputLabel value="Venda R$" /></f:facet>
+							<h:outputText value="#{produto.precoVenda}" styleClass="text-success">
+								<f:convertNumber type="currency" />
+							</h:outputText>
 						</p:column>
 						
-						<p:column styleClass="ui-datatable-center" style="width: 8%; border-radius: 0px">
-							<f:facet name="header"><h:outputLabel value="Remover" /></f:facet>
-							<h:commandLink styleClass="btn btn-round btn-danger btn-xs fa fa-minus">
-								<p:ajax update=":crudform:tabelaItemPedido :crudform:headerVenda"  global="false" listener="#{crudBean.btnRemoveItem(null, produto)}" />
-							</h:commandLink>
-						</p:column>
-						
-						<p:column styleClass="ui-datatable-center" style="width: 10%; border-radius: 0px">
-							<f:facet name="header"><h:outputLabel value="Personalizar" /></f:facet>
-							<p:commandLink process="@this" update=":crudform:dialogPersonalizaItemVenda" styleClass="btn btn-round btn-primary btn-xs fa fa-refresh" oncomplete="PF('dlgPersonalizaItemVenda').show();" disabled="#{not produto.permiteMeioAmeio}">
+						<p:column styleClass="ui-datatable-center" style="width: 12%; border-radius: 0px">
+							<f:facet name="header"><h:outputLabel value="Incluir" /></f:facet>
+							<p:commandLink styleClass="btn btn-round btn-success btn-xs fa fa-plus" oncomplete="PF('dlgSelecionaAdicional').show();" 
+								update=":crudform:dialogSelecionaAdicional :crudform:grid_observacao :crudform:grid_pesquisa_adicional">
 								<f:setPropertyActionListener value="#{produto}" target="#{crudBean.produtoSelecionado}" />
 							</p:commandLink>
+						</p:column>
+						
+						<!-- 
+							Essa coluna esta bugando a tabela caso seja removida
+							Esta coluna esta sendo utilizada apenas para manter o funcionamento correto do dialog
+							O butao nao executa nenhuma acao
+						 -->												
+						<p:column styleClass="ui-datatable-center" style="width: 8%; border-radius: 0px; display: none;">
+							<f:facet name="header"><h:outputLabel value="Remover" /></f:facet>
+							<h:commandLink styleClass="btn btn-round btn-danger btn-xs fa fa-minus">
+							</h:commandLink>
 						</p:column>
 					</p:dataTable>
 				</div>
@@ -74,5 +86,4 @@
 			<h:commandButton onclick="PF('dlgPesquisaProduto').hide(); return false;" styleClass="btn btn-danger btn-xs" value="Fechar" />
 		</f:facet>
 	</p:dialog>
-	
 </ui:composition>

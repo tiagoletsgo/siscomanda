@@ -8,7 +8,7 @@
 			<div class="col-md-12 col-sm-12 col-xs-12">
 				<p:dataTable selectionMode="single" id="tabelaFormaPagamento" styleClass="table table-striped jambo_table" value="#{crudBean.formasPagamento}" 
 					var="formaPagamento" selection="#{crudBean.formaPagamentoSelecionado}" rowKey="#{formaPagamento.id}">
-					<p:ajax event="rowSelect" listener="#{crudBean.desbloqueiaTabelaBandeira}" update=":crudform:tabelaVinculaFormaPagamento :scripts" />
+					<p:ajax event="rowSelect" listener="#{crudBean.desbloqueiaTabelaBandeira}" global="false" update=":crudform:tabelaVinculaFormaPagamento :scripts" />
 					
 					<p:column styleClass="ui-datatable-left">
 						<f:facet name="header">

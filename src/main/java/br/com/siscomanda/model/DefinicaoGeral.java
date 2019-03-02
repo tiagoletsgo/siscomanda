@@ -123,6 +123,9 @@ public class DefinicaoGeral extends BaseEntity implements Serializable {
 	}
 
 	public void setTaxaServico(Double taxaServico) {
+		if(taxaServico == null) {
+			taxaServico = new Double(0);
+		}
 		this.taxaServico = taxaServico;
 	}
 

@@ -11,8 +11,9 @@ import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import br.com.siscomanda.base.model.BaseEntity;
 import br.com.siscomanda.enumeration.EFatorMedida;
@@ -39,9 +40,21 @@ public class Adicional extends BaseEntity implements Serializable {
 	@Column(name = "fator_medida", nullable = false)
 	private EFatorMedida fatorMedida;
 	
-	@ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = false)
 	@JoinTable(name = "adicional_categoria", joinColumns = @JoinColumn(name = "adicional_id"), inverseJoinColumns = @JoinColumn(name = "categoria_id"))
 	private List<Categoria> categorias;
+	
+	@Transient
+	private String descricaoCategoria;
+	
+	@Transient
+	private Double quantidade;
+	
+	public Adicional() {	}
+	
+	public Adicional(Long id) {
+		setId(id);
+	}
 
 	public String getDescricao() {
 		return descricao;
@@ -89,5 +102,21 @@ public class Adicional extends BaseEntity implements Serializable {
 
 	public void setFatorMedida(EFatorMedida fatorMedida) {
 		this.fatorMedida = fatorMedida;
+	}
+
+	public String getDescricaoCategoria() {
+		return descricaoCategoria;
+	}
+
+	public void setDescricaoCategoria(String descricaoCategoria) {
+		this.descricaoCategoria = descricaoCategoria;
+	}
+
+	public Double getQuantidade() {
+		return quantidade;
+	}
+
+	public void setQuantidade(Double quantidade) {
+		this.quantidade = quantidade;
 	}
 }

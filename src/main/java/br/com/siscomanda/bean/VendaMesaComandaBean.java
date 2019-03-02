@@ -1,7 +1,7 @@
 package br.com.siscomanda.bean;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -12,13 +12,14 @@ import javax.inject.Named;
 
 import br.com.siscomanda.base.bean.BaseBean;
 import br.com.siscomanda.enumeration.EStatus;
-import br.com.siscomanda.enumeration.ETamanho;
 import br.com.siscomanda.exception.SiscomandaException;
+import br.com.siscomanda.model.Adicional;
 import br.com.siscomanda.model.ItemVenda;
 import br.com.siscomanda.model.Produto;
 import br.com.siscomanda.model.Venda;
 import br.com.siscomanda.service.VendaMesaComandaService;
 import br.com.siscomanda.util.JSFUtil;
+import br.com.siscomanda.util.StringUtil;
 
 @Named
 @ViewScoped
@@ -31,16 +32,18 @@ public class VendaMesaComandaBean extends BaseBean<Venda> implements Serializabl
 	
 	private ItemVenda itemSelecionado;
 	
-	private Produto produtoSelecionado;
-	
-	private Integer quantidade;
+	private Double quantidade;
 	
 	private List<Integer> mesasComandas;
 	
-	private ETamanho tamanho;
+	private List<Adicional> adicionais;
 	
-	private List<Produto> selectManyCheckBoxProdutos;
+	private List<Adicional> selectManyCheckBoxAdicionais;
+
+	private Produto produtoSelecionado;
 	
+	private Adicional adicionalSelecionado;
+
 	private List<Produto> produtos;
 	
 	private String filterPesquisar;
@@ -54,55 +57,85 @@ public class VendaMesaComandaBean extends BaseBean<Venda> implements Serializabl
 		getEntity().setTaxaServico(new Double(0));
 		getEntity().setTaxaEntrega(new Double(0));
 		getEntity().setDesconto(new Double(0));
-		setQuantidade(new BigDecimal(1).intValue());
+		getEntity().setValorPago(new Double(0));
+		setQuantidade(new Double(1));
 		
 		mesasComandas = service.geraMesasComandas();
-		produtos = service.buscaProduto(null);
-	}
-		
-	public void btnAdicionaItem(Produto produto) {
-		ItemVenda item = service.adicionaItemPedidoVenda(produto);
-		item.setId(service.setIdTemporarioItem(getEntity().getItens()));
-		service.adicionaItem(getEntity().getItens(), item);
-		service.ordenarItemMenorParaMaior(getEntity().getItens());
-		afterAction();
+		produtos = service.buscaProduto("PIZZA");
+		adicionais = service.getAdicionais();
 	}
 	
-	public void btnAdicionar() {
-		
-	}
-	
-	public void ajaxPesquisar() {
-		produtos = service.buscaProduto(filterPesquisar);
-	}
-	
-	public void btnRemoveItem(ItemVenda itemVenda, Produto produto) {
+	public void btnSalvar() {		
 		try {
-			itemVenda = service.clonaItemVenda(itemVenda, produto, getQuantidade());
-			service.removeItem(getEntity().getItens(), itemVenda, produto);
+			setEntity(service.salvar(getEntity()));
+			getEntity().setItens(service.carregaItemVenda(getEntity()));
+		}
+		catch(SiscomandaException e) {
+			JSFUtil.addMessage(FacesMessage.SEVERITY_ERROR, "Erro ao salvar. " + e.getMessage());
+		}
+	}
+	
+	public void btnAdicionaItem() {
+		try {
+			service.incluirItem(getEntity(), getSelectManyCheckBoxAdicionais(), getItemSelecionado(), getProdutoSelecionado(), getQuantidade());
 			afterAction();
 		}
 		catch(SiscomandaException e) {
-			JSFUtil.addMessage(FacesMessage.SEVERITY_ERROR, e.getMessage());
+			JSFUtil.addMessage(FacesMessage.SEVERITY_ERROR, "Erro ao salvar. " + e.getMessage());
+		}
+	}
+		
+	public void btnRemoveItem() {
+		try {
+			ItemVenda item = service.clonar(produtoSelecionado, getSelectManyCheckBoxAdicionais());
+			
+			if(item == null) {
+				item = service.clonar(itemSelecionado.getProduto(), itemSelecionado.getAdicionais());
+				item.setId(itemSelecionado.getId());
+				item.setQuantidade(itemSelecionado.getQuantidade());
+			}
+			
+			List<ItemVenda> itens = service.removeItem(getEntity().getItens(), item, quantidade);
+			getEntity().setItens(itens);
+			afterAction();
+		}
+		catch(SiscomandaException e) {
+			JSFUtil.addMessage(FacesMessage.SEVERITY_ERROR, "Erro ao remover. " + e.getMessage());
 		}
 	}
 	
-	public void btnPersonalizar() {
-		System.out.println("teste" + itemSelecionado.getProduto().getDescricao());
+	public void btnRemoveAdicional() {
+		itemSelecionado.getAdicionais().remove(adicionalSelecionado);
+		afterAction();
+	}
+
+	public void ajaxPesquisar() {
+		Produto produto = service.buscaProduto(produtoSelecionado);
+		produtos = service.buscaProduto(filterPesquisar, produto.getSubCategoria());
 	}
 	
-	public ETamanho[] getTamanhos() {
-		return ETamanho.values();
+	public void ajaxPesquisaAdicional() {
+		adicionais = service.buscaAdicionalPor(filterPesquisar);
 	}
 	
-	public void ajaxValidaQuantidadePermitida() {
-		selectManyCheckBoxProdutos = service.validaQuantidadePermitida(selectManyCheckBoxProdutos);
+	public void actionListenerQuantidade(double valor) {
+		this.quantidade = valor;
 	}
 	
-	private void afterAction() {		
+	private void afterAction() {
 		getEntity().setSubtotal(service.calculaSubtotal(getEntity().getItens()));
 		getEntity().setTaxaServico(getEntity().getSubtotal() * service.getTaxaServico());		
 		getEntity().setTotal(service.calculaTotal(getEntity()));
+		setQuantidade(new Double(1));
+		
+		filterPesquisar = null;
+		itemSelecionado = null;
+		produtoSelecionado = null;
+		selectManyCheckBoxAdicionais = new ArrayList<>();
+	}
+	
+	public Double calculaSubTotalItem(ItemVenda item) {
+		return service.calculaSubTotalItem(item);
 	}
 	
 	@Override
@@ -120,6 +153,14 @@ public class VendaMesaComandaBean extends BaseBean<Venda> implements Serializabl
 		}
 		return itemSelecionado;
 	}
+	
+	public String formatMoeda(Double valor) {
+		return StringUtil.parseDouble(valor);
+	}
+	
+	public String converter(Double valor) {
+		return StringUtil.converterDouble(valor);
+	}
 
 	public void setItemSelecionado(ItemVenda itemSelecionado) {
 		this.itemSelecionado = itemSelecionado;
@@ -133,32 +174,28 @@ public class VendaMesaComandaBean extends BaseBean<Venda> implements Serializabl
 		this.produtoSelecionado = produtoSelecionado;
 	}
 
-	public Integer getQuantidade() {
+	public Double getQuantidade() {
 		return quantidade;
 	}
-
-	public void setQuantidade(Integer quantidade) {
+	
+	public void setQuantidade(Double quantidade) {
 		this.quantidade = quantidade;
 	}
 
-	public void setTamanho(ETamanho tamanho) {
-		this.tamanho = tamanho;
+	public List<Adicional> getSelectManyCheckBoxAdicionais() {
+		return selectManyCheckBoxAdicionais;
 	}
 
-	public List<Produto> getSelectManyCheckBoxProdutos() {
-		return selectManyCheckBoxProdutos;
+	public void setSelectManyCheckBoxAdicionais(List<Adicional> selectManyCheckBoxAdicionais) {
+		this.selectManyCheckBoxAdicionais = selectManyCheckBoxAdicionais;
 	}
 
-	public void setSelectManyCheckBoxProdutos(List<Produto> selectManyCheckBoxProdutos) {
-		this.selectManyCheckBoxProdutos = selectManyCheckBoxProdutos;
-	}
-	
 	public List<Produto> getProdutos() {
 		return produtos;
 	}
-
-	public ETamanho getTamanho() {
-		return tamanho;
+	
+	public List<Adicional> getAdicionais() {
+		return adicionais;
 	}
 
 	public String getFilterPesquisar() {
@@ -167,5 +204,13 @@ public class VendaMesaComandaBean extends BaseBean<Venda> implements Serializabl
 
 	public void setFilterPesquisar(String filterPesquisar) {
 		this.filterPesquisar = filterPesquisar;
+	}
+
+	public Adicional getAdicionalSelecionado() {
+		return adicionalSelecionado;
+	}
+
+	public void setAdicionalSelecionado(Adicional adicionalSelecionado) {
+		this.adicionalSelecionado = adicionalSelecionado;
 	}
 }

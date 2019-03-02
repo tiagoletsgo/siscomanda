@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.List;
 
 import javax.persistence.NoResultException;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
 import br.com.siscomanda.exception.SiscomandaException;
@@ -15,7 +16,19 @@ import br.com.siscomanda.util.StringUtil;
 public class ProdutoDAO extends GenericDAO<Produto> implements Serializable {
 
 	private static final long serialVersionUID = 5453891974123756212L;
-
+	
+	@SuppressWarnings("unchecked")
+	public List<Produto> porDescricaoSubCategoria(String descricao) {
+		StringBuilder sql = new StringBuilder();
+		sql.append("SELECT produto.* FROM produto produto WHERE produto.subcategoria_id = ");
+		sql.append("(SELECT subcategoria.id FROM subcategoria subcategoria WHERE subcategoria.descricao LIKE :descricao) ");
+		sql.append("AND produto.permite_meio_a_meio");
+		
+		Query query = getEntityManager().createNativeQuery(sql.toString(), Produto.class);
+		query.setParameter("descricao", "%" + descricao.toUpperCase() + "%");
+		return query.getResultList();
+	}
+	
 	public Produto porCodigo(Produto produto) throws SiscomandaException {
 		try {
 			StringBuilder sql = new StringBuilder();
@@ -57,7 +70,7 @@ public class ProdutoDAO extends GenericDAO<Produto> implements Serializable {
 		}
 	}
 	
-	public List<Produto> buscaPorSubCategoria(String descricaoProduto) {
+	public List<Produto> buscaPorSubCategoria(String descricaoProduto, SubCategoria subCategoria) throws SiscomandaException {
 		StringBuilder sql = new StringBuilder();
 		sql.append("SELECT produto FROM Produto produto ");
 		sql.append("INNER JOIN FETCH produto.subCategoria subCategoria ");
@@ -76,9 +89,13 @@ public class ProdutoDAO extends GenericDAO<Produto> implements Serializable {
 			query.setParameter("codigoEan", "%" + descricaoProduto.toUpperCase() + "%");
 		}
 		
-		query.setParameter("subcategoria", new SubCategoria(5L));
+		query.setParameter("subcategoria", subCategoria);
 		query.setParameter("permiteMeioAmeio", true);
 		List<Produto> produtos = query.getResultList();
+		
+		if(produtos.isEmpty() || produtos == null) {
+			throw new SiscomandaException("Busca não retornou nenhum resultado.");
+		}
 		
 		return produtos;
 	}

@@ -10,27 +10,24 @@
 		<f:facet name="header">Personaliza item pedido</f:facet>
 		
 		<div class="row">
-			<div class="col-md-12 col-sm-12 col-xs-12">
+			<div class="col-md-6 col-sm-6 col-xs-12">
 				<label>Produto principal.:</label>
+				<h:outputText value="#{crudBean.produtoSelecionado.descricao}" styleClass="form-control" />
+			</div>
+			
+			<div class="col-md-6 col-sm-6 col-xs-12">
+				<label>Produto secundário.:</label>
 				<h:outputText value="#{crudBean.produtoSelecionado.descricao}" styleClass="form-control" />
 			</div>
 		</div>
 		
 		<div class="row">
-			<div class="col-md-6 col-sm-6 col-xs-12">
+			<div class="col-md-12 col-sm-12 col-xs-12">
 				<p:focus for="produtoPersonalizado" />
 				<label for="crudform:produtoPersonalizado">Descrição Produto / Código.:</label>
 				<p:inputText styleClass="form-control" id="produtoPersonalizado" value="#{crudBean.filterPesquisar}">
 					<p:ajax event="keyup" update=":crudform:selectManyCheckboxProdutos" delay="1000" process="@this" listener="#{crudBean.ajaxPesquisar}" global="false" />
 				</p:inputText>
-			</div>
-			
-			<div class="col-md-6 col-sm-6 col-xs-12">
-				<label for="crudform:tamanho">Tamanho.:</label>
-				<h:selectOneMenu id="tamanho" value="#{crudBean.tamanho}" styleClass="form-control">
-					<f:selectItem noSelectionOption="true" itemLabel="Selecione" />
-					<f:selectItems value="#{crudBean.tamanhos}" var="tamanho" itemLabel="#{tamanho.descricao}" itemValue="#{tamanho}" />
-				</h:selectOneMenu>
 			</div>
 		</div>
 		<br />
@@ -52,9 +49,9 @@
 				<div class="panel panel-default">
 					<div class="panel-heading">Adicionais</div>
 					<div class="panel-body">					
-						<p:selectManyCheckbox value="#{crudBean.selectManyCheckBoxProdutos}" id="selectManyCheckboxAdicionais" layout="grid" columns="1" converter="entityConverter">
-							<f:selectItems value="#{crudBean.produtos}" var="produto" itemLabel="#{produto.descricao}" itemValue="#{produto}" />
-							<p:ajax event="change" process="@this" listener="#{crudBean.ajaxValidaQuantidadePermitida}" global="false" update=":crudform:selectManyCheckboxProdutos" />
+						<p:selectManyCheckbox value="#{crudBean.selectManyCheckBoxAdicionais}" id="selectManyCheckboxAdicionais" layout="grid" columns="1" converter="entityConverter">
+							<f:selectItems value="#{crudBean.adicionais}" var="adicional" itemLabel="#{adicional.descricao} - #{crudBean.formatMoeda(adicional.precoVenda)}" itemValue="#{adicional}" />
+							<p:ajax event="change" process="@this" global="false" update=":crudform:selectManyCheckboxAdicionais" />
 						</p:selectManyCheckbox>
 					</div>
 				</div>

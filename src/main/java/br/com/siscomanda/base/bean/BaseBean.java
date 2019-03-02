@@ -12,11 +12,16 @@ public abstract class BaseBean<T> implements Serializable {
 	
 	private static final long serialVersionUID = -7037880362401250167L;
 
+	private static String PACKAGE_MODEL = "br.com.siscomanda.model";
+	
+	private static String VIEW = "view";
+
 	private T entity;
 		
 	private EstadoViewBean estadoViewBean;
 	
 	private List<T> elements;
+	
 	
 	@SuppressWarnings({ 
 		"rawtypes", 
@@ -25,16 +30,19 @@ public abstract class BaseBean<T> implements Serializable {
 	public BaseBean() {
 		try {
 			HttpServletRequest request = (HttpServletRequest)FacesContext.getCurrentInstance().getExternalContext().getRequest();
-			estadoViewBean = new EstadoViewBean(request.getParameter("view"));
+			estadoViewBean = new EstadoViewBean(request.getParameter(VIEW));
 			
-			Class clazz = (Class<T>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0];
-			entity = (T) clazz.newInstance();
+			if(getClass().getGenericSuperclass().toString().contains(PACKAGE_MODEL)) {
+				Class clazz = (Class<T>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0];
+				entity = (T) clazz.newInstance();				
+			}
+			
 		}
 		catch(Exception e) {
 			e.printStackTrace();
 		}
 	}
-	
+		
 	@PostConstruct
 	protected abstract void init();
 	
