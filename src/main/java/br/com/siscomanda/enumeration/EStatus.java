@@ -2,14 +2,10 @@ package br.com.siscomanda.enumeration;
 
 public enum EStatus {
 	
-	INICIADO("Iniciado"),
-	AGUARDANDO("Aguardando"),
-	OCUPADO("Ocupado"),
-	LIVRE("Livre"),
-	PENDENTE("Pendente"),
-	SAIU_PARA_ENTREGA("Saiu p/Entrega"),
-	FINALIZADO_ENTREGUE("Finalizado/Entregue"),
-	EM_ABERTO("Em aberto");
+	EM_ABERTO("Em aberto"),
+	CANCELADO("Cancelado"),
+	PAGO("Pago"),
+	PAGO_PARCIAL("Pago parcial");
 	
 	private String descricao;
 	

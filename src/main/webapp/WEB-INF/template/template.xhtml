@@ -27,8 +27,8 @@
 				
 				<ui:insert name="dashboard">
 					<!-- Conteudo -->
-					<h:form id="crudform" styleClass="form_horizontal">
-						<div class="right_col" id="coluna_direita">
+					<div class="right_col" id="coluna_direita">
+						<h:form id="crudform" styleClass="form_horizontal">
 							<div class="">
 								<div class="page-title">
 									<div class="title_left">
@@ -87,8 +87,8 @@
 									</div>
 								</div>
 							</h:panelGroup>	
-						</div>
-					</h:form>
+						</h:form>
+					</div>
 					
 					<p:ajaxStatus onstart="PF('statusDialog').show();" onsuccess="PF('statusDialog').hide();" />
 					<p:dialog widgetVar="statusDialog" showHeader="false" width="250" showEffect="fade" 

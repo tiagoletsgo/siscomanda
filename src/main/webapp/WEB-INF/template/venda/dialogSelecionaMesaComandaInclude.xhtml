@@ -1,0 +1,31 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+	
+	<p:hotkey handler="PF('dialogSelecionaMesaComanda').show();" bind="F1" />
+	<p:dialog widgetVar="dialogSelecionaMesaComanda" modal="true" responsive="true" styleClass="ui-container-dialog" 
+		showEffect="fade" hideEffect="fade" resizable="false" draggable="false" id="dialogSelecionaMesaComanda">
+		
+		<f:facet name="header">Seleciona Mesa / Comanda</f:facet>
+		
+		<div class="row">
+			<div class="col-md-12 col-sm-12 col-xs-12">
+				<label for="formulario:pesquisar">Mesa / Comanda.:</label>
+				<h:selectOneMenu styleClass="form-control" value="#{crudBean.entity.sistema}">
+					<f:selectItem noSelectionOption="true" itemLabel="Selecione" />
+					<f:selectItems value="#{crudBean.quantidadeMesasComandas}" var="sistema" itemValue="#{sistema}" itemLabel="#{sistema} - (Mesa / Comanda)" />
+					<p:ajax process="@this" update=":crudform:buttonPedidoVenda :crudform:headerPedidoVenda" oncomplete="PF('dialogSelecionaMesaComanda').hide();" global="false" />
+				</h:selectOneMenu>
+			</div>
+		</div>
+				
+		<f:facet name="footer">
+			<h:form>
+				<h:commandButton onclick="PF('dialogSelecionaMesaComanda').hide(); return false;" styleClass="btn btn-success btn-xs" value="Fechar" />
+			</h:form>
+		</f:facet>
+	</p:dialog>
+	
+</ui:composition>

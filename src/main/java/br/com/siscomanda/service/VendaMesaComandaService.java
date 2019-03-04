@@ -39,6 +39,32 @@ public class VendaMesaComandaService extends VendaService implements Serializabl
 	@Inject
 	private ItemVendaAdicionalDAO itemVendaAdicionalDAO;
 	
+	@Inject
+	private DefinicaoGeralService definicaoGeralService;
+	
+	public List<Venda> porFiltro(Venda venda) {
+		return vendaDAO.buscaPor(venda);
+	}
+	
+	public List<Adicional> carregaAdicionais(ItemVenda item) {
+		return vendaDAO.buscaAdicionalVenda(item);
+	}
+	
+	public List<Integer> geraMesasComandas() {
+		List<Integer> mesas = new ArrayList<>();
+		int qtdMesasComandas = definicaoGeralService.carregaDefinicaoSistema().getQtdMesaComanda();
+		for(int i = 1; i <= qtdMesasComandas; i++) {
+			mesas.add(i);
+		}
+		
+		List<Venda> vendas = vendaDAO.vendasNaoPagasDiaCorrente();
+		for(Venda venda : vendas) {
+			mesas.remove(new Integer(venda.getSistema()));
+		}
+		
+		return mesas;
+	}
+	
 	@Transactional
 	public Venda salvar(Venda venda) throws SiscomandaException {
 		List<ItemVenda> itens = venda.getItens();
@@ -49,6 +75,10 @@ public class VendaMesaComandaService extends VendaService implements Serializabl
 		
 		if(venda.getTotal() < new Double(0)) {
 			throw new SiscomandaException("Não é permitido salvar pedido com valor negativo.");
+		}
+		
+		if(venda.getStatus() == null) {
+			throw new SiscomandaException("Não é permitido salvar pedido com status em branco.");
 		}
 		
 		if(venda.isNovo()) {
@@ -94,35 +124,6 @@ public class VendaMesaComandaService extends VendaService implements Serializabl
 				itemVendaAdicionalDAO.salvar(itemAdicional);
 			}
 		}
-	}
-	
-	public List<ItemVenda> carregaItemVenda(Venda venda) {
-		List<ItemVendaAdicional> itensAdicionais = itemVendaAdicionalDAO.porVenda(venda);
-		List<ItemVenda> itensVendas = new ArrayList<>();
-		itensVendas.addAll(venda.getItens());		
-		
-		List<Adicional> adicionais = new ArrayList<>();
-		for(ItemVendaAdicional item : itensAdicionais) {
-			if(!adicionais.contains(item.getAdicional())) {
-				adicionais.add(item.getAdicional());
-			}
-		}
-		
-		for(Adicional adicional : adicionais) {
-			Produto produto = new Produto();
-			produto.setId(adicional.getId());
-			produto.setCodigoEan("ADC000");
-			produto.setDescricao(adicional.getDescricao());
-			
-			for(ItemVenda item : itensVendas) {
-				if(item.getProduto().equals(produto) && item.getAdicionais().isEmpty() ||
-						item.getProduto().getId().equals(adicional.getId()) && item.getAdicionais().isEmpty()) {
-					item.setProduto(produto);
-				}
-			}
-		}
-		
-		return venda.getItens();
 	}
 		
 	public List<Adicional> getAdicionais() {

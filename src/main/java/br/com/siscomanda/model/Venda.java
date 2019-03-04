@@ -72,9 +72,9 @@ public class Venda extends BaseEntity implements Serializable {
 	
 	@Column(name = "valor_pago", nullable = false)
 	private Double valorPago;
-	
+		
 	@Column(name = "mesa_comanda", nullable = false)
-	private int mesaOuComanda;
+	private Integer sistema;
 
 	public FormaPagamento getFormaPagamento() {
 		return formaPagamento;
@@ -164,14 +164,6 @@ public class Venda extends BaseEntity implements Serializable {
 		this.total = total;
 	}
 
-	public int getMesaOuComanda() {
-		return mesaOuComanda;
-	}
-
-	public void setMesaOuComanda(int mesaOuComanda) {
-		this.mesaOuComanda = mesaOuComanda;
-	}
-
 	public Double getTaxaEntrega() {
 		return taxaEntrega;
 	}
@@ -186,5 +178,13 @@ public class Venda extends BaseEntity implements Serializable {
 
 	public void setValorPago(Double valorPago) {
 		this.valorPago = valorPago;
+	}
+
+	public Integer getSistema() {
+		return sistema;
+	}
+
+	public void setSistema(Integer sistema) {
+		this.sistema = sistema;
 	}
 }

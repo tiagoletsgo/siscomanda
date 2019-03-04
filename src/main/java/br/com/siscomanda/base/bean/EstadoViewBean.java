@@ -6,10 +6,10 @@ public class EstadoViewBean implements Serializable {
 
 	private static final long serialVersionUID = -876338639656095129L;
 
-	public Boolean update = false;
-	public Boolean insert = false;
-	public Boolean delete = false;
-	public Boolean search = false;
+	private Boolean update = false;
+	private Boolean insert = false;
+	private Boolean delete = false;
+	private Boolean search = false;
 	
 	public EstadoViewBean() {
 	}

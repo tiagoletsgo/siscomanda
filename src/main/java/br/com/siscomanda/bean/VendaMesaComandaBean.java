@@ -50,7 +50,6 @@ public class VendaMesaComandaBean extends BaseBean<Venda> implements Serializabl
 	
 	@Override
 	protected void init() {
-		getEntity().setStatus(EStatus.EM_ABERTO);
 		getEntity().setIniciado(new Date());
 		getEntity().setSubtotal(new Double(0));
 		getEntity().setTotal(new Double(0));
@@ -63,12 +62,14 @@ public class VendaMesaComandaBean extends BaseBean<Venda> implements Serializabl
 		mesasComandas = service.geraMesasComandas();
 		produtos = service.buscaProduto("PIZZA");
 		adicionais = service.getAdicionais();
+		
+		beforeSearch();
 	}
 	
 	public void btnSalvar() {		
 		try {
+			service.validaQuantidadeTotalItens(getEntity().getItens());
 			setEntity(service.salvar(getEntity()));
-			getEntity().setItens(service.carregaItemVenda(getEntity()));
 		}
 		catch(SiscomandaException e) {
 			JSFUtil.addMessage(FacesMessage.SEVERITY_ERROR, "Erro ao salvar. " + e.getMessage());
@@ -108,20 +109,31 @@ public class VendaMesaComandaBean extends BaseBean<Venda> implements Serializabl
 		itemSelecionado.getAdicionais().remove(adicionalSelecionado);
 		afterAction();
 	}
-
-	public void ajaxPesquisar() {
-		Produto produto = service.buscaProduto(produtoSelecionado);
-		produtos = service.buscaProduto(filterPesquisar, produto.getSubCategoria());
+	
+	public void btnPesquisar() {
+		setElements(service.porFiltro(getEntity()));
+	}
+	
+	@Override
+	public void btnNovo() {
+		getEntity().setSistema(new Integer(0));
+		getEntity().setStatus(EStatus.EM_ABERTO);
+		getEstadoViewBean().setCurrentView(true, false, false, false);
+	}
+	
+	public void editar(Venda venda) {
+		setEntity(venda);
+		for(ItemVenda item : getEntity().getItens()) {
+			item.setAdicionais(service.carregaAdicionais(item));
+		}
+		
+		getEstadoViewBean().setCurrentView(true, false, false, false);
 	}
 	
 	public void ajaxPesquisaAdicional() {
 		adicionais = service.buscaAdicionalPor(filterPesquisar);
 	}
-	
-	public void actionListenerQuantidade(double valor) {
-		this.quantidade = valor;
-	}
-	
+		
 	private void afterAction() {
 		getEntity().setSubtotal(service.calculaSubtotal(getEntity().getItens()));
 		getEntity().setTaxaServico(getEntity().getSubtotal() * service.getTaxaServico());		
@@ -134,12 +146,19 @@ public class VendaMesaComandaBean extends BaseBean<Venda> implements Serializabl
 		selectManyCheckBoxAdicionais = new ArrayList<>();
 	}
 	
+	public EStatus[] getStatusVenda() {
+		return EStatus.values();
+	}
+	
 	public Double calculaSubTotalItem(ItemVenda item) {
 		return service.calculaSubTotalItem(item);
 	}
 	
 	@Override
 	protected void beforeSearch() {
+		if(getEstadoViewBean().getSearch()) {
+			setElements(service.porFiltro(getEntity()));
+		}
 	}
 	
 	public List<Integer> getQuantidadeMesasComandas() {

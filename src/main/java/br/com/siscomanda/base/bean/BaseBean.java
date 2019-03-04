@@ -48,7 +48,7 @@ public abstract class BaseBean<T> implements Serializable {
 	
 	protected abstract void beforeSearch();
 		
-	protected void setEntity(T entity) {
+	public void setEntity(T entity) {
 		this.entity = entity;
 	}
 	

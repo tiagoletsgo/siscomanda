@@ -1,0 +1,26 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+	
+	<div class="row">
+		<h:panelGroup layout="block" id="buttonPedidoVenda">
+			<div class="col-md-12 col-sm-12 col-xs-12">
+				<h:panelGroup layout="block" rendered="#{crudBean.entity.sistema > 0}">
+					<p:commandButton value="Busca produto" styleClass="btn btn-primary"  oncomplete="PF('dialogPesquisaProduto').show();" />
+					<p:commandLink value="Salvar" styleClass="btn btn-success pull-right" action="#{crudBean.btnSalvar}" update="@form" />
+					<p:link value="Voltar" styleClass="btn btn-primary pull-right" outcome="/pages/modulo/venda/mesa/venda-mesa-comanda?view=search" />
+					
+				</h:panelGroup>
+			</div>
+	
+			<h:panelGroup layout="block" rendered="#{crudBean.estadoViewBean.insert and crudBean.entity.sistema == 0}">
+				<div class="col-md-12 col-sm-12 col-xs-12">
+					<p:commandLink value="Seleciona Mesa / Comanda" styleClass="btn btn-primary pull-left" global="false" oncomplete="PF('dialogSelecionaMesaComanda').show();" />
+				</div>
+			</h:panelGroup>
+		</h:panelGroup>
+	</div>
+	
+</ui:composition>
