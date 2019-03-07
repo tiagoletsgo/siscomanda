@@ -4,8 +4,8 @@ public enum EStatus {
 	
 	EM_ABERTO("Em aberto"),
 	CANCELADO("Cancelado"),
-	PAGO("Pago"),
-	PAGO_PARCIAL("Pago parcial");
+	PAGO_PARCIAL("Pago parcial"),
+	PAGO("Pago");
 	
 	private String descricao;
 	

@@ -90,6 +90,8 @@
 						</h:form>
 					</div>
 					
+					<ui:insert name="dialog" />
+					
 					<p:ajaxStatus onstart="PF('statusDialog').show();" onsuccess="PF('statusDialog').hide();" />
 					<p:dialog widgetVar="statusDialog" showHeader="false" width="250" showEffect="fade" 
 						closable="false" modal="true" resizable="false" responsive="true">
@@ -103,7 +105,7 @@
 						</div>
 					</p:dialog>
 					
-					<p:growl autoUpdate="true" life="8000" />
+					<p:growl autoUpdate="true" life="6000" />
 					<!-- Fim Conteudo -->	
 				</ui:insert>
 				

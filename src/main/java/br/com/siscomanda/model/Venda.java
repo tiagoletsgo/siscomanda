@@ -17,6 +17,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 
 import br.com.siscomanda.base.model.BaseEntity;
 import br.com.siscomanda.enumeration.EStatus;
@@ -26,10 +27,9 @@ import br.com.siscomanda.enumeration.EStatus;
 public class Venda extends BaseEntity implements Serializable {
 
 	private static final long serialVersionUID = 2583564472683970706L;
-	
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "form_pagamento_id", nullable = true)
-	private FormaPagamento formaPagamento;
+		
+	@OneToMany(mappedBy = "venda", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<PagamentoVenda> pagamentos = new ArrayList<>();
 	
 	@OneToMany(mappedBy = "venda", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<ItemVenda> itens = new ArrayList<>();
@@ -72,16 +72,23 @@ public class Venda extends BaseEntity implements Serializable {
 	
 	@Column(name = "valor_pago", nullable = false)
 	private Double valorPago;
-		
+	
 	@Column(name = "mesa_comanda", nullable = false)
-	private Integer sistema;
-
-	public FormaPagamento getFormaPagamento() {
-		return formaPagamento;
+	private Integer mesaComanda;
+	
+	public Venda() {
+	}
+	
+	public Venda(Long id) {
+		setId(id);
 	}
 
-	public void setFormaPagamento(FormaPagamento formaPagamento) {
-		this.formaPagamento = formaPagamento;
+	public List<PagamentoVenda> getPagamentos() {
+		return pagamentos;
+	}
+
+	public void setPagamentos(List<PagamentoVenda> pagamentos) {
+		this.pagamentos = pagamentos;
 	}
 
 	public List<ItemVenda> getItens() {
@@ -180,11 +187,59 @@ public class Venda extends BaseEntity implements Serializable {
 		this.valorPago = valorPago;
 	}
 
-	public Integer getSistema() {
-		return sistema;
+	public Integer getMesaComanda() {
+		return mesaComanda;
 	}
 
-	public void setSistema(Integer sistema) {
-		this.sistema = sistema;
+	public void setMesaComanda(Integer mesaComanda) {
+		this.mesaComanda = mesaComanda;
+	}
+	
+	@Transient
+	public boolean isExcluivel() {
+		return !isNovo() && getStatus().equals(EStatus.CANCELADO)
+				|| !isNovo() && getStatus().equals(EStatus.EM_ABERTO);
+	}
+	
+	@Transient
+	public boolean isNotExcluivel() {
+		return !isExcluivel();
+	}
+	
+	@Transient
+	public boolean isCancelavel() {
+		return !isNovo() && getStatus().equals(EStatus.EM_ABERTO);
+	}
+	
+	@Transient
+	public boolean isNotCancelavel() {
+		return !isCancelavel();
+	}
+	
+	@Transient
+	public boolean isNotPago() {
+		return !isPago();
+	}
+	
+	@Transient
+	public boolean isEditavel() {
+		return !isNovo() && getStatus().equals(EStatus.EM_ABERTO)
+				|| isNovo() && getStatus().equals(EStatus.EM_ABERTO);
+	}
+	
+	@Transient
+	public boolean isNotEditavel() {
+		return !isEditavel();
+	}
+	
+	@Transient
+	public boolean isPagavel() {
+		return !isNovo() && !getStatus().equals(EStatus.PAGO)
+				&& !getStatus().equals(EStatus.PAGO_PARCIAL) && !getStatus().equals(EStatus.CANCELADO);
+	}
+	
+	@Transient
+	public boolean isNotPagavel() {
+		return !isPagavel();
 	}
 }

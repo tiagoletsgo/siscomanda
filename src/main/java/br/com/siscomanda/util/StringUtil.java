@@ -26,7 +26,7 @@ public class StringUtil {
 	public static void maisDeUmCampoPreenchido(List<String> campos) throws SiscomandaException {
 		Integer selecionado = 0;
 		for(String s : campos) {
-			if(!s.isEmpty()) {
+			if(isNotEmpty(s)) {
 				selecionado++;
 			}
 		}
@@ -37,7 +37,7 @@ public class StringUtil {
 	}
 	
 	public static boolean isEmpty(String value) {
-		if(value.isEmpty() || value == null) {
+		if(value == null || value.isEmpty()) {
 			return true;
 		}
 		return false;

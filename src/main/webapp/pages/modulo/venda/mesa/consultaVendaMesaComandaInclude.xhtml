@@ -21,7 +21,7 @@
 			
 			<div class="col-md-4 col-sm-4 col-xs-12">
 				<label for="crudform:mesaComanda">Mesa / Comanda:</label>
-				<h:selectOneMenu id="mesaComanda" styleClass="form-control" value="#{crudBean.entity.sistema}">
+				<h:selectOneMenu id="mesaComanda" styleClass="form-control" value="#{crudBean.entity.mesaComanda}">
 					<f:selectItem itemLabel="Selecione" noSelectionOption="true" />
 					<f:selectItems value="#{definicaoSistemaFactoryBean.sistema}" var="sistema" itemLabel="#{sistema} - (Mesa / Comanda)" itemValue="#{sistema}" />
 				</h:selectOneMenu>

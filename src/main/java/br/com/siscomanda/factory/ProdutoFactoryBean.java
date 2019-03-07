@@ -31,13 +31,15 @@ public class ProdutoFactoryBean implements Serializable {
 	}
 	
 	public void ajaxPesquisar() {
+		Produto produto = new Produto();
+
 		try {
-			Produto produto = new Produto();
 			
-			produto.setCodigoEan("");
+			produto.setCodigoEan(null);
 			produto.setDescricao(pesquisar);
 			List<Produto> produtos = service.pesquisar(produto);
 			if(produtos == null || produtos.isEmpty()) {
+				produto.setDescricao(null);
 				produto.setCodigoEan(pesquisar);
 				produtos = service.pesquisar(produto);
 			}
@@ -45,9 +47,14 @@ public class ProdutoFactoryBean implements Serializable {
 				this.produtos = produtos;
 			}
 			
-			pesquisar = null;
+			
 		} catch (SiscomandaException e) {
 			e.printStackTrace();
+		}
+		finally {
+			pesquisar = null;
+			produto.setCodigoEan(null);
+			produto.setDescricao(null);
 		}
 	}
 	

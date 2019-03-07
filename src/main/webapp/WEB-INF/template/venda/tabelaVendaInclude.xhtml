@@ -76,19 +76,20 @@
 						</h:outputText>
 					</p:column>
 					
-					<p:column style="width: 23%; border-radius: 0px;">
+					<p:column style="width: 20%; border-radius: 0px;">
 						<f:facet name="header">
 							<h:outputLabel value="Ação" />
 						</f:facet>
 						
-						<p:commandButton update="crudform:dialogAdicionaProduto" process="@this" oncomplete="PF('dialogIncluirProduto').show();" styleClass="btn btn-primary btn-xs" value="Adicional"
-							disabled="#{!item.produto.permiteAdicional}">
+						<p:commandButton update="crudform:dialogAdicionaProduto" process="@this" oncomplete="PF('dialogIncluirProduto').show();" styleClass="btn btn-warning btn-xs" value="Atualizar"
+							disabled="#{crudBean.entity.notEditavel or crudBean.entity.pago and crudBean.entity.notPago and crudBean.entity.notCancelavel}">
 							<f:setPropertyActionListener value="#{item}" target="#{crudBean.itemSelecionado}" />
 							<f:setPropertyActionListener value="#{item.quantidade}" target="#{crudBean.quantidade}" />
 							<f:setPropertyActionListener value="#{item.produto}" target="#{crudBean.produtoSelecionado}" />
 						</p:commandButton>
 						
-						<p:commandButton update="crudform:dialogExcluirProduto" process="@this" oncomplete="PF('dlgConfirmExcluirProduto').show();" styleClass="btn btn-danger btn-xs" value="Remover">
+						<p:commandButton update="crudform:dialogExcluirProduto" process="@this" oncomplete="PF('dlgConfirmExcluirProduto').show();" styleClass="btn btn-danger btn-xs" value="Deletar"
+							disabled="#{crudBean.entity.notEditavel or crudBean.entity.pago and crudBean.entity.notPago and crudBean.entity.notCancelavel}">
 							<f:setPropertyActionListener value="#{item}" target="#{crudBean.itemSelecionado}" />
 						</p:commandButton>
 					</p:column>
@@ -134,7 +135,8 @@
 								<f:facet name="header">
 									<h:outputLabel value="Ação" />
 								</f:facet>
-								<p:commandButton update="crudform:dialogExcluirAdicional" process="@this" oncomplete="PF('dlgExcluirAdicional').show();" styleClass="btn btn-danger btn-xs" value="Remover">
+								<p:commandButton update="crudform:dialogExcluirAdicional" process="@this" oncomplete="PF('dlgExcluirAdicional').show();" styleClass="btn btn-danger btn-xs" value="Deletar"
+									disabled="#{crudBean.entity.notEditavel or crudBean.entity.pago and crudBean.entity.notPago and crudBean.entity.notCancelavel}" global="false">
 									<f:setPropertyActionListener value="#{adicional}" target="#{crudBean.adicionalSelecionado}" />
 									<f:setPropertyActionListener value="#{item}" target="#{crudBean.itemSelecionado}" />
 								</p:commandButton>
@@ -185,7 +187,7 @@
 			<p:commandLink styleClass="btn btn-success btn-xs" value="Salvar" oncomplete="PF('dlgConfirmExcluirProduto').hide();" action="#{crudBean.btnRemoveItem()}" 
 				update="crudform:tabelaItemPedido :crudform:headerPedidoVenda" process="@this" />
 				
-			<p:commandLink oncomplete="PF('dlgConfirmExcluirProduto').hide(); return false;" styleClass="btn btn-danger btn-xs" value="Fechar" />
+			<p:commandLink oncomplete="PF('dlgConfirmExcluirProduto').hide(); return false;" styleClass="btn btn-danger btn-xs" value="Fechar" global="false" />
 		</f:facet>
 		
 		<script>

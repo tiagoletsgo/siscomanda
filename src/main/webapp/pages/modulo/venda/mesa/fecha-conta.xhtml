@@ -1,0 +1,145 @@
+<ui:composition template="/WEB-INF/template/template.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+	
+	<ui:param name="md" value="12" />
+	<ui:param name="sm" value="12" />
+	<ui:param name="xs" value="12" />
+	<ui:param name="crudBean" value="#{fechaContaBean}" />
+	<ui:param name="hideTableList" value="#{crudBean.estadoViewBean.search}" />
+	
+	<ui:define name="title_main"> 
+		<h:panelGroup layout="block" rendered="#{crudBean.estadoViewBean.insert}">Inclusão</h:panelGroup>
+	</ui:define>
+	<ui:define name="title_form"> 
+		<h:panelGroup layout="block">Pagamento</h:panelGroup>
+	</ui:define>
+	<ui:define name="title_form_table"> 
+		<h:panelGroup layout="block">Tabela de dados pagamento</h:panelGroup>
+	</ui:define>
+	
+	<ui:define name="content">
+		<h:panelGroup layout="block">
+			<h:panelGroup layout="block" rendered="#{crudBean.estadoViewBean.insert or crudBean.estadoViewBean.update}">
+				<ui:include src="/pages/modulo/venda/mesa/incluirPagamentoInclude.xhtml" />
+			</h:panelGroup>
+		</h:panelGroup>
+	</ui:define>
+	
+	<ui:define name="table">
+		<h:panelGroup layout="block" rendered="#{crudBean.estadoViewBean.search}">
+		</h:panelGroup>
+	</ui:define>
+	
+	<ui:define name="dialog">
+		<style>
+			.ui-dialog .ui-dialog-content {
+				overflow: inherit !important;
+			}
+			.ui-widget-content a {
+			    color: #fff !important;
+			}
+		</style>
+		<p:dialog widgetVar="dialogIncluirFormaPagamento" modal="true" responsive="true" showEffect="fade" hideEffect="fade" resizable="false" draggable="false" id="dialogFormaPagamento">
+			
+				<f:facet name="header">Incluir forma de pagamento</f:facet>
+
+				<h:form id="formDialogFormaPagamento">
+					<div class="row">
+						<div class="col-md-4 col-sm-4 col-xs-4">
+							<p:inputText id="valorRecebido" styleClass="form-control currency" value="#{crudBean.pagamento.valorRecebido}" placeholder="Valor R$">
+								<f:convertNumber minFractionDigits="2" maxFractionDigits="2" />
+								<p:ajax process="@this" global="false" event="keyup" delay="300" />
+							</p:inputText>
+						</div>
+						<div class="col-md-5 col-sm-5 col-xs-5">
+							<p:commandLink styleClass="btn btn-warning btn-block" update="@form" actionListener="#{crudBean.substituiValor(crudBean.valorFaltante)}" global="false">
+								<h:outputText value="#{crudBean.valorFaltante}">
+									<f:convertNumber type="currency" minFractionDigits="2" maxFractionDigits="2" />
+								</h:outputText>
+								<h:outputText value=" (Faltante) " />
+							</p:commandLink>
+						</div>
+						<div class="col-md-3 col-sm-3 col-xs-3">
+							<p:commandLink styleClass="btn btn-danger btn-block" value="Limpar" action="#{crudBean.btnLimpar}" update="formDialogFormaPagamento" global="false"  />
+						</div>
+					</div>
+					
+					<div class="row">
+						<div class="col-md-4 col-sm-4 col-xs-4">
+							<p:commandLink styleClass="btn btn-dark btn-block" value="R$ 2,00" update="@form" actionListener="#{crudBean.substituiValor(2.0)}" global="false" />
+						</div>
+						<div class="col-md-4 col-sm-4 col-xs-4">
+							<p:commandLink styleClass="btn btn-dark btn-block" value="R$ 5,00" update="@form" actionListener="#{crudBean.substituiValor(5.0)}" global="false" />
+						</div>
+						<div class="col-md-4 col-sm-4 col-xs-4">
+							<p:commandLink styleClass="btn btn-dark btn-block" value="R$ 10,00" update="@form" actionListener="#{crudBean.substituiValor(10.0)}" global="false" />
+						</div>
+					</div>
+					
+					<div class="row">
+						<div class="col-md-6 col-sm-6 col-xs-6">
+							<p:commandLink styleClass="btn btn-dark btn-block" value="R$ 20,00" update="@form" actionListener="#{crudBean.substituiValor(20.0)}" global="false" />
+						</div>
+						<div class="col-md-6 col-sm-6 col-xs-6">
+							<p:commandLink styleClass="btn btn-dark btn-block" value="R$ 50,00" update="@form" actionListener="#{crudBean.substituiValor(50.0)}" global="false" />
+						</div>
+					</div>
+					
+					
+					<h:panelGroup layout="block" styleClass="row" rendered="#{crudBean.acao eq 'DEBITO' or crudBean.acao eq 'CREDITO'}">
+						<hr />
+						<div class="col-md-6 col-sm-6 col-xs-6">
+							<label class="text-center">Seleciona a Bandeira.:</label>
+						</div>
+						
+						<p:selectOneRadio value="#{crudBean.pagamento.bandeira}" layout="responsive" columns="2" converter="entityConverter">
+							<f:selectItems value="#{crudBean.bandeiras}" var="bandeira" itemValue="#{bandeira}" itemLabel="#{bandeira.descricao.toUpperCase()}" />
+							<p:ajax process="@this" global="false" />
+						</p:selectOneRadio>
+					</h:panelGroup>
+					<script>
+					 	/* <![CDATA[ */
+							$(function(){
+								$(".currency").maskMoney({
+									thousands:'.', 
+									decimal:',',
+									allowZero: true
+								});
+							});
+						/* ]]> */
+					</script>
+				</h:form>
+
+				<f:facet name="footer">
+					<p:commandLink oncomplete="PF('dialogIncluirFormaPagamento').hide();" styleClass="btn btn-success" value="Salvar"
+						process="@this" action="#{crudBean.btnIncluirPagamento}" update=":crudform:tabelaFormaPagamento :crudform:gridValores :crudform:gridBotoes :formDialogFormaPagamento" />
+						
+					<p:commandLink oncomplete="PF('dialogIncluirFormaPagamento').hide(); return false;" styleClass="btn btn-primary" value="Voltar" global="false" />
+				</f:facet>
+		</p:dialog>	
+		
+		<p:dialog widgetVar="dialogExcluirFormaPagamento" modal="true" responsive="true" showEffect="fade" hideEffect="fade" resizable="false" draggable="false" id="dialogExcluirFormaPagamento">
+			
+				<f:facet name="header">Atenção</f:facet>
+
+				<h:form id="formDialogExcluirFormaPagamento">
+					<div class="row">
+						<div class="col-md-12 col-sm-12 col-xs-12">
+							<span>Deseja estornar este pagamento ?</span>
+						</div>
+					</div>
+				</h:form>
+
+				<f:facet name="footer">
+					<p:commandLink oncomplete="PF('dialogExcluirFormaPagamento').hide();" styleClass="btn btn-danger" value="Sim"
+						process="@this" action="#{crudBean.btnEstornar}" update=":crudform:tabelaFormaPagamento :crudform:gridValores :crudform:gridBotoes scripts" />
+						
+					<p:commandLink oncomplete="PF('dialogExcluirFormaPagamento').hide(); return false;" styleClass="btn btn-success" value="Não" global="false" />
+				</f:facet>
+		</p:dialog>
+	</ui:define>
+</ui:composition>

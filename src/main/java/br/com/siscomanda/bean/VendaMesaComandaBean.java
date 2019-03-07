@@ -7,6 +7,8 @@ import java.util.List;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ViewScoped;
+import javax.faces.context.ExternalContext;
+import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -48,8 +50,19 @@ public class VendaMesaComandaBean extends BaseBean<Venda> implements Serializabl
 	
 	private String filterPesquisar;
 	
+	private Integer mesaComanda;
+	
 	@Override
 	protected void init() {
+		initValores();
+		
+		produtos = service.buscaProduto("PIZZA");
+		adicionais = service.getAdicionais();
+		
+		beforeSearch();
+	}
+	
+	private void initValores() {
 		getEntity().setIniciado(new Date());
 		getEntity().setSubtotal(new Double(0));
 		getEntity().setTotal(new Double(0));
@@ -57,17 +70,44 @@ public class VendaMesaComandaBean extends BaseBean<Venda> implements Serializabl
 		getEntity().setTaxaEntrega(new Double(0));
 		getEntity().setDesconto(new Double(0));
 		getEntity().setValorPago(new Double(0));
+		getEntity().setMesaComanda(new Integer(0));
 		setQuantidade(new Double(1));
 		
 		mesasComandas = service.geraMesasComandas();
-		produtos = service.buscaProduto("PIZZA");
-		adicionais = service.getAdicionais();
-		
-		beforeSearch();
+		carregaVendaPorParamentro();
+	}
+	
+	private void carregaVendaPorParamentro() {
+		FacesContext context = FacesContext.getCurrentInstance();
+		ExternalContext external = context.getExternalContext();
+		String id = external.getRequestParameterMap().get("codigo");
+		if(id != null) {
+			Long codigo = Long.parseLong(id);
+			getEntity().setId(codigo);
+			setEntity(service.porFiltro(getEntity()).get(0));
+			mesaComanda = getEntity().getMesaComanda();
+			
+			for(ItemVenda item : getEntity().getItens()) {
+				for(Adicional adicional : service.carregaAdicionais(item)) {
+					adicional.setQuantidade(new Double(1));
+					item.getAdicionais().add(adicional);
+				}
+			}
+			
+			getEstadoViewBean().setCurrentView(true, false, false, false);
+		}
+	}
+	
+	private void setMesaComanda() {
+		if(!getEntity().isNovo()) {
+			getEntity().setMesaComanda(mesaComanda == null ? getEntity().getMesaComanda() : mesaComanda);
+		}
 	}
 	
 	public void btnSalvar() {		
 		try {
+			setMesaComanda();
+			
 			service.validaQuantidadeTotalItens(getEntity().getItens());
 			setEntity(service.salvar(getEntity()));
 		}
@@ -76,10 +116,33 @@ public class VendaMesaComandaBean extends BaseBean<Venda> implements Serializabl
 		}
 	}
 	
+	public void btnExcluir() {
+		
+		try {
+			service.remover(getEntity());
+			
+			setEntity(new Venda());
+			initValores();
+			
+			getEstadoViewBean().setCurrentView(false, false, false, true);
+			beforeSearch();
+			
+			JSFUtil.addMessage(FacesMessage.SEVERITY_INFO, "Registro removido com sucesso.");
+		}
+		catch(SiscomandaException e) {
+			JSFUtil.addMessage(FacesMessage.SEVERITY_ERROR, "Erro ao remover. " + e.getMessage());
+		}
+	}
+	
 	public void btnAdicionaItem() {
 		try {
+			
+			setMesaComanda();
+			
 			service.incluirItem(getEntity(), getSelectManyCheckBoxAdicionais(), getItemSelecionado(), getProdutoSelecionado(), getQuantidade());
 			afterAction();
+			
+			JSFUtil.addMessage(FacesMessage.SEVERITY_INFO, "Registro salvo com sucesso.");
 		}
 		catch(SiscomandaException e) {
 			JSFUtil.addMessage(FacesMessage.SEVERITY_ERROR, "Erro ao salvar. " + e.getMessage());
@@ -99,6 +162,8 @@ public class VendaMesaComandaBean extends BaseBean<Venda> implements Serializabl
 			List<ItemVenda> itens = service.removeItem(getEntity().getItens(), item, quantidade);
 			getEntity().setItens(itens);
 			afterAction();
+			
+			JSFUtil.addMessage(FacesMessage.SEVERITY_INFO, "Registro removido com sucesso.");
 		}
 		catch(SiscomandaException e) {
 			JSFUtil.addMessage(FacesMessage.SEVERITY_ERROR, "Erro ao remover. " + e.getMessage());
@@ -108,6 +173,8 @@ public class VendaMesaComandaBean extends BaseBean<Venda> implements Serializabl
 	public void btnRemoveAdicional() {
 		itemSelecionado.getAdicionais().remove(adicionalSelecionado);
 		afterAction();
+		
+		JSFUtil.addMessage(FacesMessage.SEVERITY_INFO, "Registro removido com sucesso.");
 	}
 	
 	public void btnPesquisar() {
@@ -116,15 +183,36 @@ public class VendaMesaComandaBean extends BaseBean<Venda> implements Serializabl
 	
 	@Override
 	public void btnNovo() {
-		getEntity().setSistema(new Integer(0));
+		setEntity(new Venda()); 
+		
+		initValores();
 		getEntity().setStatus(EStatus.EM_ABERTO);
 		getEstadoViewBean().setCurrentView(true, false, false, false);
 	}
 	
+	@Override
+	public void btnCancelar() {
+		try {
+			setMesaComanda();
+			
+			setEntity(service.cancelar(getEntity()));
+			
+			JSFUtil.addMessage(FacesMessage.SEVERITY_INFO, "Registro cancelado com sucesso.");
+		}
+		catch(SiscomandaException e) {
+			JSFUtil.addMessage(FacesMessage.SEVERITY_ERROR, "Erro ao cancelar. " + e.getMessage());
+		}
+	}
+	
 	public void editar(Venda venda) {
+		
 		setEntity(venda);
+		mesaComanda = venda.getMesaComanda();
 		for(ItemVenda item : getEntity().getItens()) {
-			item.setAdicionais(service.carregaAdicionais(item));
+			for(Adicional adicional : service.carregaAdicionais(item)) {
+				adicional.setQuantidade(new Double(1));
+				item.getAdicionais().add(adicional);
+			}
 		}
 		
 		getEstadoViewBean().setCurrentView(true, false, false, false);

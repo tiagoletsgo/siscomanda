@@ -12,7 +12,7 @@ import br.com.siscomanda.model.ItemVenda;
 import br.com.siscomanda.model.Venda;
 import br.com.siscomanda.repository.base.GenericDAO;
 
-public class VendaMesaComandaDAO extends GenericDAO<Venda> implements Serializable {
+public class VendaDAO extends GenericDAO<Venda> implements Serializable {
 
 	private static final long serialVersionUID = 5272635544808053392L;
 	
@@ -21,7 +21,7 @@ public class VendaMesaComandaDAO extends GenericDAO<Venda> implements Serializab
 		sql.append("SELECT DISTINCT venda FROM Venda venda JOIN FETCH venda.itens WHERE 1 = 1 ");
 		sql.append(venda.getId() != null ? "AND venda = :venda " : "");
 		sql.append(venda.getStatus() != null ? "AND venda.status = :status " : "");
-		sql.append(venda.getSistema() != null && venda.getSistema() > 0 ? "AND venda.sistema = :sistema" : "");
+		sql.append(venda.getMesaComanda() != null && venda.getMesaComanda() > 0 ? "AND venda.mesaComanda = :mesaComanda" : "");
 		TypedQuery<Venda> query = getEntityManager().createQuery(sql.toString(), Venda.class);
 		
 		if(venda.getId() != null) {			
@@ -32,8 +32,8 @@ public class VendaMesaComandaDAO extends GenericDAO<Venda> implements Serializab
 			query.setParameter("status", venda.getStatus());
 		}
 		
-		if(venda.getSistema() != null && venda.getSistema() > 0) {
-			query.setParameter("sistema", venda.getSistema());
+		if(venda.getMesaComanda() != null && venda.getMesaComanda() > 0) {
+			query.setParameter("mesaComanda", venda.getMesaComanda());
 		}
 		
 		List<Venda> vendas  = query.getResultList();
@@ -43,7 +43,7 @@ public class VendaMesaComandaDAO extends GenericDAO<Venda> implements Serializab
 	@SuppressWarnings("unchecked")
 	public List<Venda> vendasNaoPagasDiaCorrente() {
 		StringBuilder sql = new StringBuilder();
-		sql.append("SELECT v.* FROM venda v WHERE (CAST (v.data_iniciado AS DATE)) = current_date AND v.pago = false");
+		sql.append("SELECT v.* FROM venda v WHERE (CAST (v.data_iniciado AS DATE)) = current_date AND v.pago = false AND NOT v.status = 'CANCELADO' ");
 		Query query = getEntityManager().createNativeQuery(sql.toString(), Venda.class);
 		List<Venda> vendas  = query.getResultList();
 		return vendas;
