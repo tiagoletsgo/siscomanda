@@ -47,6 +47,10 @@ public class Venda extends BaseEntity implements Serializable {
 	@JoinColumn(name = "cliente_id", nullable = true)
 	private Cliente cliente;
 	
+//	@ManyToOne(fetch = FetchType.LAZY)
+//	@JoinColumn(name = "caixa_id", nullable = false)
+//	private Caixa caixa;
+	
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "data_iniciado", nullable = false)
 	private Date iniciado;
@@ -66,7 +70,9 @@ public class Venda extends BaseEntity implements Serializable {
 	
 	@Column(name = "desconto", nullable = false)
 	private Double desconto;
-
+	
+//	@ManyToOne(fetch = FetchType.LAZY)
+//	@JoinColumn(name = "usuario_id", nullable = false)
 //	private Usuario operador
 	
 	@Column(name = "total", nullable = false)

@@ -87,14 +87,14 @@
 						<p:column styleClass="ui-datatable-left text-success" width="12%" style="border-radius: 0;">
 							<f:facet name="header">Entrada</f:facet>
 							<h:outputText value="#{lancamento.valorEntrada}">
-								<f:convertNumber  type="currency" />
+								<f:convertNumber type="currency" minFractionDigits="2" maxFractionDigits="2" />
 							</h:outputText>
 						</p:column>
 						
 						<p:column styleClass="ui-datatable-left text-danger" width="12%" style="border-radius: 0;">
 							<f:facet name="header">Saída</f:facet>
 							<h:outputText value="#{lancamento.valorSaida}" rendered="#{not empty lancamento.valorSaida}">
-								<f:convertNumber  type="currency" />
+								<f:convertNumber type="currency" minFractionDigits="2" maxFractionDigits="2" />
 							</h:outputText>
 							<h:outputText value="0,00" rendered="#{empty lancamento.valorSaida}" />
 						</p:column>

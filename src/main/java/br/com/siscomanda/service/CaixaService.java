@@ -108,6 +108,7 @@ public class CaixaService implements Serializable {
 			lancamento.setFormaPagamento(pagamento.getFormaPagamento());
 			lancamento.setDescricao("Pedido nº " + pagamento.getVenda().getId());
 			lancamento.setValorEntrada(pagamento.getValorRecebido() - pagamento.getValorTroco());
+			lancamento.setValorSaida(new Double(0));
 			lancamento.setBandeira(pagamento.getBandeira());
 			lancamentos.add(lancamento);
 		}
