@@ -1,5 +1,6 @@
 package br.com.siscomanda.bean;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.List;
@@ -19,6 +20,8 @@ import br.com.siscomanda.model.FormaPagamento;
 import br.com.siscomanda.model.ItemVenda;
 import br.com.siscomanda.model.PagamentoVenda;
 import br.com.siscomanda.model.Venda;
+import br.com.siscomanda.service.AplicaDescontoService;
+import br.com.siscomanda.service.AplicaTaxaEntregaService;
 import br.com.siscomanda.service.FechaContaService;
 import br.com.siscomanda.util.JSFUtil;
 import br.com.siscomanda.util.StringUtil;
@@ -37,10 +40,8 @@ public class FechaContaBean extends BaseBean<Venda> implements Serializable {
 	private PagamentoVenda pagamento;
 	
 	private PagamentoVenda pagamentoSelecionado;
-
-	private Long codigo;
 	
-	private Venda venda;
+	private Long codigo;
 	
 	private Double valorFaltante;
 	
@@ -51,46 +52,22 @@ public class FechaContaBean extends BaseBean<Venda> implements Serializable {
 	@Override
 	protected void init() {
 		if(!FacesContext.getCurrentInstance().isPostback()) {	
+			
 			FacesContext context = FacesContext.getCurrentInstance();
 			ExternalContext external = context.getExternalContext();
 			
 			codigo = Long.parseLong(external.getRequestParameterMap().get("codigo"));
-			venda = new Venda(codigo);
+			setEntity(new Venda(codigo));
 			
-			pagamento = new PagamentoVenda();
-			pagamento.setValorPago(new Double(0));
-			pagamento.setValorTroco(new Double(0));
 			buscaVenda();
-		}
-	}
-	
-	public void btnSalvar() {
-		
-	}
-	
-	public void btnIncluirPagamento() {
-		try {			
-			PagamentoVenda pagamento = new PagamentoVenda();
-			pagamento = service.incluiPagamento(getPagamento(), venda.getPagamentos(), valorFaltante);
-			venda.getPagamentos().add(pagamento);
-			
-			getPagamento().setValorPago(service.calculaTotalPago(venda.getPagamentos()));
-			getPagamento().setValorTroco(service.calculaTroco(getPagamento().getValorRecebido(), valorFaltante, pagamento.getFormaPagamento(), false));
-
-			valorFaltante = service.calculaValorFantante(getPagamento().getValorTotal(), getPagamento().getValorPago());
-			getPagamento().setValorRecebido(null);
-		}
-		catch(SiscomandaException e) {
-			JSFUtil.addMessage(FacesMessage.SEVERITY_ERROR, "Erro ao incluir registro. " + e.getMessage());
 		}
 	}
 	
 	private void buscaVenda() {
 		try {			
-			venda = service.buscaVenda(venda);
-			setEntity(venda);
-			pagamento.setValorTotal(getEntity().getTotal());
-			valorFaltante = pagamento.getValorTotal();
+			setEntity(service.buscaVenda(getEntity()));
+			pagamento = service.carregaPagamento(getEntity());						
+			valorFaltante = service.calculaValorFantante(pagamento.getValorTotal(), pagamento.getValorPago());
 			
 			for(ItemVenda item : getEntity().getItens()) {
 				for(Adicional adicional : service.carregaAdicionais(item)) {
@@ -100,7 +77,40 @@ public class FechaContaBean extends BaseBean<Venda> implements Serializable {
 			}
 		}
 		catch(SiscomandaException e) {
-			JSFUtil.addMessage(FacesMessage.SEVERITY_ERROR, "Erro ao localizar venda" + e.getMessage());
+			JSFUtil.addMessage(FacesMessage.SEVERITY_ERROR, "Erro ao localizar venda. " + e.getMessage());
+		}
+	}
+	
+	public void btnFecharConta() {
+		try {	
+			setEntity(service.salvar(getEntity(), getPagamento()));
+		}
+		catch(SiscomandaException e) {
+			JSFUtil.addMessage(FacesMessage.SEVERITY_ERROR, "Erro ao fechar conta. " + e.getMessage());
+		}
+	}
+	
+	public void btnIncluirPagamento() {
+		try {			
+			PagamentoVenda pagamento = new PagamentoVenda();
+			pagamento = service.incluiPagamento(getPagamento(), getEntity().getPagamentos(), valorFaltante);
+			
+			pagamento.setVenda(getEntity());
+			getEntity().getPagamentos().add(pagamento);
+			
+			getPagamento().setValorPago(service.calculaTotalPago(getEntity().getPagamentos()));
+			getPagamento().setValorTroco(service.calculaTroco(getPagamento().getValorRecebido(), valorFaltante, pagamento.getFormaPagamento()));
+			
+			pagamento.setValorPago(getPagamento().getValorPago());
+			pagamento.setValorTroco(getPagamento().getValorTroco());
+			pagamento.setDesconto(getEntity().getDesconto() == null ? new Double(0) : getEntity().getDesconto());
+			pagamento.setTaxaEntrega(getEntity().getTaxaEntrega() == null ? new Double(0) : getEntity().getTaxaEntrega());
+			
+			valorFaltante = service.calculaValorFantante(getPagamento().getValorTotal(), getPagamento().getValorPago());
+			getPagamento().setValorRecebido(null);
+		}
+		catch(SiscomandaException e) {
+			JSFUtil.addMessage(FacesMessage.SEVERITY_ERROR, "Erro ao incluir pagamento. " + e.getMessage());
 		}
 	}
 	
@@ -123,22 +133,9 @@ public class FechaContaBean extends BaseBean<Venda> implements Serializable {
 	public void btnEstornar() {
 		this.pagamento.setValorPago(this.pagamento.getValorPago() - getPagamentoSelecionado().getValorRecebido());
 		valorFaltante = service.calculaValorFantante(getPagamento().getValorTotal(), getPagamento().getValorPago());
-//		getPagamento().setValorTroco(service.calculaTroco(getPagamentoSelecionado().getValorRecebido(), venda.getTotal(), getPagamentoSelecionado().getFormaPagamento()));
+		getPagamento().setValorTroco(service.estornarFormaPagamento(getPagamento(), getPagamentoSelecionado().getFormaPagamento(), valorFaltante));	
 		
-		Double troco = getPagamento().getValorPago() != 0.0 ? getPagamento().getValorTroco() : 0.0;
-		if(getPagamentoSelecionado().getFormaPagamento().getDescricao().equals("DINHEIRO")) {
-			if(getPagamento().getValorTotal() > getPagamento().getValorPago()) {
-				troco = getPagamento().getValorTotal() - valorFaltante;			
-			}
-		}
-		
-		if(valorFaltante > 0) {
-			troco = 0.0;
-		}
-		
-		getPagamento().setValorTroco(troco);
-		
-		venda.getPagamentos().remove(getPagamentoSelecionado());
+		getEntity().getPagamentos().remove(getPagamentoSelecionado());
 	}
 	
 	public void btnLimpar() {
@@ -151,18 +148,16 @@ public class FechaContaBean extends BaseBean<Venda> implements Serializable {
 	
 	public void aplicaDesconto() {
 		Double desconto = getEntity().getDesconto() != null ? getEntity().getDesconto() : new Double(0);
-		Double total = getEntity().getTotal();
-		Double somatorio = (total - desconto) + (getEntity().getTaxaEntrega() != null ? getEntity().getTaxaEntrega() : new Double(0));
-		pagamento.setValorTotal(somatorio);
-		valorFaltante = pagamento.getValorTotal();
+		Double acrescimo = getEntity().getTaxaEntrega() != null ? getEntity().getTaxaEntrega() : new Double(0);
+		pagamento.setValorTotal(service.calculaFaltaPagar(new AplicaDescontoService(), getEntity().getSubtotal(), desconto, acrescimo));
+		valorFaltante = service.calculaValorFantante(pagamento.getValorTotal(), pagamento.getValorPago());
 	}
 	
 	public void aplicaTaxaEntrega() {
-		Double taxaEntrega = getEntity().getTaxaEntrega() != null ? getEntity().getTaxaEntrega() : new Double(0);
-		Double total = getEntity().getTotal();
-		Double somatorio = (total + taxaEntrega) - (getEntity().getDesconto() != null ? getEntity().getDesconto() : new Double(0));
-		pagamento.setValorTotal(somatorio);
-		valorFaltante = pagamento.getValorTotal();
+		Double acrescimo = getEntity().getTaxaEntrega() != null ? getEntity().getTaxaEntrega() : new Double(0);
+		Double desconto = getEntity().getDesconto() != null ? getEntity().getDesconto() : new Double(0);
+		pagamento.setValorTotal(service.calculaFaltaPagar(new AplicaTaxaEntregaService(), getEntity().getSubtotal(), desconto, acrescimo));
+		valorFaltante = service.calculaValorFantante(pagamento.getValorTotal(), pagamento.getValorPago());
 	}
 	
 	public Double calculaSubTotalItem(ItemVenda item) {
@@ -172,9 +167,13 @@ public class FechaContaBean extends BaseBean<Venda> implements Serializable {
 	public String converter(Double valor) {
 		return StringUtil.converterDouble(valor);
 	}
-	
-	public String btnVoltarCancelar() {
-		return "/pages/modulo/venda/mesa/venda-mesa-comanda.xhtml?view=search&faces-redirect=true&codigo=" + codigo;
+
+	public void btnVoltar() {
+		try {
+			FacesContext.getCurrentInstance().getExternalContext().redirect("venda-mesa-comanda.xhtml?view=search&faces-redirect=true&codigo=" + codigo);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override

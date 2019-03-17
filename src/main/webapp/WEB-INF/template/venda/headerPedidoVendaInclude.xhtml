@@ -11,7 +11,19 @@
 			</div>
 		</div>
 		
+		<h:panelGroup layout="block" styleClass="row" id="grid_cliente">
+			<h:panelGroup rendered="#{crudBean.entity.tipoVenda eq 'DELIVERY' and not empty crudBean.entity.cliente}" layout="block" styleClass="col-md-12 col-sm-12 col-xs-12">
+				<label>Cliente.: </label>
+				<h:outputText value="#{crudBean.entity.cliente.nomeCompleto.toUpperCase()}" styleClass="form-control" />
+			</h:panelGroup>
+		</h:panelGroup>
+		
 		<div class="row">
+			<div class="col-md-3 col-sm-3 col-xs-12">
+				<label>Tipo Venda.: </label>
+				<h:outputText value="#{crudBean.entity.tipoVenda.descricao.toUpperCase()}" styleClass="form-control" />
+			</div>
+			
 			<div class="col-md-2 col-sm-2 col-xs-12">
 				<label>Nº Pedido.: </label>
 				<h:outputText value="#{crudBean.entity.id eq null ? 000000 : crudBean.entity.id}" styleClass="form-control">
@@ -19,14 +31,14 @@
 				</h:outputText>
 			</div>
 			
-			<div class="col-md-3 col-sm-3 col-xs-12">
-				<label>Nª mesa / comanda.: </label> 
+			<div class="col-md-2 col-sm-2 col-xs-12">
+				<label>Mesa / Comanda.: </label> 
 				<h:outputText value="#{crudBean.entity.mesaComanda}" styleClass="form-control">
 					<f:convertNumber maxIntegerDigits="6" pattern="000000" />
 				</h:outputText>
 			</div>
 			
-			<div class="col-md-4 col-sm-4 col-xs-12">
+			<div class="col-md-2 col-sm-2 col-xs-12">
 				<label>Operador.: </label>
 				<h:outputText value="Administrador" styleClass="form-control" />
 			</div>
@@ -42,7 +54,7 @@
 		<div class="row">
 			<div class="col-md-2 col-sm-2 col-xs-12">
 				<label>Status.: </label>
-				<h:outputText value="#{crudBean.entity.status.descricao}" styleClass="form-control" />
+				<h:outputText value="#{crudBean.entity.status.descricao.toUpperCase()}" styleClass="form-control" />
 			</div>
 			
 			<div class="col-md-2 col-sm-2 col-xs-12">

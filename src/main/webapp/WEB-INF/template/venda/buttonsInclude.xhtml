@@ -30,7 +30,7 @@
 			<h:panelGroup layout="block" rendered="#{crudBean.estadoViewBean.insert and crudBean.entity.mesaComanda == 0}">
 				<div class="col-md-12 col-sm-12 col-xs-12">
 					<p:commandLink value="Mesa / Comanda" styleClass="btn btn-primary pull-left" global="false" oncomplete="PF('dialogSelecionaMesaComanda').show();" />
-					<p:commandLink value="Delivery / Balcão" styleClass="btn btn-primary pull-left" global="false" />
+					<p:commandLink value="Delivery / Balcão" styleClass="btn btn-primary pull-left" global="false" oncomplete="PF('dialogSelecionaDeliveryBalcao').show();" />
 					<p:link value="Voltar" styleClass="btn btn-primary pull-right" outcome="/pages/modulo/venda/mesa/venda-mesa-comanda?view=search" />
 				</div>
 			</h:panelGroup>

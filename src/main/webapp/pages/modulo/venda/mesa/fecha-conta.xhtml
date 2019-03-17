@@ -50,13 +50,13 @@
 				<h:form id="formDialogFormaPagamento">
 					<div class="row">
 						<div class="col-md-4 col-sm-4 col-xs-4">
-							<p:inputText id="valorRecebido" styleClass="form-control currency" value="#{crudBean.pagamento.valorRecebido}" placeholder="Valor R$">
+							<p:inputText id="valorRecebido" styleClass="form-control currency input-text" value="#{crudBean.pagamento.valorRecebido}" placeholder="Valor R$">
 								<f:convertNumber minFractionDigits="2" maxFractionDigits="2" />
 								<p:ajax process="@this" global="false" event="keyup" delay="300" />
 							</p:inputText>
 						</div>
 						<div class="col-md-5 col-sm-5 col-xs-5">
-							<p:commandLink styleClass="btn btn-warning btn-block" update="@form" actionListener="#{crudBean.substituiValor(crudBean.valorFaltante)}" global="false">
+							<p:commandLink styleClass="btn btn-warning btn-block input-text" update="@form" actionListener="#{crudBean.substituiValor(crudBean.valorFaltante)}" global="false">
 								<h:outputText value="#{crudBean.valorFaltante}">
 									<f:convertNumber type="currency" minFractionDigits="2" maxFractionDigits="2" />
 								</h:outputText>
@@ -64,28 +64,28 @@
 							</p:commandLink>
 						</div>
 						<div class="col-md-3 col-sm-3 col-xs-3">
-							<p:commandLink styleClass="btn btn-danger btn-block" value="Limpar" action="#{crudBean.btnLimpar}" update="formDialogFormaPagamento" global="false"  />
+							<p:commandLink styleClass="btn btn-danger btn-block input-text" value="Limpar" action="#{crudBean.btnLimpar}" update="formDialogFormaPagamento" global="false"  />
 						</div>
 					</div>
 					
 					<div class="row">
 						<div class="col-md-4 col-sm-4 col-xs-4">
-							<p:commandLink styleClass="btn btn-dark btn-block" value="R$ 2,00" update="@form" actionListener="#{crudBean.substituiValor(2.0)}" global="false" />
+							<p:commandLink styleClass="btn btn-dark btn-block input-text" value="R$ 2,00" update="@form" actionListener="#{crudBean.substituiValor(2.0)}" global="false" />
 						</div>
 						<div class="col-md-4 col-sm-4 col-xs-4">
-							<p:commandLink styleClass="btn btn-dark btn-block" value="R$ 5,00" update="@form" actionListener="#{crudBean.substituiValor(5.0)}" global="false" />
+							<p:commandLink styleClass="btn btn-dark btn-block input-text" value="R$ 5,00" update="@form" actionListener="#{crudBean.substituiValor(5.0)}" global="false" />
 						</div>
 						<div class="col-md-4 col-sm-4 col-xs-4">
-							<p:commandLink styleClass="btn btn-dark btn-block" value="R$ 10,00" update="@form" actionListener="#{crudBean.substituiValor(10.0)}" global="false" />
+							<p:commandLink styleClass="btn btn-dark btn-block input-text" value="R$ 10,00" update="@form" actionListener="#{crudBean.substituiValor(10.0)}" global="false" />
 						</div>
 					</div>
 					
 					<div class="row">
 						<div class="col-md-6 col-sm-6 col-xs-6">
-							<p:commandLink styleClass="btn btn-dark btn-block" value="R$ 20,00" update="@form" actionListener="#{crudBean.substituiValor(20.0)}" global="false" />
+							<p:commandLink styleClass="btn btn-dark btn-block input-text" value="R$ 20,00" update="@form" actionListener="#{crudBean.substituiValor(20.0)}" global="false" />
 						</div>
 						<div class="col-md-6 col-sm-6 col-xs-6">
-							<p:commandLink styleClass="btn btn-dark btn-block" value="R$ 50,00" update="@form" actionListener="#{crudBean.substituiValor(50.0)}" global="false" />
+							<p:commandLink styleClass="btn btn-dark btn-block input-text" value="R$ 50,00" update="@form" actionListener="#{crudBean.substituiValor(50.0)}" global="false" />
 						</div>
 					</div>
 					
@@ -115,7 +115,7 @@
 				</h:form>
 
 				<f:facet name="footer">
-					<p:commandLink oncomplete="PF('dialogIncluirFormaPagamento').hide();" styleClass="btn btn-success" value="Salvar"
+					<p:commandLink oncomplete="PF('dialogIncluirFormaPagamento').hide();" styleClass="btn btn-success" value="Salvar" global="false"
 						process="@this" action="#{crudBean.btnIncluirPagamento}" update=":crudform:tabelaFormaPagamento :crudform:gridValores :crudform:gridBotoes :formDialogFormaPagamento" />
 						
 					<p:commandLink oncomplete="PF('dialogIncluirFormaPagamento').hide(); return false;" styleClass="btn btn-primary" value="Voltar" global="false" />

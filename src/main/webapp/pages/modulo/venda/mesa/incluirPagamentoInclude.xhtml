@@ -68,7 +68,7 @@
 					
 					<p:column style="width: 15%; border-radius: 0px;">
 						<f:facet name="header">Estornar</f:facet>
-						<p:commandLink styleClass="btn btn-danger btn-xs btn-block fa fa-trash" oncomplete="PF('dialogExcluirFormaPagamento').show();">
+						<p:commandLink styleClass="btn btn-danger btn-xs btn-block fa fa-trash" oncomplete="PF('dialogExcluirFormaPagamento').show();" disabled="#{crudBean.entity.notPagavel}">
 							<f:setPropertyActionListener value="#{pagamento}" target="#{crudBean.pagamentoSelecionado}" />
 						</p:commandLink>
 					</p:column>
@@ -80,29 +80,28 @@
 			<div class="row">
 				<div class="col-md-3 col-sm-3 col-xs-12">
 					<label>Subtotal $.:</label>
-					<h:outputText value="#{crudBean.entity.subtotal}" styleClass="form-control">
+					<h:outputText value="#{crudBean.entity.subtotal}" styleClass="form-control strong-default">
 						<f:convertNumber maxFractionDigits="2" minFractionDigits="2" />
 					</h:outputText>
 				</div>
 				
 				<div class="col-md-3 col-sm-3 col-xs-12">
-					<label>(-) Desconto $.:</label>
-					<p:inputText value="#{crudBean.entity.desconto}" styleClass="form-control currency" disabled="#{crudBean.notPago}" >
+					<label>(+) Serviço $.:</label>
+					<h:outputText value="#{crudBean.entity.taxaServico}" styleClass="form-control strong-default">
 						<f:convertNumber maxFractionDigits="2" minFractionDigits="2" />
-						<p:ajax event="keyup" delay="200" update="total faltaPagar gridBotoes" listener="#{crudBean.aplicaDesconto()}" global="false" />
-					</p:inputText>
+					</h:outputText>
 				</div>
 				
 				<div class="col-md-3 col-sm-3 col-xs-12">
 					<label>Total pago $.:</label>
-					<h:outputText value="#{crudBean.pagamento.valorPago}" styleClass="form-control">
+					<h:outputText value="#{crudBean.pagamento.valorPago}" styleClass="form-control strong-default">
 						<f:convertNumber maxFractionDigits="2" minFractionDigits="2" />
 					</h:outputText>
 				</div>
 				
 				<div class="col-md-3 col-sm-3 col-xs-12">
 					<label>Falta pagar $.:</label>
-					<h:outputText id="faltaPagar" value="#{crudBean.valorFaltante}" styleClass="form-control">
+					<h:outputText id="faltaPagar" value="#{crudBean.valorFaltante}" styleClass="form-control strong-danger">
 						<f:convertNumber maxFractionDigits="2" minFractionDigits="2" />
 					</h:outputText>
 				</div>
@@ -110,46 +109,31 @@
 			
 			<div class="row">
 				<div class="col-md-3 col-sm-3 col-xs-12">
-					<label>(+) Serviço $.:</label>
-					<h:outputText value="#{crudBean.entity.taxaServico}" styleClass="form-control">
+					<label>(-) Desconto $.:</label>
+					<p:inputText value="#{crudBean.entity.desconto}" styleClass="form-control currency strong-default input-text" disabled="#{crudBean.notPago}" >
 						<f:convertNumber maxFractionDigits="2" minFractionDigits="2" />
-					</h:outputText>
+						<p:ajax event="keyup" delay="200" update="total faltaPagar gridBotoes" listener="#{crudBean.aplicaDesconto()}" global="false" />
+					</p:inputText>
 				</div>
 				
 				<div class="col-md-3 col-sm-3 col-xs-12">
 					<label>(+) Entrega $.:</label>
-					<p:inputText value="#{crudBean.entity.taxaEntrega}" styleClass="form-control currency" disabled="#{crudBean.notPago}" >
+					<p:inputText value="#{crudBean.entity.taxaEntrega}" styleClass="form-control currency strong-default input-text" disabled="#{crudBean.notPago}" >
 						<f:convertNumber maxFractionDigits="2" minFractionDigits="2" />	
 						<p:ajax event="keyup" delay="200" update="total faltaPagar gridBotoes" listener="#{crudBean.aplicaTaxaEntrega()}" global="false" />
 					</p:inputText>
 				</div>
 				
-				<div class="col-md-6 col-sm-6 col-xs-12">
-					<label>Troco $.:</label>
-					<h:outputText value="#{crudBean.pagamento.valorTroco}" styleClass="form-control">
-						<f:convertNumber maxFractionDigits="2" minFractionDigits="2" />
-					</h:outputText>
-				</div>
-			</div>
-			
-			<div class="row">
-				<div class="col-md-6 col-sm-6 col-xs-12">
+				<div class="col-md-3 col-sm-3 col-xs-12">
 					<label>Total a pagar $.:</label>
-					<h:outputText id="total" value="#{crudBean.pagamento.valorTotal}" styleClass="form-control">
+					<h:outputText id="total" value="#{crudBean.pagamento.valorTotal}" styleClass="form-control strong-default">
 						<f:convertNumber maxFractionDigits="2" minFractionDigits="2" />
 					</h:outputText>
 				</div>
 				
 				<div class="col-md-3 col-sm-3 col-xs-12">
-					<label>Quantidade pessoa .:</label>
-					<h:inputText value="#{crudBean.entity.subtotal}" styleClass="form-control">
-						<f:convertNumber maxFractionDigits="2" minFractionDigits="2" />
-					</h:inputText>
-				</div>
-				
-				<div class="col-md-3 col-sm-3 col-xs-12">
-					<label>Valor por pessoa $.:</label>
-					<h:outputText value="#{crudBean.entity.subtotal}" styleClass="form-control">
+					<label>Troco $.:</label>
+					<h:outputText value="#{crudBean.pagamento.valorTroco}" styleClass="form-control strong-success">
 						<f:convertNumber maxFractionDigits="2" minFractionDigits="2" />
 					</h:outputText>
 				</div>
@@ -162,9 +146,10 @@
 		<div class="ln_solid"></div>
 		<div class="form-group">
 			<div class="col-md-12 col-sm-12 col-xs-12">
-				<p:commandButton styleClass="btn btn-success" value="Salvar" update="@form" />
-				<p:commandButton styleClass="btn btn-primary" value="Fechar Conta" update="@form" />
-				<h:commandLink value="Cancelar" styleClass="btn btn-danger pull-right" action="#{crudBean.btnVoltarCancelar}" />
+				<p:commandButton styleClass="btn btn-success" value="Fechar Conta" update="@form" action="#{crudBean.btnFecharConta}" disabled="#{crudBean.entity.notPagavel}" />
+				<p:commandButton value="Voltar" styleClass="btn btn-primary pull-right">
+					<p:ajax listener="#{crudBean.btnVoltar}" />
+				</p:commandButton>
 			</div>	
 		</div>
 	

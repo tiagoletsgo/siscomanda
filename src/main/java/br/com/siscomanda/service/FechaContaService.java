@@ -4,10 +4,14 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.List;
 
+import javax.faces.application.FacesMessage;
 import javax.inject.Inject;
 
 import br.com.siscomanda.base.service.VendaService;
+import br.com.siscomanda.config.jpa.Transactional;
+import br.com.siscomanda.enumeration.EStatus;
 import br.com.siscomanda.exception.SiscomandaException;
+import br.com.siscomanda.interfaces.Calculadora;
 import br.com.siscomanda.model.Adicional;
 import br.com.siscomanda.model.Bandeira;
 import br.com.siscomanda.model.FormaPagamento;
@@ -15,8 +19,10 @@ import br.com.siscomanda.model.ItemVenda;
 import br.com.siscomanda.model.PagamentoVenda;
 import br.com.siscomanda.model.Venda;
 import br.com.siscomanda.repository.dao.BandeiraDAO;
+import br.com.siscomanda.repository.dao.CaixaDAO;
 import br.com.siscomanda.repository.dao.FormaPagamentoDAO;
 import br.com.siscomanda.repository.dao.VendaDAO;
+import br.com.siscomanda.util.JSFUtil;
 
 public class FechaContaService extends VendaService implements Serializable {
 
@@ -30,6 +36,98 @@ public class FechaContaService extends VendaService implements Serializable {
 	
 	@Inject
 	private BandeiraDAO bandeiraDAO;
+	
+	@Inject
+	private CaixaDAO caixaDAO;
+	
+	public PagamentoVenda carregaPagamento(Venda venda) {
+		
+		Double troco = new Double(0);
+		if(!venda.getPagamentos().isEmpty()) {
+			for(PagamentoVenda pagamento : venda.getPagamentos()) {
+				if(pagamento.getValorTroco() > new Double(0)) {
+					troco = pagamento.getValorTroco();
+				}
+			}
+		}
+		
+		PagamentoVenda pagamento = new PagamentoVenda();
+		pagamento.setValorTroco(new Double(0));
+		pagamento.setValorPago(venda.getValorPago() == null ? new Double(0) : venda.getValorPago());
+		pagamento.setDesconto(venda.getDesconto() == null ? new Double(0) : venda.getDesconto());
+		pagamento.setTaxaEntrega(venda.getTaxaEntrega() == null ? new Double(0) : venda.getTaxaEntrega());
+		pagamento.setTaxaServico(venda.getTaxaServico() == null ? new Double(0) : venda.getTaxaServico());
+		pagamento.setValorTotal(venda.getTotal());
+		pagamento.setValorVenda(venda.getSubtotal());
+		pagamento.setValorTroco(troco);
+		
+		return pagamento;
+	}
+	
+	public void limpaId(List<PagamentoVenda> pagamentos) {
+		for(PagamentoVenda pagamento : pagamentos) {
+			pagamento.setId(null);
+		}
+	}
+	
+	@Transactional
+	public Venda salvar(Venda venda, PagamentoVenda pagamento) throws SiscomandaException {
+		
+		if(caixaDAO.temCaixaAberto() == null) {
+			throw new SiscomandaException("Não foi realizado a abertura do caixa.");
+		}
+		
+		if(venda.getPagamentos().isEmpty()) {
+			throw new SiscomandaException("É necessário informar pelo menos uma forma de pagamento antes de salvar.");
+		}
+		
+		if(pagamento.getValorPago() < BigDecimal.ZERO.doubleValue() || venda.getTotal() < BigDecimal.ZERO.doubleValue()) {
+			throw new SiscomandaException("Não é possivel salvar pagamento com valores negativos.");
+		}
+		
+		if(venda.getStatus().equals(EStatus.CANCELADO)) {
+			throw new SiscomandaException("Pagamento com status cancelado não pode ser alterado.");
+		}
+		
+		if(venda.getStatus().equals(EStatus.PAGO)) {
+			throw new SiscomandaException("Pagamento com status pago não pode ser alterado.");
+		}
+		
+		venda.setTotal(pagamento.getValorTotal());
+		venda.setValorPago(pagamento.getValorPago());
+		venda.setStatus(statusPagamento(pagamento.getValorPago(), pagamento.getValorTotal()));
+		venda.setPago(isPago(venda));
+
+		venda = vendaDAO.salvar(venda);
+		
+		if(venda.isPago()) {
+			JSFUtil.addMessage(FacesMessage.SEVERITY_INFO, "Pagamento fechado com sucesso.");
+		}
+		
+		if(venda.isNotPago()) {
+			JSFUtil.addMessage(FacesMessage.SEVERITY_WARN, "Pagamento salvo com valor parcial.");
+		}
+				
+		return venda;
+	}
+	
+	private EStatus statusPagamento(Double valorPago, Double valorTotal) {
+		EStatus status = EStatus.EM_ABERTO;		
+		if(valorPago >= valorTotal) {
+			status = EStatus.PAGO;
+		}
+		else if(valorPago < valorTotal) {
+			status = EStatus.PAGO_PARCIAL;
+		}
+		return status;
+	}
+	
+	private boolean isPago(Venda venda) {
+		if(venda.getStatus().equals(EStatus.PAGO)) {
+			return true;
+		}
+		return false;
+	}
 	
 	public FormaPagamento buscaFormaPagamentoPorDescricao(String descricao) throws SiscomandaException {
 		try {			
@@ -45,13 +143,6 @@ public class FechaContaService extends VendaService implements Serializable {
 	}
 	
 	public PagamentoVenda incluiPagamento(PagamentoVenda pagamento, List<PagamentoVenda> pagamentos, Double valorFaltante) throws SiscomandaException {
-		Long id = pagamentos.isEmpty() ? 1L : pagamentos.get(pagamentos.size() -1).getId() + 1;
-		
-		PagamentoVenda pagamentoClone = new PagamentoVenda();
-		pagamentoClone.setId(id);
-		pagamentoClone.setBandeira(pagamento.getBandeira());
-		pagamentoClone.setValorRecebido(pagamento.getValorRecebido());
-		pagamentoClone.setFormaPagamento(pagamento.getFormaPagamento());
 		
 		if(pagamento.getValorRecebido() == null || pagamento.getValorRecebido().equals(new Double(0))) {
 			throw new SiscomandaException("Informe ou selecione um valor para incluir pagamento.");
@@ -69,18 +160,57 @@ public class FechaContaService extends VendaService implements Serializable {
 			throw new SiscomandaException("Forma de pagamento crédito ou débito não permite troco.");
 		}
 		
+		Long id = pagamentos.isEmpty() ? 1L : pagamentos.get(pagamentos.size() -1).getId() + 1;
+		
+		PagamentoVenda pagamentoClone = new PagamentoVenda();
+		pagamentoClone.setId(id);
+		pagamentoClone.setBandeira(pagamento.getBandeira());
+		pagamentoClone.setValorRecebido(pagamento.getValorRecebido());
+		pagamentoClone.setFormaPagamento(pagamento.getFormaPagamento());
+		
+		pagamentoClone.setValorPago(pagamento.getValorPago());
+		pagamentoClone.setValorTroco(pagamento.getValorTroco());
+		pagamentoClone.setDesconto(pagamento.getDesconto());
+		pagamentoClone.setTaxaEntrega(pagamento.getTaxaEntrega());
+		pagamentoClone.setTaxaServico(pagamento.getTaxaServico());
+		pagamentoClone.setValorTotal(pagamento.getValorTotal());
+		pagamentoClone.setValorVenda(pagamento.getValorVenda());
+		
 		return pagamentoClone;
 	}
 	
-	public Double calculaTroco(Double valorPago, Double valorTotal, FormaPagamento formaPagamento, boolean estorno) {
+	public Double calculaFaltaPagar(Calculadora calculadora, Double total, Double desconto, Double acrescimo) {
+		try {
+			return calculadora.aplicaCalculo(total, desconto, acrescimo);
+		}
+		catch(SiscomandaException e) {
+			JSFUtil.addMessage(FacesMessage.SEVERITY_ERROR, e.getMessage());
+			return new Double(0);
+		}
+	}
+	
+	public Double calculaTroco(Double valorPago, Double valorTotal, FormaPagamento formaPagamento) {
 		Double total = BigDecimal.ZERO.doubleValue();
-		if(valorPago > valorTotal && formaPagamento.getDescricao().equals("DINHEIRO") && !estorno) {
+		if(valorPago > valorTotal && formaPagamento.getDescricao().equals("DINHEIRO")) {
 			total = valorPago - valorTotal;
 		}
-		else if(formaPagamento.getDescricao().equals("DINHEIRO") && estorno) {
-			total = valorTotal - valorPago;
-		}
+		
 		return total;
+	}
+	
+	public Double estornarFormaPagamento(PagamentoVenda pagamento, FormaPagamento formaPagamento, Double valorFaltante) {
+		Double valorEstornado = pagamento.getValorPago() != 0.0 ? pagamento.getValorTroco() : 0.0;
+		if(formaPagamento.getDescricao().equals("DINHEIRO")) {
+			if(pagamento.getValorTotal() > pagamento.getValorPago()) {
+				valorEstornado = pagamento.getValorTotal() - valorFaltante;			
+			}
+		}
+		
+		if(valorFaltante > 0) {
+			valorEstornado = 0.0;
+		}
+		
+		return valorEstornado;
 	}
 	
 	public Double calculaTotalPago(List<PagamentoVenda> pagamentos) {
@@ -102,7 +232,7 @@ public class FechaContaService extends VendaService implements Serializable {
 	}
 	
 	public Venda buscaVenda(Venda venda) throws SiscomandaException {
-		List<Venda> vendas = vendaDAO.buscaPor(venda);
+		List<Venda> vendas = vendaDAO.buscaPor(venda, true);
 		
 		if(vendas.isEmpty()) {
 			throw new SiscomandaException("Registro não encontrado.");

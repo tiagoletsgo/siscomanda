@@ -6,12 +6,12 @@
 	
 		<div class="row">
 			<p:focus for="numeroPedido" />
-			<div class="col-md-4 col-sm-4 col-xs-12">
+			<div class="col-md-3 col-sm-3 col-xs-12">
 				<label for="crudform:numeroPedido">Nro Pedido :</label>
 				<p:inputText type="text" id="numeroPedido" value="#{crudBean.entity.id}" styleClass="form-control" />
 			</div>
 			
-			<div class="col-md-4 col-sm-4 col-xs-12">
+			<div class="col-md-3 col-sm-3 col-xs-12">
 				<label for="crudform:statusPedido">Status Pedido :</label>
 				<h:selectOneMenu id="statusPedido" styleClass="form-control" value="#{crudBean.entity.status}">
 					<f:selectItem itemLabel="Selecione" noSelectionOption="true" />
@@ -19,11 +19,19 @@
 				</h:selectOneMenu>
 			</div>
 			
-			<div class="col-md-4 col-sm-4 col-xs-12">
+			<div class="col-md-3 col-sm-3 col-xs-12">
 				<label for="crudform:mesaComanda">Mesa / Comanda:</label>
 				<h:selectOneMenu id="mesaComanda" styleClass="form-control" value="#{crudBean.entity.mesaComanda}">
 					<f:selectItem itemLabel="Selecione" noSelectionOption="true" />
 					<f:selectItems value="#{definicaoSistemaFactoryBean.sistema}" var="sistema" itemLabel="#{sistema} - (Mesa / Comanda)" itemValue="#{sistema}" />
+				</h:selectOneMenu>
+			</div>
+			
+			<div class="col-md-3 col-sm-3 col-xs-12">
+				<label for="crudform:tipoVenda_c">Tipo Venda:</label>
+				<h:selectOneMenu id="tipoVenda_c" styleClass="form-control" value="#{crudBean.entity.tipoVenda}">
+					<f:selectItem itemLabel="Selecione" noSelectionOption="true" />
+					<f:selectItems value="#{crudBean.tipoVendas}" var="tipoVenda" itemLabel="#{tipoVenda.descricao.toUpperCase()}" itemValue="#{tipoVenda}" />
 				</h:selectOneMenu>
 			</div>	
 		</div>

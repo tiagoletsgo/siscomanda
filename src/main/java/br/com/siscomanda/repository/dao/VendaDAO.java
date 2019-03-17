@@ -16,24 +16,36 @@ public class VendaDAO extends GenericDAO<Venda> implements Serializable {
 
 	private static final long serialVersionUID = 5272635544808053392L;
 	
-	public List<Venda> buscaPor(Venda venda) {
+	@SuppressWarnings("unchecked")
+	public List<Venda> buscaPor(Venda venda, boolean editando) {
 		StringBuilder sql = new StringBuilder();
-		sql.append("SELECT DISTINCT venda FROM Venda venda JOIN FETCH venda.itens WHERE 1 = 1 ");
-		sql.append(venda.getId() != null ? "AND venda = :venda " : "");
+		sql.append("SELECT DISTINCT venda.* FROM venda venda ");
+		sql.append("INNER JOIN item_venda item ON venda.id = item.venda_id ");
+		sql.append("LEFT OUTER JOIN cliente cliente ON venda.cliente_id = cliente.id ");
+		sql.append("LEFT OUTER JOIN servico servico ON servico.id = cliente.servico_id ");
+		sql.append("WHERE 1 = 1 ");
+		sql.append(editando == false ? "  AND (CAST (venda.data_iniciado AS DATE)) = CURRENT_DATE OR NOT venda.pago " : "");
+		sql.append(venda.getId() != null ? "AND venda.id = :venda " : "");
 		sql.append(venda.getStatus() != null ? "AND venda.status = :status " : "");
-		sql.append(venda.getMesaComanda() != null && venda.getMesaComanda() > 0 ? "AND venda.mesaComanda = :mesaComanda" : "");
-		TypedQuery<Venda> query = getEntityManager().createQuery(sql.toString(), Venda.class);
+		sql.append(venda.getMesaComanda() != null && venda.getMesaComanda() > 0 ? "AND venda.mesa_comanda = :mesaComanda " : "");
+		sql.append(venda.getTipoVenda() != null ? "AND venda.tipo_venda = :tipoVenda " : "");
+		sql.append("ORDER BY venda.id ASC ");
+		Query query = getEntityManager().createNativeQuery(sql.toString(), Venda.class);
 		
 		if(venda.getId() != null) {			
-			query.setParameter("venda", venda);
+			query.setParameter("venda", venda.getId());
 		}
 		
 		if(venda.getStatus() != null) {
-			query.setParameter("status", venda.getStatus());
+			query.setParameter("status", venda.getStatus().name());
 		}
 		
 		if(venda.getMesaComanda() != null && venda.getMesaComanda() > 0) {
 			query.setParameter("mesaComanda", venda.getMesaComanda());
+		}
+		
+		if(venda.getTipoVenda() != null) {
+			query.setParameter("tipoVenda", venda.getTipoVenda().name());
 		}
 		
 		List<Venda> vendas  = query.getResultList();

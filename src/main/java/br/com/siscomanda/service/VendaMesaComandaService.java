@@ -42,11 +42,11 @@ public class VendaMesaComandaService extends VendaService implements Serializabl
 	
 	@Inject
 	private DefinicaoGeralService definicaoGeralService;
-	
-	public List<Venda> porFiltro(Venda venda) {
-		return vendaDAO.buscaPor(venda);
+		
+	public List<Venda> porFiltro(Venda venda, boolean editando) {
+		return vendaDAO.buscaPor(venda, editando);
 	}
-	
+		
 	public List<Adicional> carregaAdicionais(ItemVenda item) {
 		return vendaDAO.buscaAdicionalVenda(item);
 	}
@@ -69,7 +69,7 @@ public class VendaMesaComandaService extends VendaService implements Serializabl
 	@Transactional
 	public Venda salvar(Venda venda) throws SiscomandaException {
 		List<ItemVenda> itens = venda.getItens();
-		
+
 		if(venda.getItens().isEmpty()) {
 			throw new SiscomandaException("Não é permitido salvar pedido sem itens.");
 		}

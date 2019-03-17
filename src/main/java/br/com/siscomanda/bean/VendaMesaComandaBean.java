@@ -14,11 +14,14 @@ import javax.inject.Named;
 
 import br.com.siscomanda.base.bean.BaseBean;
 import br.com.siscomanda.enumeration.EStatus;
+import br.com.siscomanda.enumeration.ETipoVenda;
 import br.com.siscomanda.exception.SiscomandaException;
 import br.com.siscomanda.model.Adicional;
+import br.com.siscomanda.model.Cliente;
 import br.com.siscomanda.model.ItemVenda;
 import br.com.siscomanda.model.Produto;
 import br.com.siscomanda.model.Venda;
+import br.com.siscomanda.service.ClienteService;
 import br.com.siscomanda.service.VendaMesaComandaService;
 import br.com.siscomanda.util.JSFUtil;
 import br.com.siscomanda.util.StringUtil;
@@ -31,6 +34,9 @@ public class VendaMesaComandaBean extends BaseBean<Venda> implements Serializabl
 	
 	@Inject
 	private VendaMesaComandaService service;
+	
+	@Inject
+	private ClienteService clienteService;
 	
 	private ItemVenda itemSelecionado;
 	
@@ -51,6 +57,8 @@ public class VendaMesaComandaBean extends BaseBean<Venda> implements Serializabl
 	private String filterPesquisar;
 	
 	private Integer mesaComanda;
+	
+	private ETipoVenda tipoVenda;
 	
 	@Override
 	protected void init() {
@@ -84,7 +92,7 @@ public class VendaMesaComandaBean extends BaseBean<Venda> implements Serializabl
 		if(id != null) {
 			Long codigo = Long.parseLong(id);
 			getEntity().setId(codigo);
-			setEntity(service.porFiltro(getEntity()).get(0));
+			setEntity(service.porFiltro(getEntity(), true).get(0));
 			mesaComanda = getEntity().getMesaComanda();
 			
 			for(ItemVenda item : getEntity().getItens()) {
@@ -99,9 +107,36 @@ public class VendaMesaComandaBean extends BaseBean<Venda> implements Serializabl
 	}
 	
 	private void setMesaComanda() {
-		if(!getEntity().isNovo()) {
-			getEntity().setMesaComanda(mesaComanda == null ? getEntity().getMesaComanda() : mesaComanda);
+		getEntity().setMesaComanda(mesaComanda == null ? getEntity().getMesaComanda() : mesaComanda);
+	}
+	
+	public void btnAtualizaHeaderPedido() {
+		try {
+			
+			if(getTipoVenda() == null) {
+				JSFUtil.addMessage(FacesMessage.SEVERITY_ERROR, "Erro ao atualizar capa do pedido. É necessário informar o tipo de venda.");
+				btnNovo();
+				return;
+			}
+			
+			mesaComanda = 999999;
+			Double taxaEntrega = new Double(0);
+			Cliente cliente = null;
+
+			if(getEntity().getCliente() != null) {
+				cliente = clienteService.porCodigo(getEntity().getCliente());
+				taxaEntrega = cliente.getServico().getValor();
+			}
+			
+			getEntity().setMesaComanda(mesaComanda);
+			getEntity().setCliente(cliente);
+			getEntity().setTaxaEntrega(taxaEntrega);
+			getEntity().setTipoVenda(getTipoVenda());
 		}
+		catch(SiscomandaException e) {
+			JSFUtil.addMessage(FacesMessage.SEVERITY_ERROR, "Erro ao atualizar capa do pedido. " + e.getMessage());
+		}
+		
 	}
 	
 	public void btnSalvar() {		
@@ -178,7 +213,7 @@ public class VendaMesaComandaBean extends BaseBean<Venda> implements Serializabl
 	}
 	
 	public void btnPesquisar() {
-		setElements(service.porFiltro(getEntity()));
+		setElements(service.porFiltro(getEntity(), true));
 	}
 	
 	@Override
@@ -187,6 +222,7 @@ public class VendaMesaComandaBean extends BaseBean<Venda> implements Serializabl
 		
 		initValores();
 		getEntity().setStatus(EStatus.EM_ABERTO);
+		getEntity().setTipoVenda(ETipoVenda.MESA_COMANDA);
 		getEstadoViewBean().setCurrentView(true, false, false, false);
 	}
 	
@@ -206,7 +242,7 @@ public class VendaMesaComandaBean extends BaseBean<Venda> implements Serializabl
 	
 	public void editar(Venda venda) {
 		
-		setEntity(venda);
+		setEntity(service.porFiltro(venda, true).get(0));
 		mesaComanda = venda.getMesaComanda();
 		for(ItemVenda item : getEntity().getItens()) {
 			for(Adicional adicional : service.carregaAdicionais(item)) {
@@ -245,7 +281,7 @@ public class VendaMesaComandaBean extends BaseBean<Venda> implements Serializabl
 	@Override
 	protected void beforeSearch() {
 		if(getEstadoViewBean().getSearch()) {
-			setElements(service.porFiltro(getEntity()));
+			setElements(service.porFiltro(getEntity(), false));
 		}
 	}
 	
@@ -319,5 +355,23 @@ public class VendaMesaComandaBean extends BaseBean<Venda> implements Serializabl
 
 	public void setAdicionalSelecionado(Adicional adicionalSelecionado) {
 		this.adicionalSelecionado = adicionalSelecionado;
+	}
+	
+	public List<ETipoVenda> getTipoVendas() {
+		List<ETipoVenda> tipoVendas = new ArrayList<>();
+		if(getEstadoViewBean().getSearch()) {
+			tipoVendas.add(ETipoVenda.MESA_COMANDA);
+		}
+		tipoVendas.add(ETipoVenda.BALCAO);
+		tipoVendas.add(ETipoVenda.DELIVERY);		
+		return tipoVendas;
+	}
+
+	public void setTipoVenda(ETipoVenda tipoVenda) {
+		this.tipoVenda = tipoVenda;
+	}
+	
+	public ETipoVenda getTipoVenda() {
+		return tipoVenda;
 	}
 }

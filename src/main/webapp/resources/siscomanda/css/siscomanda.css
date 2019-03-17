@@ -23,7 +23,7 @@
  input[type="text"], td {
  	text-transform: uppercase !important;
  }
-  
+   
 .ui-button {
 	text-shadow: inherit;
 	box-shadow: inherit;
@@ -189,6 +189,11 @@
 	text-align: right !important;
 }
 
+.ui-datatable-justify,
+.ui-datatable-justify input[type=text] {
+	text-align: justify !important;
+}
+
 .ui-chkbox .ui-chkbox-box {
 	width: 13px !important;
 	height: 13px !important;
@@ -310,4 +315,37 @@
 
 .ui-selectcheckboxmenu-header {
     background-color: rgba(52,73,94,.94) !important;
+}
+
+.strong-default {
+	font-weight: bold;
+    font-size: 18px!important;
+    background: rgba(52,73,94,.94);
+    color: #fff;
+}
+
+.strong-danger {
+	font-weight: bold;
+    font-size: 18px!important;
+    background: #d9534f;
+    color: #fff;
+}
+
+.strong-success {
+	font-weight: bold;
+    font-size: 18px!important;
+    background: #26B99A;
+    color: #fff;
+}
+
+.input-text {
+	font-family: "montserrat" !important;
+	text-shadow: none !important;
+	padding-left: 10px !important;
+	font-weight: bold !important;
+}
+
+.form-control[disabled] {
+    color: #333;
+    cursor: no-drop !important;
 }

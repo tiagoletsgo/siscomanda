@@ -1,6 +1,7 @@
 package br.com.siscomanda.model;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -21,6 +22,7 @@ import javax.persistence.Transient;
 
 import br.com.siscomanda.base.model.BaseEntity;
 import br.com.siscomanda.enumeration.EStatus;
+import br.com.siscomanda.enumeration.ETipoVenda;
 
 @Entity
 @Table(name = "venda")
@@ -28,7 +30,7 @@ public class Venda extends BaseEntity implements Serializable {
 
 	private static final long serialVersionUID = 2583564472683970706L;
 		
-	@OneToMany(mappedBy = "venda", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToMany(mappedBy = "venda", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<PagamentoVenda> pagamentos = new ArrayList<>();
 	
 	@OneToMany(mappedBy = "venda", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
@@ -75,6 +77,10 @@ public class Venda extends BaseEntity implements Serializable {
 	
 	@Column(name = "mesa_comanda", nullable = false)
 	private Integer mesaComanda;
+	
+	@Enumerated(EnumType.STRING)
+	@Column(name = "tipo_venda", nullable = false)
+	private ETipoVenda tipoVenda;
 	
 	public Venda() {
 	}
@@ -195,10 +201,31 @@ public class Venda extends BaseEntity implements Serializable {
 		this.mesaComanda = mesaComanda;
 	}
 	
+	public ETipoVenda getTipoVenda() {
+		return tipoVenda;
+	}
+
+	public void setTipoVenda(ETipoVenda tipoVenda) {
+		this.tipoVenda = tipoVenda;
+	}
+
+	@Transient
+	public Double getDiferenca() {
+		Double pago = getValorPago(); 
+		Double total = getTotal();
+		Double diferenca = total - pago; 
+		if(diferenca < BigDecimal.ZERO.doubleValue()) {
+			diferenca = BigDecimal.ZERO.doubleValue();
+		}
+		
+		return diferenca;
+	}
+	
 	@Transient
 	public boolean isExcluivel() {
 		return !isNovo() && getStatus().equals(EStatus.CANCELADO)
-				|| !isNovo() && getStatus().equals(EStatus.EM_ABERTO);
+				|| !isNovo() && getStatus().equals(EStatus.EM_ABERTO)
+				|| !isNovo() && getStatus().equals(EStatus.PAGO_PARCIAL);
 	}
 	
 	@Transient
@@ -208,7 +235,8 @@ public class Venda extends BaseEntity implements Serializable {
 	
 	@Transient
 	public boolean isCancelavel() {
-		return !isNovo() && getStatus().equals(EStatus.EM_ABERTO);
+		return !isNovo() && getStatus().equals(EStatus.EM_ABERTO)
+				|| !isNovo() && getStatus().equals(EStatus.PAGO_PARCIAL);
 	}
 	
 	@Transient
@@ -224,7 +252,8 @@ public class Venda extends BaseEntity implements Serializable {
 	@Transient
 	public boolean isEditavel() {
 		return !isNovo() && getStatus().equals(EStatus.EM_ABERTO)
-				|| isNovo() && getStatus().equals(EStatus.EM_ABERTO);
+				|| isNovo() && getStatus().equals(EStatus.EM_ABERTO)
+				|| !isNovo() && getStatus().equals(EStatus.PAGO_PARCIAL);
 	}
 	
 	@Transient
@@ -234,8 +263,7 @@ public class Venda extends BaseEntity implements Serializable {
 	
 	@Transient
 	public boolean isPagavel() {
-		return !isNovo() && !getStatus().equals(EStatus.PAGO)
-				&& !getStatus().equals(EStatus.PAGO_PARCIAL) && !getStatus().equals(EStatus.CANCELADO);
+		return !isNovo() && !getStatus().equals(EStatus.PAGO) && !getStatus().equals(EStatus.CANCELADO);
 	}
 	
 	@Transient

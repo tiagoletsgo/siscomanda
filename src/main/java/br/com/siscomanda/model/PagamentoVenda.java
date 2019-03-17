@@ -21,11 +21,11 @@ public class PagamentoVenda extends BaseEntity implements Serializable {
 	@JoinColumn(name = "venda_id", nullable = false)
 	private Venda venda;
 	
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "forma_pagamento_id", nullable = false)
 	private FormaPagamento formaPagamento;
 	
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "bandeira_id", nullable = true)
 	private Bandeira bandeira;
 		
