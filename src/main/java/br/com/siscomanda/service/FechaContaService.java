@@ -2,6 +2,7 @@ package br.com.siscomanda.service;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 
 import javax.faces.application.FacesMessage;
@@ -14,6 +15,7 @@ import br.com.siscomanda.exception.SiscomandaException;
 import br.com.siscomanda.interfaces.Calculadora;
 import br.com.siscomanda.model.Adicional;
 import br.com.siscomanda.model.Bandeira;
+import br.com.siscomanda.model.Caixa;
 import br.com.siscomanda.model.FormaPagamento;
 import br.com.siscomanda.model.ItemVenda;
 import br.com.siscomanda.model.PagamentoVenda;
@@ -72,8 +74,9 @@ public class FechaContaService extends VendaService implements Serializable {
 	
 	@Transactional
 	public Venda salvar(Venda venda, PagamentoVenda pagamento) throws SiscomandaException {
+		Caixa caixa = caixaDAO.temCaixaAberto();
 		
-		if(caixaDAO.temCaixaAberto() == null) {
+		if(caixa == null) {
 			throw new SiscomandaException("Não foi realizado a abertura do caixa.");
 		}
 		
@@ -97,6 +100,12 @@ public class FechaContaService extends VendaService implements Serializable {
 		venda.setValorPago(pagamento.getValorPago());
 		venda.setStatus(statusPagamento(pagamento.getValorPago(), pagamento.getValorTotal()));
 		venda.setPago(isPago(venda));
+		venda.setCaixa(caixa);
+		
+		for(PagamentoVenda pag : venda.getPagamentos()) {
+			pag.setDataPagamento(new Date());
+			pag.setCaixa(venda.getCaixa());
+		}
 
 		venda = vendaDAO.salvar(venda);
 		

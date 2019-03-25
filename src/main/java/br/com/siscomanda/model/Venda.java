@@ -47,9 +47,13 @@ public class Venda extends BaseEntity implements Serializable {
 	@JoinColumn(name = "cliente_id", nullable = true)
 	private Cliente cliente;
 	
-//	@ManyToOne(fetch = FetchType.LAZY)
-//	@JoinColumn(name = "caixa_id", nullable = false)
-//	private Caixa caixa;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "caixa_id", nullable = true)
+	private Caixa caixa;
+	
+	@Temporal(TemporalType.DATE)
+	@Column(name = "data_venda", nullable = false)
+	private Date dataVenda;
 	
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "data_iniciado", nullable = false)
@@ -213,6 +217,22 @@ public class Venda extends BaseEntity implements Serializable {
 
 	public void setTipoVenda(ETipoVenda tipoVenda) {
 		this.tipoVenda = tipoVenda;
+	}
+
+	public Caixa getCaixa() {
+		return caixa;
+	}
+
+	public void setCaixa(Caixa caixa) {
+		this.caixa = caixa;
+	}
+
+	public Date getDataVenda() {
+		return dataVenda;
+	}
+
+	public void setDataVenda(Date dataVenda) {
+		this.dataVenda = dataVenda;
 	}
 
 	@Transient

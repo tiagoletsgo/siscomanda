@@ -4,12 +4,44 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:p="http://primefaces.org/ui">
 		
+		<style>
+			.ui-widget-header .ui-icon {
+			    display: block!important;
+			}
+		</style>
+		
 		<div class="row">
-			<p:focus for="descricao_c" />
-			<div class="col-md-12 col-sm-12 col-xs-12">
-				<label for="crudform:descricao_c">Descrição :</label>
-				<p:inputText type="text" id="descricao_c" onkeyup="maiuscula(this)" value="#{crudBean.entity.descricao}" styleClass="form-control" />
+			<div class="col-md-4 col-sm-4 col-xs-12">
+				<label for="crudform:opcoesPesquisa">Opções de pesquisa :</label>
+				<div class="checkbox">
+					<h:selectOneRadio id="opcoesPesquisa" value="#{crudBean.opcaoPesquisa}" layout="pageDirection">
+						<f:selectItem itemLabel="Exibir os mais recentes" itemValue="EXIBIR" />
+						<f:selectItem itemLabel="Filtrar por período"  itemValue="FILTRAR" />
+						<p:ajax update="grid_pesquisa" global="false" />
+					</h:selectOneRadio>
+				</div>
 			</div>
+			
+			<h:panelGroup id="grid_pesquisa" layout="block">
+				<h:panelGroup layout="block" rendered="#{crudBean.opcaoPesquisa eq 'EXIBIR'}">
+					<div class="col-md-4 col-sm-4 col-xs-12">
+						<label for="crudform:opcoesPesquisa">Últimos dias (entre 1 e 31) :</label>
+						<p:inputNumber inputStyleClass="form-control" minValue="0" maxValue="31" value="#{crudBean.ultimosDias}" padControl="true"  />
+					</div>
+				</h:panelGroup>
+				
+				<h:panelGroup layout="block" rendered="#{crudBean.opcaoPesquisa eq 'FILTRAR'}">
+					<div class="col-md-2 col-sm-2 col-xs-12">
+						<label for="crudform:dataDe">De :</label>
+						<p:calendar locale="pt" id="dataDe" inputStyleClass="form-control" value="#{crudBean.dataDe}" mask="true" pattern="dd/MM/yyyy" />
+					</div>
+					
+					<div class="col-md-2 col-sm-2 col-xs-12">
+						<label for="crudform:dataA">a :</label>
+						<p:calendar locale="pt" id="dataA" inputStyleClass="form-control" value="#{crudBean.dataA}" mask="true" pattern="dd/MM/yyyy" />
+					</div>
+				</h:panelGroup>
+			</h:panelGroup>
 		</div>
 				
 		<div class="form-group"></div>
@@ -17,8 +49,8 @@
 		<div class="ln_solid"></div>
 		<div class="form-group">
 			<div class="col-md-12 col-sm-12 col-xs-12">
-				<p:commandButton styleClass="btn btn-success" value="Pesquisar" update="@form" action="#{crudBean.btnPesquisar}" />
-				<h:commandLink type="button" value="Novo" styleClass="btn btn-primary pull-right" action="#{crudBean.btnNovo}" />
+				<p:commandButton styleClass="btn btn-success" value="Pesquisar" update="tabelaCaixa" action="#{crudBean.btnPesquisar}" />
+				<p:commandLink type="button" value="Abrir Caixa" styleClass="btn btn-primary pull-right" action="#{crudBean.btnNovo}" update="@form scripts" />
 			</div>	
 		</div>
 	

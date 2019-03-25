@@ -13,6 +13,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 
 import br.com.siscomanda.base.model.BaseEntity;
 
@@ -37,7 +38,7 @@ public class Caixa extends BaseEntity implements Serializable {
 	private Date dataHoraFechamento;
 	
 	@Column(name = "caixa_aberto")
-	private Boolean caixaAberto;
+	private Boolean caixaAberto = false;
 	
 	@Column(name = "total_entrada", nullable = false)
 	private Double totalEntrada;
@@ -47,7 +48,14 @@ public class Caixa extends BaseEntity implements Serializable {
 	
 	@OneToMany(mappedBy = "caixa", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<CaixaLancamento> lancamentos = new ArrayList<>();
-
+	
+	public Caixa() {
+	}
+	
+	public Caixa(Long id) {
+		setId(id);
+	}
+	
 	public String getObservacao() {
 		return observacao;
 	}
@@ -112,10 +120,12 @@ public class Caixa extends BaseEntity implements Serializable {
 		this.lancamentos = lancamentos;
 	}
 	
+	@Transient
 	public boolean isAberto() {
-		return this.caixaAberto;
+		return isNovo() && !getCaixaAberto();
 	}
 	
+	@Transient
 	public boolean isFechado() {
 		return !isAberto();
 	}

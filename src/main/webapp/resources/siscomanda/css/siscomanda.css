@@ -349,3 +349,11 @@
     color: #333;
     cursor: no-drop !important;
 }
+
+.ui-commandlink.ui-state-disabled {
+    background: #c9302c !important;
+}
+
+.ui-commandlink.ui-state-disabled:hover {
+    cursor: no-drop !important;
+}

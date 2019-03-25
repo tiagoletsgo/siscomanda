@@ -23,8 +23,9 @@ public class VendaDAO extends GenericDAO<Venda> implements Serializable {
 		sql.append("INNER JOIN item_venda item ON venda.id = item.venda_id ");
 		sql.append("LEFT OUTER JOIN cliente cliente ON venda.cliente_id = cliente.id ");
 		sql.append("LEFT OUTER JOIN servico servico ON servico.id = cliente.servico_id ");
+		sql.append("LEFT OUTER JOIN caixa caixa ON caixa.id = venda.caixa_id ");
 		sql.append("WHERE 1 = 1 ");
-		sql.append(editando == false ? "  AND (CAST (venda.data_iniciado AS DATE)) = CURRENT_DATE OR NOT venda.pago " : "");
+		sql.append(editando == false ? " AND caixa.caixa_aberto OR NOT venda.pago " : "");
 		sql.append(venda.getId() != null ? "AND venda.id = :venda " : "");
 		sql.append(venda.getStatus() != null ? "AND venda.status = :status " : "");
 		sql.append(venda.getMesaComanda() != null && venda.getMesaComanda() > 0 ? "AND venda.mesa_comanda = :mesaComanda " : "");
@@ -56,6 +57,15 @@ public class VendaDAO extends GenericDAO<Venda> implements Serializable {
 	public List<Venda> vendasNaoPagasDiaCorrente() {
 		StringBuilder sql = new StringBuilder();
 		sql.append("SELECT v.* FROM venda v WHERE (CAST (v.data_iniciado AS DATE)) = current_date AND v.pago = false AND NOT v.status = 'CANCELADO' ");
+		Query query = getEntityManager().createNativeQuery(sql.toString(), Venda.class);
+		List<Venda> vendas  = query.getResultList();
+		return vendas;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<Venda> vendasNaoPagas() {
+		StringBuilder sql = new StringBuilder();
+		sql.append("SELECT v.* FROM venda v WHERE v.pago = false AND NOT v.status = 'CANCELADO' ");
 		Query query = getEntityManager().createNativeQuery(sql.toString(), Venda.class);
 		List<Venda> vendas  = query.getResultList();
 		return vendas;

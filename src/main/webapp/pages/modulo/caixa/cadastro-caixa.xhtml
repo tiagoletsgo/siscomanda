@@ -5,16 +5,17 @@
 	xmlns:p="http://primefaces.org/ui">
 		
 		<style>
-			.ui-widget {
-			 	font-family: "montserrat" !important;
-			 }
+			.font-family-default {
+				font-family: "montserrat" !important;
+			}
 		</style>
+		
 		<div class="col-md-3 col-sm-3 col-xs-12 pull-left">
 			<div class="row">
 				<p:focus for="saldoInicial" />
 				<div class="col-md-12 col-sm-12 col-xs-12">
 					<label for="crudform:saldoInicial">Saldo Inicial (Dinheiro) * :</label>
-					<p:inputText type="text" id="saldoInicial" value="#{crudBean.entity.saldoInicial}" styleClass="form-control currency" disabled="#{crudBean.entity.aberto}">
+					<p:inputText type="text" id="saldoInicial" value="#{crudBean.entity.saldoInicial}" styleClass="form-control currency font-family-default" disabled="#{crudBean.entity.fechado}">
 						<f:convertNumber maxFractionDigits="2" minFractionDigits="2" />
 					</p:inputText>
 				</div>
@@ -23,7 +24,7 @@
 			<div class="row">
 				<div class="col-md-12 col-sm-12 col-xs-12">
 					<label for="crudform:observacao">Observação :</label>
-					<p:inputTextarea type="text" id="observacao" value="#{crudBean.entity.observacao}" disabled="#{crudBean.entity.aberto}" styleClass="form-control" />
+					<p:inputTextarea type="text" id="observacao" value="#{crudBean.entity.observacao}" onkeyup="maiuscula(this)" disabled="#{crudBean.entity.fechado}" styleClass="form-control font-family-default" />
 				</div>
 			</div>
 			
@@ -70,28 +71,28 @@
 			<div class="row">
 				<div class="col-md-12 col-sm-12 col-xs-12">
 					<caption>Histórico de Lançamentos</caption>
-					<p:dataTable id="tabelaLancamento" value="#{crudBean.entity.lancamentos}" var="lancamento" scrollable="true" scrollHeight="336"
+					<p:dataTable id="tabelaHistoricoLancamento" value="#{crudBean.entity.lancamentos}" var="lancamento" scrollable="true" scrollHeight="336"
 						style="border: 1px solid #E6E9ED;">
-						<p:column styleClass="ui-datatable-center ui-datatable-justify" style="border-radius: 0;" width="20%">
+						<p:column styleClass="ui-datatable-center ui-datatable-justify" style="border-radius: 0; font-size: 11px;" width="17%">
 							<f:facet name="header">Data / Hora</f:facet>
 							<h:outputText value="#{lancamento.dataHora}">
 								<f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss" />
 							</h:outputText>
 						</p:column>
 						
-						<p:column styleClass="ui-datatable-center" width="20%" style="border-radius: 0;">
+						<p:column styleClass="ui-datatable-left" width="22%" style="border-radius: 0; font-size: 11px;">
 							<f:facet name="header">Descrição</f:facet>
 							<h:outputText value="#{lancamento.descricao}" />
 						</p:column>
 						
-						<p:column styleClass="ui-datatable-left text-success" width="12%" style="border-radius: 0;">
+						<p:column styleClass="ui-datatable-left text-success" width="12%" style="border-radius: 0; font-size: 12px;">
 							<f:facet name="header">Entrada</f:facet>
 							<h:outputText value="#{lancamento.valorEntrada}">
 								<f:convertNumber type="currency" minFractionDigits="2" maxFractionDigits="2" />
 							</h:outputText>
 						</p:column>
 						
-						<p:column styleClass="ui-datatable-left text-danger" width="12%" style="border-radius: 0;">
+						<p:column styleClass="ui-datatable-left text-danger" width="10%" style="border-radius: 0; font-size: 12px;">
 							<f:facet name="header">Saída</f:facet>
 							<h:outputText value="#{lancamento.valorSaida}" rendered="#{not empty lancamento.valorSaida}">
 								<f:convertNumber type="currency" minFractionDigits="2" maxFractionDigits="2" />
@@ -99,16 +100,18 @@
 							<h:outputText value="0,00" rendered="#{empty lancamento.valorSaida}" />
 						</p:column>
 						
-						<p:column styleClass="ui-datatable-left" width="20%" style="border-radius: 0;">
+						<p:column styleClass="ui-datatable-left" width="25%" style="border-radius: 0; font-size: 11px;">
 							<f:facet name="header">Forma Pagamento</f:facet>
-							<h:outputText rendered="#{not empty lancamento.bandeira}" value="CARTÃO DE " />
-							<h:outputText value="#{lancamento.formaPagamento.descricao}" />
+							<h:outputText rendered="#{not empty lancamento.bandeira}" value="CARTÃO " />
+							<h:outputText value="#{lancamento.formaPagamento.descricao} " />
+							<h:outputText rendered="#{not empty lancamento.bandeira}" value="#{lancamento.bandeira.descricao}" />
 						</p:column>
 						
-						<p:column styleClass="ui-datatable-center" width="10%" style="border-radius: 0;">
-							<f:facet name="header">Bandeira</f:facet>
-							<h:outputText rendered="#{not empty lancamento.bandeira}" value="#{lancamento.bandeira.descricao}" />
-							<h:outputText rendered="#{empty lancamento.bandeira}" value="-" />
+						<p:column styleClass="ui-datatable-center" width="5%" style="border-radius: 0;">
+							<f:facet name="header">#</f:facet>	
+							<p:commandLink disabled="#{lancamento.descricao eq 'SALDO INICIAL' or lancamento.venda or lancamento.notCaixaAberto}" styleClass="btn btn-xs btn-danger fa fa-remove" oncomplete="PF('dialogExcluirLancamento').show();" update="formExcluirLancamento" >
+								<f:setPropertyActionListener value="#{lancamento}" target="#{crudBean.lancamento}" />
+							</p:commandLink>
 						</p:column>
 					</p:dataTable>
 				</div>
@@ -120,11 +123,22 @@
 		<div class="ln_solid"></div>
 		<div class="form-group">
 			<div class="col-md-12 col-sm-12 col-xs-12">
-				<p:commandButton rendered="#{not crudBean.entity.caixaAberto}" styleClass="btn btn-success" action="#{crudBean.btnAbrirCaixa()}" value="Abrir Caixa" 
-					update=":crudform:formcadastro :crudform:formconsulta :crudform:formtabela scripts status-caixa :crudform:tabelaLancamento" />
-				<p:commandButton rendered="#{crudBean.entity.caixaAberto}" styleClass="btn btn-danger" value="Fechar Caixa" action="#{crudBean.btnFecharCaixa()}" 
-					update=":crudform:formcadastro :crudform:formconsulta :crudform:formtabela scripts status-caixa :crudform:tabelaLancamento" />
-				<h:commandLink type="button" value="Histórico" styleClass="btn btn-primary pull-right" action="#{crudBean.btnConsultar}" 
+				<p:commandButton rendered="#{not crudBean.entity.caixaAberto and not crudBean.estadoViewBean.search}" styleClass="btn btn-success" action="#{crudBean.btnAbrirCaixa()}" value="Abrir Caixa" 
+					update=":crudform:formcadastro :crudform:formconsulta :crudform:formtabela scripts status-caixa :crudform:tabelaCaixa" />
+				
+				<p:commandButton rendered="#{crudBean.entity.caixaAberto and not crudBean.estadoViewBean.update}" styleClass="btn btn-danger" global="false" value="Fechar Caixa" oncomplete="PF('dialogConfirmaFechamentoCaixa').show();"
+					update="formFechamentoCaixa" />
+					
+				<p:commandButton rendered="#{crudBean.estadoViewBean.update}" styleClass="btn btn-danger" value="Cancelar" action="#{crudBean.btnCancelar}" 
+					update="@form" />
+				
+				<p:commandButton rendered="#{crudBean.estadoViewBean.update and crudBean.entity.caixaAberto}" styleClass="btn btn-primary pull-right" action="#{crudBean.btnVer()}" value="Ver" 
+					update="@form" />
+				
+				<p:commandLink type="button" value="Histórico" styleClass="btn btn-primary pull-right" action="#{crudBean.btnConsultar}" 
+					rendered="#{not crudBean.estadoViewBean.search}" update="@form" />
+				
+				<p:commandLink type="button" value="Entrada / Saída" styleClass="btn btn-primary pull-right" oncomplete="PF('dialogEntradaSaidaLancamento').show();"
 					rendered="#{not crudBean.estadoViewBean.search}" />
 			</div>	
 			<div class="clearfix"></div>

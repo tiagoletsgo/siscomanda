@@ -1,6 +1,7 @@
 package br.com.siscomanda.model;
 
 import java.io.Serializable;
+import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -8,6 +9,8 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 import br.com.siscomanda.base.model.BaseEntity;
 
@@ -52,6 +55,14 @@ public class PagamentoVenda extends BaseEntity implements Serializable {
 	
 	@Column(name = "valor_venda", nullable = false)
 	private Double valorVenda;
+	
+	@Temporal(TemporalType.DATE)
+	@Column(name = "data_pagamento", nullable = false)
+	private Date dataPagamento;
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "caixa_id", nullable = false)
+	private Caixa caixa;
 
 	public Venda getVenda() {
 		return venda;
@@ -139,5 +150,21 @@ public class PagamentoVenda extends BaseEntity implements Serializable {
 
 	public void setValorVenda(Double valorVenda) {
 		this.valorVenda = valorVenda;
+	}
+
+	public Caixa getCaixa() {
+		return caixa;
+	}
+
+	public void setCaixa(Caixa caixa) {
+		this.caixa = caixa;
+	}
+
+	public Date getDataPagamento() {
+		return dataPagamento;
+	}
+
+	public void setDataPagamento(Date dataPagamento) {
+		this.dataPagamento = dataPagamento;
 	}
 }

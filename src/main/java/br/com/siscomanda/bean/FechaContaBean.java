@@ -86,6 +86,7 @@ public class FechaContaBean extends BaseBean<Venda> implements Serializable {
 			setEntity(service.salvar(getEntity(), getPagamento()));
 		}
 		catch(SiscomandaException e) {
+			getEntity().setPago(false);
 			JSFUtil.addMessage(FacesMessage.SEVERITY_ERROR, "Erro ao fechar conta. " + e.getMessage());
 		}
 	}

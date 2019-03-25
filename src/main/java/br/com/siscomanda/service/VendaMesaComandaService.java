@@ -93,7 +93,7 @@ public class VendaMesaComandaService extends VendaService implements Serializabl
 		if(!venda.isNovo() && venda.getStatus().equals(EStatus.CANCELADO)) {
 			throw new SiscomandaException("Pedido com status cancelado não pode ser excluído/alterado.");
 		}
-		
+				
 		if(venda.isNovo()) {
 			removeIdTemporario(itens);
 			venda = vendaDAO.salvar(venda);	

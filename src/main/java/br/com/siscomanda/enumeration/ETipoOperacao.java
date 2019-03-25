@@ -2,9 +2,10 @@ package br.com.siscomanda.enumeration;
 
 public enum ETipoOperacao {
 	
-	SAIDA_DESPESA("Saída - Lançamento de despesas"),
-	SAIDA_SANGRIA("Saída - Sangria"),
-	ENTRADA_ACRESCIMO("Entrada - Acrescímo");
+	VENDA("Venda - Lançamento gerado de uma venda"),
+	DESPESA("Saída - Lançamento de despesas"),
+	SAIDA("Saída - Sangria"),
+	ENTRADA("Entrada - Acrescímo");
 	
 	private String descricao;
 	

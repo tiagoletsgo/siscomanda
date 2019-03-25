@@ -143,6 +143,7 @@ public class VendaMesaComandaBean extends BaseBean<Venda> implements Serializabl
 		try {
 			setMesaComanda();
 			
+			getEntity().setDataVenda(new Date());
 			service.validaQuantidadeTotalItens(getEntity().getItens());
 			setEntity(service.salvar(getEntity()));
 		}
