@@ -1,15 +1,14 @@
 package br.com.siscomanda.enumeration;
 
-public enum EStatus {
+public enum ETipoVenda {
 	
-	EM_ABERTO("Em aberto"),
-	CANCELADO("Cancelado"),
-	PAGO_PARCIAL("Pago parcial"),
-	PAGO("Pago");
+	MESA_COMANDA("Mesa / Comanda"),
+	BALCAO("Balcão"),
+	DELIVERY("Delivery");
 	
 	private String descricao;
 	
-	private EStatus(String descricao) {
+	private ETipoVenda(String descricao) {
 		this.descricao = descricao;
 	}
 

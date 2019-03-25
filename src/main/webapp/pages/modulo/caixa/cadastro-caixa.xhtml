@@ -1,0 +1,146 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+		
+		<style>
+			.font-family-default {
+				font-family: "montserrat" !important;
+			}
+		</style>
+		
+		<div class="col-md-3 col-sm-3 col-xs-12 pull-left">
+			<div class="row">
+				<p:focus for="saldoInicial" />
+				<div class="col-md-12 col-sm-12 col-xs-12">
+					<label for="crudform:saldoInicial">Saldo Inicial (Dinheiro) * :</label>
+					<p:inputText type="text" id="saldoInicial" value="#{crudBean.entity.saldoInicial}" styleClass="form-control currency font-family-default" disabled="#{crudBean.entity.fechado}">
+						<f:convertNumber maxFractionDigits="2" minFractionDigits="2" />
+					</p:inputText>
+				</div>
+			</div>
+			
+			<div class="row">
+				<div class="col-md-12 col-sm-12 col-xs-12">
+					<label for="crudform:observacao">Observação :</label>
+					<p:inputTextarea type="text" id="observacao" value="#{crudBean.entity.observacao}" onkeyup="maiuscula(this)" disabled="#{crudBean.entity.fechado}" styleClass="form-control font-family-default" />
+				</div>
+			</div>
+			
+			<div class="row">
+				<div class="col-md-12 col-sm-12 col-xs-12">
+					<label for="crudform:dataHoraAbertura">Data / Hora Abertura :</label>
+					<h:outputText rendered="#{not empty crudBean.entity.dataHoraAbertura}" type="text" id="dataHoraAbertura" value="#{crudBean.entity.dataHoraAbertura}" styleClass="form-control">
+						<f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss" />
+					</h:outputText>
+					<h:outputText rendered="#{empty crudBean.entity.dataHoraAbertura}" styleClass="form-control" value="00/00/00 00:00:00" />
+				</div>
+			</div>
+			
+			<div class="row">
+				<div class="col-md-12 col-sm-12 col-xs-12">
+					<label for="crudform:dataHoraFechamento">Data / Hora Fechamento :</label>
+					<h:outputText rendered="#{not empty crudBean.entity.dataHoraFechamento}" type="text" id="dataHoraFechamento" value="#{crudBean.entity.dataHoraFechamento}" styleClass="form-control">
+						<f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss" />
+					</h:outputText>
+					<h:outputText rendered="#{empty crudBean.entity.dataHoraFechamento}" styleClass="form-control" value="00/00/00 00:00:00" />
+				</div>
+			</div>
+			
+			<div class="row">
+				<div class="col-md-12 col-sm-12 col-xs-12">
+					<label for="crudform:totalEntrada">Total Entrada R$ :</label>
+					<h:outputText type="text" id="totalEntrada" value="#{crudBean.entity.totalEntrada}" styleClass="form-control">
+						<f:convertNumber minFractionDigits="2" maxFractionDigits="2" />
+					</h:outputText>
+				</div>
+			</div>
+			
+			<div class="row">
+				<div class="col-md-12 col-sm-12 col-xs-12">
+					<label for="crudform:totalSaida">Total Saída R$ :</label>
+					<h:outputText type="text" id="totalSaida" value="#{crudBean.entity.totalSaida}" styleClass="form-control">
+						<f:convertNumber minFractionDigits="2" maxFractionDigits="2" />
+					</h:outputText>
+				</div>
+			</div>
+		</div>
+		
+		<div class="col-md-9 col-sm-9 col-xs-12 pull-right">
+			<div class="row">
+				<div class="col-md-12 col-sm-12 col-xs-12">
+					<caption>Histórico de Lançamentos</caption>
+					<p:dataTable id="tabelaHistoricoLancamento" value="#{crudBean.entity.lancamentos}" var="lancamento" scrollable="true" scrollHeight="336"
+						style="border: 1px solid #E6E9ED;">
+						<p:column styleClass="ui-datatable-center ui-datatable-justify" style="border-radius: 0; font-size: 11px;" width="17%">
+							<f:facet name="header">Data / Hora</f:facet>
+							<h:outputText value="#{lancamento.dataHora}">
+								<f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss" />
+							</h:outputText>
+						</p:column>
+						
+						<p:column styleClass="ui-datatable-left" width="22%" style="border-radius: 0; font-size: 11px;">
+							<f:facet name="header">Descrição</f:facet>
+							<h:outputText value="#{lancamento.descricao}" />
+						</p:column>
+						
+						<p:column styleClass="ui-datatable-left text-success" width="12%" style="border-radius: 0; font-size: 12px;">
+							<f:facet name="header">Entrada</f:facet>
+							<h:outputText value="#{lancamento.valorEntrada}">
+								<f:convertNumber type="currency" minFractionDigits="2" maxFractionDigits="2" />
+							</h:outputText>
+						</p:column>
+						
+						<p:column styleClass="ui-datatable-left text-danger" width="10%" style="border-radius: 0; font-size: 12px;">
+							<f:facet name="header">Saída</f:facet>
+							<h:outputText value="#{lancamento.valorSaida}" rendered="#{not empty lancamento.valorSaida}">
+								<f:convertNumber type="currency" minFractionDigits="2" maxFractionDigits="2" />
+							</h:outputText>
+							<h:outputText value="0,00" rendered="#{empty lancamento.valorSaida}" />
+						</p:column>
+						
+						<p:column styleClass="ui-datatable-left" width="25%" style="border-radius: 0; font-size: 11px;">
+							<f:facet name="header">Forma Pagamento</f:facet>
+							<h:outputText rendered="#{not empty lancamento.bandeira}" value="CARTÃO " />
+							<h:outputText value="#{lancamento.formaPagamento.descricao} " />
+							<h:outputText rendered="#{not empty lancamento.bandeira}" value="#{lancamento.bandeira.descricao}" />
+						</p:column>
+						
+						<p:column styleClass="ui-datatable-center" width="5%" style="border-radius: 0;">
+							<f:facet name="header">#</f:facet>	
+							<p:commandLink disabled="#{lancamento.descricao eq 'SALDO INICIAL' or lancamento.venda or lancamento.notCaixaAberto}" styleClass="btn btn-xs btn-danger fa fa-remove" oncomplete="PF('dialogExcluirLancamento').show();" update="formExcluirLancamento" >
+								<f:setPropertyActionListener value="#{lancamento}" target="#{crudBean.lancamento}" />
+							</p:commandLink>
+						</p:column>
+					</p:dataTable>
+				</div>
+			</div>
+		</div>
+		
+		<div class="form-group"></div>
+		<div class="clearfix"></div>
+		<div class="ln_solid"></div>
+		<div class="form-group">
+			<div class="col-md-12 col-sm-12 col-xs-12">
+				<p:commandButton rendered="#{not crudBean.entity.caixaAberto and not crudBean.estadoViewBean.search}" styleClass="btn btn-success" action="#{crudBean.btnAbrirCaixa()}" value="Abrir Caixa" 
+					update=":crudform:formcadastro :crudform:formconsulta :crudform:formtabela scripts status-caixa :crudform:tabelaCaixa" />
+				
+				<p:commandButton rendered="#{crudBean.entity.caixaAberto and not crudBean.estadoViewBean.update}" styleClass="btn btn-danger" global="false" value="Fechar Caixa" oncomplete="PF('dialogConfirmaFechamentoCaixa').show();"
+					update="formFechamentoCaixa" />
+					
+				<p:commandButton rendered="#{crudBean.estadoViewBean.update}" styleClass="btn btn-danger" value="Cancelar" action="#{crudBean.btnCancelar}" 
+					update="@form" />
+				
+				<p:commandButton rendered="#{crudBean.estadoViewBean.update and crudBean.entity.caixaAberto}" styleClass="btn btn-primary pull-right" action="#{crudBean.btnVer()}" value="Ver" 
+					update="@form" />
+				
+				<p:commandLink type="button" value="Histórico" styleClass="btn btn-primary pull-right" action="#{crudBean.btnConsultar}" 
+					rendered="#{not crudBean.estadoViewBean.search}" update="@form" />
+				
+				<p:commandLink type="button" value="Entrada / Saída" styleClass="btn btn-primary pull-right" oncomplete="PF('dialogEntradaSaidaLancamento').show();"
+					rendered="#{not crudBean.estadoViewBean.search}" />
+			</div>	
+			<div class="clearfix"></div>
+		</div>
+</ui:composition>

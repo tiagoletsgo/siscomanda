@@ -15,7 +15,7 @@
 				<label for="formulario:pesquisar">Mesa / Comanda.:</label>
 				<h:selectOneMenu styleClass="form-control" value="#{crudBean.entity.mesaOuComanda}">
 					<f:selectItem noSelectionOption="true" itemLabel="Selecione" />
-					<f:selectItems value="#{crudBean.quantidadeMesasComandas}" var="sistema" itemValue="#{sistema}" itemLabel="#{sistema}" />
+					<f:selectItems value="#{crudBean.quantidadeMesasComandas}" var="sistema" itemValue="#{sistema}" itemLabel="#{sistema} - (Mesa / Comanda)" />
 					<p:ajax update=":crudform:groupVendaMesaComanda" process="@this" oncomplete="PF('dlgSelecionaMesaComanda').hide();" />
 				</h:selectOneMenu>
 			</div>

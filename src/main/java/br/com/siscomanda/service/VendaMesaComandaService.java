@@ -9,6 +9,7 @@ import javax.inject.Inject;
 
 import br.com.siscomanda.base.service.VendaService;
 import br.com.siscomanda.config.jpa.Transactional;
+import br.com.siscomanda.enumeration.EStatus;
 import br.com.siscomanda.exception.SiscomandaException;
 import br.com.siscomanda.exception.SiscomandaRuntimeException;
 import br.com.siscomanda.model.Adicional;
@@ -20,7 +21,7 @@ import br.com.siscomanda.model.Venda;
 import br.com.siscomanda.repository.dao.AdicionalDAO;
 import br.com.siscomanda.repository.dao.ItemVendaAdicionalDAO;
 import br.com.siscomanda.repository.dao.ProdutoDAO;
-import br.com.siscomanda.repository.dao.VendaMesaComandaDAO;
+import br.com.siscomanda.repository.dao.VendaDAO;
 import br.com.siscomanda.util.JSFUtil;
 
 public class VendaMesaComandaService extends VendaService implements Serializable {
@@ -28,7 +29,7 @@ public class VendaMesaComandaService extends VendaService implements Serializabl
 	private static final long serialVersionUID = -7365230528253341931L;
 	
 	@Inject
-	private VendaMesaComandaDAO vendaDAO;
+	private VendaDAO vendaDAO;
 	
 	@Inject
 	private ProdutoDAO produtoDAO;
@@ -39,10 +40,36 @@ public class VendaMesaComandaService extends VendaService implements Serializabl
 	@Inject
 	private ItemVendaAdicionalDAO itemVendaAdicionalDAO;
 	
+	@Inject
+	private DefinicaoGeralService definicaoGeralService;
+		
+	public List<Venda> porFiltro(Venda venda, boolean editando) {
+		return vendaDAO.buscaPor(venda, editando);
+	}
+		
+	public List<Adicional> carregaAdicionais(ItemVenda item) {
+		return vendaDAO.buscaAdicionalVenda(item);
+	}
+	
+	public List<Integer> geraMesasComandas() {
+		List<Integer> mesas = new ArrayList<>();
+		int qtdMesasComandas = definicaoGeralService.carregaDefinicaoSistema().getQtdMesaComanda();
+		for(int i = 1; i <= qtdMesasComandas; i++) {
+			mesas.add(i);
+		}
+		
+		List<Venda> vendas = vendaDAO.vendasNaoPagasDiaCorrente();
+		for(Venda venda : vendas) {
+			mesas.remove(new Integer(venda.getMesaComanda()));
+		}
+		
+		return mesas;
+	}
+	
 	@Transactional
 	public Venda salvar(Venda venda) throws SiscomandaException {
 		List<ItemVenda> itens = venda.getItens();
-		
+
 		if(venda.getItens().isEmpty()) {
 			throw new SiscomandaException("Não é permitido salvar pedido sem itens.");
 		}
@@ -51,6 +78,22 @@ public class VendaMesaComandaService extends VendaService implements Serializabl
 			throw new SiscomandaException("Não é permitido salvar pedido com valor negativo.");
 		}
 		
+		if(venda.getStatus() == null) {
+			throw new SiscomandaException("Não é permitido salvar pedido com status em branco.");
+		}
+		
+		if(!venda.isNovo() && venda.getStatus().equals(EStatus.PAGO)) {
+			throw new SiscomandaException("Pedido com status pago não pode ser excluído.");
+		}
+		
+		if(!venda.isNovo() && venda.getStatus().equals(EStatus.PAGO_PARCIAL)) {
+			throw new SiscomandaException("Pedido com status pago parcial não pode ser excluído.");
+		}
+		
+		if(!venda.isNovo() && venda.getStatus().equals(EStatus.CANCELADO)) {
+			throw new SiscomandaException("Pedido com status cancelado não pode ser excluído/alterado.");
+		}
+				
 		if(venda.isNovo()) {
 			removeIdTemporario(itens);
 			venda = vendaDAO.salvar(venda);	
@@ -67,6 +110,49 @@ public class VendaMesaComandaService extends VendaService implements Serializabl
 		}
 		
 		return venda;
+	}
+	
+	@Transactional
+	public Venda cancelar(Venda venda) throws SiscomandaException {
+		if(venda.getItens().isEmpty()) {
+			throw new SiscomandaException("Não é permitido salvar pedido sem itens.");
+		}
+		
+		if(venda.getTotal() < new Double(0)) {
+			throw new SiscomandaException("Não é permitido salvar pedido com valor negativo.");
+		}
+		
+		if(venda.getStatus() == null) {
+			throw new SiscomandaException("Não é permitido salvar pedido com status em branco.");
+		}
+		
+		if(!venda.isNovo() && venda.getStatus().equals(EStatus.PAGO)) {
+			throw new SiscomandaException("Pedido com status pago não pode ser excluído.");
+		}
+		
+		if(!venda.isNovo() && venda.getStatus().equals(EStatus.PAGO_PARCIAL)) {
+			throw new SiscomandaException("Pedido com status pago parcial não pode ser excluído.");
+		}
+		
+		venda.setStatus(EStatus.CANCELADO);
+		venda = vendaDAO.salvar(venda);
+		
+		return venda;
+	}
+	
+	@Transactional
+	public void remover(Venda venda) throws SiscomandaException {
+		
+		if(venda.getStatus().equals(EStatus.PAGO)) {
+			throw new SiscomandaException("Pedido com status pago não pode ser excluído.");
+		}
+		
+		if(venda.getStatus().equals(EStatus.PAGO_PARCIAL)) {
+			throw new SiscomandaException("Pedido com status pago parcial não pode ser excluído.");
+		}
+		
+		itemVendaAdicionalDAO.remove(venda);
+		vendaDAO.remover(Venda.class, venda.getId());
 	}
 	
 	@Transactional
@@ -94,35 +180,6 @@ public class VendaMesaComandaService extends VendaService implements Serializabl
 				itemVendaAdicionalDAO.salvar(itemAdicional);
 			}
 		}
-	}
-	
-	public List<ItemVenda> carregaItemVenda(Venda venda) {
-		List<ItemVendaAdicional> itensAdicionais = itemVendaAdicionalDAO.porVenda(venda);
-		List<ItemVenda> itensVendas = new ArrayList<>();
-		itensVendas.addAll(venda.getItens());		
-		
-		List<Adicional> adicionais = new ArrayList<>();
-		for(ItemVendaAdicional item : itensAdicionais) {
-			if(!adicionais.contains(item.getAdicional())) {
-				adicionais.add(item.getAdicional());
-			}
-		}
-		
-		for(Adicional adicional : adicionais) {
-			Produto produto = new Produto();
-			produto.setId(adicional.getId());
-			produto.setCodigoEan("ADC000");
-			produto.setDescricao(adicional.getDescricao());
-			
-			for(ItemVenda item : itensVendas) {
-				if(item.getProduto().equals(produto) && item.getAdicionais().isEmpty() ||
-						item.getProduto().getId().equals(adicional.getId()) && item.getAdicionais().isEmpty()) {
-					item.setProduto(produto);
-				}
-			}
-		}
-		
-		return venda.getItens();
 	}
 		
 	public List<Adicional> getAdicionais() {

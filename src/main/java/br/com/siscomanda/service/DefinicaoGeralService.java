@@ -19,7 +19,7 @@ public class DefinicaoGeralService implements Serializable {
 
 	@Inject
 	private DefinicaoGeralDAO dao;
-	
+		
 	@Transactional
 	public DefinicaoGeral salvar(DefinicaoGeral definicaoGeral) throws SiscomandaException {
 		validacao(definicaoGeral);

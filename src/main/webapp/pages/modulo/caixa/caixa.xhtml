@@ -1,0 +1,202 @@
+<ui:composition template="/WEB-INF/template/template.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+	
+	<ui:param name="md" value="12" />
+	<ui:param name="sm" value="12" />
+	<ui:param name="xs" value="12" />
+	<ui:param name="crudBean" value="#{caixaBean}" />
+	<ui:param name="hideTableList" value="#{crudBean.estadoViewBean.search}" />
+	
+	<ui:define name="title_main"> 
+		<h:panelGroup layout="block" rendered="#{crudBean.estadoViewBean.insert}">Inclusão</h:panelGroup>
+		<h:panelGroup layout="block" rendered="#{crudBean.estadoViewBean.update}">Edição</h:panelGroup>
+		<h:panelGroup layout="block" rendered="#{not crudBean.estadoViewBean.insert and not crudBean.estadoViewBean.update}">Consultar</h:panelGroup>
+	</ui:define>
+	<ui:define name="title_form"> 
+		<h:panelGroup layout="block">Caixa
+			<h:panelGroup id="status-caixa" rendered="#{not crudBean.estadoViewBean.search}">
+				<small>
+					<h:outputText styleClass="alert alert-success" value="Aberto" style="color: white;" rendered="#{crudBean.entity.caixaAberto}" />
+					<h:outputText styleClass="alert alert-danger"  value="Fechado" style="color: white;" rendered="#{not crudBean.entity.caixaAberto}" />
+				</small>
+			</h:panelGroup>
+		</h:panelGroup>
+	</ui:define>
+	<ui:define name="title_form_table"> 
+		<h:panelGroup layout="block">Tabela de dados caixa</h:panelGroup>
+	</ui:define>
+		
+	<ui:define name="content">
+		<h:panelGroup layout="block" id="formcadastro">
+			<h:panelGroup layout="block" rendered="#{crudBean.estadoViewBean.insert or crudBean.estadoViewBean.update}">
+				<ui:include src="/pages/modulo/caixa/cadastro-caixa.xhtml" />
+			</h:panelGroup>
+		</h:panelGroup>
+		<h:panelGroup layout="block" id="formconsulta">
+			<h:panelGroup layout="block" rendered="#{not crudBean.estadoViewBean.insert and not crudBean.estadoViewBean.update}">
+				<ui:include src="/pages/modulo/caixa/consulta-caixa.xhtml" />
+			</h:panelGroup>
+		</h:panelGroup>
+	</ui:define>
+	
+	<ui:define name="table">
+		<h:panelGroup layout="block" id="formtabela">
+			<h:panelGroup layout="block" rendered="#{crudBean.estadoViewBean.search}">
+				<ui:include src="/pages/modulo/caixa/tabela-caixa.xhtml" />
+			</h:panelGroup>
+		</h:panelGroup>
+	</ui:define>
+	
+	<ui:define name="dialog">
+		<style>
+			.ui-dialog .ui-dialog-content {
+				overflow: inherit !important;
+			}
+			.alert {
+				padding: 6px 12px !important;
+			}
+			.font-family-default {
+				font-family: "montserrat" !important;
+			}
+		</style>
+		<p:dialog widgetVar="dialogExcluirLancamento" modal="true" showEffect="fade" hideEffect="fade" responsive="true" resizable="false">
+			<f:facet name="header">Confirma exclusão</f:facet>
+			
+			<h:form id="formExcluirLancamento">
+				<div class="col-md-12 col-sm-12 col-xs-12 text-center">
+					Tem certeza que deseja excluir lançamento <br/>
+					#{crudBean.lancamento.descricao} no valor de 
+					<h:outputText rendered="#{crudBean.lancamento.valorEntrada != 0.0}" value="#{crudBean.lancamento.valorEntrada}">
+						<f:convertNumber type="currency" />
+					</h:outputText>
+					<h:outputText rendered="#{crudBean.lancamento.valorSaida != 0.0}" value="#{crudBean.lancamento.valorSaida}">
+						<f:convertNumber type="currency" />
+					</h:outputText> ?
+				</div>
+			</h:form>
+			
+			<f:facet name="footer">
+				<p:commandButton process="@this" styleClass="btn btn-success" value="Confirmar" action="#{crudBean.removerLancamento()}" oncomplete="PF('dialogExcluirLancamento').hide();" 
+					update=":crudform" />
+				
+				<p:commandButton styleClass="btn btn-danger" global="false" value="Cancelar" oncomplete="PF('dialogExcluirLancamento').hide(); return false;"  />	
+			</f:facet>
+		</p:dialog>
+		
+		<p:dialog widgetVar="dialogEntradaSaidaLancamento" id="dialog" modal="true" showEffect="fade" hideEffect="fade" responsive="true" resizable="false">
+			<f:facet name="header">Adicionar Entrada / Saída no Caixa</f:facet>
+			
+			<h:form id="formAdicionaEntradaSaida">
+				<div class="row">
+					<div class="col-md-12 col-sm-12 col-xs-12">
+						<label>Forma de Pagamento :</label>
+						<div class="checkbox">
+							<h:selectOneRadio value="#{crudBean.lancamento.formaPagamento}" converter="entityConverter">
+								<f:selectItems value="#{crudBean.formaPagamentos}" var="formaPagamento" itemValue="#{formaPagamento}" itemLabel="#{formaPagamento.descricao}" />
+								<p:ajax process="@this" global="false" />
+							</h:selectOneRadio>
+						</div>
+					</div>
+				</div>
+				
+				<div class="row">
+					<div class="col-md-12 col-sm-12 col-xs-12">
+						<label>Tipo Operação :</label>
+						<div class="checkbox">
+							<h:selectOneRadio value="#{crudBean.lancamento.tipoOperacao}" layout="pageDirection">
+								<f:selectItems value="#{crudBean.tipoOperacao}" var="tipoOperacao" itemValue="#{tipoOperacao}" itemLabel="#{tipoOperacao.descricao}" />
+								<p:ajax process="@this" global="false" />
+							</h:selectOneRadio>
+						</div>
+					</div>
+				</div>
+				
+				<div class="row">
+					<div class="col-md-12 col-sm-12 col-xs-12">
+						<label>Valor R$ :</label>
+						<p:inputText styleClass="form-control currency font-family-default" value="#{crudBean.valor}">
+							<f:convertNumber minFractionDigits="2" maxFractionDigits="2" />
+							<p:ajax event="keyup" process="@this" global="false" delay="500" />
+						</p:inputText>
+					</div>
+				</div>
+				
+				<div class="row">
+					<div class="col-md-12 col-sm-12 col-xs-12">
+						<label>Descrição Resumida :</label>
+						<p:inputText styleClass="form-control font-family-default" onkeyup="maiuscula(this)" value="#{crudBean.lancamento.descricao}" maxlength="20">
+							<p:ajax process="@this" global="false" />
+						</p:inputText>
+					</div>
+				</div>
+			</h:form>
+			
+			<f:facet name="footer">
+				<p:commandButton process="@this formAdicionaEntradaSaida" styleClass="btn btn-success" value="Salvar" action="#{crudBean.adicionaEntradaSaida()}" oncomplete="PF('dialogEntradaSaidaLancamento').hide();" 
+					update="formAdicionaEntradaSaida :crudform:formcadastro :crudform:formconsulta :crudform:formtabela scripts :crudform:status-caixa :crudform:tabelaHistoricoLancamento" />
+				
+				<p:commandButton styleClass="btn btn-danger" global="false" value="Cancelar" oncomplete="PF('dialogEntradaSaidaLancamento').hide(); return false;"  />	
+			</f:facet>
+		</p:dialog>
+		
+		<p:dialog widgetVar="dialogConfirmaFechamentoCaixa" modal="true" showEffect="fade" hideEffect="fade" responsive="true" resizable="false">
+			<f:facet name="header">Fechamento do Caixa</f:facet>
+			
+			<h:form id="formFechamentoCaixa">
+				<div class="row">
+					<div class="col-md-12 col-sm-12 col-xs-12">
+						<h5 class="text-center">
+							<strong>
+								Confirma o fechamento do seu caixa ?
+							</strong>
+						</h5>
+					</div>
+				</div>
+				
+				<br/>
+				<div class="row">
+					<div class="col-md-12 col-sm-12 col-xs-12 text-center">
+						<span>Ao realizar o fechamento, faça  a conferência dos seguintes valores</span><br/>
+						<span>na gaveta do seu caixa:</span>
+					</div>
+				</div>	
+				
+				<br/>
+				<div class="row">
+					<div class="col-md-12 col-sm-12 col-xs-12 text-center">
+						<label>Saldo (Apenas Dinheiro):</label><br/>
+						<strong>
+							<h:outputText value="#{crudBean.totalDinheiro}" styleClass="form-control alert alert-info">
+								<f:convertNumber type="currency" minFractionDigits="2" maxFractionDigits="2" />
+							</h:outputText>
+						</strong>
+					</div>	
+				</div>
+				
+				<br/>
+				<div class="row">
+					<div class="col-md-12 col-sm-12 col-xs-12 text-center">
+						<label>Saldo Final:</label><br/>
+						<small>(Dinheiro + cartão crédito + cartão débito - saídas)</small>
+						<strong>
+							<h:outputText value="#{(crudBean.entity.totalEntrada - crudBean.entity.totalSaida)}" styleClass="form-control alert alert-success">
+								<f:convertNumber type="currency" minFractionDigits="2" maxFractionDigits="2" />
+							</h:outputText>
+						</strong>
+					</div>	
+				</div>	
+			</h:form>
+			
+			<f:facet name="footer">
+				<p:commandButton styleClass="btn btn-success" value="Finalizar" action="#{crudBean.btnFecharCaixa()}" oncomplete="PF('dialogConfirmaFechamentoCaixa').hide();" 
+					update=":crudform:formcadastro :crudform:formconsulta :crudform:formtabela scripts :crudform:status-caixa :crudform:tabelaHistoricoLancamento" />
+				
+				<p:commandButton styleClass="btn btn-danger" global="false" value="Cancelar" oncomplete="PF('dialogConfirmaFechamentoCaixa').hide(); return false;"  />	
+			</f:facet>
+		</p:dialog>
+	</ui:define>
+</ui:composition>

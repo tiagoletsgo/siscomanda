@@ -24,7 +24,7 @@ public abstract class VendaService implements Serializable {
 	private DefinicaoGeralService definicaoGeralService;
 	
 	private List<Produto> listTemp = new ArrayList<>();
-	
+		
 	public Double getTaxaServico() {
 		Double valor = definicaoGeralService.carregaDefinicaoSistema().getTaxaServico();
 		return (valor / 100);
@@ -58,6 +58,18 @@ public abstract class VendaService implements Serializable {
 		return produtos;
 	}
 	
+	public void validaQuantidadeTotalItens(List<ItemVenda> itens) throws SiscomandaException {
+		Double total = new Double(0);
+		for(ItemVenda item : itens) {
+			total += item.getQuantidade();
+		}
+		
+		String[] valor = total.toString().replace(".", ",").split(",");
+		if(new Integer(valor[1]) > new Integer(0)) {
+			throw new SiscomandaException("Quantidade total de itens não pode ser francionado.");
+		}
+	}
+	
 	public Long setIdTemporarioItem(List<ItemVenda> itens) {
 		Long id = 1L;
 		for(ItemVenda item : itens) {
@@ -70,15 +82,6 @@ public abstract class VendaService implements Serializable {
 		for(ItemVenda item : itens) {
 			item.setId(null);
 		}
-	}
-	
-	public List<Integer> geraMesasComandas() {
-		List<Integer> mesas = new ArrayList<>();
-		int qtdMesasComandas = definicaoGeralService.carregaDefinicaoSistema().getQtdMesaComanda();
-		for(int i = 0; i < qtdMesasComandas; i++) {
-			mesas.add(i + 1);
-		}
-		return mesas;
 	}
 	
 	public Double calculaSubtotal(List<ItemVenda> itens) {
@@ -98,7 +101,7 @@ public abstract class VendaService implements Serializable {
 		for(Adicional adicional : item.getAdicionais()) {
 			subtotal += adicional.getPrecoVenda();
 		}
-		return subtotal + item.getPrecoVenda();
+		return subtotal + (item.getPrecoVenda() * item.getQuantidade());
 	}
 	
 	public Double calculaTotal(Venda venda) {
@@ -112,20 +115,34 @@ public abstract class VendaService implements Serializable {
 			
 	public void incluirItem(Venda venda, List<Adicional> adicionais, ItemVenda item, Produto produto, Double quantidade) throws SiscomandaException {
 		
+		ItemVenda itemVenda = null;
+
 		if(quantidade.equals(new Double(0))) {
 			throw new SiscomandaException(produto.getDescricao() + " necessário informar a quantidade antes de salvar. Por favor tente novamente.");
 		}
 		
-		ItemVenda itemVenda = new ItemVenda();
-		itemVenda.setId(setIdTemporarioItem(venda.getItens()));
-		itemVenda.setProduto(produto);
-		itemVenda.setQuantidade(quantidade);
-		itemVenda.setPrecoVenda(produto.getPrecoVenda());
-		itemVenda.setObservacao(item.getObservacao());
-		itemVenda.setSubtotal(quantidade * produto.getPrecoVenda());
-		itemVenda.setVenda(venda);
-		
-		List<Adicional> tempAdicionais = new ArrayList<>();
+		if(item.isNovo()) {
+			itemVenda = new ItemVenda();
+			itemVenda.setId(setIdTemporarioItem(venda.getItens()));
+			itemVenda.setProduto(produto);
+			itemVenda.setQuantidade(quantidade);
+			itemVenda.setPrecoVenda(produto.getPrecoVenda());
+			itemVenda.setObservacao(item.getObservacao());
+			itemVenda.setSubtotal(quantidade * produto.getPrecoVenda());
+			itemVenda.setVenda(venda);
+			
+			itemVenda.setAdicionais(incluirAdicional(itemVenda, adicionais));
+			venda.getItens().add(itemVenda);
+		}
+		else if(!item.isNovo()) {
+			itemVenda = item;
+			itemVenda.setAdicionais(incluirAdicional(itemVenda, adicionais));
+			return;
+		}
+	}
+	
+	private List<Adicional> incluirAdicional(ItemVenda item, List<Adicional> adicionais) {
+		List<Adicional> cloneAdicionais = new ArrayList<>();
 		if(adicionais != null) {
 			for(Adicional adc : adicionais) {
 				Adicional adicional = new Adicional();
@@ -136,13 +153,11 @@ public abstract class VendaService implements Serializable {
 				adicional.setControlaEstoque(adc.getControlaEstoque());
 				adicional.setPrecoVenda(adc.getPrecoVenda());
 				adicional.setQuantidade(new Double(1));
-				
-				tempAdicionais.add(adicional);
+				cloneAdicionais.add(adicional);
 			}
 		}
 		
-		itemVenda.setAdicionais(tempAdicionais);
-		venda.getItens().add(itemVenda);
+		return cloneAdicionais;
 	}
 		
 	public ItemVenda clonar(Produto produto, List<Adicional> adicionais) {

@@ -5,17 +5,20 @@
 	xmlns:p="http://primefaces.org/ui">
 	
 	<div class="row">
-		<h:panelGroup layout="block" rendered="#{crudBean.entity.mesaOuComanda > 0}">
-			<div class="col-md-12 col-sm-12 col-xs-12">
+		<div class="col-md-12 col-sm-12 col-xs-12">
+			<h:panelGroup layout="block" rendered="#{crudBean.entity.mesaOuComanda > 0}">
 				<p:commandLink value="Busca Produto" styleClass="btn btn-primary" oncomplete="PF('dlgPesquisaProduto').show();" />
 				<p:commandLink value="Trocar Mesa / Comanda" styleClass="btn btn-warning" oncomplete="PF('dlgSelecionaMesaComanda').show();" />
 				
 				<p:commandLink value="Salvar" styleClass="btn btn-success pull-right" action="#{crudBean.btnSalvar}" update="@form" />
-				<p:commandLink value="Cancelar" styleClass="btn btn-warning pull-right" disabled="true" />
-				<p:commandLink value="Excluir" styleClass="btn btn-danger pull-right" disabled="true" />
-			</div>
-		</h:panelGroup>
-		<h:panelGroup layout="block" rendered="#{crudBean.entity.mesaOuComanda == 0}">
+				<p:commandLink value="Excluir" styleClass="btn btn-danger pull-right" />
+				<p:commandLink value="Imprimir" styleClass="btn btn-warning pull-right" />
+				<p:commandLink value="Pagar" styleClass="btn btn-dark pull-right" />
+				<p:link value="Voltar" styleClass="btn btn-primary pull-right" outcome="/pages/modulo/venda/mesa/venda-mesa-comanda?view=search" />
+			</h:panelGroup>
+		</div>
+
+		<h:panelGroup layout="block" rendered="#{crudBean.estadoViewBean.insert and crudBean.entity.mesaOuComanda == 0}">
 			<div class="col-md-12 col-sm-12 col-xs-12">
 				<p:commandLink value="Seleciona Mesa / Comanda" styleClass="btn btn-primary pull-left" global="false" oncomplete="PF('dlgSelecionaMesaComanda').show();" />
 			</div>

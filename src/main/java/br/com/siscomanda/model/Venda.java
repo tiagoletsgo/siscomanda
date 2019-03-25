@@ -1,6 +1,7 @@
 package br.com.siscomanda.model;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -17,19 +18,20 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 
 import br.com.siscomanda.base.model.BaseEntity;
 import br.com.siscomanda.enumeration.EStatus;
+import br.com.siscomanda.enumeration.ETipoVenda;
 
 @Entity
 @Table(name = "venda")
 public class Venda extends BaseEntity implements Serializable {
 
 	private static final long serialVersionUID = 2583564472683970706L;
-	
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "form_pagamento_id", nullable = true)
-	private FormaPagamento formaPagamento;
+		
+	@OneToMany(mappedBy = "venda", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<PagamentoVenda> pagamentos = new ArrayList<>();
 	
 	@OneToMany(mappedBy = "venda", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<ItemVenda> itens = new ArrayList<>();
@@ -44,6 +46,14 @@ public class Venda extends BaseEntity implements Serializable {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "cliente_id", nullable = true)
 	private Cliente cliente;
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "caixa_id", nullable = true)
+	private Caixa caixa;
+	
+	@Temporal(TemporalType.DATE)
+	@Column(name = "data_venda", nullable = false)
+	private Date dataVenda;
 	
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "data_iniciado", nullable = false)
@@ -64,7 +74,9 @@ public class Venda extends BaseEntity implements Serializable {
 	
 	@Column(name = "desconto", nullable = false)
 	private Double desconto;
-
+	
+//	@ManyToOne(fetch = FetchType.LAZY)
+//	@JoinColumn(name = "usuario_id", nullable = false)
 //	private Usuario operador
 	
 	@Column(name = "total", nullable = false)
@@ -74,14 +86,25 @@ public class Venda extends BaseEntity implements Serializable {
 	private Double valorPago;
 	
 	@Column(name = "mesa_comanda", nullable = false)
-	private int mesaOuComanda;
-
-	public FormaPagamento getFormaPagamento() {
-		return formaPagamento;
+	private Integer mesaComanda;
+	
+	@Enumerated(EnumType.STRING)
+	@Column(name = "tipo_venda", nullable = false)
+	private ETipoVenda tipoVenda;
+	
+	public Venda() {
+	}
+	
+	public Venda(Long id) {
+		setId(id);
 	}
 
-	public void setFormaPagamento(FormaPagamento formaPagamento) {
-		this.formaPagamento = formaPagamento;
+	public List<PagamentoVenda> getPagamentos() {
+		return pagamentos;
+	}
+
+	public void setPagamentos(List<PagamentoVenda> pagamentos) {
+		this.pagamentos = pagamentos;
 	}
 
 	public List<ItemVenda> getItens() {
@@ -164,14 +187,6 @@ public class Venda extends BaseEntity implements Serializable {
 		this.total = total;
 	}
 
-	public int getMesaOuComanda() {
-		return mesaOuComanda;
-	}
-
-	public void setMesaOuComanda(int mesaOuComanda) {
-		this.mesaOuComanda = mesaOuComanda;
-	}
-
 	public Double getTaxaEntrega() {
 		return taxaEntrega;
 	}
@@ -186,5 +201,99 @@ public class Venda extends BaseEntity implements Serializable {
 
 	public void setValorPago(Double valorPago) {
 		this.valorPago = valorPago;
+	}
+
+	public Integer getMesaComanda() {
+		return mesaComanda;
+	}
+
+	public void setMesaComanda(Integer mesaComanda) {
+		this.mesaComanda = mesaComanda;
+	}
+	
+	public ETipoVenda getTipoVenda() {
+		return tipoVenda;
+	}
+
+	public void setTipoVenda(ETipoVenda tipoVenda) {
+		this.tipoVenda = tipoVenda;
+	}
+
+	public Caixa getCaixa() {
+		return caixa;
+	}
+
+	public void setCaixa(Caixa caixa) {
+		this.caixa = caixa;
+	}
+
+	public Date getDataVenda() {
+		return dataVenda;
+	}
+
+	public void setDataVenda(Date dataVenda) {
+		this.dataVenda = dataVenda;
+	}
+
+	@Transient
+	public Double getDiferenca() {
+		Double pago = getValorPago(); 
+		Double total = getTotal();
+		Double diferenca = total - pago; 
+		if(diferenca < BigDecimal.ZERO.doubleValue()) {
+			diferenca = BigDecimal.ZERO.doubleValue();
+		}
+		
+		return diferenca;
+	}
+	
+	@Transient
+	public boolean isExcluivel() {
+		return !isNovo() && getStatus().equals(EStatus.CANCELADO)
+				|| !isNovo() && getStatus().equals(EStatus.EM_ABERTO)
+				|| !isNovo() && getStatus().equals(EStatus.PAGO_PARCIAL);
+	}
+	
+	@Transient
+	public boolean isNotExcluivel() {
+		return !isExcluivel();
+	}
+	
+	@Transient
+	public boolean isCancelavel() {
+		return !isNovo() && getStatus().equals(EStatus.EM_ABERTO)
+				|| !isNovo() && getStatus().equals(EStatus.PAGO_PARCIAL);
+	}
+	
+	@Transient
+	public boolean isNotCancelavel() {
+		return !isCancelavel();
+	}
+	
+	@Transient
+	public boolean isNotPago() {
+		return !isPago();
+	}
+	
+	@Transient
+	public boolean isEditavel() {
+		return !isNovo() && getStatus().equals(EStatus.EM_ABERTO)
+				|| isNovo() && getStatus().equals(EStatus.EM_ABERTO)
+				|| !isNovo() && getStatus().equals(EStatus.PAGO_PARCIAL);
+	}
+	
+	@Transient
+	public boolean isNotEditavel() {
+		return !isEditavel();
+	}
+	
+	@Transient
+	public boolean isPagavel() {
+		return !isNovo() && !getStatus().equals(EStatus.PAGO) && !getStatus().equals(EStatus.CANCELADO);
+	}
+	
+	@Transient
+	public boolean isNotPagavel() {
+		return !isPagavel();
 	}
 }

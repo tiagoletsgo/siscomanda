@@ -5,6 +5,12 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:p="http://primefaces.org/ui">
 	
+	<f:metadata>
+		<f:viewParam name="codigo" value="#{vendaMesaComandaBean.codigo}" />
+		<f:viewParam name="edicao" value="#{vendaMesaComandaBean.edicao}" />
+		<f:event type="preRenderView" listener="#{vendaMesaComandaBean.btnEditar()}" />
+	</f:metadata>
+	
 	<ui:param name="md" value="12" />
 	<ui:param name="sm" value="12" />
 	<ui:param name="xs" value="12" />
@@ -22,21 +28,22 @@
 	<ui:define name="title_form_table"> 
 		<h:panelGroup layout="block">Tabela de dados pedido</h:panelGroup>
 	</ui:define>
-	
+		
 	<ui:define name="content">
 		<h:panelGroup layout="block" id="grid_form">
 			<h:panelGroup layout="block" rendered="#{crudBean.estadoViewBean.insert or crudBean.estadoViewBean.update}">
-				<ui:include src="/pages/modulo/venda/mesa/cadastroVendaMesaComandaInclude.xhtml" />
+				<ui:include src="/pages/modulo/venda/mesa/cadastro-venda-mesa-comanda.xhtml" />
 			</h:panelGroup>
+			
 			<h:panelGroup layout="block" rendered="#{not crudBean.estadoViewBean.insert and not crudBean.estadoViewBean.update}">
-				<ui:include src="/pages/modulo/venda/mesa/consultaVendaMesaComandaInclude.xhtml" />
+				<ui:include src="/pages/modulo/venda/mesa/consulta-venda-mesa-comanda.xhtml" />
 			</h:panelGroup>
 		</h:panelGroup>
 	</ui:define>
 	
 	<ui:define name="table">
 		<h:panelGroup layout="block" rendered="#{crudBean.estadoViewBean.search}">
-			<ui:include src="/pages/modulo/venda/mesa/tabelaVendaMesaComandaInclude.xhtml" />
+			<ui:include src="/pages/modulo/venda/mesa/tabela-venda-mesa-comanda.xhtml" />
 		</h:panelGroup>
 	</ui:define>
 </ui:composition>

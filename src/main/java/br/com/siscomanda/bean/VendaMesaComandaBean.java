@@ -7,16 +7,21 @@ import java.util.List;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ViewScoped;
+import javax.faces.context.ExternalContext;
+import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
 
 import br.com.siscomanda.base.bean.BaseBean;
 import br.com.siscomanda.enumeration.EStatus;
+import br.com.siscomanda.enumeration.ETipoVenda;
 import br.com.siscomanda.exception.SiscomandaException;
 import br.com.siscomanda.model.Adicional;
+import br.com.siscomanda.model.Cliente;
 import br.com.siscomanda.model.ItemVenda;
 import br.com.siscomanda.model.Produto;
 import br.com.siscomanda.model.Venda;
+import br.com.siscomanda.service.ClienteService;
 import br.com.siscomanda.service.VendaMesaComandaService;
 import br.com.siscomanda.util.JSFUtil;
 import br.com.siscomanda.util.StringUtil;
@@ -29,6 +34,9 @@ public class VendaMesaComandaBean extends BaseBean<Venda> implements Serializabl
 	
 	@Inject
 	private VendaMesaComandaService service;
+	
+	@Inject
+	private ClienteService clienteService;
 	
 	private ItemVenda itemSelecionado;
 	
@@ -48,9 +56,21 @@ public class VendaMesaComandaBean extends BaseBean<Venda> implements Serializabl
 	
 	private String filterPesquisar;
 	
+	private Integer mesaComanda;
+	
+	private ETipoVenda tipoVenda;
+	
 	@Override
 	protected void init() {
-		getEntity().setStatus(EStatus.EM_ABERTO);
+		initValores();
+		
+		produtos = service.buscaProduto("PIZZA");
+		adicionais = service.getAdicionais();
+		
+		beforeSearch();
+	}
+	
+	private void initValores() {
 		getEntity().setIniciado(new Date());
 		getEntity().setSubtotal(new Double(0));
 		getEntity().setTotal(new Double(0));
@@ -58,27 +78,107 @@ public class VendaMesaComandaBean extends BaseBean<Venda> implements Serializabl
 		getEntity().setTaxaEntrega(new Double(0));
 		getEntity().setDesconto(new Double(0));
 		getEntity().setValorPago(new Double(0));
+		getEntity().setMesaComanda(new Integer(0));
 		setQuantidade(new Double(1));
 		
 		mesasComandas = service.geraMesasComandas();
-		produtos = service.buscaProduto("PIZZA");
-		adicionais = service.getAdicionais();
+		carregaVendaPorParamentro();
+	}
+	
+	private void carregaVendaPorParamentro() {
+		FacesContext context = FacesContext.getCurrentInstance();
+		ExternalContext external = context.getExternalContext();
+		String id = external.getRequestParameterMap().get("codigo");
+		if(id != null) {
+			Long codigo = Long.parseLong(id);
+			getEntity().setId(codigo);
+			setEntity(service.porFiltro(getEntity(), true).get(0));
+			mesaComanda = getEntity().getMesaComanda();
+			
+			for(ItemVenda item : getEntity().getItens()) {
+				for(Adicional adicional : service.carregaAdicionais(item)) {
+					adicional.setQuantidade(new Double(1));
+					item.getAdicionais().add(adicional);
+				}
+			}
+			
+			getEstadoViewBean().setCurrentView(true, false, false, false);
+		}
+	}
+	
+	private void setMesaComanda() {
+		getEntity().setMesaComanda(mesaComanda == null ? getEntity().getMesaComanda() : mesaComanda);
+	}
+	
+	public void btnAtualizaHeaderPedido() {
+		try {
+			
+			if(getTipoVenda() == null) {
+				JSFUtil.addMessage(FacesMessage.SEVERITY_ERROR, "Erro ao atualizar capa do pedido. É necessário informar o tipo de venda.");
+				btnNovo();
+				return;
+			}
+			
+			mesaComanda = 999999;
+			Double taxaEntrega = new Double(0);
+			Cliente cliente = null;
+
+			if(getEntity().getCliente() != null) {
+				cliente = clienteService.porCodigo(getEntity().getCliente());
+				taxaEntrega = cliente.getServico().getValor();
+			}
+			
+			getEntity().setMesaComanda(mesaComanda);
+			getEntity().setCliente(cliente);
+			getEntity().setTaxaEntrega(taxaEntrega);
+			getEntity().setTipoVenda(getTipoVenda());
+		}
+		catch(SiscomandaException e) {
+			JSFUtil.addMessage(FacesMessage.SEVERITY_ERROR, "Erro ao atualizar capa do pedido. " + e.getMessage());
+		}
+		
 	}
 	
 	public void btnSalvar() {		
 		try {
+			setMesaComanda();
+			
+			getEntity().setDataVenda(new Date());
+			service.validaQuantidadeTotalItens(getEntity().getItens());
 			setEntity(service.salvar(getEntity()));
-			getEntity().setItens(service.carregaItemVenda(getEntity()));
 		}
 		catch(SiscomandaException e) {
 			JSFUtil.addMessage(FacesMessage.SEVERITY_ERROR, "Erro ao salvar. " + e.getMessage());
 		}
 	}
 	
+	public void btnExcluir() {
+		
+		try {
+			service.remover(getEntity());
+			
+			setEntity(new Venda());
+			initValores();
+			
+			getEstadoViewBean().setCurrentView(false, false, false, true);
+			beforeSearch();
+			
+			JSFUtil.addMessage(FacesMessage.SEVERITY_INFO, "Registro removido com sucesso.");
+		}
+		catch(SiscomandaException e) {
+			JSFUtil.addMessage(FacesMessage.SEVERITY_ERROR, "Erro ao remover. " + e.getMessage());
+		}
+	}
+	
 	public void btnAdicionaItem() {
 		try {
+			
+			setMesaComanda();
+			
 			service.incluirItem(getEntity(), getSelectManyCheckBoxAdicionais(), getItemSelecionado(), getProdutoSelecionado(), getQuantidade());
 			afterAction();
+			
+			JSFUtil.addMessage(FacesMessage.SEVERITY_INFO, "Registro salvo com sucesso.");
 		}
 		catch(SiscomandaException e) {
 			JSFUtil.addMessage(FacesMessage.SEVERITY_ERROR, "Erro ao salvar. " + e.getMessage());
@@ -98,6 +198,8 @@ public class VendaMesaComandaBean extends BaseBean<Venda> implements Serializabl
 			List<ItemVenda> itens = service.removeItem(getEntity().getItens(), item, quantidade);
 			getEntity().setItens(itens);
 			afterAction();
+			
+			JSFUtil.addMessage(FacesMessage.SEVERITY_INFO, "Registro removido com sucesso.");
 		}
 		catch(SiscomandaException e) {
 			JSFUtil.addMessage(FacesMessage.SEVERITY_ERROR, "Erro ao remover. " + e.getMessage());
@@ -107,21 +209,56 @@ public class VendaMesaComandaBean extends BaseBean<Venda> implements Serializabl
 	public void btnRemoveAdicional() {
 		itemSelecionado.getAdicionais().remove(adicionalSelecionado);
 		afterAction();
+		
+		JSFUtil.addMessage(FacesMessage.SEVERITY_INFO, "Registro removido com sucesso.");
 	}
-
-	public void ajaxPesquisar() {
-		Produto produto = service.buscaProduto(produtoSelecionado);
-		produtos = service.buscaProduto(filterPesquisar, produto.getSubCategoria());
+	
+	public void btnPesquisar() {
+		setElements(service.porFiltro(getEntity(), true));
+	}
+	
+	@Override
+	public void btnNovo() {
+		setEntity(new Venda()); 
+		
+		initValores();
+		getEntity().setStatus(EStatus.EM_ABERTO);
+		getEntity().setTipoVenda(ETipoVenda.MESA_COMANDA);
+		getEstadoViewBean().setCurrentView(true, false, false, false);
+	}
+	
+	@Override
+	public void btnCancelar() {
+		try {
+			setMesaComanda();
+			
+			setEntity(service.cancelar(getEntity()));
+			
+			JSFUtil.addMessage(FacesMessage.SEVERITY_INFO, "Registro cancelado com sucesso.");
+		}
+		catch(SiscomandaException e) {
+			JSFUtil.addMessage(FacesMessage.SEVERITY_ERROR, "Erro ao cancelar. " + e.getMessage());
+		}
+	}
+	
+	public void editar(Venda venda) {
+		
+		setEntity(service.porFiltro(venda, true).get(0));
+		mesaComanda = venda.getMesaComanda();
+		for(ItemVenda item : getEntity().getItens()) {
+			for(Adicional adicional : service.carregaAdicionais(item)) {
+				adicional.setQuantidade(new Double(1));
+				item.getAdicionais().add(adicional);
+			}
+		}
+		
+		getEstadoViewBean().setCurrentView(true, false, false, false);
 	}
 	
 	public void ajaxPesquisaAdicional() {
 		adicionais = service.buscaAdicionalPor(filterPesquisar);
 	}
-	
-	public void actionListenerQuantidade(double valor) {
-		this.quantidade = valor;
-	}
-	
+		
 	private void afterAction() {
 		getEntity().setSubtotal(service.calculaSubtotal(getEntity().getItens()));
 		getEntity().setTaxaServico(getEntity().getSubtotal() * service.getTaxaServico());		
@@ -134,12 +271,19 @@ public class VendaMesaComandaBean extends BaseBean<Venda> implements Serializabl
 		selectManyCheckBoxAdicionais = new ArrayList<>();
 	}
 	
+	public EStatus[] getStatusVenda() {
+		return EStatus.values();
+	}
+	
 	public Double calculaSubTotalItem(ItemVenda item) {
 		return service.calculaSubTotalItem(item);
 	}
 	
 	@Override
 	protected void beforeSearch() {
+		if(getEstadoViewBean().getSearch()) {
+			setElements(service.porFiltro(getEntity(), false));
+		}
 	}
 	
 	public List<Integer> getQuantidadeMesasComandas() {
@@ -212,5 +356,23 @@ public class VendaMesaComandaBean extends BaseBean<Venda> implements Serializabl
 
 	public void setAdicionalSelecionado(Adicional adicionalSelecionado) {
 		this.adicionalSelecionado = adicionalSelecionado;
+	}
+	
+	public List<ETipoVenda> getTipoVendas() {
+		List<ETipoVenda> tipoVendas = new ArrayList<>();
+		if(getEstadoViewBean().getSearch()) {
+			tipoVendas.add(ETipoVenda.MESA_COMANDA);
+		}
+		tipoVendas.add(ETipoVenda.BALCAO);
+		tipoVendas.add(ETipoVenda.DELIVERY);		
+		return tipoVendas;
+	}
+
+	public void setTipoVenda(ETipoVenda tipoVenda) {
+		this.tipoVenda = tipoVenda;
+	}
+	
+	public ETipoVenda getTipoVenda() {
+		return tipoVenda;
 	}
 }

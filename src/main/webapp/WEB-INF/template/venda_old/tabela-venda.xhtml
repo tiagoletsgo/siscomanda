@@ -38,7 +38,7 @@
 						</h:outputText>
 					</p:column>
 					
-					<p:column styleClass="ui-datatable-left" style="width: 55%; border-radius: 0px;">
+					<p:column styleClass="ui-datatable-left" style="width: 45%; border-radius: 0px;">
 						<f:facet name="header">
 							<h:outputLabel value="Produto" />
 						</f:facet>
@@ -76,11 +76,19 @@
 						</h:outputText>
 					</p:column>
 					
-					<p:column style="width: 13%; border-radius: 0px;">
+					<p:column style="width: 23%; border-radius: 0px;">
 						<f:facet name="header">
 							<h:outputLabel value="Ação" />
 						</f:facet>
-						<p:commandButton update="crudform:dialogExcluirProduto" process="@this" oncomplete="PF('dlgConfirmExcluirProduto').show();" styleClass="btn btn-danger btn-xs" value="Excluir">
+						
+						<p:commandButton update="crudform:dialogSelecionaAdicional" process="@this" oncomplete="PF('dlgSelecionaAdicional').show();" styleClass="btn btn-primary btn-xs" value="Adicional"
+							disabled="#{!item.produto.permiteAdicional}">
+							<f:setPropertyActionListener value="#{item}" target="#{crudBean.itemSelecionado}" />
+							<f:setPropertyActionListener value="#{item.quantidade}" target="#{crudBean.quantidade}" />
+							<f:setPropertyActionListener value="#{item.produto}" target="#{crudBean.produtoSelecionado}" />
+						</p:commandButton>
+						
+						<p:commandButton update="crudform:dialogExcluirProduto" process="@this" oncomplete="PF('dlgConfirmExcluirProduto').show();" styleClass="btn btn-danger btn-xs" value="Remover">
 							<f:setPropertyActionListener value="#{item}" target="#{crudBean.itemSelecionado}" />
 						</p:commandButton>
 					</p:column>
@@ -126,7 +134,7 @@
 								<f:facet name="header">
 									<h:outputLabel value="Ação" />
 								</f:facet>
-								<p:commandButton update="crudform:dialogExcluirAdicional" process="@this" oncomplete="PF('dlgExcluirAdicional').show();" styleClass="btn btn-danger btn-xs" value="Excluir">
+								<p:commandButton update="crudform:dialogExcluirAdicional" process="@this" oncomplete="PF('dlgExcluirAdicional').show();" styleClass="btn btn-danger btn-xs" value="Remover">
 									<f:setPropertyActionListener value="#{adicional}" target="#{crudBean.adicionalSelecionado}" />
 									<f:setPropertyActionListener value="#{item}" target="#{crudBean.itemSelecionado}" />
 								</p:commandButton>

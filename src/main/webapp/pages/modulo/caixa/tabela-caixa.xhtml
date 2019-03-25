@@ -1,0 +1,72 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+	
+	
+		<p:dataTable id="tabelaCaixa" styleClass="table table-striped jambo_table" value="#{crudBean.elements}" var="caixa"
+			emptyMessage="Sem dados" reflow="true">
+									
+			<p:column styleClass="ui-datatable-left" width="12%">
+				<f:facet name="header">
+					<h:outputLabel value="Abertura" />
+				</f:facet>
+				<h:outputText value="#{caixa.dataHoraAbertura}">
+					<f:convertDateTime pattern="dd/MM/yyyy HH:mm" />
+				</h:outputText>
+			</p:column>
+			
+			<p:column styleClass="ui-datatable-left" width="12%">
+				<f:facet name="header">
+					<h:outputLabel value="Fechamento" />
+				</f:facet>
+				<h:outputText rendered="#{not empty caixa.dataHoraFechamento}" value="#{caixa.dataHoraFechamento}">
+					<f:convertDateTime pattern="dd/MM/yyyy HH:mm" />
+				</h:outputText>
+				<h:outputText value="00/00/0000 00:00" rendered="#{empty caixa.dataHoraFechamento}" />
+			</p:column>
+			
+			<p:column styleClass="ui-datatable-left" width="9%">
+				<f:facet name="header">
+					<h:outputLabel value="Saldo Inicial" />
+				</f:facet>
+				<h:outputText value="#{caixa.saldoInicial}">
+					<f:convertNumber type="currency" />
+				</h:outputText>
+			</p:column>
+			
+			<p:column styleClass="ui-datatable-left" width="9%">
+				<f:facet name="header">
+					<h:outputLabel value="Saldo Final" />
+				</f:facet>
+				<h:outputText rendered="#{not caixa.caixaAberto}" value="#{caixa.totalEntrada - caixa.totalSaida}">
+					<f:convertNumber type="currency" />
+				</h:outputText>
+				<h:outputText value="-" rendered="#{caixa.caixaAberto}" />
+			</p:column>
+			
+			<p:column styleClass="ui-datatable-center" width="8%">
+				<f:facet name="header">
+					<h:outputLabel value="Status" />
+				</f:facet>
+				<h:outputText value="#{caixa.caixaAberto ? 'ABERTO' : 'FECHADO'}" styleClass="#{caixa.caixaAberto ? 'text-success' : 'text-danger'}"/>
+			</p:column>
+			
+			<p:column styleClass="ui-datatable-left" width="25%">
+				<f:facet name="header">
+					<h:outputLabel value="Observaçao" />
+				</f:facet>
+				<h:outputText value="#{caixa.observacao}"/>
+			</p:column>
+			
+			<p:column width="6%">
+				<f:facet name="header">
+					<h:outputLabel value="#" />
+				</f:facet>
+				<h:commandButton styleClass="btn btn-info btn-xs" value="Detalhe">
+					<p:ajax event="click" update="@form" listener="#{crudBean.btnDetalhar(caixa)}" />
+				</h:commandButton>
+			</p:column>
+		</p:dataTable>
+</ui:composition>
