@@ -1,9 +1,9 @@
-package br.com.siscomanda.service;
+package br.com.siscomanda.interfaces.calculadoraImpl;
 
 import br.com.siscomanda.exception.SiscomandaException;
 import br.com.siscomanda.interfaces.Calculadora;
 
-public class AplicaDescontoService implements Calculadora {
+public class AplicaDesconto implements Calculadora {
 
 	@Override
 	public Double aplicaCalculo(Double total, Double desconto, Double acrescimo) throws SiscomandaException {

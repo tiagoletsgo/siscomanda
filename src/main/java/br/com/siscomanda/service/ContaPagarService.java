@@ -1,84 +1,92 @@
 package br.com.siscomanda.service;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
-import javax.faces.application.FacesMessage;
 import javax.inject.Inject;
 
 import br.com.siscomanda.config.jpa.Transactional;
+import br.com.siscomanda.enumeration.EFreaquencia;
 import br.com.siscomanda.exception.SiscomandaException;
-import br.com.siscomanda.model.Adicional;
-import br.com.siscomanda.repository.dao.AdicionalDAO;
-import br.com.siscomanda.util.JSFUtil;
+import br.com.siscomanda.interfaces.geradorVencimentoImpl.GeraDataAnualService;
+import br.com.siscomanda.interfaces.geradorVencimentoImpl.GeraDataDiarioService;
+import br.com.siscomanda.interfaces.geradorVencimentoImpl.GeraDataMensalService;
+import br.com.siscomanda.interfaces.geradorVencimentoImpl.GeraDataQuinzenalService;
+import br.com.siscomanda.interfaces.geradorVencimentoImpl.GeraDataSemanalService;
+import br.com.siscomanda.model.ContaPagar;
+import br.com.siscomanda.repository.dao.ContaPagarDAO;
 
 public class ContaPagarService implements Serializable {
 
-	private static final long serialVersionUID = 6750595631115213547L;
-	
+	private static final long serialVersionUID = -7605329514615722286L;
+
 	@Inject
-	private AdicionalDAO dao;
+	private ContaPagarDAO dao;
 	
 	@Transactional
-	public Adicional salvar(Adicional adicional) throws SiscomandaException {
-		validacao(adicional);
-		if(adicional.isNovo()) {			
-			adicional = dao.salvar(adicional);
-			JSFUtil.addMessage(FacesMessage.SEVERITY_INFO, "Registro salvo com sucesso.");
-			
-			return adicional;
+	public void salvar(ContaPagar conta, List<Date> vencimentos) throws SiscomandaException {
+		
+		if(conta.getDescricao().isEmpty()) {
+			throw new SiscomandaException("Informe uma descrição.");
 		}
 		
-		JSFUtil.addMessage(FacesMessage.SEVERITY_INFO, "Registro alterado com sucesso.");
-		return dao.salvar(adicional);
-	}
-	
-	@Transactional
-	public void remover(List<Adicional> adicionais) throws SiscomandaException {
-		if(adicionais == null || adicionais.isEmpty()) {
-			throw new SiscomandaException("Selecione pelo menos 1 registro para ser excluído.!");
+		if(Objects.isNull(conta.getDataVencimento())) {
+			throw new SiscomandaException("Informe um vencimento.");
 		}
 		
-		try {
-			for(Adicional adicional : adicionais) {
-				dao.removeAdicionalCategoriaPorCodigo(adicional.getId());
-				dao.removeAdicionalPorCodigo(adicional.getId());
+		if(Objects.isNull(conta.getValor())) {
+			throw new SiscomandaException("Informe um valor.");
+		}
+		
+		if(Objects.nonNull(vencimentos) && !vencimentos.isEmpty()) {
+			int parcela = 1;
+			String descricao = conta.getDescricao();
+			for(Date vencimento : vencimentos) {
+				conta.setDescricao(descricao + "(" + parcela + ")");
+				conta.setDataVencimento(vencimento);
+				parcela++;
+				
+				dao.salvar(conta);
+				conta.setDescricao(null);
 			}
+			return;
 		}
-		catch(SiscomandaException e) {
-			throw new SiscomandaException(e.getMessage(), e);
-		}
+		
+		dao.salvar(conta);
 	}
 	
-	public List<Adicional> pesquisar(Adicional adicional) throws SiscomandaException {
-		List<Adicional> adicionais = null;
-		adicionais = dao.buscaPor(adicional.getDescricao());	
-		return adicionais;
+	public List<Date> gerarVencimento(EFreaquencia frequencia, Date data, Integer quantidadeRepeticao) throws SiscomandaException {
+		
+		if(Objects.isNull(frequencia)) {
+			throw new SiscomandaException("Informe a frequência.");
+		}
+
+		if(Objects.isNull(data)) {
+			throw new SiscomandaException("Informe data de vencimento.");
+		}
+		
+		if(Objects.isNull(quantidadeRepeticao)) {
+			throw new SiscomandaException("Informe a quantidade de repetições.");
+		}
+		
+		switch (frequencia) {
+			case MENSAL:
+				return new GeraDataMensalService().frequencia(data, quantidadeRepeticao);
+			case SEMANAL:
+				return new GeraDataSemanalService().frequencia(data, quantidadeRepeticao);
+			case DIARIO:
+				return new GeraDataDiarioService().frequencia(data, quantidadeRepeticao);
+			case ANUAL:
+				return new GeraDataAnualService().frequencia(data, quantidadeRepeticao);
+			case QUINZENAL:
+				return new GeraDataQuinzenalService().frequencia(data, quantidadeRepeticao);
+			default:
+				break;
+		}
+		
+		return null;
 	}
 	
-	public List<Adicional> todos() {
-		return dao.buscaPor(null);
-	}
-	
-	private void validacao(Adicional adicional) throws SiscomandaException {
-		if(adicional.getDescricao() == null || adicional.getDescricao().isEmpty()) {
-			throw new SiscomandaException("Necessário informar uma descrição.");
-		}
-		
-		if(adicional.getCategorias() == null || adicional.getCategorias().isEmpty()) {
-			throw new SiscomandaException("Necessário informar ao menos uma categoria.");
-		}
-		
-		if(adicional.getPrecoCusto() <= new Double("0") || adicional.getPrecoVenda() <= new Double("0")) {
-			throw new SiscomandaException("Não é permitido um valor menor ou igual a zero para preço de venda / preço de custo.");
-		}
-		
-		if(adicional.getPrecoCusto() > adicional.getPrecoVenda()) {
-			throw new SiscomandaException("Preço de custo não pode ser maior que preço de venda.");
-		}
-		
-		if(adicional.getFatorMedida() == null) {
-			throw new SiscomandaException("Necessário informar um fator de medida.");
-		}
-	}
 }

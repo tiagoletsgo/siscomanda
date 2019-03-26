@@ -1,4 +1,4 @@
-package br.com.siscomanda.service;
+package br.com.siscomanda.interfaces.lancamentoImpl;
 
 import java.io.Serializable;
 

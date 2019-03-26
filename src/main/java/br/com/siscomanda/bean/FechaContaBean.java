@@ -14,14 +14,14 @@ import javax.inject.Named;
 
 import br.com.siscomanda.base.bean.BaseBean;
 import br.com.siscomanda.exception.SiscomandaException;
+import br.com.siscomanda.interfaces.calculadoraImpl.AplicaDesconto;
+import br.com.siscomanda.interfaces.calculadoraImpl.AplicaTaxaEntrega;
 import br.com.siscomanda.model.Adicional;
 import br.com.siscomanda.model.Bandeira;
 import br.com.siscomanda.model.FormaPagamento;
 import br.com.siscomanda.model.ItemVenda;
 import br.com.siscomanda.model.PagamentoVenda;
 import br.com.siscomanda.model.Venda;
-import br.com.siscomanda.service.AplicaDescontoService;
-import br.com.siscomanda.service.AplicaTaxaEntregaService;
 import br.com.siscomanda.service.FechaContaService;
 import br.com.siscomanda.util.JSFUtil;
 import br.com.siscomanda.util.StringUtil;
@@ -150,14 +150,14 @@ public class FechaContaBean extends BaseBean<Venda> implements Serializable {
 	public void aplicaDesconto() {
 		Double desconto = getEntity().getDesconto() != null ? getEntity().getDesconto() : new Double(0);
 		Double acrescimo = getEntity().getTaxaEntrega() != null ? getEntity().getTaxaEntrega() : new Double(0);
-		pagamento.setValorTotal(service.calculaFaltaPagar(new AplicaDescontoService(), getEntity().getSubtotal(), desconto, acrescimo));
+		pagamento.setValorTotal(service.calculaFaltaPagar(new AplicaDesconto(), getEntity().getSubtotal(), desconto, acrescimo));
 		valorFaltante = service.calculaValorFantante(pagamento.getValorTotal(), pagamento.getValorPago());
 	}
 	
 	public void aplicaTaxaEntrega() {
 		Double acrescimo = getEntity().getTaxaEntrega() != null ? getEntity().getTaxaEntrega() : new Double(0);
 		Double desconto = getEntity().getDesconto() != null ? getEntity().getDesconto() : new Double(0);
-		pagamento.setValorTotal(service.calculaFaltaPagar(new AplicaTaxaEntregaService(), getEntity().getSubtotal(), desconto, acrescimo));
+		pagamento.setValorTotal(service.calculaFaltaPagar(new AplicaTaxaEntrega(), getEntity().getSubtotal(), desconto, acrescimo));
 		valorFaltante = service.calculaValorFantante(pagamento.getValorTotal(), pagamento.getValorPago());
 	}
 	

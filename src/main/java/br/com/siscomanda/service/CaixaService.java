@@ -17,6 +17,8 @@ import br.com.siscomanda.config.jpa.Transactional;
 import br.com.siscomanda.enumeration.ETipoOperacao;
 import br.com.siscomanda.exception.SiscomandaException;
 import br.com.siscomanda.interfaces.CalculaLancamento;
+import br.com.siscomanda.interfaces.lancamentoImpl.LancamentoEntradaService;
+import br.com.siscomanda.interfaces.lancamentoImpl.LancamentoSaidaService;
 import br.com.siscomanda.model.Caixa;
 import br.com.siscomanda.model.CaixaLancamento;
 import br.com.siscomanda.model.FormaPagamento;
