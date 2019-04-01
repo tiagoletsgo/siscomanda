@@ -1,0 +1,78 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+	
+		<p:dataTable id="tabelaConta" styleClass="table table-striped jambo_table" value="#{crudBean.elements}" var="conta"
+			selection="#{crudBean.contasSelecionadas}" rowKey="#{conta.id}" emptyMessage="Sem dados" reflow="true">
+			
+			<p:column styleClass="ui-datatable-center" selectionMode="multiple" width="5%" />
+			
+			<p:column styleClass="ui-datatable-left #{conta.pago ? 'text-success' : 'text-danger'}" width="30%">
+				<f:facet name="header">
+					<h:outputLabel value="Descrição" />
+				</f:facet>
+				<h:outputText value="#{conta.descricao}" />
+			</p:column>
+
+			<p:column styleClass="ui-datatable-center #{conta.pago ? 'text-success' : 'text-danger'}" width="10%">
+				<f:facet name="header">
+					<h:outputLabel value="Vencimento" />
+				</f:facet>
+				<h:outputText value="#{conta.dataVencimento}">
+					<f:convertDateTime pattern="dd/MM/yyyy" />
+				</h:outputText>
+			</p:column>
+			
+			<p:column styleClass="ui-datatable-left #{conta.pago ? 'text-success' : 'text-danger'}" width="10%">
+				<f:facet name="header">
+					<h:outputLabel value="Valor Previsto" />
+				</f:facet>
+				<h:outputText value="#{conta.valor}">
+					<f:convertNumber type="currency" minFractionDigits="2" maxFractionDigits="2" />
+				</h:outputText>
+			</p:column>
+			
+			<p:column styleClass="ui-datatable-left #{conta.pago ? 'text-success' : 'text-danger'}" width="10%">
+				<f:facet name="header">
+					<h:outputLabel value="Valor Pago" />
+				</f:facet>
+				<h:outputText value="#{conta.pago ? conta.totalPago : 0.0}">
+					<f:convertNumber type="currency" minFractionDigits="2" maxFractionDigits="2" />
+				</h:outputText>
+			</p:column>
+			
+			<p:column styleClass="ui-datatable-center #{conta.pago ? 'text-success' : 'text-danger'}" width="13%">
+				<f:facet name="header">
+					<h:outputLabel value="Data Pagamento" />
+				</f:facet>
+				<h:outputText rendered="#{not empty conta.dataPagamento}" value="#{conta.dataPagamento}">
+					<f:convertDateTime pattern="dd/MM/yyyy" />
+				</h:outputText>
+				<h:outputText value="00/00/0000" rendered="#{empty conta.dataPagamento}" />
+			</p:column>
+			
+			<p:column styleClass="ui-datatable-center #{conta.pago ? 'text-success' : 'text-danger'}" width="8%">
+				<f:facet name="header">
+					<h:outputLabel value="Status" />
+				</f:facet>
+				<h:outputText value="#{conta.pago ? 'PAGO' : 'NÃO PAGO'}" />
+			</p:column>
+			
+			<p:column width="6%">
+				<f:facet name="header">
+					<h:outputLabel value="#" />
+				</f:facet>
+				<h:commandButton styleClass="btn btn-warning btn-xs" value="Editar">
+					<p:ajax event="click" update="@form scripts" listener="#{crudBean.btnEditar(conta)}" />
+				</h:commandButton>
+			</p:column>
+			
+			<f:facet name="footer">
+				<p:commandButton styleClass="btn btn-danger btn-xs" style="float: left;" value="Deletar" 
+					rendered="#{crudBean.elements.size() > 0  and not crudBean.estadoViewBean.update}" oncomplete="PF('dlgConfirmarExclusao').show();"/>
+				<div class="clearfix"></div>
+			</f:facet>
+		</p:dataTable>
+</ui:composition>

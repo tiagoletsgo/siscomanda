@@ -17,15 +17,18 @@ import br.com.siscomanda.config.jpa.Transactional;
 import br.com.siscomanda.enumeration.ETipoOperacao;
 import br.com.siscomanda.exception.SiscomandaException;
 import br.com.siscomanda.interfaces.CalculaLancamento;
-import br.com.siscomanda.interfaces.lancamentoImpl.LancamentoEntradaService;
-import br.com.siscomanda.interfaces.lancamentoImpl.LancamentoSaidaService;
+import br.com.siscomanda.interfaces.lancamentoImpl.LancamentoDespesa;
+import br.com.siscomanda.interfaces.lancamentoImpl.LancamentoEntrada;
+import br.com.siscomanda.interfaces.lancamentoImpl.LancamentoSaida;
 import br.com.siscomanda.model.Caixa;
 import br.com.siscomanda.model.CaixaLancamento;
+import br.com.siscomanda.model.ContaPagar;
 import br.com.siscomanda.model.FormaPagamento;
 import br.com.siscomanda.model.PagamentoVenda;
 import br.com.siscomanda.model.Venda;
 import br.com.siscomanda.repository.dao.CaixaDAO;
 import br.com.siscomanda.repository.dao.CaixaLancamentoDAO;
+import br.com.siscomanda.repository.dao.ContaPagarDAO;
 import br.com.siscomanda.repository.dao.FormaPagamentoDAO;
 import br.com.siscomanda.repository.dao.VendaDAO;
 import br.com.siscomanda.util.JSFUtil;
@@ -48,6 +51,9 @@ public class CaixaService implements Serializable {
 	
 	@Inject
 	private VendaDAO vendaDAO;
+	
+	@Inject
+	private ContaPagarDAO contaPagarDAO;
 	
 	public Caixa temCaixaAberto(Caixa caixa) {
 		return caixaDAO.temCaixaAberto(caixa);
@@ -92,7 +98,23 @@ public class CaixaService implements Serializable {
 			throw new SiscomandaException("Este lançamento não pode ser removido, por ser o primeiro suprimento do caixa.");
 		}
 		
+		removeLancamentoContaPagar(lancamento);
 		caixaLancamentoDAO.remover(CaixaLancamento.class, lancamento.getId());
+	}
+	
+	@Transactional
+	private void removeLancamentoContaPagar(CaixaLancamento lancamento) throws SiscomandaException {
+		if(lancamento.getTipoOperacao().equals(ETipoOperacao.DESPESA)) {
+			Map<String, Object> filter = new HashMap<String, Object>();
+			filter.put("dataPagamentoInicial", lancamento.getDataHora());
+			filter.put("dataPagamentoFinal", lancamento.getDataHora());
+			filter.put("dataVencimentoInicial", lancamento.getDataHora());
+			filter.put("dataVencimentoFinal", lancamento.getDataHora());
+			filter.put("descricaoConta", lancamento.getDescricao());
+			filter.put("valor", lancamento.getValorSaida());
+			List<ContaPagar> contas = contaPagarDAO.porFiltro(filter);
+			contaPagarDAO.remover(ContaPagar.class, contas.get(0).getId());
+		}
 	}
 	
 	public List<FormaPagamento> buscaFormaPagamentoPorDescricao(String descricao) {
@@ -164,15 +186,36 @@ public class CaixaService implements Serializable {
 			throw new SiscomandaException("Não é permitido incluir um lançamento sem informar uma descrição.");
 		}
 		
-		CalculaLancamento calcula = new LancamentoEntradaService();
+		CalculaLancamento calcula = new LancamentoEntrada();
 		lancamento = calcula.executaCalculo(lancamento, lancamento.getTipoOperacao(), valor);
 		
-		calcula = new LancamentoSaidaService();
+		calcula = new LancamentoSaida();
 		lancamento = calcula.executaCalculo(lancamento, lancamento.getTipoOperacao(), valor);
+		
+		calcula = new LancamentoDespesa();
+		lancamento = calcula.executaCalculo(lancamento, lancamento.getTipoOperacao(), valor);
+		inserirLancamentoDespesaContaPagar(lancamento, lancamento.getTipoOperacao());
 		
 		caixaLancamentoDAO.salvar(lancamento);
 		
 		return lancamento;
+	}
+	
+	@Transactional
+	private void inserirLancamentoDespesaContaPagar(CaixaLancamento lancamento, ETipoOperacao tipoOperacao) {
+		if(lancamento.getTipoOperacao().equals(ETipoOperacao.DESPESA)) {
+			ContaPagar conta = new ContaPagar();
+			conta.setDescricao("SAÍDA DO CAIXA " + lancamento.getCaixa().getId() + " - " + lancamento.getDescricao());
+			conta.setDataVencimento(lancamento.getDataHora());
+			conta.setDataPagamento(lancamento.getDataHora());
+			conta.setTipoOperacao(lancamento.getTipoOperacao());
+			conta.setDesconto(new Double(0));
+			conta.setJuros(new Double(0));
+			conta.setValor(lancamento.getValorSaida());
+			conta.setTotalPago(conta.getValor());
+			conta.setPago(true);
+			contaPagarDAO.salvar(conta);
+		}
 	}
 	
 	@Transactional

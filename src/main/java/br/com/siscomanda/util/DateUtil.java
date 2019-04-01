@@ -34,4 +34,12 @@ public class DateUtil {
 		calendar.set(Calendar.SECOND, segundo);
 		return calendar.getTime();
 	}
+	
+	public static boolean isDepois(Date dataInicial, Date dataFinal) {
+		return dataInicial.after(dataFinal);
+	}
+	
+	public static boolean isAntes(Date dataInicial, Date dataFinal) {
+		return dataInicial.before(dataFinal);
+	}
 }

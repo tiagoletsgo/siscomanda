@@ -6,18 +6,20 @@ import br.com.siscomanda.enumeration.ETipoOperacao;
 import br.com.siscomanda.interfaces.CalculaLancamento;
 import br.com.siscomanda.model.CaixaLancamento;
 
-public class LancamentoSaidaService implements Serializable, CalculaLancamento {
-	
-	private static final long serialVersionUID = -401282639514056568L;
+public class LancamentoEntrada implements CalculaLancamento, Serializable {
+
+	private static final long serialVersionUID = 8625336804329754661L;
 
 	@Override
 	public CaixaLancamento executaCalculo(CaixaLancamento lancamento, ETipoOperacao tipoOperacao, Double valor) {
 		
-		if(tipoOperacao.equals(ETipoOperacao.SAIDA)) {
-			lancamento.setValorSaida(valor);
-			lancamento.setValorEntrada(new Double(0));
+		if(tipoOperacao.equals(ETipoOperacao.ENTRADA)) {
+			lancamento.setDescricao("ENTRADA " + lancamento.getDescricao());
+			lancamento.setValorEntrada(valor);
+			lancamento.setValorSaida(new Double(0));
 		}
 		
 		return lancamento;
 	}
+
 }

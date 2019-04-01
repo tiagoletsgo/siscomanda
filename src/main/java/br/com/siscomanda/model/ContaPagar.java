@@ -5,12 +5,15 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
 import br.com.siscomanda.base.model.BaseEntity;
+import br.com.siscomanda.enumeration.ETipoOperacao;
 
 @Entity
 @Table(name = "conta_pagar")
@@ -43,6 +46,10 @@ public class ContaPagar extends BaseEntity implements Serializable {
 	
 	@Column(name = "total_pago", nullable = false)
 	private Double totalPago;
+	
+	@Enumerated(EnumType.STRING)
+	@Column(name = "tipo_operacao", nullable = false)
+	private ETipoOperacao tipoOperacao;
 
 	public String getDescricao() {
 		return descricao;
@@ -101,6 +108,7 @@ public class ContaPagar extends BaseEntity implements Serializable {
 	}
 
 	public Double getTotalPago() {
+		totalPago = (getValor() + getJuros()) - getDesconto();
 		return totalPago;
 	}
 
@@ -108,9 +116,19 @@ public class ContaPagar extends BaseEntity implements Serializable {
 		this.totalPago = totalPago;
 	}
 	
+	public ETipoOperacao getTipoOperacao() {
+		return tipoOperacao;
+	}
+
+	public void setTipoOperacao(ETipoOperacao tipoOperacao) {
+		this.tipoOperacao = tipoOperacao;
+	}
+
 	@Transient
 	public boolean isPaga() {
-		return this.pago;
+		return getPago() == true && getValor().equals(getTotalPago())
+				&& !isNovo() || getPago() == true && getTotalPago() <= getValor() && !isNovo()
+				|| getPago() == true && getTotalPago() >= getValor() && !isNovo();
 	}
 	
 	@Transient

@@ -8,7 +8,7 @@ import java.util.List;
 
 import br.com.siscomanda.interfaces.GerarVencimento;
 
-public class GeraDataDiarioService implements GerarVencimento {
+public class GeraDataMensal implements GerarVencimento {
 
 	@Override
 	public List<Date> frequencia(Date data, int quantidadeRepeticao) {
@@ -20,12 +20,12 @@ public class GeraDataDiarioService implements GerarVencimento {
 		return vencimento;
 	}
 	
-	private Date executarVencimento(Date data, int dia) {
+	private Date executarVencimento(Date data, int mes) {
 		Calendar calendar = new GregorianCalendar();
-		calendar.setTime(data);	
+		calendar.setTime(data);
 		
-		dia += calendar.get(Calendar.DAY_OF_MONTH);
-		calendar.set(Calendar.DAY_OF_MONTH, dia);
+		mes += calendar.get(Calendar.MONTH);
+		calendar.set(Calendar.MONTH, mes);
 		return calendar.getTime();
 	}
 }

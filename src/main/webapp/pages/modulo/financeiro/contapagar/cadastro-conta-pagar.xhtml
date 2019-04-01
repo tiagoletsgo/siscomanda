@@ -15,20 +15,21 @@
 				<div class="col-md-12 col-sm-12 col-xs-12">
 					<label for="crudform:descricao">Descrição * :</label>
 					<small>Exemplo: Conta de água 04/2019; NF Compra 201901.</small>
-					<p:inputText type="text" id="descricao" onkeyup="maiuscula(this)" value="#{crudBean.entity.descricao}" styleClass="form-control" />
+					<p:inputText type="text" id="descricao" onkeyup="maiuscula(this)" value="#{crudBean.entity.descricao}" disabled="#{crudBean.entity.paga}" styleClass="form-control" />
 				</div>
 			</div>
 			
 			<div class="row">
 				<div class="col-md-6 col-sm-6 col-xs-12">
 					<label for="crudform:vencimento">Vencimento * :</label>
-					<p:calendar locale="pt" id="vencimento" inputStyleClass="form-control" value="#{crudBean.entity.dataVencimento}" mask="true" pattern="dd/MM/yyyy" />
+					<p:calendar locale="pt" id="vencimento" inputStyleClass="form-control" value="#{crudBean.entity.dataVencimento}" disabled="#{crudBean.entity.paga}" mask="true" pattern="dd/MM/yyyy" />
 				</div>
 				
 				<div class="col-md-6 col-sm-6 col-xs-12">
 					<label for="crudform:valor">Valor * :</label>
-					<p:inputText type="text" id="valor" value="#{crudBean.entity.valor}" styleClass="form-control currency font-family-default">
+					<p:inputText type="text" id="valor" value="#{crudBean.entity.valor}" disabled="#{crudBean.entity.paga}" styleClass="form-control currency font-family-default">
 						<f:convertNumber maxFractionDigits="2" minFractionDigits="2" />
+						<p:ajax event="keyup" delay="200" update="totalPago" global="false" />
 					</p:inputText>
 				</div>
 			</div>
@@ -36,7 +37,7 @@
 			<div class="row">
 				<div class="col-md-3 col-sm-3 col-xs-12">
 					<label>Repetir Está Conta ?</label>
-					<h:selectOneMenu styleClass="form-control" value="#{crudBean.repetirConta}">
+					<h:selectOneMenu styleClass="form-control" disabled="#{crudBean.entity.paga}" value="#{crudBean.repetirConta}">
 						<f:selectItem itemValue="false" itemLabel="NÃO" />
 						<f:selectItem itemValue="true" itemLabel="SIM" />
 						<p:ajax update="numeroRepeticoes frequencia grid_button_gerar tabelaVencimento" process="@this" listener="#{crudBean.limparVencimentos}" global="false" />
@@ -62,34 +63,36 @@
 				</h:panelGroup>
 			</div>
 			
-			<div class="row">
+			<h:panelGroup layout="block"  id="grid_check_pagar_conta" rendered="#{crudBean.entity.notPago}" class="row">
 				<div class="col-md-12 col-sm-12 col-xs-12">
 					<hr />
-					<h:selectBooleanCheckbox id="contaPaga" value="#{crudBean.entity.pago}">
-						<p:ajax update="grid_conta scripts" global="false" />
+					<h:selectBooleanCheckbox id="contaPaga" value="#{crudBean.contaPaga}">
+						<p:ajax update="grid_conta scripts" process="@this" global="false" />
 					</h:selectBooleanCheckbox>
 					<label for="crudform:contaPaga">Conta paga ? :</label>
 					<hr />
 				</div>	
-			</div>
+			</h:panelGroup>
 			
 			<h:panelGroup layout="block" class="row" id="grid_conta">
 				<div class="col-md-3 col-sm-3 col-xs-12">
 					<label for="crudform:pagamento">Paga em : </label>
-					<p:calendar disabled="#{crudBean.entity.notPago}" locale="pt" id="pagamento" inputStyleClass="form-control" value="#{crudBean.entity.dataPagamento}" mask="true" pattern="dd/MM/yyyy" />
+					<p:calendar disabled="#{not crudBean.contaPaga}" locale="pt" id="pagamento" inputStyleClass="form-control" value="#{crudBean.entity.dataPagamento}" mask="true" pattern="dd/MM/yyyy" />
 				</div>
 				
 				<div class="col-md-3 col-sm-3 col-xs-12">
 					<label for="crudform:desconto">Desconto (-) :</label>
-					<p:inputText disabled="#{crudBean.entity.notPago}" type="text" id="desconto" value="#{crudBean.entity.desconto}" styleClass="form-control currency font-family-default">
+					<p:inputText disabled="#{not crudBean.contaPaga}" type="text" id="desconto" value="#{crudBean.entity.desconto}" styleClass="form-control currency font-family-default">
 						<f:convertNumber maxFractionDigits="2" minFractionDigits="2" />
+						<p:ajax event="keyup" delay="200" update="totalPago" global="false" />
 					</p:inputText>
 				</div>	
 				
 				<div class="col-md-3 col-sm-3 col-xs-12">
 					<label for="crudform:juros">Juros / Multa (+) :</label>
-					<p:inputText disabled="#{crudBean.entity.notPago}" type="text" id="juros" value="#{crudBean.entity.juros}" styleClass="form-control currency font-family-default">
+					<p:inputText disabled="#{not crudBean.contaPaga}" type="text" id="juros" value="#{crudBean.entity.juros}" styleClass="form-control currency font-family-default">
 						<f:convertNumber maxFractionDigits="2" minFractionDigits="2" />
+						<p:ajax event="keyup" delay="200" update="totalPago" global="false" />
 					</p:inputText>
 				</div>
 				
@@ -132,10 +135,11 @@
 		<div class="ln_solid"></div>
 		<div class="form-group">
 			<div class="col-md-12 col-sm-12 col-xs-12">
-				<p:commandButton styleClass="btn btn-success" action="#{crudBean.btnSalvar()}" value="Salvar" update="@form scripts" />
+				<p:commandButton disabled="#{crudBean.entity.paga}" styleClass="btn btn-success" action="#{crudBean.btnSalvar()}" value="Salvar" update="@form scripts" />
 				<p:commandButton styleClass="btn btn-danger" value="Cancelar" action="#{crudBean.btnCancelar}" update=":crudform" />
-				<h:commandLink type="button" value="Consultar" styleClass="btn btn-primary pull-right" action="#{crudBean.btnConsultar}" 
-					rendered="#{not crudBean.estadoViewBean.search}" />
+				<h:commandLink type="button" value="Consultar" styleClass="btn btn-primary pull-right" rendered="#{not crudBean.estadoViewBean.search}">
+					<p:ajax listener="#{crudBean.btnConsultar}" update="@form" event="click" />
+				</h:commandLink>
 			</div>	
 			<div class="clearfix"></div>
 		</div>
