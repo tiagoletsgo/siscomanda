@@ -5,7 +5,10 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:p="http://primefaces.org/ui">
 	
-	<ui:param name="crudBean" value="#{clienteBean}" />
+	<ui:param name="md" value="12" />
+	<ui:param name="sm" value="12" />
+	<ui:param name="xs" value="12" />
+	<ui:param name="crudBean" value="#{contaPagarBean}" />
 	<ui:param name="hideTableList" value="#{crudBean.estadoViewBean.search}" />
 	
 	<ui:define name="title_main"> 
@@ -14,25 +17,49 @@
 		<h:panelGroup layout="block"  rendered="#{not crudBean.estadoViewBean.insert and not crudBean.estadoViewBean.update}">Consultar</h:panelGroup>
 	</ui:define>
 	<ui:define name="title_form"> 
-		<h:panelGroup layout="block">Cliente</h:panelGroup>
+		<h:panelGroup layout="block">Contas a pagar</h:panelGroup>
 	</ui:define>
 	<ui:define name="title_form_table"> 
-		<h:panelGroup layout="block">Tabela de dados cliente</h:panelGroup>
+		<h:panelGroup layout="block">Tabela de dados contas a pagar</h:panelGroup>
 	</ui:define>
 		
 	<ui:define name="content">
 		<h:panelGroup layout="block" rendered="#{crudBean.estadoViewBean.insert or crudBean.estadoViewBean.update}">
-			<ui:include src="/pages/modulo/cliente/cadastro-cliente.xhtml" />
+			<ui:include src="/pages/modulo/financeiro/contapagar/cadastro-conta-pagar.xhtml" />
 		</h:panelGroup>
 		
 		<h:panelGroup layout="block" rendered="#{not crudBean.estadoViewBean.insert and not crudBean.estadoViewBean.update}">
-			<ui:include src="/pages/modulo/cliente/consulta-cliente.xhtml" />
+			<ui:include src="/pages/modulo/financeiro/contapagar/consulta-conta-pagar.xhtml" />
 		</h:panelGroup>
 	</ui:define>
 	
 	<ui:define name="table">
 		<h:panelGroup layout="block" rendered="#{crudBean.estadoViewBean.search}">
-			<ui:include src="/pages/modulo/cliente/tabela-cliente.xhtml" />
+			<ui:include src="/pages/modulo/financeiro/contapagar/tabela-conta-pagar.xhtml" />
 		</h:panelGroup>
+	</ui:define>
+	
+	<ui:define name="dialog">
+		<p:dialog widgetVar="dlgConfirmarExclusao" modal="true" responsive="true" showEffect="fade" hideEffect="fade"
+			resizable="false" >
+			<f:facet name="header">
+				Confirmar exclusão
+			</f:facet>
+			
+			<div class="col-md-12 col-sm-12 col-xs-12">
+				<span>
+					Tem certeza que deseja remover esse(s) registro(s)?
+				</span>				
+			</div>
+			
+			<f:facet name="footer">
+				<h:form>
+					<p:commandButton onclick="PF('dlgConfirmarExclusao').hide();" action="#{crudBean.btnRemover}" styleClass="btn btn-danger" value="Sim"
+						update=":crudform:tabelaConta" process="@form" />
+						
+					<p:commandButton onclick="PF('dlgConfirmarExclusao').hide(); return false;" styleClass="btn btn-success" value="Não" />
+				</h:form>
+			</f:facet>
+		</p:dialog>
 	</ui:define>
 </ui:composition>

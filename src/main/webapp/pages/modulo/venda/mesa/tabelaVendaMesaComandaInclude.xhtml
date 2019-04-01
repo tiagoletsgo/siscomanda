@@ -7,11 +7,11 @@
 		<p:dataTable id="tabelaVenda" styleClass="table table-striped jambo_table" value="#{crudBean.elements}" var="venda"
 			emptyMessage="Sem dados" reflow="true" paginator="true" rows="10" paginatorPosition="top">
 			
-			<p:column styleClass="#{venda.pago ? 'text-success' : 'text-danger'}" width="10%">
+			<p:column styleClass="#{venda.pago ? 'text-success' : 'text-danger'}"  width="10%">
 				<f:facet name="header">
-					<h:outputLabel value="Tipo Venda" />
+					<h:outputLabel value="Tipo Venda 1" />
 				</f:facet>
-				<h:outputText value="#{venda.tipoVenda.descricao.toUpperCase()}" styleClass="text-success" />
+				<h:outputText value="#{venda.tipoVenda.descricao.toUpperCase()}" />
 			</p:column>
 			
 			<p:column styleClass="#{venda.pago ? 'text-success' : 'text-danger'}" width="10%">

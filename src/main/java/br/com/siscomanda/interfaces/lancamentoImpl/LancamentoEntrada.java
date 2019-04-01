@@ -1,4 +1,4 @@
-package br.com.siscomanda.service;
+package br.com.siscomanda.interfaces.lancamentoImpl;
 
 import java.io.Serializable;
 
@@ -6,7 +6,7 @@ import br.com.siscomanda.enumeration.ETipoOperacao;
 import br.com.siscomanda.interfaces.CalculaLancamento;
 import br.com.siscomanda.model.CaixaLancamento;
 
-public class LancamentoEntradaService implements CalculaLancamento, Serializable {
+public class LancamentoEntrada implements CalculaLancamento, Serializable {
 
 	private static final long serialVersionUID = 8625336804329754661L;
 
@@ -14,6 +14,7 @@ public class LancamentoEntradaService implements CalculaLancamento, Serializable
 	public CaixaLancamento executaCalculo(CaixaLancamento lancamento, ETipoOperacao tipoOperacao, Double valor) {
 		
 		if(tipoOperacao.equals(ETipoOperacao.ENTRADA)) {
+			lancamento.setDescricao("ENTRADA " + lancamento.getDescricao());
 			lancamento.setValorEntrada(valor);
 			lancamento.setValorSaida(new Double(0));
 		}

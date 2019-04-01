@@ -1,48 +1,107 @@
 package br.com.siscomanda.service;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 import javax.faces.application.FacesMessage;
 import javax.inject.Inject;
 
 import br.com.siscomanda.config.jpa.Transactional;
+import br.com.siscomanda.enumeration.EFreaquencia;
+import br.com.siscomanda.enumeration.ETipoOperacao;
 import br.com.siscomanda.exception.SiscomandaException;
-import br.com.siscomanda.model.Adicional;
-import br.com.siscomanda.repository.dao.AdicionalDAO;
+import br.com.siscomanda.interfaces.geradorVencimentoImpl.GeraDataAnual;
+import br.com.siscomanda.interfaces.geradorVencimentoImpl.GeraDataDiario;
+import br.com.siscomanda.interfaces.geradorVencimentoImpl.GeraDataMensal;
+import br.com.siscomanda.interfaces.geradorVencimentoImpl.GeraDataQuinzenal;
+import br.com.siscomanda.interfaces.geradorVencimentoImpl.GeraDataSemanal;
+import br.com.siscomanda.model.ContaPagar;
+import br.com.siscomanda.repository.dao.ContaPagarDAO;
 import br.com.siscomanda.util.JSFUtil;
 
 public class ContaPagarService implements Serializable {
 
-	private static final long serialVersionUID = 6750595631115213547L;
-	
+	private static final long serialVersionUID = -7605329514615722286L;
+
 	@Inject
-	private AdicionalDAO dao;
+	private ContaPagarDAO dao;
 	
-	@Transactional
-	public Adicional salvar(Adicional adicional) throws SiscomandaException {
-		validacao(adicional);
-		if(adicional.isNovo()) {			
-			adicional = dao.salvar(adicional);
-			JSFUtil.addMessage(FacesMessage.SEVERITY_INFO, "Registro salvo com sucesso.");
-			
-			return adicional;
-		}
-		
-		JSFUtil.addMessage(FacesMessage.SEVERITY_INFO, "Registro alterado com sucesso.");
-		return dao.salvar(adicional);
+	public List<ContaPagar> buscaPorFiltro(Map<String, Object> filter) throws SiscomandaException {
+		return dao.porFiltro(filter);
 	}
 	
 	@Transactional
-	public void remover(List<Adicional> adicionais) throws SiscomandaException {
-		if(adicionais == null || adicionais.isEmpty()) {
+	public void salvar(ContaPagar conta, List<Date> vencimentos, boolean pagarConta) throws SiscomandaException {
+		
+		if(conta.getDescricao().isEmpty()) {
+			throw new SiscomandaException("Informe uma descrição.");
+		}
+		
+		if(Objects.isNull(conta.getDataVencimento())) {
+			throw new SiscomandaException("Informe um vencimento.");
+		}
+		
+		if(Objects.isNull(conta.getValor())) {
+			throw new SiscomandaException("Informe um valor.");
+		}
+		
+		if(conta.getTotalPago() < BigDecimal.ZERO.doubleValue()) {
+			throw new SiscomandaException("Não é permitido valores menores que zero.");
+		}
+		
+		if(pagarConta && Objects.isNull(conta.getDataPagamento())) {
+			throw new SiscomandaException("Informe a data de pagamento.");
+		}
+		
+		if(conta.isPaga()) {
+			throw new SiscomandaException("Conta paga não pode ser excluída ou alterada.");
+		}
+		
+		conta.setPago(pagarConta);
+		if(conta.isNovo()) {
+			if(Objects.nonNull(vencimentos) && !vencimentos.isEmpty()) {
+				int parcela = 1;
+				String descricao = conta.getDescricao();
+				vencimentos.add(conta.getDataVencimento());
+				for(Date vencimento : vencimentos) {
+					conta.setDescricao(descricao + "(" + parcela + ")");
+					conta.setDataVencimento(vencimento);
+					parcela++;
+					
+					dao.salvar(conta);
+					conta.setDescricao(null);
+				}
+				JSFUtil.addMessage(FacesMessage.SEVERITY_INFO, "Conta salva com sucesso.");
+				return;
+			}
+			dao.salvar(conta);
+			JSFUtil.addMessage(FacesMessage.SEVERITY_INFO, "Conta salva com sucesso.");
+			return;
+		}
+		
+		dao.salvar(conta);
+		JSFUtil.addMessage(FacesMessage.SEVERITY_INFO, "Conta alterada com sucesso.");
+	}
+	
+	@Transactional
+	public void remover(List<ContaPagar> contas) throws SiscomandaException {
+		if(contas == null || contas.isEmpty()) {
 			throw new SiscomandaException("Selecione pelo menos 1 registro para ser excluído.!");
 		}
 		
 		try {
-			for(Adicional adicional : adicionais) {
-				dao.removeAdicionalCategoriaPorCodigo(adicional.getId());
-				dao.removeAdicionalPorCodigo(adicional.getId());
+			for(ContaPagar conta : contas) {
+				if(conta.getTipoOperacao().equals(ETipoOperacao.DESPESA)) {
+					throw new SiscomandaException("Não é possível excluir conta a pagar a partir de uma saída lançada em caixa. Alterações devem ser realizadas diretamente no módulo caixa. ");
+				}
+				if(conta.isPaga()) {
+					throw new SiscomandaException("Conta paga não pode ser removida.");
+				}
+				dao.remover(ContaPagar.class, conta.getId());
 			}
 		}
 		catch(SiscomandaException e) {
@@ -50,35 +109,40 @@ public class ContaPagarService implements Serializable {
 		}
 	}
 	
-	public List<Adicional> pesquisar(Adicional adicional) throws SiscomandaException {
-		List<Adicional> adicionais = null;
-		adicionais = dao.buscaPor(adicional.getDescricao());	
-		return adicionais;
+	public List<ContaPagar> todos() {
+		return dao.todos(ContaPagar.class);
 	}
 	
-	public List<Adicional> todos() {
-		return dao.buscaPor(null);
+	public List<Date> gerarVencimento(EFreaquencia frequencia, Date data, Integer quantidadeRepeticao) throws SiscomandaException {
+		
+		if(Objects.isNull(frequencia)) {
+			throw new SiscomandaException("Informe a frequência.");
+		}
+
+		if(Objects.isNull(data)) {
+			throw new SiscomandaException("Informe data de vencimento.");
+		}
+		
+		if(Objects.isNull(quantidadeRepeticao)) {
+			throw new SiscomandaException("Informe a quantidade de repetições.");
+		}
+		
+		switch (frequencia) {
+			case MENSAL:
+				return new GeraDataMensal().frequencia(data, quantidadeRepeticao);
+			case SEMANAL:
+				return new GeraDataSemanal().frequencia(data, quantidadeRepeticao);
+			case DIARIO:
+				return new GeraDataDiario().frequencia(data, quantidadeRepeticao);
+			case ANUAL:
+				return new GeraDataAnual().frequencia(data, quantidadeRepeticao);
+			case QUINZENAL:
+				return new GeraDataQuinzenal().frequencia(data, quantidadeRepeticao);
+			default:
+				break;
+		}
+		
+		return null;
 	}
 	
-	private void validacao(Adicional adicional) throws SiscomandaException {
-		if(adicional.getDescricao() == null || adicional.getDescricao().isEmpty()) {
-			throw new SiscomandaException("Necessário informar uma descrição.");
-		}
-		
-		if(adicional.getCategorias() == null || adicional.getCategorias().isEmpty()) {
-			throw new SiscomandaException("Necessário informar ao menos uma categoria.");
-		}
-		
-		if(adicional.getPrecoCusto() <= new Double("0") || adicional.getPrecoVenda() <= new Double("0")) {
-			throw new SiscomandaException("Não é permitido um valor menor ou igual a zero para preço de venda / preço de custo.");
-		}
-		
-		if(adicional.getPrecoCusto() > adicional.getPrecoVenda()) {
-			throw new SiscomandaException("Preço de custo não pode ser maior que preço de venda.");
-		}
-		
-		if(adicional.getFatorMedida() == null) {
-			throw new SiscomandaException("Necessário informar um fator de medida.");
-		}
-	}
 }

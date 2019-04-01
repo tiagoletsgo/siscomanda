@@ -357,3 +357,12 @@
 .ui-commandlink.ui-state-disabled:hover {
     cursor: no-drop !important;
 }
+
+.font-family-default {
+	font-family: "montserrat" !important;
+}
+
+.ui-button.ui-position-btn {
+	position: relative !important;
+    top: 24px !important;
+}
