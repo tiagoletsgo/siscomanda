@@ -22,11 +22,11 @@
 		
 	<ui:define name="content">
 		<h:panelGroup layout="block" rendered="#{crudBean.estadoViewBean.insert or crudBean.estadoViewBean.update}">
-			<ui:include src="/pages/modulo/cliente/cadastro-cliente.xhtml" />
+			<ui:include src="/pages/modulo/financeiro/contareceber/cadastro-conta-receber.xhtml" />
 		</h:panelGroup>
 		
 		<h:panelGroup layout="block" rendered="#{not crudBean.estadoViewBean.insert and not crudBean.estadoViewBean.update}">
-			<ui:include src="/pages/modulo/cliente/consulta-cliente.xhtml" />
+			<!-- <ui:include src="/pages/modulo/financeiro/contareceber/consulta-cliente.xhtml" /> -->
 		</h:panelGroup>
 	</ui:define>
 	
