@@ -38,6 +38,13 @@
             <scope>compile</scope>
         </dependency>
         
+        <dependency>
+		    <groupId>com.github.jsimone</groupId>
+		    <artifactId>webapp-runner</artifactId>
+		    <version>8.5.5.0</version>
+		</dependency>
+        
+        
         <!-- PrimeFaces -->
         <dependency>
 			<groupId>org.primefaces</groupId>
