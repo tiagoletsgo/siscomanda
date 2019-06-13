@@ -51,8 +51,6 @@ public class ProdutoBean extends BaseBean<Produto> implements Serializable {
 	
 	private List<Tamanho> tamanhos;
 	
-	private Tipo tipoSelecionado;
-	
 	@Override 
 	public void init() {
 		this.tipos = tipoService.todos();
@@ -79,7 +77,7 @@ public class ProdutoBean extends BaseBean<Produto> implements Serializable {
 	public void porTamanho() {
 		if(!getEntity().isPorTamanho()) {
 			getTipos().clear();
-			setTipoSelecionado(null);
+			getEntity().setTipo(null);
 			getEntity().getPrecos().clear();
 		}
 		else {
@@ -89,10 +87,11 @@ public class ProdutoBean extends BaseBean<Produto> implements Serializable {
 	
 	public void carregaPreco() {
 		getEntity().getPrecos().clear();
-		this.tamanhos = tamanhoService.tamanhoPorTipo(getTipoSelecionado());
+		this.tamanhos = tamanhoService.tamanhoPorTipo(getEntity().getTipo());
 		for(Tamanho tamanho : tamanhos) {
 			Preco preco = new Preco();
 			preco.setTamanho(tamanho);
+			preco.setProduto(getEntity());
 			getEntity().getPrecos().add(preco);
 		}
 	}
@@ -180,13 +179,5 @@ public class ProdutoBean extends BaseBean<Produto> implements Serializable {
 	
 	public List<Tamanho> getTamanhos() {
 		return tamanhos;
-	}
-	
-	public void setTipoSelecionado(Tipo tipoSelecionado) {
-		this.tipoSelecionado = tipoSelecionado;
-	}
-	
-	public Tipo getTipoSelecionado() {
-		return tipoSelecionado;
 	}
 }

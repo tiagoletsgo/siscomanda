@@ -56,7 +56,7 @@
 				
 				<div class="col-md-4 col-sm-4 col-xs-12">
 					<label for="crudform:tipo">Tipo :</label>
-					<h:selectOneMenu id="tipo" styleClass="form-control" value="#{crudBean.tipoSelecionado}" disabled="#{!crudBean.entity.porTamanho}" converter="entityConverter">
+					<h:selectOneMenu id="tipo" styleClass="form-control" value="#{crudBean.entity.tipo}" disabled="#{!crudBean.entity.porTamanho}" converter="entityConverter">
 						<f:selectItem itemLabel="Selecione" noSelectionOption="true" />
 						<f:selectItems value="#{crudBean.tipos}" var="tipo" itemLabel="#{tipo.descricao}" itemValue="#{tipo}" />
 						<p:ajax event="change" update="tabelaMaisDetalhes scripts" listener="#{crudBean.carregaPreco}" process="@this" global="false" />
@@ -120,7 +120,7 @@
 						
 						<p:column style="border-radius: 0px !important; width: 40px;">
 							<p:selectBooleanCheckbox value="#{preco.disponibilizaParaVenda}">
-								<p:ajax event="change" update="tabelaPreco scripts" process="@this" global="false" />
+								<p:ajax event="change" update="precoCusto precoVenda scripts" process="@this" global="false" />
 							</p:selectBooleanCheckbox>
 						</p:column>
 						<p:column styleClass="ui-datatable-left" style="border-radius: 0px !important;">
@@ -129,13 +129,13 @@
 						</p:column>
 						<p:column styleClass="ui-datatable-right" style="border-radius: 0px !important;">
 							<f:facet name="header">Preço Custo</f:facet>
-							<h:inputText styleClass="form-control currency" value="#{preco.precoCusto}" disabled="#{!preco.disponibilizaParaVenda}">
+							<h:inputText id="precoCusto" styleClass="form-control currency" value="#{preco.precoCusto}" disabled="#{!preco.disponibilizaParaVenda}">
 								<f:convertNumber locale="pt_BR" minFractionDigits="2" maxFractionDigits="2" />
 							</h:inputText>
 						</p:column>
 						<p:column styleClass="ui-datatable-right" style="border-radius: 0px !important;">
 							<f:facet name="header">Preço Venda</f:facet>
-							<h:inputText styleClass="form-control currency" value="#{preco.precoVenda}" disabled="#{!preco.disponibilizaParaVenda}">
+							<h:inputText id="precoVenda" styleClass="form-control currency" value="#{preco.precoVenda}" disabled="#{!preco.disponibilizaParaVenda}">
 								<f:convertNumber locale="pt_BR" minFractionDigits="2" maxFractionDigits="2" />
 							</h:inputText>
 						</p:column>

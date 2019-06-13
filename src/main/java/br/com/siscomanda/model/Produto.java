@@ -67,7 +67,7 @@ public class Produto extends BaseEntity implements Serializable {
 	private List<Preco> precos = new ArrayList<Preco>();
 	
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "tipo_id", nullable = false)
+	@JoinColumn(name = "tipo_id")
 	private Tipo tipo;
 	
 	@Transient
