@@ -80,10 +80,6 @@ public class ProdutoService implements Serializable {
 			throw new SiscomandaException("É necessário informar a subcategoria.!");
 		}
 			
-		if(produto.getPrecoVenda().equals(new Double("0"))) {
-			throw new SiscomandaException("Informe o preço de venda.!");
-		}
-		
 		if(produto.isNovo()) {
 			if(dao.isExists(produto)) {
 				throw new SiscomandaException("Esse produto já se encontra cadastro no sistema.!");
