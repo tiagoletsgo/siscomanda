@@ -30,7 +30,7 @@
 					<h:outputLabel value="Valor Previsto" />
 				</f:facet>
 				<h:outputText value="#{conta.valor}">
-					<f:convertNumber type="currency" minFractionDigits="2" maxFractionDigits="2" />
+					<f:convertNumber type="currency" minFractionDigits="2" maxFractionDigits="2" locale="pt_BR" />
 				</h:outputText>
 			</p:column>
 			
@@ -39,7 +39,7 @@
 					<h:outputLabel value="Valor Pago" />
 				</f:facet>
 				<h:outputText value="#{conta.pago ? conta.totalPago : 0.0}">
-					<f:convertNumber type="currency" minFractionDigits="2" maxFractionDigits="2" />
+					<f:convertNumber type="currency" minFractionDigits="2" maxFractionDigits="2" locale="pt_BR" />
 				</h:outputText>
 			</p:column>
 			

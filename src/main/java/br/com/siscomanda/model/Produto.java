@@ -2,13 +2,18 @@ package br.com.siscomanda.model;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import br.com.siscomanda.base.model.BaseEntity;
 
@@ -55,12 +60,19 @@ public class Produto extends BaseEntity implements Serializable {
 	@Column(name = "estoque_maximo")
 	private Double estoqueMaximo = BigDecimal.ZERO.doubleValue();
 	
-	@Column(name = "permite_meio_a_meio", nullable = false)
-	private boolean permiteMeioAmeio;
-	
 	@Column(name = "permite_adicional", nullable = false)
 	private boolean permiteAdicional;
 	
+	@OneToMany(mappedBy = "produto", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<Preco> precos = new ArrayList<Preco>();
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "tipo_id", nullable = false)
+	private Tipo tipo;
+	
+	@Transient
+	private boolean porTamanho;
+
 	public Produto() {	}
 	
 	public Produto(Long id) {
@@ -160,19 +172,35 @@ public class Produto extends BaseEntity implements Serializable {
 		this.estoqueMaximo = estoqueMaximo;
 	}
 
-	public boolean isPermiteMeioAmeio() {
-		return permiteMeioAmeio;
-	}
-
-	public void setPermiteMeioAmeio(boolean permiteMeioAmeio) {
-		this.permiteMeioAmeio = permiteMeioAmeio;
-	}
-
 	public boolean isPermiteAdicional() {
 		return permiteAdicional;
 	}
 
 	public void setPermiteAdicional(boolean permiteAdicional) {
 		this.permiteAdicional = permiteAdicional;
+	}
+
+	public boolean isPorTamanho() {
+		return porTamanho;
+	}
+
+	public void setPorTamanho(boolean porTamanho) {
+		this.porTamanho = porTamanho;
+	}
+
+	public List<Preco> getPrecos() {
+		return precos;
+	}
+
+	public void setPrecos(List<Preco> precos) {
+		this.precos = precos;
+	}
+
+	public Tipo getTipo() {
+		return tipo;
+	}
+
+	public void setTipo(Tipo tipo) {
+		this.tipo = tipo;
 	}
 }

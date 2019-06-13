@@ -3,100 +3,146 @@
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:p="http://primefaces.org/ui">
-	
-		<div class="row">
-			<p:focus for="descricao" />
-			<div class="col-md-6 col-sm-6 col-xs-12">
-				<label for="crudform:descricao">Descrição * :</label>
-				<p:inputText type="text" id="descricao" onkeyup="maiuscula(this)" value="#{crudBean.entity.descricao}" styleClass="form-control" />
+		
+		<div class="col-md-7 col-sm-7 col-xs-12 pull-left">
+			<div class="row">
+				<p:focus for="descricao" />
+				<div class="col-md-7 col-sm-7 col-xs-12">
+					<label for="crudform:descricao">Descrição * :</label>
+					<p:inputText type="text" id="descricao" onkeyup="maiuscula(this)" value="#{crudBean.entity.descricao}" styleClass="form-control" />
+				</div>
+				
+				<div class="col-md-5 col-sm-5 col-xs-12">
+					<label for="crudform:codigoean">Código EAN/Código Interno * :</label>
+					<p:inputText type="text" id="codigoean" onkeyup="maiuscula(this)" value="#{crudBean.entity.codigoEan}" styleClass="form-control" />
+				</div>
 			</div>
 			
-			<div class="col-md-4 col-sm-4 col-xs-12">
-				<label for="crudform:codigoean">Código EAN/Código Interno * :</label>
-				<p:inputText type="text" id="codigoean" onkeyup="maiuscula(this)" value="#{crudBean.entity.codigoEan}" styleClass="form-control" />
+			<div class="row">
+				<div class="col-md-9 col-sm-9 col-xs-12">
+					<label for="crudform:fornecedor">Fornecedor * :</label>
+					<h:selectOneMenu id="fornecedor" styleClass="form-control" value="#{crudBean.entity.fornecedor}" converter="entityConverter">
+						<f:selectItem itemLabel="Selecione" noSelectionOption="true" />
+						<f:selectItems value="#{fornecedorFactoryBean.fornecedores}" var="fornecedor" itemLabel="#{fornecedor.razaoSocial}" itemValue="#{fornecedor}" />
+					</h:selectOneMenu>
+				</div>
+
+				<div class="col-md-3 col-sm-3 col-xs-12">
+					<label for="crudform:embalagem">Embalagem * :</label>
+					<h:selectOneMenu id="embalagem" styleClass="form-control" value="#{crudBean.entity.embalagem}" converter="entityConverter">
+						<f:selectItem itemLabel="Selecione" noSelectionOption="true" />
+						<f:selectItems value="#{embalagemFactoryBean.embalagens}" var="embalagem" itemLabel="#{embalagem.sigla} / #{embalagem.quantidade}" itemValue="#{embalagem}" />
+					</h:selectOneMenu>
+				</div>
 			</div>
 			
-			<div class="col-md-2 col-sm-2 col-xs-12">
-				<label for="crudform:embalagem">Embalagem * :</label>
-				<h:selectOneMenu id="embalagem" styleClass="form-control" value="#{crudBean.entity.embalagem}" converter="entityConverter">
-					<f:selectItem itemLabel="Selecione" noSelectionOption="true" />
-					<f:selectItems value="#{embalagemFactoryBean.embalagens}" var="embalagem" itemLabel="#{embalagem.sigla} / #{embalagem.quantidade}" itemValue="#{embalagem}" />
-				</h:selectOneMenu>
+			<div class="row">
+				<div class="col-md-4 col-sm-4 col-xs-12">
+					<label for="crudform:categoria">Categoria * :</label>
+					<h:selectOneMenu id="categoria" styleClass="form-control" value="#{crudBean.entity.categoria}" converter="entityConverter">
+						<f:selectItem itemLabel="Selecione" noSelectionOption="true" />
+						<f:selectItems value="#{categoriaFactoryBean.categorias}" var="categoria" itemLabel="#{categoria.descricao}" itemValue="#{categoria}" />
+						<p:ajax event="change" update="subcategoria" listener="#{crudBean.carregaSubCategorias}" process="@this" global="false" />
+					</h:selectOneMenu>
+				</div>
+				
+				<div class="col-md-4 col-sm-4 col-xs-12">
+					<label for="crudform:subcategoria">Sub-Categoria * :</label>
+					<h:selectOneMenu id="subcategoria" styleClass="form-control" value="#{crudBean.entity.subCategoria}" disabled="#{crudBean.subCategorias == null}" converter="entityConverter">
+						<f:selectItem itemLabel="Selecione" noSelectionOption="true" />
+						<f:selectItems value="#{crudBean.subCategorias}" var="subcategoria" itemLabel="#{subcategoria.descricao}" itemValue="#{subcategoria}" />
+					</h:selectOneMenu>
+				</div>
+				
+				<div class="col-md-4 col-sm-4 col-xs-12">
+					<label for="crudform:tipo">Tipo :</label>
+					<h:selectOneMenu id="tipo" styleClass="form-control" value="#{crudBean.tipoSelecionado}" disabled="#{!crudBean.entity.porTamanho}" converter="entityConverter">
+						<f:selectItem itemLabel="Selecione" noSelectionOption="true" />
+						<f:selectItems value="#{crudBean.tipos}" var="tipo" itemLabel="#{tipo.descricao}" itemValue="#{tipo}" />
+						<p:ajax event="change" update="tabelaMaisDetalhes scripts" listener="#{crudBean.carregaPreco}" process="@this" global="false" />
+					</h:selectOneMenu>
+				</div>
+			</div>
+			
+			<div class="row">
+				<div class="col-md-3 col-sm-3 col-xs-12">
+					<label for="crudform:precocusto">Preço Custo R$ :</label>
+					<p:inputText type="text" id="precocusto" value="#{crudBean.entity.precoCusto}" disabled="#{crudBean.entity.porTamanho}" styleClass="form-control currency" >
+						<f:convertNumber minFractionDigits="2" maxFractionDigits="2" locale="pt_BR"/>
+					</p:inputText>
+				</div>
+				
+				<div class="col-md-3 col-sm-3 col-xs-12">
+					<label for="crudform:precovenda">Preço Venda R$ * :</label>
+					<p:inputText type="text" id="precovenda" value="#{crudBean.entity.precoVenda}" disabled="#{crudBean.entity.porTamanho}" styleClass="form-control currency" >
+						<f:convertNumber minFractionDigits="2" maxFractionDigits="2" locale="pt_BR" />
+					</p:inputText>
+				</div>
+			
+				<div class="col-md-3 col-sm-3 col-xs-12">
+					<label for="crudform:estoqueminimo">Estoque Mínimo :</label>
+					<p:inputText type="text" id="estoqueminimo" styleClass="form-control" value="#{crudBean.entity.estoqueMinimo}">
+						<f:convertNumber minFractionDigits="2" maxFractionDigits="2" locale="pt_BR" />
+					</p:inputText>
+				</div>
+				
+				<div class="col-md-3 col-sm-3 col-xs-12">
+					<label for="crudform:estoquemaximo">Estoque Máximo :</label>
+					<p:inputText type="text" id="estoquemaximo" styleClass="form-control" value="#{crudBean.entity.estoqueMaximo}">
+						<f:convertNumber minFractionDigits="2" maxFractionDigits="2" locale="pt_BR" />	
+					</p:inputText>
+				</div>
+			</div>
+			
+			<div class="row">
+				<div class="col-md-12">
+					<div>
+						<p:selectBooleanCheckbox id="controlaEstoque" value="#{crudBean.entity.controlaEstoque}" itemLabel="Controla Estoque" />
+					</div>
+					<div>
+						<p:selectBooleanCheckbox id="permiteAdicional" value="#{crudBean.entity.permiteAdicional}" itemLabel="Permite Adicional" />
+					</div>
+					<div>
+						<p:selectBooleanCheckbox id="porTamanho" value="#{crudBean.entity.porTamanho}" itemLabel="Por Tamanho">
+							<p:ajax event="change" update="precovenda precocusto tabelaMaisDetalhes tipo scripts" process="@this" global="false" listener="#{crudBean.porTamanho}" />
+						</p:selectBooleanCheckbox>
+					</div>
+				</div>
 			</div>
 		</div>
 		
-		<div class="row">
-			<div class="col-md-6 col-sm-6 col-xs-12">
-				<label for="crudform:fornecedor">Fornecedor * :</label>
-				<h:selectOneMenu id="fornecedor" styleClass="form-control" value="#{crudBean.entity.fornecedor}" converter="entityConverter">
-					<f:selectItem itemLabel="Selecione" noSelectionOption="true" />
-					<f:selectItems value="#{fornecedorFactoryBean.fornecedores}" var="fornecedor" itemLabel="#{fornecedor.razaoSocial}" itemValue="#{fornecedor}" />
-				</h:selectOneMenu>
+		<div class="col-md-5 col-sm-5 col-xs-12 pull-right">
+			<div class="row">
+				<h:panelGroup layout="block" styleClass="col-md-12 col-sm-12 col-xs-12" id="tabelaMaisDetalhes">
+					<caption>Tabela de preços</caption>
+					<p:dataTable id="tabelaPreco" value="#{crudBean.entity.precos}" var="preco" scrollable="true" scrollHeight="290" 
+						style="border: 1px solid #E6E9ED;" emptyMessage="Sem Dados">	
+						
+						<p:column style="border-radius: 0px !important; width: 40px;">
+							<p:selectBooleanCheckbox value="#{preco.disponibilizaParaVenda}">
+								<p:ajax event="change" update="tabelaPreco scripts" process="@this" global="false" />
+							</p:selectBooleanCheckbox>
+						</p:column>
+						<p:column styleClass="ui-datatable-left" style="border-radius: 0px !important;">
+							<f:facet name="header">Para Venda</f:facet>
+							<h:outputText value="#{preco.tamanho.descricao} (#{preco.tamanho.sigla})" />
+						</p:column>
+						<p:column styleClass="ui-datatable-right" style="border-radius: 0px !important;">
+							<f:facet name="header">Preço Custo</f:facet>
+							<h:inputText styleClass="form-control currency" value="#{preco.precoCusto}" disabled="#{!preco.disponibilizaParaVenda}">
+								<f:convertNumber locale="pt_BR" minFractionDigits="2" maxFractionDigits="2" />
+							</h:inputText>
+						</p:column>
+						<p:column styleClass="ui-datatable-right" style="border-radius: 0px !important;">
+							<f:facet name="header">Preço Venda</f:facet>
+							<h:inputText styleClass="form-control currency" value="#{preco.precoVenda}" disabled="#{!preco.disponibilizaParaVenda}">
+								<f:convertNumber locale="pt_BR" minFractionDigits="2" maxFractionDigits="2" />
+							</h:inputText>
+						</p:column>
+					</p:dataTable>
+				</h:panelGroup>
 			</div>
-			
-			<div class="col-md-3 col-sm-3 col-xs-12">
-				<label for="crudform:categoria">Categoria * :</label>
-				<h:selectOneMenu id="categoria" styleClass="form-control" value="#{crudBean.entity.categoria}" converter="entityConverter">
-					<f:selectItem itemLabel="Selecione" noSelectionOption="true" />
-					<f:selectItems value="#{categoriaFactoryBean.categorias}" var="categoria" itemLabel="#{categoria.descricao}" itemValue="#{categoria}" />
-				</h:selectOneMenu>
-			</div>
-			
-			<div class="col-md-3 col-sm-3 col-xs-12">
-				<label for="crudform:subcategoria">Sub-Categoria * :</label>
-				<h:selectOneMenu id="subcategoria" styleClass="form-control" value="#{crudBean.entity.subCategoria}" converter="entityConverter">
-					<f:selectItem itemLabel="Selecione" noSelectionOption="true" />
-					<f:selectItems value="#{subCategoriaFactoryBean.subCategorias}" var="subcategoria" itemLabel="#{subcategoria.descricao}" itemValue="#{subcategoria}" />
-				</h:selectOneMenu>
-			</div>
-		</div>
-		
-		<div class="row">
-			<div class="col-md-3 col-sm-3 col-xs-12">
-				<label for="crudform:precocusto">Preço Custo R$ :</label>
-				<p:inputText type="text" id="precocusto" value="#{crudBean.entity.precoCusto}" styleClass="form-control currency" >
-					<f:convertNumber minFractionDigits="2" maxFractionDigits="2" />
-				</p:inputText>
-			</div>	
-			
-			<div class="col-md-3 col-sm-3 col-xs-12">
-				<label for="crudform:precovenda">Preço Venda R$ * :</label>
-				<p:inputText type="text" id="precovenda" value="#{crudBean.entity.precoVenda}" styleClass="form-control currency" >
-					<f:convertNumber minFractionDigits="2" maxFractionDigits="2" />
-				</p:inputText>
-			</div>
-			
-			<div class="col-md-3 col-sm-3 col-xs-12">
-				<label for="crudform:estoqueminimo">Estoque Mínimo :</label>
-				<p:inputText type="text" id="estoqueminimo" styleClass="form-control" value="#{crudBean.entity.estoqueMinimo}">
-					<f:convertNumber minFractionDigits="2" maxFractionDigits="2" />
-				</p:inputText>
-			</div>
-			
-			<div class="col-md-3 col-sm-3 col-xs-12">
-				<label for="crudform:estoquemaximo">Estoque Máximo :</label>
-				<p:inputText type="text" id="estoquemaximo" styleClass="form-control" value="#{crudBean.entity.estoqueMaximo}">
-					<f:convertNumber minFractionDigits="2" maxFractionDigits="2" />	
-				</p:inputText>
-			</div>
-		</div>
-		
-		<div class="row">
-			<div class="col-md-3 col-sm-3 col-xs-12">
-				<div>
-					<h:selectBooleanCheckbox id="controlaEstoque" value="#{crudBean.entity.controlaEstoque}" />
-					<label for="crudform:controlaEstoque">Controla Estoque</label>
-				</div>
-				<div>
-					<h:selectBooleanCheckbox id="permiteMeioAmeio" value="#{crudBean.entity.permiteMeioAmeio}" />
-					<label for="crudform:permiteMeioAmeio">Permite meio a meio</label>
-				</div>
-				<div>
-					<h:selectBooleanCheckbox id="permiteAdicional" value="#{crudBean.entity.permiteAdicional}" />
-					<label for="crudform:permiteAdicional">Permite adicional</label>
-				</div>
-			</div>
-		</div>
+		</div>	
 		
 		<div class="form-group"></div>
 		<div class="clearfix"></div>
@@ -105,8 +151,8 @@
 			<div class="col-md-12 col-sm-12 col-xs-12">
 				<p:commandButton styleClass="btn btn-success" action="#{crudBean.btnSalvar()}" value="Salvar" update=":crudform :scripts" />
 				<p:commandButton styleClass="btn btn-danger" value="Cancelar" action="#{crudBean.btnCancelar}" update=":crudform" />
-				<h:commandLink type="button" value="Consultar" styleClass="btn btn-primary pull-right" action="#{crudBean.btnConsultar}" 
-					rendered="#{not crudBean.estadoViewBean.search}" />
+				<p:commandLink type="button" value="Consultar" styleClass="btn btn-primary pull-right" action="#{crudBean.btnConsultar}" 
+					rendered="#{not crudBean.estadoViewBean.search}" update="@form scripts" global="false" />
 			</div>	
 			<div class="clearfix"></div>
 		</div>

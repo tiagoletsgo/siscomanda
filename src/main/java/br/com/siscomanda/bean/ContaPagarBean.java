@@ -15,6 +15,7 @@ import javax.inject.Named;
 import br.com.siscomanda.base.bean.BaseBean;
 import br.com.siscomanda.enumeration.EFreaquencia;
 import br.com.siscomanda.enumeration.ESituacaoConta;
+import br.com.siscomanda.enumeration.ETipoOperacao;
 import br.com.siscomanda.exception.SiscomandaException;
 import br.com.siscomanda.model.ContaPagar;
 import br.com.siscomanda.service.ContaPagarService;
@@ -64,6 +65,7 @@ public class ContaPagarBean extends BaseBean<ContaPagar> implements Serializable
 		getEntity().setValor(new Double(0));
 		getEntity().setDesconto(new Double(0));
 		getEntity().setJuros(new Double(0));
+		getEntity().setTipoOperacao(ETipoOperacao.DESPESA_CONTA_PAGAR);
 	}
 	
 	public void btnGerar() {

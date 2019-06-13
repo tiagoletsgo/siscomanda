@@ -61,6 +61,10 @@ public class ContaPagarService implements Serializable {
 			throw new SiscomandaException("Conta paga não pode ser excluída ou alterada.");
 		}
 		
+		if(Objects.isNull(conta.getTipoOperacao())) {
+			throw new SiscomandaException("O tipo de operação não foi informada. Para este problema entre em contato com o administrador do sistema.");
+		}
+		
 		conta.setPago(pagarConta);
 		if(conta.isNovo()) {
 			if(Objects.nonNull(vencimentos) && !vencimentos.isEmpty()) {

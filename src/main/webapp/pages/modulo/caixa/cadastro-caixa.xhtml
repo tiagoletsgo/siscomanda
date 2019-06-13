@@ -10,7 +10,7 @@
 				<div class="col-md-12 col-sm-12 col-xs-12">
 					<label for="crudform:saldoInicial">Saldo Inicial (Dinheiro) * :</label>
 					<p:inputText type="text" id="saldoInicial" value="#{crudBean.entity.saldoInicial}" styleClass="form-control currency font-family-default" disabled="#{crudBean.entity.fechado}">
-						<f:convertNumber maxFractionDigits="2" minFractionDigits="2" />
+						<f:convertNumber maxFractionDigits="2" minFractionDigits="2" locale="pt_BR" />
 					</p:inputText>
 				</div>
 			</div>
@@ -26,7 +26,7 @@
 				<div class="col-md-12 col-sm-12 col-xs-12">
 					<label for="crudform:dataHoraAbertura">Data / Hora Abertura :</label>
 					<h:outputText rendered="#{not empty crudBean.entity.dataHoraAbertura}" type="text" id="dataHoraAbertura" value="#{crudBean.entity.dataHoraAbertura}" styleClass="form-control">
-						<f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss" />
+						<f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss" locale="pt_BR" />
 					</h:outputText>
 					<h:outputText rendered="#{empty crudBean.entity.dataHoraAbertura}" styleClass="form-control" value="00/00/00 00:00:00" />
 				</div>
@@ -36,7 +36,7 @@
 				<div class="col-md-12 col-sm-12 col-xs-12">
 					<label for="crudform:dataHoraFechamento">Data / Hora Fechamento :</label>
 					<h:outputText rendered="#{not empty crudBean.entity.dataHoraFechamento}" type="text" id="dataHoraFechamento" value="#{crudBean.entity.dataHoraFechamento}" styleClass="form-control">
-						<f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss" />
+						<f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss" locale="pt_BR" />
 					</h:outputText>
 					<h:outputText rendered="#{empty crudBean.entity.dataHoraFechamento}" styleClass="form-control" value="00/00/00 00:00:00" />
 				</div>
@@ -46,7 +46,7 @@
 				<div class="col-md-12 col-sm-12 col-xs-12">
 					<label for="crudform:totalEntrada">Total Entrada R$ :</label>
 					<h:outputText type="text" id="totalEntrada" value="#{crudBean.entity.totalEntrada}" styleClass="form-control">
-						<f:convertNumber minFractionDigits="2" maxFractionDigits="2" />
+						<f:convertNumber minFractionDigits="2" maxFractionDigits="2" locale="pt_BR" />
 					</h:outputText>
 				</div>
 			</div>
@@ -55,7 +55,7 @@
 				<div class="col-md-12 col-sm-12 col-xs-12">
 					<label for="crudform:totalSaida">Total Saída R$ :</label>
 					<h:outputText type="text" id="totalSaida" value="#{crudBean.entity.totalSaida}" styleClass="form-control">
-						<f:convertNumber minFractionDigits="2" maxFractionDigits="2" />
+						<f:convertNumber minFractionDigits="2" maxFractionDigits="2" locale="pt_BR" />
 					</h:outputText>
 				</div>
 			</div>
@@ -70,7 +70,7 @@
 						<p:column styleClass="ui-datatable-center ui-datatable-justify" style="border-radius: 0; font-size: 11px;" width="17%">
 							<f:facet name="header">Data / Hora</f:facet>
 							<h:outputText value="#{lancamento.dataHora}">
-								<f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss" />
+								<f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss" locale="pt_BR" />
 							</h:outputText>
 						</p:column>
 						
@@ -82,14 +82,14 @@
 						<p:column styleClass="ui-datatable-left text-success" width="12%" style="border-radius: 0; font-size: 12px;">
 							<f:facet name="header">Entrada</f:facet>
 							<h:outputText value="#{lancamento.valorEntrada}">
-								<f:convertNumber type="currency" minFractionDigits="2" maxFractionDigits="2" />
+								<f:convertNumber type="currency" minFractionDigits="2" maxFractionDigits="2" locale="pt_BR" />
 							</h:outputText>
 						</p:column>
 						
 						<p:column styleClass="ui-datatable-left text-danger" width="10%" style="border-radius: 0; font-size: 12px;">
 							<f:facet name="header">Saída</f:facet>
 							<h:outputText value="#{lancamento.valorSaida}" rendered="#{not empty lancamento.valorSaida}">
-								<f:convertNumber type="currency" minFractionDigits="2" maxFractionDigits="2" />
+								<f:convertNumber type="currency" minFractionDigits="2" maxFractionDigits="2" locale="pt_BR" />
 							</h:outputText>
 							<h:outputText value="0,00" rendered="#{empty lancamento.valorSaida}" />
 						</p:column>
