@@ -37,6 +37,7 @@ public class ServicoService implements Serializable {
 	@Transactional
 	public Servico salvar(Servico servico) throws SiscomandaException {
 		servico = validacao(servico);
+		
 		if(servico.isNovo()) {
 			servico = dao.salvar(servico);
 			JSFUtil.addMessage(FacesMessage.SEVERITY_INFO, "Registro salvo com sucesso.");

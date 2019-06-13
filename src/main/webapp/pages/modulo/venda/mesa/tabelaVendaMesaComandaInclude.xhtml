@@ -19,7 +19,7 @@
 					<h:outputLabel value="Nro Pedido" />
 				</f:facet>
 				<h:outputText value="#{venda.id}">
-					<f:convertNumber pattern="000000" maxIntegerDigits="6" />
+					<f:convertNumber pattern="000000" maxIntegerDigits="6" locale="pt_BR" />
 				</h:outputText>
 			</p:column>
 			
@@ -28,7 +28,7 @@
 					<h:outputLabel value="Mesa / Comanda" />
 				</f:facet>
 				<h:outputText value="#{venda.mesaComanda}" rendered="#{venda.mesaComanda != 999999}">
-					<f:convertNumber pattern="000000" maxIntegerDigits="6" />
+					<f:convertNumber pattern="000000" maxIntegerDigits="6" locale="pt_BR" />
 				</h:outputText>
 				<h:outputText value="-" rendered="#{venda.mesaComanda eq 999999}" />
 			</p:column>
@@ -54,7 +54,7 @@
 					<h:outputLabel value="Valor Pago R$" />
 				</f:facet>
 				<h:outputText value="#{venda.valorPago}" >
-					<f:convertNumber maxFractionDigits="2" minFractionDigits="2" />
+					<f:convertNumber maxFractionDigits="2" minFractionDigits="2" locale="pt_BR" />
 				</h:outputText>
 			</p:column>
 			
@@ -63,7 +63,7 @@
 					<h:outputLabel value="Diferença R$" />
 				</f:facet>
 				<h:outputText value="#{venda.diferenca}" >
-					<f:convertNumber maxFractionDigits="2" minFractionDigits="2" />
+					<f:convertNumber maxFractionDigits="2" minFractionDigits="2" locale="pt_BR" />
 				</h:outputText>
 			</p:column>
 			
@@ -72,7 +72,7 @@
 					<h:outputLabel value="Valor Total R$" />
 				</f:facet>
 				<h:outputText value="#{venda.total}" >
-					<f:convertNumber maxFractionDigits="2" minFractionDigits="2" />
+					<f:convertNumber maxFractionDigits="2" minFractionDigits="2" locale="pt_BR" />
 				</h:outputText>
 			</p:column>
 			

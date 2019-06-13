@@ -50,7 +50,7 @@
 							<h:outputLabel value="% Taxa" />
 						</f:facet>
 						<h:inputText value="#{vinculaFormaPagamento.taxa}"  styleClass="currency" disabled="#{crudBean.disabled}">
-							<f:convertNumber minFractionDigits="2" maxFractionDigits="2" />
+							<f:convertNumber minFractionDigits="2" maxFractionDigits="2" locale="pt_BR" />
 						</h:inputText>
 					</p:column>
 				</p:dataTable>

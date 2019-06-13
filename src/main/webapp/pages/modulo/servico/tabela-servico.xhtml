@@ -21,7 +21,7 @@
 					<h:outputLabel value="Valor R$" />
 				</f:facet>
 				<h:outputText value="#{servico.valor}" >
-					<f:convertNumber minFractionDigits="2" maxFractionDigits="2" />
+					<f:convertNumber locale="pt_BR" maxFractionDigits="2" minFractionDigits="2" />
 				</h:outputText>
 			</p:column>
 			<p:column>

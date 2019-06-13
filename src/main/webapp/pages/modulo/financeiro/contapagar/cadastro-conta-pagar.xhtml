@@ -26,9 +26,9 @@
 				</div>
 				
 				<div class="col-md-6 col-sm-6 col-xs-12">
-					<label for="crudform:valor">Valor * :</label>
+					<label for="crudform:valor">Valor Total * :</label>
 					<p:inputText type="text" id="valor" value="#{crudBean.entity.valor}" disabled="#{crudBean.entity.paga}" styleClass="form-control currency font-family-default">
-						<f:convertNumber maxFractionDigits="2" minFractionDigits="2" />
+						<f:convertNumber maxFractionDigits="2" minFractionDigits="2" locale="pt_BR" />
 						<p:ajax event="keyup" delay="200" update="totalPago" global="false" />
 					</p:inputText>
 				</div>
@@ -83,7 +83,7 @@
 				<div class="col-md-3 col-sm-3 col-xs-12">
 					<label for="crudform:desconto">Desconto (-) :</label>
 					<p:inputText disabled="#{not crudBean.contaPaga}" type="text" id="desconto" value="#{crudBean.entity.desconto}" styleClass="form-control currency font-family-default">
-						<f:convertNumber maxFractionDigits="2" minFractionDigits="2" />
+						<f:convertNumber maxFractionDigits="2" minFractionDigits="2" locale="pt_BR" />
 						<p:ajax event="keyup" delay="200" update="totalPago" global="false" />
 					</p:inputText>
 				</div>	
@@ -91,7 +91,7 @@
 				<div class="col-md-3 col-sm-3 col-xs-12">
 					<label for="crudform:juros">Juros / Multa (+) :</label>
 					<p:inputText disabled="#{not crudBean.contaPaga}" type="text" id="juros" value="#{crudBean.entity.juros}" styleClass="form-control currency font-family-default">
-						<f:convertNumber maxFractionDigits="2" minFractionDigits="2" />
+						<f:convertNumber maxFractionDigits="2" minFractionDigits="2" locale="pt_BR" />
 						<p:ajax event="keyup" delay="200" update="totalPago" global="false" />
 					</p:inputText>
 				</div>
@@ -99,7 +99,7 @@
 				<div class="col-md-3 col-sm-3 col-xs-12">
 					<label for="crudform:totalPago">Total Pago (=) :</label>
 					<p:inputText disabled="true" type="text" id="totalPago" value="#{crudBean.entity.totalPago}" styleClass="form-control currency font-family-default">
-						<f:convertNumber maxFractionDigits="2" minFractionDigits="2" />
+						<f:convertNumber maxFractionDigits="2" minFractionDigits="2" locale="pt_BR" />
 					</p:inputText>
 				</div>	
 			</h:panelGroup>
@@ -115,14 +115,14 @@
 						<p:column style="border-radius: 0px;">
 							<f:facet name="header">Vencimento</f:facet>
 							<h:outputText value="#{vencimento}">
-								<f:convertDateTime pattern="dd/MM/yyyy" />
+								<f:convertDateTime pattern="dd/MM/yyyy" locale="pt_BR" />
 							</h:outputText>
 						</p:column>
 						
 						<p:column style="border-radius: 0px;">
 							<f:facet name="header">Valor</f:facet>
 							<h:outputText value="#{crudBean.entity.valor}">
-								<f:convertNumber type="currency" minFractionDigits="2" maxFractionDigits="2" />
+								<f:convertNumber type="currency" minFractionDigits="2" maxFractionDigits="2" locale="pt_BR" />
 							</h:outputText>
 						</p:column>
 					</p:dataTable>
@@ -138,7 +138,7 @@
 				<p:commandButton disabled="#{crudBean.entity.paga}" styleClass="btn btn-success" action="#{crudBean.btnSalvar()}" value="Salvar" update="@form scripts" />
 				<p:commandButton styleClass="btn btn-danger" value="Cancelar" action="#{crudBean.btnCancelar}" update=":crudform" />
 				<h:commandLink type="button" value="Consultar" styleClass="btn btn-primary pull-right" rendered="#{not crudBean.estadoViewBean.search}">
-					<p:ajax listener="#{crudBean.btnConsultar}" update="@form" event="click" />
+					<p:ajax listener="#{crudBean.btnConsultar}" update="@form" event="click" global="false" />
 				</h:commandLink>
 			</div>	
 			<div class="clearfix"></div>

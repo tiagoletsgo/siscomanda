@@ -1,5 +1,6 @@
 package br.com.siscomanda.config.jpa;
 
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.inject.Disposes;
@@ -17,7 +18,8 @@ public class EntityManagerProducer {
 	@Inject
 	private PersistenceProperties properties;
 	
-	public EntityManagerProducer() {
+	@PostConstruct
+	public void setup() {
 		this.factory = Persistence.createEntityManagerFactory("siscomandaPU", properties.get());
 	}
 

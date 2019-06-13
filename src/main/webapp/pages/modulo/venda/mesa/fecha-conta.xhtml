@@ -51,14 +51,14 @@
 					<div class="row">
 						<div class="col-md-4 col-sm-4 col-xs-4">
 							<p:inputText id="valorRecebido" styleClass="form-control currency input-text" value="#{crudBean.pagamento.valorRecebido}" placeholder="Valor R$">
-								<f:convertNumber minFractionDigits="2" maxFractionDigits="2" />
+								<f:convertNumber minFractionDigits="2" maxFractionDigits="2" locale="pt_BR" />
 								<p:ajax process="@this" global="false" event="keyup" delay="300" />
 							</p:inputText>
 						</div>
 						<div class="col-md-5 col-sm-5 col-xs-5">
 							<p:commandLink styleClass="btn btn-warning btn-block input-text" update="@form" actionListener="#{crudBean.substituiValor(crudBean.valorFaltante)}" global="false">
 								<h:outputText value="#{crudBean.valorFaltante}">
-									<f:convertNumber type="currency" minFractionDigits="2" maxFractionDigits="2" />
+									<f:convertNumber type="currency" minFractionDigits="2" maxFractionDigits="2" locale="pt_BR" />
 								</h:outputText>
 								<h:outputText value=" (Faltante) " />
 							</p:commandLink>

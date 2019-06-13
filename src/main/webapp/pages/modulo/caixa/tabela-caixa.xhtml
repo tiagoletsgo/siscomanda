@@ -13,7 +13,7 @@
 					<h:outputLabel value="Abertura" />
 				</f:facet>
 				<h:outputText value="#{caixa.dataHoraAbertura}">
-					<f:convertDateTime pattern="dd/MM/yyyy HH:mm" />
+					<f:convertDateTime pattern="dd/MM/yyyy HH:mm" locale="pt_BR" />
 				</h:outputText>
 			</p:column>
 			
@@ -22,7 +22,7 @@
 					<h:outputLabel value="Fechamento" />
 				</f:facet>
 				<h:outputText rendered="#{not empty caixa.dataHoraFechamento}" value="#{caixa.dataHoraFechamento}">
-					<f:convertDateTime pattern="dd/MM/yyyy HH:mm" />
+					<f:convertDateTime pattern="dd/MM/yyyy HH:mm" locale="pt_BR" />
 				</h:outputText>
 				<h:outputText value="00/00/0000 00:00" rendered="#{empty caixa.dataHoraFechamento}" />
 			</p:column>
@@ -32,7 +32,7 @@
 					<h:outputLabel value="Saldo Inicial" />
 				</f:facet>
 				<h:outputText value="#{caixa.saldoInicial}">
-					<f:convertNumber type="currency" />
+					<f:convertNumber type="currency" locale="pt_BR" />
 				</h:outputText>
 			</p:column>
 			
@@ -41,7 +41,7 @@
 					<h:outputLabel value="Saldo Final" />
 				</f:facet>
 				<h:outputText rendered="#{not caixa.caixaAberto}" value="#{caixa.totalEntrada - caixa.totalSaida}">
-					<f:convertNumber type="currency" />
+					<f:convertNumber type="currency" locale="pt_BR" />
 				</h:outputText>
 				<h:outputText value="-" rendered="#{caixa.caixaAberto}" />
 			</p:column>

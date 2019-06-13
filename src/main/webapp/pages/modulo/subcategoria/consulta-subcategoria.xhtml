@@ -26,7 +26,7 @@
 		<div class="form-group">
 			<div class="col-md-12 col-sm-12 col-xs-12">
 				<p:commandButton styleClass="btn btn-success" value="Pesquisar" update="@form" action="#{crudBean.btnPesquisar}" />
-				<h:commandLink type="button" value="Novo" styleClass="btn btn-primary pull-right" action="#{crudBean.btnNovo}" />
+				<p:commandLink type="button" value="Novo" styleClass="btn btn-primary pull-right" action="#{crudBean.btnNovo}" update="@form scripts" global="false" />
 			</div>	
 		</div>
 	

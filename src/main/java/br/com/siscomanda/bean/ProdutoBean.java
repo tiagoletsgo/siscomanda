@@ -10,8 +10,15 @@ import javax.inject.Named;
 
 import br.com.siscomanda.base.bean.BaseBean;
 import br.com.siscomanda.exception.SiscomandaException;
+import br.com.siscomanda.model.Preco;
 import br.com.siscomanda.model.Produto;
+import br.com.siscomanda.model.SubCategoria;
+import br.com.siscomanda.model.Tamanho;
+import br.com.siscomanda.model.Tipo;
 import br.com.siscomanda.service.ProdutoService;
+import br.com.siscomanda.service.SubCategoriaService;
+import br.com.siscomanda.service.TamanhoService;
+import br.com.siscomanda.service.TipoService;
 import br.com.siscomanda.util.JSFUtil;
 
 @Named
@@ -23,14 +30,32 @@ public class ProdutoBean extends BaseBean<Produto> implements Serializable {
 	@Inject
 	private ProdutoService produtoService;
 	
+	@Inject
+	private TipoService tipoService;
+	
+	@Inject
+	private TamanhoService tamanhoService;
+	
+	@Inject
+	private SubCategoriaService subCategoriaService;
+	
 	private List<Produto> produtos;
 	
 	private Produto produtoSelecionado;
 	
 	private List<Produto> produtosSelecionados;
 	
+	private List<SubCategoria> subCategorias;
+	
+	private List<Tipo> tipos;
+	
+	private List<Tamanho> tamanhos;
+	
+	private Tipo tipoSelecionado;
+	
 	@Override 
 	public void init() {
+		this.tipos = tipoService.todos();
 	}
 	
 	public void btnRemover() {
@@ -40,6 +65,35 @@ public class ProdutoBean extends BaseBean<Produto> implements Serializable {
 			JSFUtil.addMessage(FacesMessage.SEVERITY_INFO, "Registro(s) removido(s) com sucesso.");
 		} catch (SiscomandaException e) {
 			JSFUtil.addMessage(FacesMessage.SEVERITY_ERROR, "Erro ao remover. " + e.getMessage());
+		}
+	}
+	
+	public void carregaSubCategorias() {
+		try {
+			subCategorias = subCategoriaService.pesquisar(getEntity().getCategoria());
+		} catch (SiscomandaException e) {
+			subCategorias = null;
+		}
+	}
+	
+	public void porTamanho() {
+		if(!getEntity().isPorTamanho()) {
+			getTipos().clear();
+			setTipoSelecionado(null);
+			getEntity().getPrecos().clear();
+		}
+		else {
+			this.tipos = tipoService.todos();
+		}
+	}
+	
+	public void carregaPreco() {
+		getEntity().getPrecos().clear();
+		this.tamanhos = tamanhoService.tamanhoPorTipo(getTipoSelecionado());
+		for(Tamanho tamanho : tamanhos) {
+			Preco preco = new Preco();
+			preco.setTamanho(tamanho);
+			getEntity().getPrecos().add(preco);
 		}
 	}
 	
@@ -114,5 +168,25 @@ public class ProdutoBean extends BaseBean<Produto> implements Serializable {
 
 	public List<Produto> getProdutos() {
 		return produtos;
+	}
+	
+	public List<SubCategoria> getSubCategorias() {
+		return subCategorias;
+	}
+	
+	public List<Tipo> getTipos() {
+		return tipos;
+	}
+	
+	public List<Tamanho> getTamanhos() {
+		return tamanhos;
+	}
+	
+	public void setTipoSelecionado(Tipo tipoSelecionado) {
+		this.tipoSelecionado = tipoSelecionado;
+	}
+	
+	public Tipo getTipoSelecionado() {
+		return tipoSelecionado;
 	}
 }

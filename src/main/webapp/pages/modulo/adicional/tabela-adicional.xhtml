@@ -27,7 +27,7 @@
 					<h:outputLabel value="Preço Custo R$" />
 				</f:facet>
 				<h:outputText value="#{adicional.precoCusto}" styleClass="text-danger">
-					<f:convertNumber type="currency" maxFractionDigits="2" minFractionDigits="2" />
+					<f:convertNumber type="currency" maxFractionDigits="2" minFractionDigits="2" locale="pt_BR" />
 				</h:outputText>
 			</p:column>
 			<p:column styleClass="ui-datatable-right">
@@ -35,7 +35,7 @@
 					<h:outputLabel value="Preço Venda R$" />
 				</f:facet>
 				<h:outputText value="#{adicional.precoVenda}">
-					<f:convertNumber type="currency" maxFractionDigits="2" minFractionDigits="2" />
+					<f:convertNumber type="currency" maxFractionDigits="2" minFractionDigits="2" locale="pt_BR" />
 				</h:outputText>
 			</p:column>
 			<p:column>

@@ -22,6 +22,8 @@
 				<p:dataTable id="tabelaItemPedido" styleClass="table table-striped jambo_table" value="#{crudBean.entity.itens}" var="item"
 					emptyMessage="Sem dados" scrollable="true" scrollHeight="350">
 					
+					<p:ajax event="rowToggle" global="false" />
+					
 					<p:column style="width: 4%; border-radius: 0px;">
 						<f:facet name="header">
 							<h:outputLabel value="#" />
@@ -63,7 +65,7 @@
 							<h:outputLabel value="Preço Un" />
 						</f:facet>
 						<h:outputText value="#{item.precoVenda}">
-							<f:convertNumber type="currency" maxFractionDigits="2" minFractionDigits="2" />
+							<f:convertNumber type="currency" maxFractionDigits="2" minFractionDigits="2" locale="pt_BR" />
 						</h:outputText>
 					</p:column>
 										
@@ -72,7 +74,7 @@
 							<h:outputLabel value="Subtotal" />
 						</f:facet>
 						<h:outputText value="#{crudBean.calculaSubTotalItem(item)}">
-							<f:convertNumber type="currency" maxFractionDigits="2" minFractionDigits="2" />
+							<f:convertNumber type="currency" maxFractionDigits="2" minFractionDigits="2" locale="pt_BR" />
 						</h:outputText>
 					</p:column>
 					
@@ -101,7 +103,7 @@
 									<h:outputLabel value="Código" />
 								</f:facet>
 								<h:outputText value="#{adicional.id}">
-									<f:convertNumber maxIntegerDigits="6" pattern="000000" />
+									<f:convertNumber maxIntegerDigits="6" pattern="000000" locale="pt_BR" />
 								</h:outputText>
 							</p:column>
 							
@@ -127,7 +129,7 @@
 									<h:outputLabel value="Preço Un" />
 								</f:facet>
 								<h:outputText value="#{adicional.precoVenda}">
-									<f:convertNumber type="currency" maxFractionDigits="2" minFractionDigits="2" />
+									<f:convertNumber type="currency" maxFractionDigits="2" minFractionDigits="2" locale="pt_BR" />
 								</h:outputText>
 							</p:column>
 							

@@ -18,7 +18,7 @@ public class Servico extends BaseEntity implements Serializable {
 	private String descricao;
 	
 	@Column(name = "valor", nullable = false)
-	private Double valor;
+	private double valor;
 
 	public String getDescricao() {
 		return descricao;
@@ -28,11 +28,11 @@ public class Servico extends BaseEntity implements Serializable {
 		this.descricao = descricao;
 	}
 
-	public Double getValor() {
+	public double getValor() {
 		return valor;
 	}
 
-	public void setValor(Double valor) {
+	public void setValor(double valor) {
 		this.valor = valor;
 	}
 }

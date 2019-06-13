@@ -34,7 +34,7 @@
 			<div class="col-md-2 col-sm-2 col-xs-12">
 				<label>Mesa / Comanda.: </label> 
 				<h:outputText value="#{crudBean.entity.mesaComanda}" styleClass="form-control">
-					<f:convertNumber maxIntegerDigits="6" pattern="000000" />
+					<f:convertNumber maxIntegerDigits="6" pattern="000000" locale="pt_BR" />
 				</h:outputText>
 			</div>
 			
@@ -46,7 +46,7 @@
 			<div class="col-md-3 col-sm-3 col-xs-12">
 				<label>Data / Hora.: </label>
 				<h:outputText value="#{crudBean.entity.iniciado}" styleClass="form-control">
-					<f:convertDateTime pattern="dd/MM/yyyy HH:mm" />
+					<f:convertDateTime pattern="dd/MM/yyyy HH:mm" locale="pt_BR" />
 				</h:outputText>
 			</div>
 		</div>
@@ -60,35 +60,35 @@
 			<div class="col-md-2 col-sm-2 col-xs-12">
 				<label>Subtotal $.: </label>
 				<h:outputText id="subtotal" value="#{crudBean.entity.subtotal}" styleClass="form-control">
-					<f:convertNumber maxFractionDigits="2" minFractionDigits="2" />
+					<f:convertNumber maxFractionDigits="2" minFractionDigits="2" locale="pt_BR" />
 				</h:outputText>
 			</div>
 			
 			<div class="col-md-2 col-sm-2 col-xs-12">
 				<label>Serviço(+) $.: </label>
 				<h:outputText value="#{crudBean.entity.taxaServico}" styleClass="form-control">
-					<f:convertNumber maxFractionDigits="2" minFractionDigits="2" />
+					<f:convertNumber maxFractionDigits="2" minFractionDigits="2" locale="pt_BR" />
 				</h:outputText>
 			</div>
 			
 			<div class="col-md-2 col-sm-2 col-xs-12">
 				<label>Entrega(+) $.: </label>
 				<h:outputText value="#{crudBean.entity.taxaEntrega}" styleClass="form-control">
-					<f:convertNumber maxFractionDigits="2" minFractionDigits="2" />
+					<f:convertNumber maxFractionDigits="2" minFractionDigits="2" locale="pt_BR" />
 				</h:outputText>
 			</div>
 			
 			<div class="col-md-2 col-sm-2 col-xs-12">
 				<label class="label-control">Desconto(-) $.: </label>
 				<h:outputText value="#{crudBean.entity.desconto}" styleClass="form-control">
-					<f:convertNumber maxFractionDigits="2" minFractionDigits="2" />
+					<f:convertNumber maxFractionDigits="2" minFractionDigits="2" locale="pt_BR" />
 				</h:outputText>
 			</div>
 			
 			<div class="col-md-2 col-sm-2 col-xs-12">
 				<label>Total $.: </label>
 				<h:outputText value="#{crudBean.entity.total}" styleClass="form-control">
-					<f:convertNumber maxFractionDigits="2" minFractionDigits="2" />
+					<f:convertNumber maxFractionDigits="2" minFractionDigits="2" locale="pt_BR" />
 				</h:outputText>
 			</div>
 		</div>

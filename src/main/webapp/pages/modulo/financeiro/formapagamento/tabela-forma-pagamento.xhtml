@@ -20,7 +20,7 @@
 				<f:facet name="header">
 					<h:outputLabel value="#" />
 				</f:facet>
-				<h:commandButton styleClass="btn btn-warning btn-xs" value="Editar" action="#{crudBean.btnEditar(formaPagamento)}" />
+				<p:commandButton styleClass="btn btn-warning btn-xs" value="Editar" update="@form scripts" global="false" action="#{crudBean.btnEditar(formaPagamento)}" />
 			</p:column>
 			<f:facet name="footer">
 				<p:commandButton styleClass="btn btn-danger btn-xs" style="float: left;" oncomplete="PF('dlgConfirmarExclusao').show();" value="Deletar" 

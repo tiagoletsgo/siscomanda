@@ -86,8 +86,8 @@
 			<div class="col-md-12 col-sm-12 col-xs-12">
 				<p:commandButton styleClass="btn btn-success" action="#{crudBean.btnSalvar()}" value="Salvar" update=":crudform" />
 				<p:commandButton styleClass="btn btn-danger" value="Cancelar" action="#{crudBean.btnCancelar}" update=":crudform" />
-				<h:commandLink type="button" value="Consultar" styleClass="btn btn-primary pull-right" action="#{crudBean.btnConsultar}" 
-					rendered="#{not crudBean.estadoViewBean.search}" />
+				<p:commandLink type="button" value="Consultar" styleClass="btn btn-primary pull-right" action="#{crudBean.btnConsultar}" 
+					rendered="#{not crudBean.estadoViewBean.search}" update="@form" global="false" />
 			</div>	
 			<div class="clearfix"></div>
 		</div>

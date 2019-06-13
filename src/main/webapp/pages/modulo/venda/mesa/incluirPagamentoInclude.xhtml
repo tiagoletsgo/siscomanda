@@ -20,7 +20,7 @@
 					<p:column style="width: 20%; border-radius: 0px;">
 						<f:facet name="header">Subtotal</f:facet>
 						<h:outputText value="#{crudBean.calculaSubTotalItem(item)}">
-							<f:convertNumber type="currency" maxFractionDigits="2" minFractionDigits="2" />
+							<f:convertNumber type="currency" maxFractionDigits="2" minFractionDigits="2" locale="pt_BR" />
 						</h:outputText>
 					</p:column>
 				</p:dataTable>
@@ -62,7 +62,7 @@
 					<p:column style="width: 15%; border-radius: 0px;">
 						<f:facet name="header">Valor R$</f:facet>
 						<h:outputText value="#{pagamento.valorRecebido}">
-							<f:convertNumber minFractionDigits="2" maxFractionDigits="2" />
+							<f:convertNumber minFractionDigits="2" maxFractionDigits="2" locale="pt_BR" />
 						</h:outputText>
 					</p:column>
 					
@@ -81,28 +81,28 @@
 				<div class="col-md-3 col-sm-3 col-xs-12">
 					<label>Subtotal $.:</label>
 					<h:outputText value="#{crudBean.entity.subtotal}" styleClass="form-control strong-default">
-						<f:convertNumber maxFractionDigits="2" minFractionDigits="2" />
+						<f:convertNumber maxFractionDigits="2" minFractionDigits="2" locale="pt_BR" />
 					</h:outputText>
 				</div>
 				
 				<div class="col-md-3 col-sm-3 col-xs-12">
 					<label>(+) Serviço $.:</label>
 					<h:outputText value="#{crudBean.entity.taxaServico}" styleClass="form-control strong-default">
-						<f:convertNumber maxFractionDigits="2" minFractionDigits="2" />
+						<f:convertNumber maxFractionDigits="2" minFractionDigits="2" locale="pt_BR" />
 					</h:outputText>
 				</div>
 				
 				<div class="col-md-3 col-sm-3 col-xs-12">
 					<label>Total pago $.:</label>
 					<h:outputText value="#{crudBean.pagamento.valorPago}" styleClass="form-control strong-default">
-						<f:convertNumber maxFractionDigits="2" minFractionDigits="2" />
+						<f:convertNumber maxFractionDigits="2" minFractionDigits="2" locale="pt_BR" />
 					</h:outputText>
 				</div>
 				
 				<div class="col-md-3 col-sm-3 col-xs-12">
 					<label>Falta pagar $.:</label>
 					<h:outputText id="faltaPagar" value="#{crudBean.valorFaltante}" styleClass="form-control strong-danger">
-						<f:convertNumber maxFractionDigits="2" minFractionDigits="2" />
+						<f:convertNumber maxFractionDigits="2" minFractionDigits="2" locale="pt_BR" />
 					</h:outputText>
 				</div>
 			</div>
@@ -111,7 +111,7 @@
 				<div class="col-md-3 col-sm-3 col-xs-12">
 					<label>(-) Desconto $.:</label>
 					<p:inputText value="#{crudBean.entity.desconto}" styleClass="form-control currency strong-default input-text" disabled="#{crudBean.notPago}" >
-						<f:convertNumber maxFractionDigits="2" minFractionDigits="2" />
+						<f:convertNumber maxFractionDigits="2" minFractionDigits="2" locale="pt_BR" />
 						<p:ajax event="keyup" delay="200" update="total faltaPagar gridBotoes" listener="#{crudBean.aplicaDesconto()}" global="false" />
 					</p:inputText>
 				</div>
@@ -119,7 +119,7 @@
 				<div class="col-md-3 col-sm-3 col-xs-12">
 					<label>(+) Entrega $.:</label>
 					<p:inputText value="#{crudBean.entity.taxaEntrega}" styleClass="form-control currency strong-default input-text" disabled="#{crudBean.notPago}" >
-						<f:convertNumber maxFractionDigits="2" minFractionDigits="2" />	
+						<f:convertNumber maxFractionDigits="2" minFractionDigits="2" locale="pt_BR" />	
 						<p:ajax event="keyup" delay="200" update="total faltaPagar gridBotoes" listener="#{crudBean.aplicaTaxaEntrega()}" global="false" />
 					</p:inputText>
 				</div>
@@ -127,14 +127,14 @@
 				<div class="col-md-3 col-sm-3 col-xs-12">
 					<label>Total a pagar $.:</label>
 					<h:outputText id="total" value="#{crudBean.pagamento.valorTotal}" styleClass="form-control strong-default">
-						<f:convertNumber maxFractionDigits="2" minFractionDigits="2" />
+						<f:convertNumber maxFractionDigits="2" minFractionDigits="2" locale="pt_BR" />
 					</h:outputText>
 				</div>
 				
 				<div class="col-md-3 col-sm-3 col-xs-12">
 					<label>Troco $.:</label>
 					<h:outputText value="#{crudBean.pagamento.valorTroco}" styleClass="form-control strong-success">
-						<f:convertNumber maxFractionDigits="2" minFractionDigits="2" />
+						<f:convertNumber maxFractionDigits="2" minFractionDigits="2" locale="pt_BR" />
 					</h:outputText>
 				</div>
 			</div>

@@ -32,14 +32,14 @@
 			<div class="col-md-4 col-sm-4 col-xs-12">
 				<label for="crudform:precocusto">Preço Custo R$ * :</label>
 				<p:inputText type="text" id="precocusto" value="#{crudBean.entity.precoCusto}" styleClass="form-control currency" >
-					<f:convertNumber minFractionDigits="2" maxFractionDigits="2" />
+					<f:convertNumber minFractionDigits="2" maxFractionDigits="2" locale="pt_BR" />
 				</p:inputText>
 			</div>	
 			
 			<div class="col-md-4 col-sm-4 col-xs-12">
 				<label for="crudform:precovenda">Preço Venda R$ * :</label>
 				<p:inputText type="text" id="precovenda" value="#{crudBean.entity.precoVenda}" styleClass="form-control currency" >
-					<f:convertNumber minFractionDigits="2" maxFractionDigits="2" />
+					<f:convertNumber minFractionDigits="2" maxFractionDigits="2" locale="pt_BR" />
 				</p:inputText>
 			</div>	
 			
@@ -68,8 +68,8 @@
 			<div class="col-md-12 col-sm-12 col-xs-12">
 				<p:commandButton styleClass="btn btn-success" action="#{crudBean.btnSalvar()}" value="Salvar" update=":crudform :scripts" />
 				<p:commandButton styleClass="btn btn-danger" value="Cancelar" action="#{crudBean.btnCancelar}" update="@form :scripts" />
-				<h:commandLink type="button" value="Consultar" styleClass="btn btn-primary pull-right" action="#{crudBean.btnConsultar}" 
-					rendered="#{not crudBean.estadoViewBean.search}" />
+				<p:commandLink type="button" value="Consultar" styleClass="btn btn-primary pull-right" action="#{crudBean.btnConsultar}" 
+					rendered="#{not crudBean.estadoViewBean.search}" update="@form scripts" global="false" />
 			</div>	
 			<div class="clearfix"></div>
 		</div>
