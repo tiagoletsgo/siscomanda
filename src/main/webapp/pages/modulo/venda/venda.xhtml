@@ -8,7 +8,7 @@
 	<ui:param name="md" value="12" />
 	<ui:param name="sm" value="12" />
 	<ui:param name="xs" value="12" />
-	<ui:param name="crudBean" value="#{tamanhoBean}" />
+	<ui:param name="crudBean" value="#{pontoDeVendaBean}" />
 	<ui:param name="hideTableList" value="#{crudBean.estadoViewBean.search}" />
 	
 	<ui:define name="title_main"> 
@@ -20,7 +20,7 @@
 		<h:panelGroup layout="block">Ponto de Venda (PDV)</h:panelGroup>
 	</ui:define>
 	<ui:define name="title_form_table"> 
-		<h:panelGroup layout="block">Tabela de pedidos</h:panelGroup>
+		<h:panelGroup layout="block">Minhas Vendas</h:panelGroup>
 	</ui:define>
 		
 	<ui:define name="content">
@@ -39,7 +39,7 @@
 	<ui:define name="table">
 		<h:panelGroup layout="block" id="formtabela">
 			<h:panelGroup layout="block" rendered="#{crudBean.estadoViewBean.search}">
-				<ui:include src="/pages/modulo/tamanho/tabela-tamanho.xhtml" />
+				<!-- <ui:include src="/pages/modulo/tamanho/tabela-tamanho.xhtml" /> -->
 			</h:panelGroup>
 		</h:panelGroup>
 	</ui:define>

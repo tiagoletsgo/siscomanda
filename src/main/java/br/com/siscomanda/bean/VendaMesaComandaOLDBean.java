@@ -28,7 +28,7 @@ import br.com.siscomanda.util.StringUtil;
 
 @Named
 @ViewScoped
-public class VendaMesaComandaBean extends BaseBean<VendaOLD> implements Serializable {
+public class VendaMesaComandaOLDBean extends BaseBean<VendaOLD> implements Serializable {
 
 	private static final long serialVersionUID = -7879816895142165754L;
 	
