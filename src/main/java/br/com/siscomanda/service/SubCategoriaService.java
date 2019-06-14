@@ -29,6 +29,10 @@ public class SubCategoriaService implements Serializable {
 			list = dao.porDescricao(subCategoria.getDescricao());
 		}
 		
+		if(list == null && subCategoria.getCategoria() != null) {
+			list = dao.porCategoria(subCategoria.getCategoria());
+		}
+		
 		if(list == null) {
 			list = todos();
 		}
