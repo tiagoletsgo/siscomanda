@@ -12,7 +12,7 @@ import br.com.siscomanda.base.model.BaseEntity;
 
 @Entity
 @Table(name = "item_venda_adicional")
-public class ItemVendaAdicional extends BaseEntity implements Serializable {
+public class ItemVendaAdicionalOLD extends BaseEntity implements Serializable {
 
 	private static final long serialVersionUID = 4175750690428927319L;
 	
@@ -26,11 +26,11 @@ public class ItemVendaAdicional extends BaseEntity implements Serializable {
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "venda_id", nullable = false)
-	private Venda venda;
+	private VendaOLD venda;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "item_venda_id", nullable = false)
-	private ItemVenda itemVenda;
+	private ItemVendaOLD itemVenda;
 
 	public Adicional getAdicional() {
 		return adicional;
@@ -48,19 +48,19 @@ public class ItemVendaAdicional extends BaseEntity implements Serializable {
 		this.produto = produto;
 	}
 
-	public Venda getVenda() {
+	public VendaOLD getVenda() {
 		return venda;
 	}
 
-	public void setVenda(Venda venda) {
+	public void setVenda(VendaOLD venda) {
 		this.venda = venda;
 	}
 
-	public ItemVenda getItemVenda() {
+	public ItemVendaOLD getItemVenda() {
 		return itemVenda;
 	}
 
-	public void setItemVenda(ItemVenda itemVenda) {
+	public void setItemVenda(ItemVendaOLD itemVenda) {
 		this.itemVenda = itemVenda;
 	}
 }

@@ -26,7 +26,7 @@ import br.com.siscomanda.enumeration.ETipoVenda;
 
 @Entity
 @Table(name = "venda")
-public class Venda extends BaseEntity implements Serializable {
+public class VendaOLD extends BaseEntity implements Serializable {
 
 	private static final long serialVersionUID = 2583564472683970706L;
 		
@@ -34,7 +34,7 @@ public class Venda extends BaseEntity implements Serializable {
 	private List<PagamentoVenda> pagamentos = new ArrayList<>();
 	
 	@OneToMany(mappedBy = "venda", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-	private List<ItemVenda> itens = new ArrayList<>();
+	private List<ItemVendaOLD> itens = new ArrayList<>();
 	
 	@Column(name = "pago", nullable = false)
 	private boolean pago;
@@ -92,10 +92,10 @@ public class Venda extends BaseEntity implements Serializable {
 	@Column(name = "tipo_venda", nullable = false)
 	private ETipoVenda tipoVenda;
 	
-	public Venda() {
+	public VendaOLD() {
 	}
 	
-	public Venda(Long id) {
+	public VendaOLD(Long id) {
 		setId(id);
 	}
 
@@ -107,11 +107,11 @@ public class Venda extends BaseEntity implements Serializable {
 		this.pagamentos = pagamentos;
 	}
 
-	public List<ItemVenda> getItens() {
+	public List<ItemVendaOLD> getItens() {
 		return itens;
 	}
 
-	public void setItens(List<ItemVenda> itens) {
+	public void setItens(List<ItemVendaOLD> itens) {
 		this.itens = itens;
 	}
 

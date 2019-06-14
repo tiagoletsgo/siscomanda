@@ -10,13 +10,13 @@ import javax.inject.Inject;
 
 import br.com.siscomanda.exception.SiscomandaException;
 import br.com.siscomanda.model.Adicional;
-import br.com.siscomanda.model.ItemVenda;
+import br.com.siscomanda.model.ItemVendaOLD;
 import br.com.siscomanda.model.Produto;
-import br.com.siscomanda.model.Venda;
+import br.com.siscomanda.model.VendaOLD;
 import br.com.siscomanda.service.DefinicaoGeralService;
 import br.com.siscomanda.util.JSFUtil;
 
-public abstract class VendaService implements Serializable {
+public abstract class VendaOLDService implements Serializable {
 
 	private static final long serialVersionUID = -8273876283694756574L;
 	
@@ -58,9 +58,9 @@ public abstract class VendaService implements Serializable {
 		return produtos;
 	}
 	
-	public void validaQuantidadeTotalItens(List<ItemVenda> itens) throws SiscomandaException {
+	public void validaQuantidadeTotalItens(List<ItemVendaOLD> itens) throws SiscomandaException {
 		Double total = new Double(0);
-		for(ItemVenda item : itens) {
+		for(ItemVendaOLD item : itens) {
 			total += item.getQuantidade();
 		}
 		
@@ -70,23 +70,23 @@ public abstract class VendaService implements Serializable {
 		}
 	}
 	
-	public Long setIdTemporarioItem(List<ItemVenda> itens) {
+	public Long setIdTemporarioItem(List<ItemVendaOLD> itens) {
 		Long id = 1L;
-		for(ItemVenda item : itens) {
+		for(ItemVendaOLD item : itens) {
 			id = item.getId() +1;
 		}
 		return id;
 	}
 	
-	public void removeIdTemporario(List<ItemVenda> itens) {
-		for(ItemVenda item : itens) {
+	public void removeIdTemporario(List<ItemVendaOLD> itens) {
+		for(ItemVendaOLD item : itens) {
 			item.setId(null);
 		}
 	}
 	
-	public Double calculaSubtotal(List<ItemVenda> itens) {
+	public Double calculaSubtotal(List<ItemVendaOLD> itens) {
 		Double subtotal = new Double(0);
-		for(ItemVenda item : itens) {
+		for(ItemVendaOLD item : itens) {
 			for(Adicional adicional : item.getAdicionais()) {
 				subtotal += adicional.getPrecoVenda();
 			}
@@ -96,7 +96,7 @@ public abstract class VendaService implements Serializable {
 		return subtotal;
 	}
 	
-	public Double calculaSubTotalItem(ItemVenda item) {
+	public Double calculaSubTotalItem(ItemVendaOLD item) {
 		Double subtotal = new Double(0);
 		for(Adicional adicional : item.getAdicionais()) {
 			subtotal += adicional.getPrecoVenda();
@@ -104,25 +104,25 @@ public abstract class VendaService implements Serializable {
 		return subtotal + (item.getPrecoVenda() * item.getQuantidade());
 	}
 	
-	public Double calculaTotal(Venda venda) {
+	public Double calculaTotal(VendaOLD venda) {
 		return (venda.getSubtotal() + venda.getTaxaEntrega() + venda.getTaxaServico()) - venda.getDesconto();
 	}
 	
-	public List<ItemVenda> ordenarItemMenorParaMaior(List<ItemVenda> itens) {
+	public List<ItemVendaOLD> ordenarItemMenorParaMaior(List<ItemVendaOLD> itens) {
 		Collections.sort(itens);
 		return itens;
 	}
 			
-	public void incluirItem(Venda venda, List<Adicional> adicionais, ItemVenda item, Produto produto, Double quantidade) throws SiscomandaException {
+	public void incluirItem(VendaOLD venda, List<Adicional> adicionais, ItemVendaOLD item, Produto produto, Double quantidade) throws SiscomandaException {
 		
-		ItemVenda itemVenda = null;
+		ItemVendaOLD itemVenda = null;
 
 		if(quantidade.equals(new Double(0))) {
 			throw new SiscomandaException(produto.getDescricao() + " necessário informar a quantidade antes de salvar. Por favor tente novamente.");
 		}
 		
 		if(item.isNovo()) {
-			itemVenda = new ItemVenda();
+			itemVenda = new ItemVendaOLD();
 			itemVenda.setId(setIdTemporarioItem(venda.getItens()));
 			itemVenda.setProduto(produto);
 			itemVenda.setQuantidade(quantidade);
@@ -141,7 +141,7 @@ public abstract class VendaService implements Serializable {
 		}
 	}
 	
-	private List<Adicional> incluirAdicional(ItemVenda item, List<Adicional> adicionais) {
+	private List<Adicional> incluirAdicional(ItemVendaOLD item, List<Adicional> adicionais) {
 		List<Adicional> cloneAdicionais = new ArrayList<>();
 		if(adicionais != null) {
 			for(Adicional adc : adicionais) {
@@ -160,11 +160,11 @@ public abstract class VendaService implements Serializable {
 		return cloneAdicionais;
 	}
 		
-	public ItemVenda clonar(Produto produto, List<Adicional> adicionais) {
-		ItemVenda item = null;
+	public ItemVendaOLD clonar(Produto produto, List<Adicional> adicionais) {
+		ItemVendaOLD item = null;
 		
 		if(produto != null) {
-			item = new ItemVenda();
+			item = new ItemVendaOLD();
 			item.setProduto(produto);
 			item.setAdicionais(adicionais);
 			return item;
@@ -173,11 +173,11 @@ public abstract class VendaService implements Serializable {
 		return item;
 	}
 	
-	public List<ItemVenda> removeItem(List<ItemVenda> itens, ItemVenda item, Double quantidade) throws SiscomandaException {
-		List<ItemVenda> itensVenda = new ArrayList<>();
+	public List<ItemVendaOLD> removeItem(List<ItemVendaOLD> itens, ItemVendaOLD item, Double quantidade) throws SiscomandaException {
+		List<ItemVendaOLD> itensVenda = new ArrayList<>();
 		itensVenda.addAll(itens);
 		
-		for(ItemVenda itemVenda : itensVenda) {
+		for(ItemVendaOLD itemVenda : itensVenda) {
 			if(itemVenda.getProduto().equals(item.getProduto()) && itemVenda.getProduto().getCodigoEan().equals(item.getProduto().getCodigoEan())) {
 				if(quantidade <= new Double(0)) {
 					throw new SiscomandaException("Não são permitidos valores negativos, zerados ou vazios.");

@@ -8,7 +8,7 @@
 	<ui:param name="md" value="12" />
 	<ui:param name="sm" value="12" />
 	<ui:param name="xs" value="12" />
-	<ui:param name="crudBean" value="#{tipoBean}" />
+	<ui:param name="crudBean" value="#{tamanhoBean}" />
 	<ui:param name="hideTableList" value="#{crudBean.estadoViewBean.search}" />
 	
 	<ui:define name="title_main"> 
@@ -17,21 +17,21 @@
 		<h:panelGroup layout="block" rendered="#{not crudBean.estadoViewBean.insert and not crudBean.estadoViewBean.update}">Consultar</h:panelGroup>
 	</ui:define>
 	<ui:define name="title_form"> 
-		<h:panelGroup layout="block">Tipo</h:panelGroup>
+		<h:panelGroup layout="block">Ponto de Venda (PDV)</h:panelGroup>
 	</ui:define>
 	<ui:define name="title_form_table"> 
-		<h:panelGroup layout="block">Tabela de dados tipo</h:panelGroup>
+		<h:panelGroup layout="block">Tabela de pedidos</h:panelGroup>
 	</ui:define>
 		
 	<ui:define name="content">
 		<h:panelGroup layout="block" id="formcadastro">
 			<h:panelGroup layout="block" rendered="#{crudBean.estadoViewBean.insert or crudBean.estadoViewBean.update}">
-				<ui:include src="/pages/modulo/tipo/cadastro-tipo.xhtml" />
+				<!-- <ui:include src="/pages/modulo/tamanho/cadastro-tamanho.xhtml" /> -->
 			</h:panelGroup>
 		</h:panelGroup>
 		<h:panelGroup layout="block" id="formconsulta">
 			<h:panelGroup layout="block" rendered="#{not crudBean.estadoViewBean.insert and not crudBean.estadoViewBean.update}">
-				<ui:include src="/pages/modulo/tipo/consulta-tipo.xhtml" />
+				<!-- <ui:include src="/pages/modulo/tamanho/consulta-tamanho.xhtml" /> -->
 			</h:panelGroup>
 		</h:panelGroup>
 	</ui:define>
@@ -39,31 +39,35 @@
 	<ui:define name="table">
 		<h:panelGroup layout="block" id="formtabela">
 			<h:panelGroup layout="block" rendered="#{crudBean.estadoViewBean.search}">
-				<ui:include src="/pages/modulo/tipo/tabela-tipo.xhtml" />
+				<ui:include src="/pages/modulo/tamanho/tabela-tamanho.xhtml" />
 			</h:panelGroup>
 		</h:panelGroup>
 	</ui:define>
 	
 	<ui:define name="dialog">
-		<p:dialog widgetVar="dlgConfirmarExclusao" modal="true" responsive="true" showEffect="bounce" hideEffect="bounce"
-			resizable="false" >
-			<f:facet name="header">
-				Confirmar exclusão
-			</f:facet>
+		<style>
+			.ui-dialog .ui-dialog-content {
+				overflow: inherit !important;
+			}
+			.alert {
+				padding: 6px 12px !important;
+			}
+			.font-family-default {
+				font-family: "montserrat" !important;
+			}
+		</style>
+		<p:dialog widgetVar="dlgConfirmarExclusao" modal="true" showEffect="fade" hideEffect="fade" responsive="true" resizable="false">
+			<f:facet name="header">Confirma exclusão</f:facet>
 			
-			<div class="col-md-12 col-sm-12 col-xs-12">
-				<span>
+			<h:form id="formExcluirProduto">
+				<div class="col-md-12 col-sm-12 col-xs-12 text-center">
 					Tem certeza que deseja remover esse(s) registro(s)?
-				</span>				
-			</div>
+				</div>
+			</h:form>
 			
 			<f:facet name="footer">
-				<h:form>
-					<h:commandButton type="button"  onclick="PF('dlgConfirmarExclusao').hide();" action="#{crudBean.btnRemover}" styleClass="btn btn-danger btn-xs" value="Sim">
-						<p:ajax update=":crudform:tabelaTipo" process="@form " />
-					</h:commandButton>
-					<h:commandButton onclick="PF('dlgConfirmarExclusao').hide(); return false;" styleClass="btn btn-success btn-xs" value="Não" />
-				</h:form>
+				<p:commandButton process="@this" styleClass="btn btn-success" value="Confirmar" action="#{crudBean.btnRemover}" oncomplete="PF('dlgConfirmarExclusao').hide();" update="crudform" />
+				<p:commandButton styleClass="btn btn-danger" global="false" value="Cancelar" oncomplete="PF('dlgConfirmarExclusao').hide(); return false;"  />	
 			</f:facet>
 		</p:dialog>
 	</ui:define>

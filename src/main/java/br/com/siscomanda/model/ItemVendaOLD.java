@@ -16,7 +16,7 @@ import br.com.siscomanda.base.model.BaseEntity;
 
 @Entity
 @Table(name = "item_venda")
-public class ItemVenda extends BaseEntity implements Serializable, Comparable<ItemVenda> {
+public class ItemVendaOLD extends BaseEntity implements Serializable, Comparable<ItemVendaOLD> {
 
 	private static final long serialVersionUID = 7754528961077613833L;
 	
@@ -26,7 +26,7 @@ public class ItemVenda extends BaseEntity implements Serializable, Comparable<It
 	
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "venda_id", nullable = false)
-	private Venda venda;
+	private VendaOLD venda;
 		
 	@Column(name = "quantidade", nullable = false)
 	private Double quantidade;
@@ -91,16 +91,16 @@ public class ItemVenda extends BaseEntity implements Serializable, Comparable<It
 		this.adicionais = adicionais;
 	}
 	
-	public Venda getVenda() {
+	public VendaOLD getVenda() {
 		return venda;
 	}
 
-	public void setVenda(Venda venda) {
+	public void setVenda(VendaOLD venda) {
 		this.venda = venda;
 	}
 
 	@Override
-	public int compareTo(ItemVenda o) {
+	public int compareTo(ItemVendaOLD o) {
 		if(this.getId() < o.getId()) {
 			return -1;
 		}

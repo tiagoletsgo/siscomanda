@@ -18,27 +18,27 @@ import br.com.siscomanda.enumeration.ETipoVenda;
 import br.com.siscomanda.exception.SiscomandaException;
 import br.com.siscomanda.model.Adicional;
 import br.com.siscomanda.model.Cliente;
-import br.com.siscomanda.model.ItemVenda;
+import br.com.siscomanda.model.ItemVendaOLD;
 import br.com.siscomanda.model.Produto;
-import br.com.siscomanda.model.Venda;
+import br.com.siscomanda.model.VendaOLD;
 import br.com.siscomanda.service.ClienteService;
-import br.com.siscomanda.service.VendaMesaComandaService;
+import br.com.siscomanda.service.VendaMesaComandaOLDService;
 import br.com.siscomanda.util.JSFUtil;
 import br.com.siscomanda.util.StringUtil;
 
 @Named
 @ViewScoped
-public class VendaMesaComandaBean extends BaseBean<Venda> implements Serializable {
+public class VendaMesaComandaBean extends BaseBean<VendaOLD> implements Serializable {
 
 	private static final long serialVersionUID = -7879816895142165754L;
 	
 	@Inject
-	private VendaMesaComandaService service;
+	private VendaMesaComandaOLDService service;
 	
 	@Inject
 	private ClienteService clienteService;
 	
-	private ItemVenda itemSelecionado;
+	private ItemVendaOLD itemSelecionado;
 	
 	private Double quantidade;
 	
@@ -95,7 +95,7 @@ public class VendaMesaComandaBean extends BaseBean<Venda> implements Serializabl
 			setEntity(service.porFiltro(getEntity(), true).get(0));
 			mesaComanda = getEntity().getMesaComanda();
 			
-			for(ItemVenda item : getEntity().getItens()) {
+			for(ItemVendaOLD item : getEntity().getItens()) {
 				for(Adicional adicional : service.carregaAdicionais(item)) {
 					adicional.setQuantidade(new Double(1));
 					item.getAdicionais().add(adicional);
@@ -157,7 +157,7 @@ public class VendaMesaComandaBean extends BaseBean<Venda> implements Serializabl
 		try {
 			service.remover(getEntity());
 			
-			setEntity(new Venda());
+			setEntity(new VendaOLD());
 			initValores();
 			
 			getEstadoViewBean().setCurrentView(false, false, false, true);
@@ -187,7 +187,7 @@ public class VendaMesaComandaBean extends BaseBean<Venda> implements Serializabl
 		
 	public void btnRemoveItem() {
 		try {
-			ItemVenda item = service.clonar(produtoSelecionado, getSelectManyCheckBoxAdicionais());
+			ItemVendaOLD item = service.clonar(produtoSelecionado, getSelectManyCheckBoxAdicionais());
 			
 			if(item == null) {
 				item = service.clonar(itemSelecionado.getProduto(), itemSelecionado.getAdicionais());
@@ -195,7 +195,7 @@ public class VendaMesaComandaBean extends BaseBean<Venda> implements Serializabl
 				item.setQuantidade(itemSelecionado.getQuantidade());
 			}
 			
-			List<ItemVenda> itens = service.removeItem(getEntity().getItens(), item, quantidade);
+			List<ItemVendaOLD> itens = service.removeItem(getEntity().getItens(), item, quantidade);
 			getEntity().setItens(itens);
 			afterAction();
 			
@@ -219,7 +219,7 @@ public class VendaMesaComandaBean extends BaseBean<Venda> implements Serializabl
 	
 	@Override
 	public void btnNovo() {
-		setEntity(new Venda()); 
+		setEntity(new VendaOLD()); 
 		
 		initValores();
 		getEntity().setStatus(EStatus.EM_ABERTO);
@@ -241,11 +241,11 @@ public class VendaMesaComandaBean extends BaseBean<Venda> implements Serializabl
 		}
 	}
 	
-	public void editar(Venda venda) {
+	public void editar(VendaOLD venda) {
 		
 		setEntity(service.porFiltro(venda, true).get(0));
 		mesaComanda = venda.getMesaComanda();
-		for(ItemVenda item : getEntity().getItens()) {
+		for(ItemVendaOLD item : getEntity().getItens()) {
 			for(Adicional adicional : service.carregaAdicionais(item)) {
 				adicional.setQuantidade(new Double(1));
 				item.getAdicionais().add(adicional);
@@ -275,7 +275,7 @@ public class VendaMesaComandaBean extends BaseBean<Venda> implements Serializabl
 		return EStatus.values();
 	}
 	
-	public Double calculaSubTotalItem(ItemVenda item) {
+	public Double calculaSubTotalItem(ItemVendaOLD item) {
 		return service.calculaSubTotalItem(item);
 	}
 	
@@ -290,10 +290,10 @@ public class VendaMesaComandaBean extends BaseBean<Venda> implements Serializabl
 		return mesasComandas;
 	}
 
-	public ItemVenda getItemSelecionado() {
+	public ItemVendaOLD getItemSelecionado() {
 		getEntity();
 		if(itemSelecionado == null) {
-			itemSelecionado = new ItemVenda();
+			itemSelecionado = new ItemVendaOLD();
 		}
 		return itemSelecionado;
 	}
@@ -306,7 +306,7 @@ public class VendaMesaComandaBean extends BaseBean<Venda> implements Serializabl
 		return StringUtil.converterDouble(valor);
 	}
 
-	public void setItemSelecionado(ItemVenda itemSelecionado) {
+	public void setItemSelecionado(ItemVendaOLD itemSelecionado) {
 		this.itemSelecionado = itemSelecionado;
 	}
 
