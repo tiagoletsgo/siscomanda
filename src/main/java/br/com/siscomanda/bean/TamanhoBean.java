@@ -10,10 +10,10 @@ import javax.inject.Named;
 
 import br.com.siscomanda.base.bean.BaseBean;
 import br.com.siscomanda.exception.SiscomandaException;
+import br.com.siscomanda.model.SubCategoria;
 import br.com.siscomanda.model.Tamanho;
-import br.com.siscomanda.model.Tipo;
+import br.com.siscomanda.service.SubCategoriaService;
 import br.com.siscomanda.service.TamanhoService;
-import br.com.siscomanda.service.TipoService;
 import br.com.siscomanda.util.JSFUtil;
 
 @Named
@@ -24,9 +24,9 @@ public class TamanhoBean extends BaseBean<Tamanho> implements Serializable {
 
 	@Inject
 	private TamanhoService tamanhoService;
-	
+		
 	@Inject
-	private TipoService tipoService;
+	private SubCategoriaService subCategoriaService;
 	
 	private List<Tamanho> tamanhos;
 	
@@ -34,11 +34,11 @@ public class TamanhoBean extends BaseBean<Tamanho> implements Serializable {
 	
 	private List<Tamanho> tamanhosSelecionados;
 	
-	private List<Tipo> tipos;
+	private List<SubCategoria> subCategorias;
 	
 	@Override 
 	public void init() {
-		tipos = tipoService.todos();
+		subCategorias = subCategoriaService.todos();
 	}
 	
 	public void btnRemover() {
@@ -56,6 +56,7 @@ public class TamanhoBean extends BaseBean<Tamanho> implements Serializable {
 			tamanhoService.salvar(getEntity());
 			setEntity(new Tamanho());
 			getEstadoViewBean().setUpdate(false);
+			beforeSearch();
 		}
 		catch(SiscomandaException e) {
 			JSFUtil.addMessage(FacesMessage.SEVERITY_ERROR, "Erro ao salvar. " + e.getMessage());
@@ -77,6 +78,17 @@ public class TamanhoBean extends BaseBean<Tamanho> implements Serializable {
 			setElements(tamanhoService.todos());
 		}
 		setEntity(new Tamanho());
+	}
+	
+	@Override
+	public void btnEditar(Tamanho tamanho) {
+		try {	
+			tamanho = tamanhoService.porTamanho(tamanho);
+			super.btnEditar(tamanho);
+		}
+		catch(SiscomandaException e) {
+			JSFUtil.addMessage(FacesMessage.SEVERITY_ERROR, e.getMessage());
+		}
 	}
 
 	public List<Tamanho> getTamanhos() {
@@ -103,7 +115,7 @@ public class TamanhoBean extends BaseBean<Tamanho> implements Serializable {
 		this.tamanhosSelecionados = tamanhosSelecionados;
 	}
 	
-	public List<Tipo> getTipos() {
-		return tipos;
+	public List<SubCategoria> getSubCategorias() {
+		return subCategorias;
 	}
 }

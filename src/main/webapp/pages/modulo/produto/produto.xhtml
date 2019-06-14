@@ -38,4 +38,32 @@
 			<ui:include src="/pages/modulo/produto/tabela-produto.xhtml" />
 		</h:panelGroup>
 	</ui:define>
+	
+	<ui:define name="dialog">
+		<style>
+			.ui-dialog .ui-dialog-content {
+				overflow: inherit !important;
+			}
+			.alert {
+				padding: 6px 12px !important;
+			}
+			.font-family-default {
+				font-family: "montserrat" !important;
+			}
+		</style>
+		<p:dialog widgetVar="dlgConfirmarExclusao" modal="true" showEffect="fade" hideEffect="fade" responsive="true" resizable="false">
+			<f:facet name="header">Confirma exclusão</f:facet>
+			
+			<h:form id="formExcluirProduto">
+				<div class="col-md-12 col-sm-12 col-xs-12 text-center">
+					Tem certeza que deseja remover esse(s) registro(s)?
+				</div>
+			</h:form>
+			
+			<f:facet name="footer">
+				<p:commandButton process="@this" styleClass="btn btn-success" value="Confirmar" action="#{crudBean.btnRemover}" oncomplete="PF('dlgConfirmarExclusao').hide();" update="crudform" />
+				<p:commandButton styleClass="btn btn-danger" global="false" value="Cancelar" oncomplete="PF('dlgConfirmarExclusao').hide(); return false;"  />	
+			</f:facet>
+		</p:dialog>
+	</ui:define>
 </ui:composition>

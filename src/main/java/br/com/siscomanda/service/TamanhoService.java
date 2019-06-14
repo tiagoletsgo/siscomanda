@@ -8,8 +8,8 @@ import javax.inject.Inject;
 
 import br.com.siscomanda.config.jpa.Transactional;
 import br.com.siscomanda.exception.SiscomandaException;
+import br.com.siscomanda.model.SubCategoria;
 import br.com.siscomanda.model.Tamanho;
-import br.com.siscomanda.model.Tipo;
 import br.com.siscomanda.repository.dao.TamanhoDAO;
 import br.com.siscomanda.util.JSFUtil;
 import br.com.siscomanda.util.StringUtil;
@@ -34,8 +34,12 @@ public class TamanhoService implements Serializable {
 		return list;
 	}
 	
-	public List<Tamanho> tamanhoPorTipo(Tipo tipo) {
-		return dao.tamanhoPorTipo(tipo);
+	public List<Tamanho> tamanhoPorSubCategoria(SubCategoria subCategoria) {
+		return dao.porSubCategoria(subCategoria);
+	}
+	
+	public Tamanho porTamanho(Tamanho tamanho) throws SiscomandaException {
+		return dao.porTamanho(tamanho);
 	}
 	
 	@Transactional

@@ -5,8 +5,11 @@
 	xmlns:p="http://primefaces.org/ui">
 	
 	
-		<p:dataTable id="tabelaTamanho" styleClass="table table-striped jambo_table" value="#{crudBean.elements}" var="tipo"
-			selection="#{crudBean.tiposSelecionados}" rowKey="#{tipo.id}" emptyMessage="Sem dados" reflow="true">
+		<p:dataTable id="tabelaTamanho" styleClass="table table-striped jambo_table" value="#{crudBean.elements}" var="tamanho"
+			selection="#{crudBean.tamanhosSelecionados}" rowKey="#{tamanho.id}" emptyMessage="Sem dados" reflow="true"
+			paginator="true" rows="5" paginatorPosition="top">
+			
+			<p:ajax event="page" global="false" />
 			
 			<p:column styleClass="ui-datatable-center" selectionMode="multiple" />
 			
@@ -14,13 +17,13 @@
 				<f:facet name="header">
 					<h:outputLabel value="Descrição" />
 				</f:facet>
-				<h:outputText value="#{tipo.descricao}"/>
+				<h:outputText value="#{tamanho.descricao}"/>
 			</p:column>
 			<p:column>
 				<f:facet name="header">
 					<h:outputLabel value="#" />
 				</f:facet>
-				<p:commandButton styleClass="btn btn-warning btn-xs" update="@form scripts" global="false" value="Editar" action="#{crudBean.btnEditar(tipo)}" />
+				<p:commandButton styleClass="btn btn-warning btn-xs" update="@form scripts" global="false" value="Editar" action="#{crudBean.btnEditar(tamanho)}" />
 			</p:column>
 			<f:facet name="footer">
 				<p:commandButton styleClass="btn btn-danger btn-xs" style="float: left;" oncomplete="PF('dlgConfirmarExclusao').show();" value="Deletar" 
