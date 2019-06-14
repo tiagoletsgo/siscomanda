@@ -51,7 +51,8 @@ public class ProdutoService implements Serializable {
 	}
 	
 	public Produto porCodigo(Produto produto) throws SiscomandaException {
-		return dao.porCodigo(produto);
+		produto = dao.porCodigo(produto);
+		return produto;
 	}
 	
 	private void validacao(Produto produto) throws SiscomandaException {

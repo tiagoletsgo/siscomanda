@@ -13,7 +13,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 
 import br.com.siscomanda.base.model.BaseEntity;
 
@@ -48,12 +47,6 @@ public class Produto extends BaseEntity implements Serializable {
 	@Column(name = "controla_estoque")
 	private boolean controlaEstoque;
 	
-	@Column(name = "preco_custo", nullable = false)
-	private Double precoCusto = BigDecimal.ZERO.doubleValue();
-	
-	@Column(name = "preco_venda", nullable = false)
-	private Double precoVenda = BigDecimal.ZERO.doubleValue();
-	
 	@Column(name = "estoque_minimo")
 	private Double estoqueMinimo = BigDecimal.ZERO.doubleValue();
 	
@@ -66,13 +59,6 @@ public class Produto extends BaseEntity implements Serializable {
 	@OneToMany(mappedBy = "produto", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Preco> precos = new ArrayList<Preco>();
 	
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "tipo_id")
-	private Tipo tipo;
-	
-	@Transient
-	private boolean porTamanho;
-
 	public Produto() {	}
 	
 	public Produto(Long id) {
@@ -140,22 +126,6 @@ public class Produto extends BaseEntity implements Serializable {
 		this.controlaEstoque = controlaEstoque;
 	}
 
-	public Double getPrecoCusto() {
-		return precoCusto;
-	}
-
-	public void setPrecoCusto(Double precoCusto) {
-		this.precoCusto = precoCusto;
-	}
-
-	public Double getPrecoVenda() {
-		return precoVenda;
-	}
-
-	public void setPrecoVenda(Double precoVenda) {
-		this.precoVenda = precoVenda;
-	}
-
 	public Double getEstoqueMinimo() {
 		return estoqueMinimo;
 	}
@@ -180,27 +150,11 @@ public class Produto extends BaseEntity implements Serializable {
 		this.permiteAdicional = permiteAdicional;
 	}
 
-	public boolean isPorTamanho() {
-		return porTamanho;
-	}
-
-	public void setPorTamanho(boolean porTamanho) {
-		this.porTamanho = porTamanho;
-	}
-
 	public List<Preco> getPrecos() {
 		return precos;
 	}
 
 	public void setPrecos(List<Preco> precos) {
 		this.precos = precos;
-	}
-
-	public Tipo getTipo() {
-		return tipo;
-	}
-
-	public void setTipo(Tipo tipo) {
-		this.tipo = tipo;
 	}
 }

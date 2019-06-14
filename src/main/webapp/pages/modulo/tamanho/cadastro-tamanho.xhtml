@@ -21,10 +21,10 @@
 		
 		<div class="row">
 			<div class="col-md-12 col-sm-12 col-xs-12">
-				<label for="crudform:tipo">Tipo * :</label>
-				<h:selectOneMenu id="tipo" styleClass="form-control" value="#{crudBean.entity.tipo}" converter="entityConverter">
+				<label for="crudform:tipo">Sub-Categoria * :</label>
+				<h:selectOneMenu id="tipo" styleClass="form-control" value="#{crudBean.entity.subCategoria}" converter="entityConverter">
 					<f:selectItem itemLabel="Selecione" noSelectionOption="true" />
-					<f:selectItems value="#{crudBean.tipos}" var="tipo" itemLabel="#{tipo.descricao}" itemValue="#{tipo}" />
+					<f:selectItems value="#{crudBean.subCategorias}" var="subcategoria" itemLabel="#{subcategoria.descricao}" itemValue="#{subcategoria}" />
 				</h:selectOneMenu>
 			</div>
 		</div>

@@ -14,11 +14,9 @@ import br.com.siscomanda.model.Preco;
 import br.com.siscomanda.model.Produto;
 import br.com.siscomanda.model.SubCategoria;
 import br.com.siscomanda.model.Tamanho;
-import br.com.siscomanda.model.Tipo;
 import br.com.siscomanda.service.ProdutoService;
 import br.com.siscomanda.service.SubCategoriaService;
 import br.com.siscomanda.service.TamanhoService;
-import br.com.siscomanda.service.TipoService;
 import br.com.siscomanda.util.JSFUtil;
 
 @Named
@@ -29,9 +27,6 @@ public class ProdutoBean extends BaseBean<Produto> implements Serializable {
 
 	@Inject
 	private ProdutoService produtoService;
-	
-	@Inject
-	private TipoService tipoService;
 	
 	@Inject
 	private TamanhoService tamanhoService;
@@ -47,13 +42,10 @@ public class ProdutoBean extends BaseBean<Produto> implements Serializable {
 	
 	private List<SubCategoria> subCategorias;
 	
-	private List<Tipo> tipos;
-	
 	private List<Tamanho> tamanhos;
 	
 	@Override 
 	public void init() {
-		this.tipos = tipoService.todos();
 	}
 	
 	public void btnRemover() {
@@ -68,32 +60,28 @@ public class ProdutoBean extends BaseBean<Produto> implements Serializable {
 	
 	public void carregaSubCategorias() {
 		try {
+			getEntity().getPrecos().clear();
 			subCategorias = subCategoriaService.pesquisar(getEntity().getCategoria());
 		} catch (SiscomandaException e) {
 			subCategorias = null;
 		}
 	}
 	
-	public void porTamanho() {
-		if(!getEntity().isPorTamanho()) {
-			getTipos().clear();
-			getEntity().setTipo(null);
-			getEntity().getPrecos().clear();
-		}
-		else {
-			this.tipos = tipoService.todos();
-		}
-	}
-	
 	public void carregaPreco() {
 		getEntity().getPrecos().clear();
-		this.tamanhos = tamanhoService.tamanhoPorTipo(getEntity().getTipo());
+		this.tamanhos = tamanhoService.tamanhoPorSubCategoria(getEntity().getSubCategoria());
 		for(Tamanho tamanho : tamanhos) {
 			Preco preco = new Preco();
 			preco.setTamanho(tamanho);
 			preco.setProduto(getEntity());
 			getEntity().getPrecos().add(preco);
 		}
+	}
+	
+	@Override
+	public void btnNovo() {
+		init();
+		super.btnNovo();
 	}
 	
 	public void btnSalvar() {
@@ -116,7 +104,7 @@ public class ProdutoBean extends BaseBean<Produto> implements Serializable {
 		try {			
 			produto = produtoService.porCodigo(produto);
 			setEntity(produto);
-			
+			this.subCategorias = subCategoriaService.pesquisar(getEntity().getCategoria());
 			getEstadoViewBean().setCurrentView(false, true, false, true);
 		}
 		catch(SiscomandaException e) {
@@ -171,10 +159,6 @@ public class ProdutoBean extends BaseBean<Produto> implements Serializable {
 	
 	public List<SubCategoria> getSubCategorias() {
 		return subCategorias;
-	}
-	
-	public List<Tipo> getTipos() {
-		return tipos;
 	}
 	
 	public List<Tamanho> getTamanhos() {

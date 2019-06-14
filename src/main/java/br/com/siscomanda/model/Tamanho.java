@@ -27,8 +27,8 @@ public class Tamanho extends BaseEntity implements Serializable {
 	private boolean permiteMeioAmeio;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "tipo_id", nullable = false)
-	private Tipo tipo;
+	@JoinColumn(name = "subcategoria_id", nullable = false)
+	private SubCategoria subCategoria;
 
 	public String getDescricao() {
 		return descricao;
@@ -54,11 +54,11 @@ public class Tamanho extends BaseEntity implements Serializable {
 		this.permiteMeioAmeio = permiteMeioAmeio;
 	}
 
-	public Tipo getTipo() {
-		return tipo;
+	public SubCategoria getSubCategoria() {
+		return subCategoria;
 	}
 
-	public void setTipo(Tipo tipo) {
-		this.tipo = tipo;
+	public void setSubCategoria(SubCategoria subCategoria) {
+		this.subCategoria = subCategoria;
 	}
 }
