@@ -1,0 +1,81 @@
+package br.com.siscomanda.model;
+
+import java.io.Serializable;
+
+import br.com.siscomanda.base.model.BaseEntity;
+
+public class ItemVenda extends BaseEntity implements Serializable {
+
+	private static final long serialVersionUID = 3248279660381728704L;
+
+	private Venda venda;
+	private Produto produto;
+	private Double valor;
+	private Double total;
+	private Double quantidade;
+	private String observacao;
+
+	public ItemVenda() {
+		this.valor = new Double(0);
+		this.total = new Double(0);
+		this.quantidade = new Double(1);
+	}
+
+	public ItemVenda(Venda venda, Produto produto, Double valor, Double quantidade, String observacao) {
+		super();
+		this.venda = venda;
+		this.produto = produto;
+		this.valor = valor;
+		this.quantidade = quantidade;
+		this.total = (valor * quantidade);
+		this.observacao = observacao;
+	}
+
+	public Venda getVenda() {
+		return venda;
+	}
+
+	public void setVenda(Venda venda) {
+		this.venda = venda;
+	}
+
+	public Produto getProduto() {
+		return produto;
+	}
+
+	public void setProduto(Produto produto) {
+		this.produto = produto;
+	}
+
+	public Double getValor() {
+		return valor;
+	}
+
+	public void setValor(Double valor) {
+		this.valor = valor;
+	}
+
+	public Double getTotal() {
+		return total;
+	}
+
+	public void setTotal(Double total) {
+		this.total = total;
+	}
+
+	public Double getQuantidade() {
+		return quantidade;
+	}
+
+	public void setQuantidade(Double quantidade) {
+		this.quantidade = quantidade;
+	}
+
+	public String getObservacao() {
+		return observacao;
+	}
+
+	public void setObservacao(String observacao) {
+		this.observacao = observacao;
+	}
+}

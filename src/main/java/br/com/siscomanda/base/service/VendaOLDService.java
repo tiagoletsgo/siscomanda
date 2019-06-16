@@ -126,9 +126,9 @@ public abstract class VendaOLDService implements Serializable {
 			itemVenda.setId(setIdTemporarioItem(venda.getItens()));
 			itemVenda.setProduto(produto);
 			itemVenda.setQuantidade(quantidade);
-			itemVenda.setPrecoVenda(produto.getPrecoVenda());
+//			itemVenda.setPrecoVenda(produto.getPrecoVenda());
 			itemVenda.setObservacao(item.getObservacao());
-			itemVenda.setSubtotal(quantidade * produto.getPrecoVenda());
+//			itemVenda.setSubtotal(quantidade * produto.getPrecoVenda());
 			itemVenda.setVenda(venda);
 			
 			itemVenda.setAdicionais(incluirAdicional(itemVenda, adicionais));
@@ -191,7 +191,7 @@ public abstract class VendaOLDService implements Serializable {
 				}
 				
 				itemVenda.setQuantidade(itemVenda.getQuantidade() - quantidade);
-				itemVenda.setSubtotal(itemVenda.getQuantidade() * itemVenda.getProduto().getPrecoVenda());
+//				itemVenda.setSubtotal(itemVenda.getQuantidade() * itemVenda.getProduto().getPrecoVenda());
 				break;
 			}
 		}

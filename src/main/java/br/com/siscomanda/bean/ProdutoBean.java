@@ -103,9 +103,8 @@ public class ProdutoBean extends BaseBean<Produto> implements Serializable {
 	public void btnEditar(Produto produto) {
 		try {			
 			produto = produtoService.porCodigo(produto);
-			setEntity(produto);
-			this.subCategorias = subCategoriaService.pesquisar(getEntity().getCategoria());
-			getEstadoViewBean().setCurrentView(false, true, false, true);
+			this.subCategorias = subCategoriaService.pesquisar(produto.getCategoria());
+			super.btnEditar(produto);
 		}
 		catch(SiscomandaException e) {
 			JSFUtil.addMessage(FacesMessage.SEVERITY_ERROR, e.getMessage());

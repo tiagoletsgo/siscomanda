@@ -1,0 +1,61 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+	
+		<p:commandButton value="Novo Item" styleClass="btn btn-primary" update="@form" global="false" rendered="#{!crudBean.novoItem}" action="#{crudBean.btnNovoItem(true)}" />
+		<p:dataTable id="tabelaVendaItem" styleClass="table table-striped jambo_table" value="#{crudBean.entity.itens}" var="item"
+			emptyMessage="Sem dados">
+			
+			<p:column>
+				<f:facet name="header">
+					<h:outputLabel value="Código" />
+				</f:facet>
+				<h:outputText value="#{item.produto.id}" >
+					<f:convertNumber pattern="000000" maxIntegerDigits="6" />
+				</h:outputText>
+			</p:column>
+			<p:column styleClass="ui-datatable-left">
+				<f:facet name="header">
+					<h:outputLabel value="Descrição" />
+				</f:facet>
+				<h:outputText value="#{item.produto.descricao}"/>
+			</p:column>
+			<p:column>
+				<f:facet name="header">
+					<h:outputLabel value="Quantidade" />
+				</f:facet>
+				<h:outputText value="#{item.quantidade}">
+					<f:convertNumber minFractionDigits="2" maxFractionDigits="2" locale="pt_BR" />
+				</h:outputText>
+			</p:column>
+			<p:column>
+				<f:facet name="header">
+					<h:outputLabel value="Subtotal" />
+				</f:facet>
+				<h:outputText value="#{item.valor}">
+					<f:convertNumber minFractionDigits="2" maxFractionDigits="2" locale="pt_BR" />
+				</h:outputText>
+			</p:column>
+			<p:column>
+				<f:facet name="header">
+					<h:outputLabel value="Total" />
+				</f:facet>
+				<h:outputText value="#{item.total}">
+					<f:convertNumber minFractionDigits="2" maxFractionDigits="2" locale="pt_BR" />
+				</h:outputText>
+			</p:column>
+			<p:column>
+				<f:facet name="header">
+					<h:outputLabel value="#" />
+				</f:facet>
+				<p:commandButton styleClass="btn btn-warning btn-xs" value="Editar" action="#{crudBean.btnEditar(subcategoria)}" update="@form" />
+			</p:column>
+			<f:facet name="footer">
+				<p:commandButton styleClass="btn btn-danger btn-xs" style="float: left;" oncomplete="PF('dlgConfirmarExclusao').show();" value="Deletar" 
+					rendered="#{crudBean.elements.size() > 0 and not crudBean.estadoViewBean.update}"/>
+				<div class="clearfix"></div>
+			</f:facet>
+		</p:dataTable>				
+</ui:composition>

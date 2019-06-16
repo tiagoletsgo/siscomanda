@@ -9,7 +9,7 @@
 	<ui:param name="sm" value="12" />
 	<ui:param name="xs" value="12" />
 	<ui:param name="crudBean" value="#{pontoDeVendaBean}" />
-	<ui:param name="hideTableList" value="#{crudBean.estadoViewBean.search}" />
+	<ui:param name="hideTableList" value="#{not crudBean.personalizar}" />
 	
 	<ui:define name="title_main"> 
 		<h:panelGroup layout="block" rendered="#{crudBean.estadoViewBean.insert}">Inclusão</h:panelGroup>
@@ -17,16 +17,26 @@
 		<h:panelGroup layout="block" rendered="#{not crudBean.estadoViewBean.insert and not crudBean.estadoViewBean.update}">Consultar</h:panelGroup>
 	</ui:define>
 	<ui:define name="title_form"> 
-		<h:panelGroup layout="block">Ponto de Venda (PDV)</h:panelGroup>
+		<h:panelGroup layout="block">Ponto de Venda (PDV) </h:panelGroup>
 	</ui:define>
 	<ui:define name="title_form_table"> 
-		<h:panelGroup layout="block">Minhas Vendas</h:panelGroup>
+		<h:panelGroup layout="block" rendered="#{crudBean.estadoViewBean.search}">Minhas Vendas</h:panelGroup>
+		<h:panelGroup layout="block" rendered="#{crudBean.novoItem}">Tabela de Produtos</h:panelGroup>
+		<h:panelGroup layout="block" rendered="#{crudBean.estadoViewBean.insert or crudBean.estadoViewBean.update}">Itens da Venda</h:panelGroup>
 	</ui:define>
 		
 	<ui:define name="content">
 		<h:panelGroup layout="block" id="formcadastro">
 			<h:panelGroup layout="block" rendered="#{crudBean.estadoViewBean.insert or crudBean.estadoViewBean.update}">
-				<!-- <ui:include src="/pages/modulo/tamanho/cadastro-tamanho.xhtml" /> -->
+				<ui:include src="/pages/modulo/venda/cadastro-venda.xhtml" />
+			</h:panelGroup>
+			
+			<h:panelGroup layout="block" rendered="#{crudBean.novoItem}">
+				<ui:include src="/pages/modulo/venda/include/pesquisa-produto-include.xhtml" />
+			</h:panelGroup>
+			
+			<h:panelGroup layout="block" rendered="#{crudBean.personalizar}">
+				<ui:include src="/pages/modulo/venda/include/personalizar-produto-include.xhtml" />
 			</h:panelGroup>
 		</h:panelGroup>
 		<h:panelGroup layout="block" id="formconsulta">
@@ -38,8 +48,16 @@
 	
 	<ui:define name="table">
 		<h:panelGroup layout="block" id="formtabela">
+			<h:panelGroup layout="block" rendered="#{crudBean.novoItem}">
+				<ui:include src="/pages/modulo/venda/include/tabela-pesquisa-produto-include.xhtml" />
+			</h:panelGroup>
+			
+			<h:panelGroup layout="block" rendered="#{crudBean.estadoViewBean.insert or crudBean.estadoViewBean.update}">
+				<ui:include src="/pages/modulo/venda/tabela-venda-item.xhtml" />
+			</h:panelGroup>
+			
 			<h:panelGroup layout="block" rendered="#{crudBean.estadoViewBean.search}">
-				<!-- <ui:include src="/pages/modulo/tamanho/tabela-tamanho.xhtml" /> -->
+				<!-- <ui:include src="/pages/modulo/venda/tabela-venda-item.xhtml" /> -->
 			</h:panelGroup>
 		</h:panelGroup>
 	</ui:define>
@@ -68,6 +86,20 @@
 			<f:facet name="footer">
 				<p:commandButton process="@this" styleClass="btn btn-success" value="Confirmar" action="#{crudBean.btnRemover}" oncomplete="PF('dlgConfirmarExclusao').hide();" update="crudform" />
 				<p:commandButton styleClass="btn btn-danger" global="false" value="Cancelar" oncomplete="PF('dlgConfirmarExclusao').hide(); return false;"  />	
+			</f:facet>
+		</p:dialog>
+		
+		<p:dialog id="dialogPersonalizar" widgetVar="dlgPersonalizar" modal="true" showEffect="fade" hideEffect="fade" responsive="true" resizable="false">
+			<f:facet name="header">Adicionar Item Meio a Meio</f:facet>
+			<h:form id="formPersonalizar">
+				<p:selectManyCheckbox value="#{crudBean.produtosSelecionados}" layout="grid" columns="1" converter="entityConverter">
+					<f:selectItems value="#{crudBean.produtos}" var="produto" itemValue="#{produto}" itemLabel="#{produto.descricao}" />
+					<p:ajax process="@this" global="false" />
+				</p:selectManyCheckbox>
+			</h:form>
+			<f:facet name="footer">
+				<p:commandButton process="@this" styleClass="btn btn-success" action="#{crudBean.btnPersonalizar}" value="Salvar" oncomplete="PF('dlgPersonalizar').hide();" 
+					update="crudform:itensMeioAmeio crudform:inpTotal crudform:inpDescricaoProduto scripts" />
 			</f:facet>
 		</p:dialog>
 	</ui:define>

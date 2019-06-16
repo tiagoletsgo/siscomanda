@@ -2,7 +2,7 @@ package br.com.siscomanda.enumeration;
 
 public enum EStatus {
 	
-	EM_ABERTO("Em aberto"),
+	EM_ABERTO("aberto"),
 	CANCELADO("Cancelado"),
 	PAGO_PARCIAL("Pago parcial"),
 	PAGO("Pago");

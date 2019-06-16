@@ -223,7 +223,7 @@ public class VendaMesaComandaOLDBean extends BaseBean<VendaOLD> implements Seria
 		
 		initValores();
 		getEntity().setStatus(EStatus.EM_ABERTO);
-		getEntity().setTipoVenda(ETipoVenda.MESA_COMANDA);
+//		getEntity().setTipoVenda(ETipoVenda.MESA_COMANDA);
 		getEstadoViewBean().setCurrentView(true, false, false, false);
 	}
 	
@@ -361,7 +361,7 @@ public class VendaMesaComandaOLDBean extends BaseBean<VendaOLD> implements Seria
 	public List<ETipoVenda> getTipoVendas() {
 		List<ETipoVenda> tipoVendas = new ArrayList<>();
 		if(getEstadoViewBean().getSearch()) {
-			tipoVendas.add(ETipoVenda.MESA_COMANDA);
+//			tipoVendas.add(ETipoVenda.MESA_COMANDA);
 		}
 		tipoVendas.add(ETipoVenda.BALCAO);
 		tipoVendas.add(ETipoVenda.DELIVERY);		
