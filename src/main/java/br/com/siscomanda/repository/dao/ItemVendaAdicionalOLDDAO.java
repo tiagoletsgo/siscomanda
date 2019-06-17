@@ -7,15 +7,15 @@ import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
 import br.com.siscomanda.exception.SiscomandaException;
-import br.com.siscomanda.model.ItemVendaAdicional;
-import br.com.siscomanda.model.Venda;
+import br.com.siscomanda.model.ItemVendaAdicionalOLD;
+import br.com.siscomanda.model.VendaOLD;
 import br.com.siscomanda.repository.base.GenericDAO;
 
-public class ItemVendaAdicionalDAO extends GenericDAO<ItemVendaAdicional> implements Serializable {
+public class ItemVendaAdicionalOLDDAO extends GenericDAO<ItemVendaAdicionalOLD> implements Serializable {
 
 	private static final long serialVersionUID = 8977258210759414153L;
 	
-	public List<ItemVendaAdicional> porVenda(Venda venda) {
+	public List<ItemVendaAdicionalOLD> porVenda(VendaOLD venda) {
 		StringBuilder sql = new StringBuilder();
 		sql.append("SELECT itemAdicional FROM ItemVendaAdicional itemAdicional  ");
 		sql.append("JOIN FETCH itemAdicional.produto ");
@@ -24,13 +24,13 @@ public class ItemVendaAdicionalDAO extends GenericDAO<ItemVendaAdicional> implem
 		sql.append("JOIN FETCH itemAdicional.itemVenda ");
 		sql.append("WHERE itemAdicional.venda = :venda ");
 		
-		TypedQuery<ItemVendaAdicional> query = getEntityManager().createQuery(sql.toString(), ItemVendaAdicional.class);
+		TypedQuery<ItemVendaAdicionalOLD> query = getEntityManager().createQuery(sql.toString(), ItemVendaAdicionalOLD.class);
 		query.setParameter("venda", venda);
-		List<ItemVendaAdicional> itens = query.getResultList();
+		List<ItemVendaAdicionalOLD> itens = query.getResultList();
 		return itens;
 	}
 	
-	public void remove(Venda venda) throws SiscomandaException {
+	public void remove(VendaOLD venda) throws SiscomandaException {
 		try {			
 			StringBuilder sql = new StringBuilder();
 			sql.append("DELETE FROM item_venda_adicional itemAdicional WHERE itemAdicional.venda_id = :venda ");

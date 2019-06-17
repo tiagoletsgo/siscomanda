@@ -1,0 +1,37 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+		
+	<p:dataTable id="tabelaVendaProduto" styleClass="table table-striped jambo_table" value="#{produtoFactoryBean.produtos}" var="produto"
+			 emptyMessage="Sem dados" paginator="true" rows="10" paginatorPosition="top">
+			
+		<p:column>
+			<f:facet name="header">
+				<h:outputLabel value="Código" />
+			</f:facet>
+			<h:outputText value="#{produto.id}" >
+				<f:convertNumber pattern="000000" maxIntegerDigits="6" />
+			</h:outputText>
+		</p:column>
+		<p:column>
+			<f:facet name="header">
+				<h:outputLabel value="Descrição" />
+			</f:facet>
+			<h:outputText value="#{produto.descricao}" />
+		</p:column>
+		<p:column>
+			<f:facet name="header">
+				<h:outputLabel value="Código EAN" />
+			</f:facet>
+			<h:outputText value="#{produto.codigoEan}" />
+		</p:column>
+		<p:column>
+			<f:facet name="header">
+				<h:outputLabel value="#" />
+			</f:facet>
+			<p:commandButton value="Incluir" styleClass="btn btn-primary" update="@form scripts" action="#{crudBean.btnIncluir(true, produto)}" global="false" />
+		</p:column>
+	</p:dataTable>
+</ui:composition>

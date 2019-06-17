@@ -2,7 +2,8 @@ package br.com.siscomanda.enumeration;
 
 public enum ETipoVenda {
 	
-	MESA_COMANDA("Mesa / Comanda"),
+	COMANDA("Comanda"),
+	MESA("Mesa"),
 	BALCAO("Balcão"),
 	DELIVERY("Delivery");
 	

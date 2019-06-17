@@ -1,0 +1,79 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+		
+		<div class="row">
+			<div class="col-md-2 col-sm-2 col-xs-12">
+				<label for="crudform:numeroVenda">Nº Venda :</label>
+				<h:outputText id="numeroVenda" styleClass="form-control" value="#{crudBean.entity.id eq null ? 0 : crudBean.entity.id}">
+					<f:convertNumber maxIntegerDigits="6" pattern="000000" locale="pt_BR" />
+				</h:outputText>
+			</div>
+			
+			<div class="col-md-2 col-sm-2 col-xs-12">
+				<label for="crudform:tipoVenda">Tipo Venda :</label>
+				<h:outputText id="tipoVenda" styleClass="form-control" value="#{crudBean.entity.tipoVenda.descricao.toUpperCase()}" />
+			</div>
+			
+			<div class="col-md-2 col-sm-2 col-xs-12">
+				<label for="crudform:numero">Nº Mesa :</label>
+				<h:outputText id="numero" styleClass="form-control" value="001" />
+			</div>
+			
+			<div class="col-md-3 col-sm-3 col-xs-12">
+				<label for="crudform:operador">Operador :</label>
+				<h:outputText id="operador" styleClass="form-control" value="Administrador" />
+			</div>
+			
+			<div class="col-md-3 col-sm-3 col-xs-12">
+				<label for="crudform:dataHora">Data / Hora:</label>
+				<h:outputText id="dataHora" styleClass="form-control" value="#{crudBean.entity.dataHora}">
+					<f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss" locale="pt_BR" />
+				</h:outputText>
+			</div>
+		</div>
+		
+		<div class="row">
+			<div class="col-md-2 col-sm-2 col-xs-12">
+				<label for="crudform:status">Status :</label>
+				<h:outputText id="status" styleClass="form-control" value="#{crudBean.entity.status.descricao.toUpperCase()}"/>
+			</div>
+			
+			<div class="col-md-2 col-sm-2 col-xs-12">
+				<label for="crudform:subtotal">Subtotal :</label>
+				<h:outputText id="subtotal" styleClass="form-control" value="#{crudBean.entity.subtotal}">
+					<f:convertNumber minFractionDigits="2" maxFractionDigits="2" type="currency" locale="pt_BR" />
+				</h:outputText>
+			</div>
+			
+			<div class="col-md-2 col-sm-2 col-xs-12">
+				<label for="crudform:servico">Serviço(+) :</label>
+				<h:outputText id="servico" styleClass="form-control" value="#{crudBean.entity.taxaServico}">
+					<f:convertNumber minFractionDigits="2" maxFractionDigits="2" type="currency" locale="pt_BR" />
+				</h:outputText>
+			</div>
+			
+			<div class="col-md-2 col-sm-2 col-xs-12">
+				<label for="crudform:entrega">Entrega(+) :</label>
+				<h:outputText id="entrega" styleClass="form-control" value="#{crudBean.entity.taxaEntrega}">
+					<f:convertNumber minFractionDigits="2" maxFractionDigits="2" type="currency" locale="pt_BR" />
+				</h:outputText>
+			</div>
+			
+			<div class="col-md-2 col-sm-2 col-xs-12">
+				<label for="crudform:desconto">Desconto :</label>
+				<h:outputText id="desconto" styleClass="form-control" value="#{crudBean.entity.desconto}">
+					<f:convertNumber minFractionDigits="2" maxFractionDigits="2" type="currency" locale="pt_BR" />
+				</h:outputText>
+			</div>
+			
+			<div class="col-md-2 col-sm-2 col-xs-12">
+				<label for="crudform:total">Total :</label>
+				<h:outputText id="total" styleClass="form-control" value="#{crudBean.entity.total}">
+					<f:convertNumber minFractionDigits="2" maxFractionDigits="2" type="currency" locale="pt_BR" />
+				</h:outputText>
+			</div>
+		</div>
+</ui:composition>

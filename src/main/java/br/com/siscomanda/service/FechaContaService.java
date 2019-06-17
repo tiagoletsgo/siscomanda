@@ -8,7 +8,7 @@ import java.util.List;
 import javax.faces.application.FacesMessage;
 import javax.inject.Inject;
 
-import br.com.siscomanda.base.service.VendaService;
+import br.com.siscomanda.base.service.VendaOLDService;
 import br.com.siscomanda.config.jpa.Transactional;
 import br.com.siscomanda.enumeration.EStatus;
 import br.com.siscomanda.exception.SiscomandaException;
@@ -17,21 +17,21 @@ import br.com.siscomanda.model.Adicional;
 import br.com.siscomanda.model.Bandeira;
 import br.com.siscomanda.model.Caixa;
 import br.com.siscomanda.model.FormaPagamento;
-import br.com.siscomanda.model.ItemVenda;
+import br.com.siscomanda.model.ItemVendaOLD;
 import br.com.siscomanda.model.PagamentoVenda;
-import br.com.siscomanda.model.Venda;
+import br.com.siscomanda.model.VendaOLD;
 import br.com.siscomanda.repository.dao.BandeiraDAO;
 import br.com.siscomanda.repository.dao.CaixaDAO;
 import br.com.siscomanda.repository.dao.FormaPagamentoDAO;
-import br.com.siscomanda.repository.dao.VendaDAO;
+import br.com.siscomanda.repository.dao.VendaOLDDAO;
 import br.com.siscomanda.util.JSFUtil;
 
-public class FechaContaService extends VendaService implements Serializable {
+public class FechaContaService extends VendaOLDService implements Serializable {
 
 	private static final long serialVersionUID = -3622747048753270872L;
 	
 	@Inject
-	private VendaDAO vendaDAO;
+	private VendaOLDDAO vendaDAO;
 	
 	@Inject
 	private FormaPagamentoDAO formaPagamentoDAO;
@@ -42,7 +42,7 @@ public class FechaContaService extends VendaService implements Serializable {
 	@Inject
 	private CaixaDAO caixaDAO;
 	
-	public PagamentoVenda carregaPagamento(Venda venda) {
+	public PagamentoVenda carregaPagamento(VendaOLD venda) {
 		
 		Double troco = new Double(0);
 		if(!venda.getPagamentos().isEmpty()) {
@@ -73,7 +73,7 @@ public class FechaContaService extends VendaService implements Serializable {
 	}
 	
 	@Transactional
-	public Venda salvar(Venda venda, PagamentoVenda pagamento) throws SiscomandaException {
+	public VendaOLD salvar(VendaOLD venda, PagamentoVenda pagamento) throws SiscomandaException {
 		Caixa caixa = caixaDAO.temCaixaAberto();
 		
 		if(caixa == null) {
@@ -131,7 +131,7 @@ public class FechaContaService extends VendaService implements Serializable {
 		return status;
 	}
 	
-	private boolean isPago(Venda venda) {
+	private boolean isPago(VendaOLD venda) {
 		if(venda.getStatus().equals(EStatus.PAGO)) {
 			return true;
 		}
@@ -240,8 +240,8 @@ public class FechaContaService extends VendaService implements Serializable {
 		return total;
 	}
 	
-	public Venda buscaVenda(Venda venda) throws SiscomandaException {
-		List<Venda> vendas = vendaDAO.buscaPor(venda, true);
+	public VendaOLD buscaVenda(VendaOLD venda) throws SiscomandaException {
+		List<VendaOLD> vendas = vendaDAO.buscaPor(venda, true);
 		
 		if(vendas.isEmpty()) {
 			throw new SiscomandaException("Registro não encontrado.");
@@ -250,7 +250,7 @@ public class FechaContaService extends VendaService implements Serializable {
 		return vendas.get(0);
 	}
 	
-	public List<Adicional> carregaAdicionais(ItemVenda item) {
+	public List<Adicional> carregaAdicionais(ItemVendaOLD item) {
 		return vendaDAO.buscaAdicionalVenda(item);
 	}
 }

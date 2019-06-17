@@ -4,51 +4,78 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
-import javax.persistence.Transient;
-
 import br.com.siscomanda.base.model.BaseEntity;
 
-@Entity
-@Table(name = "item_venda")
-public class ItemVenda extends BaseEntity implements Serializable, Comparable<ItemVenda> {
+public class ItemVenda extends BaseEntity implements Serializable {
 
-	private static final long serialVersionUID = 7754528961077613833L;
-	
-	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "produto_id", nullable = false)
-	private Produto produto;
-	
-	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "venda_id", nullable = false)
+	private static final long serialVersionUID = 3248279660381728704L;
+
 	private Venda venda;
-		
-	@Column(name = "quantidade", nullable = false)
+	private Produto produto;
+	private Double valor;
+	private Double total;
 	private Double quantidade;
-	
-	@Column(name = "subtotal", nullable = false)
-	private Double subtotal;
-	
-	@Column(name = "preco_venda", nullable = false)
-	private Double precoVenda;
-	
-	@Column(name = "observacao")
 	private String observacao;
-	
-	@Transient
 	private List<Adicional> adicionais = new ArrayList<Adicional>();
-		
+
+	public ItemVenda() {
+		this.valor = new Double(0);
+		this.total = new Double(0);
+		this.quantidade = new Double(1);
+	}
+
+	public ItemVenda(Venda venda, Produto produto, Double valor, Double quantidade, String observacao) {
+		super();
+		this.venda = venda;
+		this.produto = produto;
+		this.valor = valor;
+		this.quantidade = quantidade;
+		this.total = (valor * quantidade);
+		this.observacao = observacao;
+	}
+	
+	public ItemVenda(Long id, Venda venda, Produto produto, Double valor, Double quantidade, String observacao, List<Adicional> complementos) {
+		super();
+		setId(id);
+		this.venda = venda;
+		this.produto = produto;
+		this.valor = valor;
+		this.quantidade = quantidade;
+		this.total = (valor * quantidade);
+		this.observacao = observacao;
+		this.adicionais = complementos;
+	}
+
+	public Venda getVenda() {
+		return venda;
+	}
+
+	public void setVenda(Venda venda) {
+		this.venda = venda;
+	}
+
 	public Produto getProduto() {
 		return produto;
 	}
 
 	public void setProduto(Produto produto) {
 		this.produto = produto;
+	}
+
+	public Double getValor() {
+		return valor;
+	}
+
+	public void setValor(Double valor) {
+		this.valor = valor;
+	}
+
+	public Double getTotal() {
+		return total;
+	}
+
+	public void setTotal(Double total) {
+		this.total = total;
 	}
 
 	public Double getQuantidade() {
@@ -59,22 +86,6 @@ public class ItemVenda extends BaseEntity implements Serializable, Comparable<It
 		this.quantidade = quantidade;
 	}
 
-	public Double getSubtotal() {
-		return subtotal;
-	}
-
-	public void setSubtotal(Double subtotal) {
-		this.subtotal = subtotal;
-	}
-	
-	public Double getPrecoVenda() {
-		return precoVenda;
-	}
-
-	public void setPrecoVenda(Double precoVenda) {
-		this.precoVenda = precoVenda;
-	}
-	
 	public String getObservacao() {
 		return observacao;
 	}
@@ -89,21 +100,5 @@ public class ItemVenda extends BaseEntity implements Serializable, Comparable<It
 
 	public void setAdicionais(List<Adicional> adicionais) {
 		this.adicionais = adicionais;
-	}
-	
-	public Venda getVenda() {
-		return venda;
-	}
-
-	public void setVenda(Venda venda) {
-		this.venda = venda;
-	}
-
-	@Override
-	public int compareTo(ItemVenda o) {
-		if(this.getId() < o.getId()) {
-			return -1;
-		}
-		return 0;
 	}
 }

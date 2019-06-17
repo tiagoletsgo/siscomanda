@@ -156,6 +156,10 @@
 	background-color: #ddd !important;
 }
 
+.ui-datatable .ui-datatable-header {
+	text-align: left !important;
+}
+
 .ui-datatable tbody td {
 	padding: 8px;
     line-height: 1.42857143;

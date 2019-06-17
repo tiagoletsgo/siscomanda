@@ -7,29 +7,29 @@ import java.util.List;
 import javax.faces.application.FacesMessage;
 import javax.inject.Inject;
 
-import br.com.siscomanda.base.service.VendaService;
+import br.com.siscomanda.base.service.VendaOLDService;
 import br.com.siscomanda.config.jpa.Transactional;
 import br.com.siscomanda.enumeration.EStatus;
 import br.com.siscomanda.exception.SiscomandaException;
 import br.com.siscomanda.exception.SiscomandaRuntimeException;
 import br.com.siscomanda.model.Adicional;
-import br.com.siscomanda.model.ItemVenda;
-import br.com.siscomanda.model.ItemVendaAdicional;
+import br.com.siscomanda.model.ItemVendaOLD;
+import br.com.siscomanda.model.ItemVendaAdicionalOLD;
 import br.com.siscomanda.model.Produto;
 import br.com.siscomanda.model.SubCategoria;
-import br.com.siscomanda.model.Venda;
+import br.com.siscomanda.model.VendaOLD;
 import br.com.siscomanda.repository.dao.AdicionalDAO;
-import br.com.siscomanda.repository.dao.ItemVendaAdicionalDAO;
+import br.com.siscomanda.repository.dao.ItemVendaAdicionalOLDDAO;
 import br.com.siscomanda.repository.dao.ProdutoDAO;
-import br.com.siscomanda.repository.dao.VendaDAO;
+import br.com.siscomanda.repository.dao.VendaOLDDAO;
 import br.com.siscomanda.util.JSFUtil;
 
-public class VendaMesaComandaService extends VendaService implements Serializable {
+public class VendaMesaComandaOLDService extends VendaOLDService implements Serializable {
 
 	private static final long serialVersionUID = -7365230528253341931L;
 	
 	@Inject
-	private VendaDAO vendaDAO;
+	private VendaOLDDAO vendaDAO;
 	
 	@Inject
 	private ProdutoDAO produtoDAO;
@@ -38,16 +38,16 @@ public class VendaMesaComandaService extends VendaService implements Serializabl
 	private AdicionalDAO adicionalDAO;
 	
 	@Inject
-	private ItemVendaAdicionalDAO itemVendaAdicionalDAO;
+	private ItemVendaAdicionalOLDDAO itemVendaAdicionalDAO;
 	
 	@Inject
 	private DefinicaoGeralService definicaoGeralService;
 		
-	public List<Venda> porFiltro(Venda venda, boolean editando) {
+	public List<VendaOLD> porFiltro(VendaOLD venda, boolean editando) {
 		return vendaDAO.buscaPor(venda, editando);
 	}
 		
-	public List<Adicional> carregaAdicionais(ItemVenda item) {
+	public List<Adicional> carregaAdicionais(ItemVendaOLD item) {
 		return vendaDAO.buscaAdicionalVenda(item);
 	}
 	
@@ -58,8 +58,8 @@ public class VendaMesaComandaService extends VendaService implements Serializabl
 			mesas.add(i);
 		}
 		
-		List<Venda> vendas = vendaDAO.vendasNaoPagasDiaCorrente();
-		for(Venda venda : vendas) {
+		List<VendaOLD> vendas = vendaDAO.vendasNaoPagasDiaCorrente();
+		for(VendaOLD venda : vendas) {
 			mesas.remove(new Integer(venda.getMesaComanda()));
 		}
 		
@@ -67,8 +67,8 @@ public class VendaMesaComandaService extends VendaService implements Serializabl
 	}
 	
 	@Transactional
-	public Venda salvar(Venda venda) throws SiscomandaException {
-		List<ItemVenda> itens = venda.getItens();
+	public VendaOLD salvar(VendaOLD venda) throws SiscomandaException {
+		List<ItemVendaOLD> itens = venda.getItens();
 
 		if(venda.getItens().isEmpty()) {
 			throw new SiscomandaException("Não é permitido salvar pedido sem itens.");
@@ -113,7 +113,7 @@ public class VendaMesaComandaService extends VendaService implements Serializabl
 	}
 	
 	@Transactional
-	public Venda cancelar(Venda venda) throws SiscomandaException {
+	public VendaOLD cancelar(VendaOLD venda) throws SiscomandaException {
 		if(venda.getItens().isEmpty()) {
 			throw new SiscomandaException("Não é permitido salvar pedido sem itens.");
 		}
@@ -141,7 +141,7 @@ public class VendaMesaComandaService extends VendaService implements Serializabl
 	}
 	
 	@Transactional
-	public void remover(Venda venda) throws SiscomandaException {
+	public void remover(VendaOLD venda) throws SiscomandaException {
 		
 		if(venda.getStatus().equals(EStatus.PAGO)) {
 			throw new SiscomandaException("Pedido com status pago não pode ser excluído.");
@@ -152,16 +152,16 @@ public class VendaMesaComandaService extends VendaService implements Serializabl
 		}
 		
 		itemVendaAdicionalDAO.remove(venda);
-		vendaDAO.remover(Venda.class, venda.getId());
+		vendaDAO.remover(VendaOLD.class, venda.getId());
 	}
 	
 	@Transactional
-	private void salvarAdicionais(List<ItemVenda> itens, Venda venda) {
+	private void salvarAdicionais(List<ItemVendaOLD> itens, VendaOLD venda) {
 		
-		List<ItemVenda> temp = venda.getItens();
+		List<ItemVendaOLD> temp = venda.getItens();
 		
-		for(ItemVenda item : itens) {
-			for(ItemVenda item2 : temp) {
+		for(ItemVendaOLD item : itens) {
+			for(ItemVendaOLD item2 : temp) {
 				if(item.getProduto().equals(item2.getProduto()) && item.getProduto().isPermiteAdicional()) {
 					item2.setAdicionais(item.getAdicionais());						
 					break;
@@ -169,9 +169,9 @@ public class VendaMesaComandaService extends VendaService implements Serializabl
 			}
 		}
 		
-		for(ItemVenda item : temp) {
+		for(ItemVendaOLD item : temp) {
 			for(Adicional adicional : item.getAdicionais()) {
-				ItemVendaAdicional itemAdicional = new ItemVendaAdicional();
+				ItemVendaAdicionalOLD itemAdicional = new ItemVendaAdicionalOLD();
 				itemAdicional.setAdicional(adicional);
 				itemAdicional.setItemVenda(item);
 				itemAdicional.setVenda(venda);

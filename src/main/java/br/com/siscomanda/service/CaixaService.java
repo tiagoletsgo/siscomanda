@@ -25,12 +25,12 @@ import br.com.siscomanda.model.CaixaLancamento;
 import br.com.siscomanda.model.ContaPagar;
 import br.com.siscomanda.model.FormaPagamento;
 import br.com.siscomanda.model.PagamentoVenda;
-import br.com.siscomanda.model.Venda;
+import br.com.siscomanda.model.VendaOLD;
 import br.com.siscomanda.repository.dao.CaixaDAO;
 import br.com.siscomanda.repository.dao.CaixaLancamentoDAO;
 import br.com.siscomanda.repository.dao.ContaPagarDAO;
 import br.com.siscomanda.repository.dao.FormaPagamentoDAO;
-import br.com.siscomanda.repository.dao.VendaDAO;
+import br.com.siscomanda.repository.dao.VendaOLDDAO;
 import br.com.siscomanda.util.JSFUtil;
 import br.com.siscomanda.util.StringUtil;
 
@@ -50,7 +50,7 @@ public class CaixaService implements Serializable {
 	private FormaPagamentoDAO formaPagamentoDAO;
 	
 	@Inject
-	private VendaDAO vendaDAO;
+	private VendaOLDDAO vendaDAO;
 	
 	@Inject
 	private ContaPagarDAO contaPagarDAO;
@@ -258,7 +258,7 @@ public class CaixaService implements Serializable {
 	@Transactional
 	public void fecharCaixa(Caixa caixa) throws SiscomandaException {
 		
-		List<Venda> vendasEmAberto = vendaDAO.vendasNaoPagas();
+		List<VendaOLD> vendasEmAberto = vendaDAO.vendasNaoPagas();
 		if(!vendasEmAberto.isEmpty()) {
 			throw new SiscomandaException("Existem ( " + vendasEmAberto.size() + " ) vendas não finalizadas.");
 		}

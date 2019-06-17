@@ -4,17 +4,15 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:p="http://primefaces.org/ui">
 	
-	
-		<p:dataTable id="tabelaSubCategoria" styleClass="table table-striped jambo_table" value="#{crudBean.elements}" var="subcategoria"
-			selection="#{crudBean.subCategoriasSelecionados}" rowKey="#{subcategoria.id}" emptyMessage="Sem dados">
-			
-			<p:column styleClass="ui-datatable-center" selectionMode="multiple" />
+		<p:commandButton value="Novo Item" styleClass="btn btn-primary" update="@form" global="false" rendered="#{!crudBean.novoItem}" action="#{crudBean.btnNovoItem(true)}" />
+		<p:dataTable id="tabelaVendaItem" styleClass="table table-striped jambo_table" value="#{crudBean.entity.itens}" var="item"
+			emptyMessage="Sem dados">
 			
 			<p:column>
 				<f:facet name="header">
 					<h:outputLabel value="Código" />
 				</f:facet>
-				<h:outputText value="#{subcategoria.id}" >
+				<h:outputText value="#{item.produto.id}" >
 					<f:convertNumber pattern="000000" maxIntegerDigits="6" />
 				</h:outputText>
 			</p:column>
@@ -22,13 +20,31 @@
 				<f:facet name="header">
 					<h:outputLabel value="Descrição" />
 				</f:facet>
-				<h:outputText value="#{subcategoria.descricao}"/>
+				<h:outputText value="#{item.produto.descricao}"/>
 			</p:column>
 			<p:column>
 				<f:facet name="header">
-					<h:outputLabel value="Categoria" />
+					<h:outputLabel value="Quantidade" />
 				</f:facet>
-				<h:outputText value="#{subcategoria.categoria.descricao}" />
+				<h:outputText value="#{item.quantidade}">
+					<f:convertNumber minFractionDigits="2" maxFractionDigits="2" locale="pt_BR" />
+				</h:outputText>
+			</p:column>
+			<p:column>
+				<f:facet name="header">
+					<h:outputLabel value="Subtotal" />
+				</f:facet>
+				<h:outputText value="#{item.valor}">
+					<f:convertNumber minFractionDigits="2" maxFractionDigits="2" locale="pt_BR" />
+				</h:outputText>
+			</p:column>
+			<p:column>
+				<f:facet name="header">
+					<h:outputLabel value="Total" />
+				</f:facet>
+				<h:outputText value="#{item.total}">
+					<f:convertNumber minFractionDigits="2" maxFractionDigits="2" locale="pt_BR" />
+				</h:outputText>
 			</p:column>
 			<p:column>
 				<f:facet name="header">

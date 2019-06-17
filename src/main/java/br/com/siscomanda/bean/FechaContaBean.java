@@ -19,16 +19,16 @@ import br.com.siscomanda.interfaces.calculadoraImpl.AplicaTaxaEntrega;
 import br.com.siscomanda.model.Adicional;
 import br.com.siscomanda.model.Bandeira;
 import br.com.siscomanda.model.FormaPagamento;
-import br.com.siscomanda.model.ItemVenda;
+import br.com.siscomanda.model.ItemVendaOLD;
 import br.com.siscomanda.model.PagamentoVenda;
-import br.com.siscomanda.model.Venda;
+import br.com.siscomanda.model.VendaOLD;
 import br.com.siscomanda.service.FechaContaService;
 import br.com.siscomanda.util.JSFUtil;
 import br.com.siscomanda.util.StringUtil;
 
 @Named
 @ViewScoped
-public class FechaContaBean extends BaseBean<Venda> implements Serializable {
+public class FechaContaBean extends BaseBean<VendaOLD> implements Serializable {
 
 	private static final long serialVersionUID = 3299850942772424169L;
 	
@@ -57,7 +57,7 @@ public class FechaContaBean extends BaseBean<Venda> implements Serializable {
 			ExternalContext external = context.getExternalContext();
 			
 			codigo = Long.parseLong(external.getRequestParameterMap().get("codigo"));
-			setEntity(new Venda(codigo));
+			setEntity(new VendaOLD(codigo));
 			
 			buscaVenda();
 		}
@@ -69,7 +69,7 @@ public class FechaContaBean extends BaseBean<Venda> implements Serializable {
 			pagamento = service.carregaPagamento(getEntity());						
 			valorFaltante = service.calculaValorFantante(pagamento.getValorTotal(), pagamento.getValorPago());
 			
-			for(ItemVenda item : getEntity().getItens()) {
+			for(ItemVendaOLD item : getEntity().getItens()) {
 				for(Adicional adicional : service.carregaAdicionais(item)) {
 					adicional.setQuantidade(new Double(1));
 					item.getAdicionais().add(adicional);
@@ -161,7 +161,7 @@ public class FechaContaBean extends BaseBean<Venda> implements Serializable {
 		valorFaltante = service.calculaValorFantante(pagamento.getValorTotal(), pagamento.getValorPago());
 	}
 	
-	public Double calculaSubTotalItem(ItemVenda item) {
+	public Double calculaSubTotalItem(ItemVendaOLD item) {
 		return service.calculaSubTotalItem(item);
 	}
 	

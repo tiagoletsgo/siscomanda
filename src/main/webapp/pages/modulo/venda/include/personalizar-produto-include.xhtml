@@ -1,0 +1,108 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+		
+	<div class="row">
+		<div class="col-md-12 col-sm-12 col-xs-12">
+			<p:selectOneRadio value="#{crudBean.preco}" converter="entityConverter">
+				<f:selectItems value="#{crudBean.precos}" var="preco" itemValue="#{preco}" itemLabel="(#{preco.tamanho.sigla}) #{crudBean.converterValorMonetario(preco.precoVenda)}" />
+				<p:ajax event="change" update="inpTotal itensMeioAmeio tabelaAdicinais inpDescricaoProduto" global="false" listener="#{crudBean.atualizarValorTotalItem}"
+					process="@this" />
+			</p:selectOneRadio>
+		</div>
+	</div>
+	
+	<hr />
+	<div class="row">
+		<div class="col-md-8 col-sm-8 col-xs-12">
+			<label>Produto :</label>
+			<h:outputText id="inpDescricaoProduto" value="#{crudBean.descricaoProduto}" styleClass="form-control" />
+		</div>
+		
+		<div class="col-md-2 col-sm-2 col-xs-12">
+			<label>Quantidade :</label>
+			<h:inputText styleClass="form-control currency" value="#{crudBean.item.quantidade}">
+				<f:convertNumber minFractionDigits="2" maxFractionDigits="2" locale="pt_BR" />
+				<p:ajax event="keyup" update="inpTotal" global="false" delay="300" listener="#{crudBean.atualizarValorTotalItem}" />
+			</h:inputText>
+		</div>
+		
+		<div class="col-md-2 col-sm-2 col-xs-12">
+			<label>Total :</label>
+			<h:outputText id="inpTotal" styleClass="form-control currency" value="#{crudBean.item.total}">
+				<f:convertNumber minFractionDigits="2" maxFractionDigits="2" locale="pt_BR" />
+			</h:outputText>
+		</div>
+	</div>
+	
+	<hr />
+	<div class="row">
+		<h:panelGroup layout="block" id="itensMeioAmeio" styleClass="col-md-12 col-sm-12 col-xs-12">
+			<p:commandButton styleClass="btn btn-primary" value="Personalizar" disabled="#{crudBean.item.total == 0.0}" 
+				oncomplete="PF('dlgPersonalizar').show();" update="dialogPersonalizar" />
+			
+			<p:dataTable id="tabelaItemMeioAmeio" value="#{crudBean.itensMeioAmeio}" var="item" 
+				selection="#{crudBean.itemSelecionado}" selectionMode="single" rowKey="#{item.id}" emptyMessage="Sem dados" paginator="true" rows="10" paginatorPosition="top">
+				<f:facet name="header">Itens Meio a Meio</f:facet>
+				
+				<p:ajax event="rowSelect" process="@this" global="false" listener="#{crudBean.atualizarComplementos}" />
+				
+				<p:column>
+					<f:facet name="header">Descrição</f:facet>
+					<h:outputText value="#{item.produto.descricao}" />
+				</p:column>
+				
+				<p:column>
+					<f:facet name="header">Quantidade</f:facet>
+						<h:outputText value="1 / #{crudBean.itensMeioAmeio.size()}" rendered="#{crudBean.personalizaTemMaisDeUmItem}" />
+						<h:outputText value="#{item.quantidade}" rendered="#{not crudBean.personalizaTemMaisDeUmItem}">
+							<f:convertNumber pattern="000000" maxIntegerDigits="6" />
+						</h:outputText>
+					<h:outputText />
+				</p:column>
+				
+				<p:column>
+					<f:facet name="header">Preço</f:facet>
+					<h:outputText value="#{item.valor}">
+						<f:convertNumber maxFractionDigits="2" minFractionDigits="2" locale="pt_BR" type="currency" />
+					</h:outputText>
+				</p:column>
+				
+				<p:column>
+					<f:facet name="header">#</f:facet>
+					<p:commandButton value="Remover" styleClass="btn btn-danger" action="#{crudBean.btnRemoverItemPersonalizado(item)}"
+						update="tabelaItemMeioAmeio crudform:inpDescricaoProduto crudform:inpTotal scripts" global="false"/>
+				</p:column>
+			</p:dataTable>
+		</h:panelGroup>
+	</div>
+	
+	<hr />
+	<div class="row">
+		<div class="col-md-12 col-sm-12 col-xs-12">
+			<p:dataTable id="tabelaAdicinais" value="#{crudBean.adicionais}" var="adicional" selection="#{crudBean.adicionaisSelecionados}" rowKey="#{adicional.id}" 
+				emptyMessage="Sem dados" paginator="true" rows="10" paginatorPosition="top">
+				
+				<p:ajax event="rowSelect" listener="#{crudBean.incluirComplementos}" global="false" update="@form" />
+				
+				<f:facet name="header">Complementos</f:facet>
+				
+				<p:column styleClass="ui-datatable-center" selectionMode="multiple" />
+				
+				<p:column styleClass="ui-datatable-left">
+					<f:facet name="header">Descrição</f:facet>
+					<h:outputText value="#{adicional.descricao}" />
+				</p:column>
+				
+				<p:column styleClass="ui-datatable-right">
+					<f:facet name="header">Preço Venda</f:facet>
+					<h:outputText value="#{adicional.precoVenda}">
+						<f:convertNumber minFractionDigits="2" maxFractionDigits="2" locale="pt_BR" type="currency" />
+					</h:outputText>
+				</p:column>
+			</p:dataTable>
+		</div>
+	</div>
+</ui:composition>

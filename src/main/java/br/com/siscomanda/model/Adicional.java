@@ -41,7 +41,7 @@ public class Adicional extends BaseEntity implements Serializable {
 	private EFatorMedida fatorMedida;
 	
 	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = false)
-	@JoinTable(name = "adicional_categoria", joinColumns = @JoinColumn(name = "adicional_id"), inverseJoinColumns = @JoinColumn(name = "categoria_id"))
+	@JoinTable(name = "adicional_categoria", joinColumns = @JoinColumn(name = "adicional_id", unique = false), inverseJoinColumns = @JoinColumn(name = "categoria_id", unique = false))
 	private List<Categoria> categorias;
 	
 	@Transient
