@@ -2,6 +2,7 @@ package br.com.siscomanda.bean;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -100,7 +101,7 @@ public class PontoDeVendaBean extends BaseBean<Venda> implements Serializable {
 				this.personalizar = incluir;
 				this.descricaoProduto = produto.getDescricao();
 				this.precos = precoService.porProduto(produto);
-				this.item = pontoDeVendaService.item(getEntity(), produto, item.getValor(), item.getQuantidade());
+				this.item = pontoDeVendaService.item(999999L, getEntity(), produto, item.getValor(), item.getQuantidade(), null);
 
 				setProdutoSelecionado(produto);
 				getEstadoViewBean().setCurrentView(false, false, false, false);
@@ -113,23 +114,17 @@ public class PontoDeVendaBean extends BaseBean<Venda> implements Serializable {
 	
 	public void btnPersonalizar() {
 		try {
-			List<Preco> precos = precoService.porTamanhoProdutos(produtosSelecionados, getPreco().getTamanho());
-			this.item.setValor(getPreco().getPrecoVenda());
-			getItensMeioAmeio().add(this.item);
-			long id = 1;
-			for(Preco preco : precos) {
-				ItemVenda item = new ItemVenda(getEntity(), preco.getProduto(), preco.getPrecoVenda(), this.item.getQuantidade(), "");
-				item.setId(id);
-				getItensMeioAmeio().add(item);
-				id++;
-			}
+			getProdutosSelecionados().add(getItem().getProduto());
+			List<Preco> precos = precoService.porTamanhoProdutos(getProdutosSelecionados(), getPreco().getTamanho());
+			List<ItemVenda> itens = pontoDeVendaService.personalizar(precos, getItensMeioAmeio(), getItem().getQuantidade(), getEntity());
+			setItensMeioAmeio(itens);
 			
-			if(getItensMeioAmeio().size() > 1) {
-				setDescricaoProduto("PIZZA PERSONALIZADA (" + getPreco().getTamanho().getSigla().toUpperCase() + ")");
-				this.personalizaTemMaisDeUmItem = true;
-			}
-			
-			atualizarValorTotalItem();
+			setDescricaoProduto(pontoDeVendaService.atualizaNomeProduto(getItensMeioAmeio(), getDescricaoProduto(), getPreco().getTamanho().getSigla()));
+			this.personalizaTemMaisDeUmItem = getDescricaoProduto().contains("PIZZA PERSONALIZADA") ? true : false;
+			double total = pontoDeVendaService.atualizaValorTotalItemPersonalizado(getItensMeioAmeio(), getPreco().getPrecoVenda(), getItem().getQuantidade());
+
+			getItem().setTotal(total);
+			getItem().setValor(getPreco().getPrecoVenda());
 			getProdutosSelecionados().clear();
 		}
 		catch(SiscomandaException e) {
@@ -150,45 +145,48 @@ public class PontoDeVendaBean extends BaseBean<Venda> implements Serializable {
 		JSFUtil.addMessage(FacesMessage.SEVERITY_INFO, "Item removido com sucesso.");
 	}
 	
-	public void atualizarValorTotalItem() {
-		try {
-			double soma = 0.0;
-			
-			this.item.setTotal(preco.getPrecoVenda());
-			
-			if(getItensMeioAmeio().isEmpty()) {
-				soma += item.getTotal();
-			}
-			
-			if(getItensMeioAmeio().size() > 1) {
-				for(ItemVenda item : getItensMeioAmeio()) {
-					getProdutosSelecionados().add(item.getProduto());
-				}
-				getItensMeioAmeio().clear();
-				List<Preco> precos = precoService.porTamanhoProdutos(getProdutosSelecionados(), getPreco().getTamanho());
-				long id = 1;
-				for(Preco preco : precos) {
-					ItemVenda item = new ItemVenda(getEntity(), preco.getProduto(), preco.getPrecoVenda(), this.item.getQuantidade(), "");
-					item.setId(id);
-					
-					soma += item.getTotal();
-					getItensMeioAmeio().add(item);
-					id++;
-				}
-			}
-			
-			item.setTotal(soma);
-			if(this.adicionais == null) {
-				this.adicionais = adicionalService.todos();
-			}
-			
-			if(this.produtos == null) {
-				this.produtos = produtoService.todos();
-				this.produtos.remove(produtoSelecionado);
-			}
+	public void incluirComplementos() {
+		if(getItemSelecionado() == null) {
+			setItemSelecionado(getItem());
 		}
-		catch(SiscomandaException e) {
-			JSFUtil.addMessage(FacesMessage.SEVERITY_ERROR, e.getMessage());
+		
+		double total = 0.0;
+		List<ItemVenda> itens = new ArrayList<ItemVenda>();
+		if(getItensMeioAmeio() == null || getItensMeioAmeio().isEmpty()) {
+			getItem().setAdicionais(getAdicionaisSelecionados());
+			itens.add(getItem());
+		}
+		else {
+			itens.addAll(getItensMeioAmeio());
+		}
+		
+		total = pontoDeVendaService.atualizaValorTotalItemPersonalizado(itens, getPreco().getPrecoVenda(), getItemSelecionado().getQuantidade());
+		getItem().setTotal(total);
+	}
+	
+	public void atualizarComplementos() {
+		
+	}
+	
+	public void atualizarValorTotalItem() {
+		double total = new Double(0);
+		setItensMeioAmeio(pontoDeVendaService.atualizaListaItemMeioAmeio(getItensMeioAmeio(), getEntity(), getPreco().getTamanho()));			
+		
+		total = pontoDeVendaService.atualizaValorTotalItemPersonalizado(getItensMeioAmeio(), getPreco().getPrecoVenda(), getItem().getQuantidade());
+		setDescricaoProduto(pontoDeVendaService.atualizaNomeProduto(getItensMeioAmeio(), getDescricaoProduto(), getPreco().getTamanho().getSigla()));
+		getItem().setTotal(total);
+		
+		if(this.adicionais == null) {
+			this.adicionais = adicionalService.todos();
+		}
+		
+		if(this.produtos == null) {
+			this.produtos = produtoService.todos();
+			this.produtos.remove(produtoSelecionado);
+		}
+		
+		if(getItensMeioAmeio().size() == 1) {
+			getItensMeioAmeio().clear();
 		}
 	}
 	

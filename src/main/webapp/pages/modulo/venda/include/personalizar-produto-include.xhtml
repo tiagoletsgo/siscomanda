@@ -8,7 +8,7 @@
 		<div class="col-md-12 col-sm-12 col-xs-12">
 			<p:selectOneRadio value="#{crudBean.preco}" converter="entityConverter">
 				<f:selectItems value="#{crudBean.precos}" var="preco" itemValue="#{preco}" itemLabel="(#{preco.tamanho.sigla}) #{crudBean.converterValorMonetario(preco.precoVenda)}" />
-				<p:ajax event="change" update="inpTotal itensMeioAmeio tabelaAdicinais" global="false" listener="#{crudBean.atualizarValorTotalItem}"
+				<p:ajax event="change" update="inpTotal itensMeioAmeio tabelaAdicinais inpDescricaoProduto" global="false" listener="#{crudBean.atualizarValorTotalItem}"
 					process="@this" />
 			</p:selectOneRadio>
 		</div>
@@ -44,8 +44,10 @@
 				oncomplete="PF('dlgPersonalizar').show();" update="dialogPersonalizar" />
 			
 			<p:dataTable id="tabelaItemMeioAmeio" value="#{crudBean.itensMeioAmeio}" var="item" 
-				selection="#{crudBean.itemSelecionado}" rowKey="item.id" emptyMessage="Sem dados" paginator="true" rows="10" paginatorPosition="top">
+				selection="#{crudBean.itemSelecionado}" selectionMode="single" rowKey="#{item.id}" emptyMessage="Sem dados" paginator="true" rows="10" paginatorPosition="top">
 				<f:facet name="header">Itens Meio a Meio</f:facet>
+				
+				<p:ajax event="rowSelect" process="@this" global="false" listener="#{crudBean.atualizarComplementos}" />
 				
 				<p:column>
 					<f:facet name="header">Descrição</f:facet>
@@ -82,6 +84,9 @@
 		<div class="col-md-12 col-sm-12 col-xs-12">
 			<p:dataTable id="tabelaAdicinais" value="#{crudBean.adicionais}" var="adicional" selection="#{crudBean.adicionaisSelecionados}" rowKey="#{adicional.id}" 
 				emptyMessage="Sem dados" paginator="true" rows="10" paginatorPosition="top">
+				
+				<p:ajax event="rowSelect" listener="#{crudBean.incluirComplementos}" global="false" update="@form" />
+				
 				<f:facet name="header">Complementos</f:facet>
 				
 				<p:column styleClass="ui-datatable-center" selectionMode="multiple" />

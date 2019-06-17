@@ -1,6 +1,8 @@
 package br.com.siscomanda.model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 import br.com.siscomanda.base.model.BaseEntity;
 
@@ -14,6 +16,7 @@ public class ItemVenda extends BaseEntity implements Serializable {
 	private Double total;
 	private Double quantidade;
 	private String observacao;
+	private List<Adicional> adicionais = new ArrayList<Adicional>();
 
 	public ItemVenda() {
 		this.valor = new Double(0);
@@ -29,6 +32,18 @@ public class ItemVenda extends BaseEntity implements Serializable {
 		this.quantidade = quantidade;
 		this.total = (valor * quantidade);
 		this.observacao = observacao;
+	}
+	
+	public ItemVenda(Long id, Venda venda, Produto produto, Double valor, Double quantidade, String observacao, List<Adicional> complementos) {
+		super();
+		setId(id);
+		this.venda = venda;
+		this.produto = produto;
+		this.valor = valor;
+		this.quantidade = quantidade;
+		this.total = (valor * quantidade);
+		this.observacao = observacao;
+		this.adicionais = complementos;
 	}
 
 	public Venda getVenda() {
@@ -77,5 +92,13 @@ public class ItemVenda extends BaseEntity implements Serializable {
 
 	public void setObservacao(String observacao) {
 		this.observacao = observacao;
+	}
+
+	public List<Adicional> getAdicionais() {
+		return adicionais;
+	}
+
+	public void setAdicionais(List<Adicional> adicionais) {
+		this.adicionais = adicionais;
 	}
 }
