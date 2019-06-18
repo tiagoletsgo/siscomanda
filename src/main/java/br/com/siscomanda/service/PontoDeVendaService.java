@@ -29,10 +29,10 @@ public class PontoDeVendaService implements Serializable {
 	}
 	
 	public ItemVenda item(Long id, Venda venda, Produto produto, Double valor, Double quantidade, List<Adicional> complementos) {
-		return new ItemVenda(id, venda, produto, valor, quantidade, "", complementos);
+		return new ItemVenda(id, venda, produto, valor, quantidade, "", new ArrayList<Adicional>());
 	}
 	
-	public List<ItemVenda> personalizar(List<Preco> precos, List<ItemVenda> itens, Double quantidade, Venda venda) {
+	public List<ItemVenda> personalizar(List<Preco> precos, List<ItemVenda> itens, Double quantidade, Venda venda, List<Adicional> complementos) {
 		
 		long id = itens == null || itens.isEmpty() ? 1L : itens.get(itens.size() - 1).getId();
 		Map<Produto, ItemVenda> items = new HashMap<Produto, ItemVenda>();
@@ -46,7 +46,7 @@ public class PontoDeVendaService implements Serializable {
 		for(Preco preco : precos) {
 			id++;
 			
-			ItemVenda item = item(id, venda, preco.getProduto(), preco.getPrecoVenda(), quantidade, null);
+			ItemVenda item = item(id, venda, preco.getProduto(), preco.getPrecoVenda(), quantidade, new ArrayList<Adicional>());
 			items.put(preco.getProduto(), item);
 		}
 		
@@ -109,30 +109,61 @@ public class PontoDeVendaService implements Serializable {
 		return itens;
 	}
 	
-	public Double atualizaValorTotalItemPersonalizado(List<ItemVenda> itens, Double totalUnitario, Double quantidade) {
+	public Double atualizaValorTotalItemPersonalizado(List<ItemVenda> itens, Double valorTotal, Double quantidade) {
 		Double total = new Double("0");
 		
 		for(ItemVenda item : itens) {
 			if(item.getAdicionais() != null) {				
 				for(Adicional adicional : item.getAdicionais()) {
-					total += adicional.getPrecoVenda();
+					if(adicional.isSelecionado()) {						
+						valorTotal += adicional.getPrecoVenda();
+					}
 				}
 			}
 		}
 		
 		if(itens.isEmpty() || itens.size() == 1) {
-			total += (totalUnitario * quantidade);
+			total += (valorTotal * quantidade);
 		}
 		else if(!itens.isEmpty()) {
 			for(ItemVenda item : itens) {
 				total += item.getValor() * quantidade;
 			}
 		}
-		
+		total = (valorTotal - total) + total;
 		return total;
 	}
 	
-	public void adicionaComplementos(ItemVenda item, List<Adicional> complementos) {
-		item.setAdicionais(complementos);
+	public List<ItemVenda> adicionaComplementos(List<ItemVenda> itens, ItemVenda item, Adicional complemento) {
+		if(complemento.isSelecionado()) {
+			item.getAdicionais().add(complemento);
+		}
+		else {
+			item.getAdicionais().remove(complemento);
+		}
+		
+		List<ItemVenda> items = new ArrayList<ItemVenda>();
+		
+		for(ItemVenda iten : itens) {
+			if(iten.equals(item)) {
+				iten = item;
+			}
+			items.add(iten);
+		}
+		
+		return items;
+	}
+	
+	public List<Adicional> atualizaComplementos(List<Adicional> complementos, ItemVenda item) {
+		for(Adicional adicional : complementos) {
+			if(item.getAdicionais().contains(adicional)) {
+				adicional.setSelecionado(true);
+			}
+			else {
+				adicional.setSelecionado(false);
+			}
+		}
+		
+		return complementos;
 	}
 }

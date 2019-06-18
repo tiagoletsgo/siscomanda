@@ -8,7 +8,7 @@
 		<div class="col-md-12 col-sm-12 col-xs-12">
 			<p:selectOneRadio value="#{crudBean.preco}" converter="entityConverter">
 				<f:selectItems value="#{crudBean.precos}" var="preco" itemValue="#{preco}" itemLabel="(#{preco.tamanho.sigla}) #{crudBean.converterValorMonetario(preco.precoVenda)}" />
-				<p:ajax event="change" update="inpTotal itensMeioAmeio tabelaAdicinais inpDescricaoProduto" global="false" listener="#{crudBean.atualizarValorTotalItem}"
+				<p:ajax event="change" update="inpTotal itensMeioAmeio tabelaAdicinais inpDescricaoProduto" global="false" listener="#{crudBean.atualizarListaItensMeioAmeio}"
 					process="@this" />
 			</p:selectOneRadio>
 		</div>
@@ -47,7 +47,7 @@
 				selection="#{crudBean.itemSelecionado}" selectionMode="single" rowKey="#{item.id}" emptyMessage="Sem dados" paginator="true" rows="10" paginatorPosition="top">
 				<f:facet name="header">Itens Meio a Meio</f:facet>
 				
-				<p:ajax event="rowSelect" process="@this" global="false" listener="#{crudBean.atualizarComplementos}" />
+				<p:ajax event="rowSelect" process="tabelaItemMeioAmeio" global="false" update="crudform:tabelaAdicinais tabelaItemMeioAmeio" listener="#{crudBean.atualizarComplementos}" />
 				
 				<p:column>
 					<f:facet name="header">Descrição</f:facet>
@@ -82,14 +82,16 @@
 	<hr />
 	<div class="row">
 		<div class="col-md-12 col-sm-12 col-xs-12">
-			<p:dataTable id="tabelaAdicinais" value="#{crudBean.adicionais}" var="adicional" selection="#{crudBean.adicionaisSelecionados}" rowKey="#{adicional.id}" 
-				emptyMessage="Sem dados" paginator="true" rows="10" paginatorPosition="top">
-				
-				<p:ajax event="rowSelect" listener="#{crudBean.incluirComplementos}" global="false" update="@form" />
+			<p:dataTable id="tabelaAdicinais" value="#{crudBean.adicionais}" var="adicional" emptyMessage="Sem dados" paginator="true" rows="10" paginatorPosition="top">
 				
 				<f:facet name="header">Complementos</f:facet>
 				
-				<p:column styleClass="ui-datatable-center" selectionMode="multiple" />
+				<p:column styleClass="ui-datatable-center">
+					<p:selectBooleanCheckbox value="#{adicional.selecionado}">
+						<p:ajax event="change" update="crudform:inpTotal" listener="#{crudBean.incluirComplementos(adicional)}"
+							global="false" />
+					</p:selectBooleanCheckbox>
+				</p:column>
 				
 				<p:column styleClass="ui-datatable-left">
 					<f:facet name="header">Descrição</f:facet>
