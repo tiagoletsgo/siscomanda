@@ -2,7 +2,6 @@ package br.com.siscomanda.bean;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -71,7 +70,7 @@ public class PontoDeVendaBean extends BaseBean<Venda> implements Serializable {
 	private boolean personalizaTemMaisDeUmItem;
 	
 	private String descricaoProduto;
-			
+	
 	@Override
 	protected void init() {
 		getEntity().setTipoVenda(ETipoVenda.COMANDA);
@@ -83,8 +82,11 @@ public class PontoDeVendaBean extends BaseBean<Venda> implements Serializable {
 		getEntity().setDesconto(new Double(0));
 		getEntity().setTotal(new Double(0));
 		
+		this.adicionais = adicionalService.todos();
+		
 		setItem(new ItemVenda());
 		setItensMeioAmeio(new ArrayList<ItemVenda>());
+		setAdicionaisSelecionados(new ArrayList<Adicional>());
 	}
 	
 	public void btnNovoItem(boolean novoItem) {
@@ -101,7 +103,7 @@ public class PontoDeVendaBean extends BaseBean<Venda> implements Serializable {
 				this.personalizar = incluir;
 				this.descricaoProduto = produto.getDescricao();
 				this.precos = precoService.porProduto(produto);
-				this.item = pontoDeVendaService.item(999999L, getEntity(), produto, item.getValor(), item.getQuantidade(), null);
+				this.item = pontoDeVendaService.item(999999L, getEntity(), produto, item.getValor(), item.getQuantidade(), new ArrayList<Adicional>());
 
 				setProdutoSelecionado(produto);
 				getEstadoViewBean().setCurrentView(false, false, false, false);
@@ -116,7 +118,7 @@ public class PontoDeVendaBean extends BaseBean<Venda> implements Serializable {
 		try {
 			getProdutosSelecionados().add(getItem().getProduto());
 			List<Preco> precos = precoService.porTamanhoProdutos(getProdutosSelecionados(), getPreco().getTamanho());
-			List<ItemVenda> itens = pontoDeVendaService.personalizar(precos, getItensMeioAmeio(), getItem().getQuantidade(), getEntity());
+			List<ItemVenda> itens = pontoDeVendaService.personalizar(precos, getItensMeioAmeio(), getItem().getQuantidade(), getEntity(), getAdicionais());
 			setItensMeioAmeio(itens);
 			
 			setDescricaoProduto(pontoDeVendaService.atualizaNomeProduto(getItensMeioAmeio(), getDescricaoProduto(), getPreco().getTamanho().getSigla()));
@@ -145,39 +147,28 @@ public class PontoDeVendaBean extends BaseBean<Venda> implements Serializable {
 		JSFUtil.addMessage(FacesMessage.SEVERITY_INFO, "Item removido com sucesso.");
 	}
 	
-	public void incluirComplementos() {
-		if(getItemSelecionado() == null) {
-			setItemSelecionado(getItem());
-		}
-		
-		double total = 0.0;
-		List<ItemVenda> itens = new ArrayList<ItemVenda>();
-		if(getItensMeioAmeio() == null || getItensMeioAmeio().isEmpty()) {
-			getItem().setAdicionais(getAdicionaisSelecionados());
-			itens.add(getItem());
-		}
-		else {
-			itens.addAll(getItensMeioAmeio());
-		}
-		
-		total = pontoDeVendaService.atualizaValorTotalItemPersonalizado(itens, getPreco().getPrecoVenda(), getItemSelecionado().getQuantidade());
-		getItem().setTotal(total);
+	public void incluirComplementos(Adicional complemento) {
+		List<ItemVenda> itens = pontoDeVendaService.adicionaComplementos(getItensMeioAmeio(), getItemSelecionado(), complemento);
+		setItensMeioAmeio(itens);
+		atualizarValorTotalItem();
 	}
 	
 	public void atualizarComplementos() {
-		
+		this.adicionais = pontoDeVendaService.atualizaComplementos(adicionais, getItemSelecionado());
+		atualizarValorTotalItem();
+	}
+	
+	public void atualizarListaItensMeioAmeio() {
+		setItensMeioAmeio(pontoDeVendaService.atualizaListaItemMeioAmeio(getItensMeioAmeio(), getEntity(), getPreco().getTamanho()));
+		atualizarValorTotalItem();
 	}
 	
 	public void atualizarValorTotalItem() {
-		double total = new Double(0);
-		setItensMeioAmeio(pontoDeVendaService.atualizaListaItemMeioAmeio(getItensMeioAmeio(), getEntity(), getPreco().getTamanho()));			
 		
-		total = pontoDeVendaService.atualizaValorTotalItemPersonalizado(getItensMeioAmeio(), getPreco().getPrecoVenda(), getItem().getQuantidade());
-		setDescricaoProduto(pontoDeVendaService.atualizaNomeProduto(getItensMeioAmeio(), getDescricaoProduto(), getPreco().getTamanho().getSigla()));
-		getItem().setTotal(total);
-		
-		if(this.adicionais == null) {
-			this.adicionais = adicionalService.todos();
+		if(getItensMeioAmeio().size() == 0) {
+			setItemSelecionado(getItem());
+			getItemSelecionado().setAdicionais(adicionalService.todos());
+			getItem().setTotal(getPreco().getPrecoVenda());
 		}
 		
 		if(this.produtos == null) {
@@ -188,6 +179,11 @@ public class PontoDeVendaBean extends BaseBean<Venda> implements Serializable {
 		if(getItensMeioAmeio().size() == 1) {
 			getItensMeioAmeio().clear();
 		}
+		
+		double total = new Double(0);
+		total = pontoDeVendaService.atualizaValorTotalItemPersonalizado(getItensMeioAmeio(), getItem().getTotal(), getItem().getQuantidade());
+		setDescricaoProduto(pontoDeVendaService.atualizaNomeProduto(getItensMeioAmeio(), getDescricaoProduto(), getPreco().getTamanho().getSigla()));
+		getItem().setTotal(total);
 	}
 	
 	public String converterValorMonetario(Double valor) {

@@ -6,6 +6,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
+import javax.persistence.Transient;
 
 @MappedSuperclass
 public abstract class BaseEntity implements Serializable {
@@ -15,6 +16,9 @@ public abstract class BaseEntity implements Serializable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
+	
+	@Transient
+	private boolean selecionado;
 
 	public Long getId() {
 		return id;
@@ -31,6 +35,14 @@ public abstract class BaseEntity implements Serializable {
 	@Override
 	public String toString() {
 		return "ID=" + getId();
+	}
+	
+	public boolean isSelecionado() {
+		return selecionado;
+	}
+
+	public void setSelecionado(boolean selecionado) {
+		this.selecionado = selecionado;
 	}
 
 	@Override
