@@ -63,11 +63,29 @@ public class Produto extends BaseEntity implements Serializable {
 	
 	public Produto(Long id) {
 		setId(id);
+		
 	}
 	
 	public Produto(Long id, String descricao) {
 		setId(id);
 		setDescricao(descricao);
+	}
+	
+	public Produto clone(Produto produto) {
+		Produto prod = new Produto();
+		prod.setId(produto.getId());
+		prod.setDescricao(produto.getDescricao());
+		prod.setCodigoEan(produto.getCodigoEan());
+		prod.setEmbalagem(produto.getEmbalagem());
+		prod.setFornecedor(produto.getFornecedor());
+		prod.setCategoria(produto.getCategoria());
+		prod.setSubCategoria(produto.getSubCategoria());
+		prod.setControlaEstoque(produto.getControlaEstoque());
+		prod.setEstoqueMinimo(produto.getEstoqueMinimo());
+		prod.setEstoqueMaximo(produto.getEstoqueMaximo());
+		prod.setPermiteAdicional(produto.isPermiteAdicional());
+		prod.setPrecos(produto.getPrecos());
+		return prod;
 	}
 	
 	public String getDescricao() {

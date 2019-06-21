@@ -2,6 +2,8 @@ package br.com.siscomanda.base.bean;
 
 import java.io.Serializable;
 
+import br.com.siscomanda.enumeration.EStateView;
+
 public class EstadoViewBean implements Serializable {
 
 	private static final long serialVersionUID = -876338639656095129L;
@@ -34,6 +36,24 @@ public class EstadoViewBean implements Serializable {
 		setUpdate(isUpdate);
 		setDelete(isDelete);
 		setInsert(isInsert);
+	}
+	
+	public void setCurrentView(EStateView state) {
+		if(state == null) {
+			setCurrentView(false, false, false, false);
+		}
+		else if(state.equals(EStateView.INSERT)) {
+			setCurrentView(true, false, false, false);
+		}
+		else if(state.equals(EStateView.UPDATE)) {
+			setCurrentView(false, true, false, false);
+		}
+		else if(state.equals(EStateView.DELETE)) {
+			setCurrentView(false, false, true, false);
+		}
+		else if(state.equals(EStateView.SEARCH)) {
+			setCurrentView(false, false, false, true);
+		}
 	}
 
 	public Boolean getUpdate() {

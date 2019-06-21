@@ -9,12 +9,13 @@
 	<ui:param name="sm" value="12" />
 	<ui:param name="xs" value="12" />
 	<ui:param name="crudBean" value="#{pontoDeVendaBean}" />
-	<ui:param name="hideTableList" value="#{not crudBean.personalizar}" />
+	<ui:param name="hideTableList" value="#{not crudBean.incluirItem}" />
 	
 	<ui:define name="title_main"> 
 		<h:panelGroup layout="block" rendered="#{crudBean.estadoViewBean.insert}">Inclusão</h:panelGroup>
 		<h:panelGroup layout="block" rendered="#{crudBean.estadoViewBean.update}">Edição</h:panelGroup>
-		<h:panelGroup layout="block" rendered="#{not crudBean.estadoViewBean.insert and not crudBean.estadoViewBean.update}">Consultar</h:panelGroup>
+		<h:panelGroup layout="block" rendered="#{crudBean.novoItem}">Novo Item</h:panelGroup>
+		<h:panelGroup layout="block" rendered="#{not crudBean.estadoViewBean.insert and not crudBean.estadoViewBean.update and not crudBean.novoItem}">Consultar</h:panelGroup>
 	</ui:define>
 	<ui:define name="title_form"> 
 		<h:panelGroup layout="block">Ponto de Venda (PDV) </h:panelGroup>
@@ -35,8 +36,8 @@
 				<ui:include src="/pages/modulo/venda/include/pesquisa-produto-include.xhtml" />
 			</h:panelGroup>
 			
-			<h:panelGroup layout="block" rendered="#{crudBean.personalizar}">
-				<ui:include src="/pages/modulo/venda/include/personalizar-produto-include.xhtml" />
+			<h:panelGroup layout="block" rendered="#{crudBean.incluirItem}">
+				<ui:include src="/pages/modulo/venda/include/incluir-item-include.xhtml" />
 			</h:panelGroup>
 		</h:panelGroup>
 		<h:panelGroup layout="block" id="formconsulta">
@@ -84,7 +85,7 @@
 			</h:form>
 			
 			<f:facet name="footer">
-				<p:commandButton process="@this" styleClass="btn btn-success" value="Confirmar" action="#{crudBean.btnRemover}" oncomplete="PF('dlgConfirmarExclusao').hide();" update="crudform" />
+				<p:commandButton process="@this" styleClass="btn btn-success" value="Confirmar" oncomplete="PF('dlgConfirmarExclusao').hide();" update="crudform" />
 				<p:commandButton styleClass="btn btn-danger" global="false" value="Cancelar" oncomplete="PF('dlgConfirmarExclusao').hide(); return false;"  />	
 			</f:facet>
 		</p:dialog>
@@ -94,12 +95,12 @@
 			<h:form id="formPersonalizar">
 				<p:selectManyCheckbox value="#{crudBean.produtosSelecionados}" layout="grid" columns="1" converter="entityConverter">
 					<f:selectItems value="#{crudBean.produtos}" var="produto" itemValue="#{produto}" itemLabel="#{produto.descricao}" />
-					<p:ajax process="@this" global="false" />
+					<p:ajax event="change" process="@this" global="false" />
 				</p:selectManyCheckbox>
 			</h:form>
 			<f:facet name="footer">
-				<p:commandButton process="@this" styleClass="btn btn-success" action="#{crudBean.btnPersonalizar}" value="Salvar" oncomplete="PF('dlgPersonalizar').hide();" 
-					update="crudform:itensMeioAmeio crudform:inpTotal crudform:inpDescricaoProduto scripts" />
+				<p:commandButton process="@this" styleClass="btn btn-success" value="Salvar" oncomplete="PF('dlgPersonalizar').hide();" 
+					update="crudform:itensMeioAmeio crudform:inpDescricaoProduto crudform:inpTotal scripts" action="#{crudBean.btnPersonalizar()}" />
 			</f:facet>
 		</p:dialog>
 	</ui:define>

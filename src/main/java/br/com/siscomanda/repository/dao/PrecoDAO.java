@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.persistence.TypedQuery;
 
+import br.com.siscomanda.exception.SiscomandaException;
 import br.com.siscomanda.model.Preco;
 import br.com.siscomanda.model.Produto;
 import br.com.siscomanda.model.Tamanho;
@@ -46,5 +47,24 @@ public class PrecoDAO extends GenericDAO<Preco> implements Serializable {
 		
 		List<Preco> precos = query.getResultList();
 		return precos;
+	}
+	
+	public Preco porValor(Double valor, Produto produto) throws SiscomandaException {
+		try {
+			StringBuilder sql = new StringBuilder();
+			sql.append("SELECT preco FROM Preco preco ");
+			sql.append("INNER JOIN FETCH preco.tamanho tamanho ");
+			sql.append("INNER JOIN FETCH preco.produto produto ");
+			sql.append("WHERE preco.precoVenda = :valor AND preco.produto = :produto ");
+			
+			TypedQuery<Preco> query = getEntityManager().createQuery(sql.toString(), Preco.class);
+			query.setParameter("valor", valor);
+			query.setParameter("produto", produto);
+			Preco preco = query.getSingleResult();
+			return preco;
+		}
+		catch(Exception e) {
+			throw new SiscomandaException(e.getMessage());
+		}
 	}
 }
