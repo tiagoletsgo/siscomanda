@@ -4,7 +4,7 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:p="http://primefaces.org/ui">
 	
-		<p:commandButton value="Novo Item" styleClass="btn btn-primary" update="@form" global="false" rendered="#{!crudBean.novoItem}" action="#{crudBean.btnNovoItem(true)}" />
+		<p:commandButton value="Novo Item" styleClass="btn btn-primary" update="@form" global="false" action="#{crudBean.btnNovoItem()}" />
 		<p:dataTable id="tabelaVendaItem" styleClass="table table-striped jambo_table" value="#{crudBean.entity.itens}" var="item"
 			emptyMessage="Sem dados">
 			

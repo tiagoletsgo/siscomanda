@@ -1,6 +1,9 @@
 package br.com.siscomanda.util;
 
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.List;
+import java.util.Locale;
 
 import br.com.siscomanda.exception.SiscomandaException;
 
@@ -10,6 +13,18 @@ public class StringUtil {
 	
 	public static String parseDouble(Double valor) {
 		return simboloReal.concat(" ").concat(String.format("%.2f", valor));
+	}
+	
+	public static String converterParaValorMonetario(Double valor) {
+		StringBuilder valorFormatado = new StringBuilder();
+		DecimalFormat f = new DecimalFormat("#,##0.00");
+		f.setDecimalFormatSymbols(new DecimalFormatSymbols(new Locale("pt", "BR")));
+		
+		valorFormatado.append(f.getDecimalFormatSymbols().getCurrencySymbol());
+		valorFormatado.append(" ");
+		valorFormatado.append(f.format(valor));
+		
+		return valorFormatado.toString();
 	}
 	
 	public static String converterDouble(Double valor) {

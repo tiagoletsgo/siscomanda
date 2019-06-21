@@ -3,7 +3,8 @@
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:p="http://primefaces.org/ui">
-		
+	
+	<p:commandButton value="Voltar" styleClass="btn btn-primary" update="@form" global="false" action="#{crudBean.btnVoltar()}" />
 	<p:dataTable id="tabelaVendaProduto" styleClass="table table-striped jambo_table" value="#{produtoFactoryBean.produtos}" var="produto"
 			 emptyMessage="Sem dados" paginator="true" rows="10" paginatorPosition="top">
 			
@@ -31,7 +32,7 @@
 			<f:facet name="header">
 				<h:outputLabel value="#" />
 			</f:facet>
-			<p:commandButton value="Incluir" styleClass="btn btn-primary" update="@form scripts" action="#{crudBean.btnIncluir(true, produto)}" global="false" />
+			<p:commandButton value="Incluir" styleClass="btn btn-primary" update="@form scripts" global="false" action="#{crudBean.btnIncluir(produto)}" />
 		</p:column>
 	</p:dataTable>
 </ui:composition>

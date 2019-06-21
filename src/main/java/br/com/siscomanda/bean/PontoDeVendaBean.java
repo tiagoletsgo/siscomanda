@@ -2,8 +2,9 @@ package br.com.siscomanda.bean;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ViewScoped;
@@ -11,207 +12,239 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import br.com.siscomanda.base.bean.BaseBean;
-import br.com.siscomanda.enumeration.EStatus;
-import br.com.siscomanda.enumeration.ETipoVenda;
+import br.com.siscomanda.builder.VendaBuilder;
+import br.com.siscomanda.enumeration.EStateView;
 import br.com.siscomanda.exception.SiscomandaException;
 import br.com.siscomanda.model.Adicional;
 import br.com.siscomanda.model.ItemVenda;
 import br.com.siscomanda.model.Preco;
 import br.com.siscomanda.model.Produto;
+import br.com.siscomanda.model.Tamanho;
 import br.com.siscomanda.model.Venda;
 import br.com.siscomanda.service.AdicionalService;
 import br.com.siscomanda.service.PontoDeVendaService;
 import br.com.siscomanda.service.PrecoService;
 import br.com.siscomanda.service.ProdutoService;
 import br.com.siscomanda.util.JSFUtil;
+import br.com.siscomanda.util.StringUtil;
 
 @Named
 @ViewScoped
 public class PontoDeVendaBean extends BaseBean<Venda> implements Serializable {
 
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = -2805014293863805310L;
 	
-	private boolean novoItem;
-	
-	private boolean personalizar;
-	
-	private Produto produtoSelecionado;
-	
-	private List<Preco> precos;
-	
-	private List<Adicional> adicionais;
-	
-	private List<Adicional> adicionaisSelecionados;
-	
-	private List<Produto> produtos;
-	
-	private List<Produto> produtosSelecionados;
+	@Inject
+	private PontoDeVendaService pontoDeVendaService;
 	
 	@Inject
 	private PrecoService precoService;
 	
 	@Inject
-	private AdicionalService adicionalService;
-	
-	@Inject
 	private ProdutoService produtoService;
 	
 	@Inject
-	private PontoDeVendaService pontoDeVendaService;
+	private AdicionalService adicionalService;
+	
+	private boolean novoItem;
+	
+	private boolean incluirItem;
+	
+	private VendaBuilder builder;
 	
 	private ItemVenda item;
 	
 	private ItemVenda itemSelecionado;
+
+	private List<Preco> precos;
+	
+	private List<Adicional> complementos;
 	
 	private List<ItemVenda> itensMeioAmeio;
 	
-	private Preco preco;
+	private List<Produto> produtos;
 	
-	private boolean personalizaTemMaisDeUmItem;
+	private List<Produto> produtosSelecionados;
 	
-	private String descricaoProduto;
+	private Map<String, Object> parametros;
 	
 	@Override
 	protected void init() {
-		getEntity().setTipoVenda(ETipoVenda.COMANDA);
-		getEntity().setStatus(EStatus.EM_ABERTO);
-		getEntity().setDataHora(new Date());
-		getEntity().setSubtotal(new Double(0));
-		getEntity().setTaxaEntrega(new Double(0));
-		getEntity().setTaxaServico(new Double(0));
-		getEntity().setDesconto(new Double(0));
-		getEntity().setTotal(new Double(0));
-		
-		this.adicionais = adicionalService.todos();
-		
-		setItem(new ItemVenda());
-		setItensMeioAmeio(new ArrayList<ItemVenda>());
-		setAdicionaisSelecionados(new ArrayList<Adicional>());
+		builder = new VendaBuilder();
+		parametros = new HashMap<String, Object>();
+		itensMeioAmeio = new ArrayList<ItemVenda>();
 	}
 	
-	public void btnNovoItem(boolean novoItem) {
-		if(novoItem) {
-			this.novoItem = novoItem;
-			getEstadoViewBean().setCurrentView(false, false, false, false);
-		}
+	public void btnNovoItem() {
+		setNovoItem(true);
+		getEstadoViewBean().setCurrentView(null);
 	}
 	
-	public void btnIncluir(boolean incluir, Produto produto) {
+	public void btnVoltar() {
+		setNovoItem(false);
+		getEstadoViewBean().setCurrentView(EStateView.INSERT);
+	}
+	
+	public void btnIncluir(Produto produto) {
 		try {
-			if(incluir) {
-				this.novoItem = false;
-				this.personalizar = incluir;
-				this.descricaoProduto = produto.getDescricao();
-				this.precos = precoService.porProduto(produto);
-				this.item = pontoDeVendaService.item(999999L, getEntity(), produto, item.getValor(), item.getQuantidade(), new ArrayList<Adicional>());
+			setNovoItem(false);
+			setIncluirItem(true);
+			setItem(pontoDeVendaService.paraItemVenda(getEntity(), produto));
 
-				setProdutoSelecionado(produto);
-				getEstadoViewBean().setCurrentView(false, false, false, false);
-			}
+			getItem().setId(1L);
+			precos = precoService.porProduto(produto);
+			produtos = produtoService.todos();
+			produtos.remove(produto);
+			
+			parametros.put("descricaoProduto", produto.getDescricao());
 		}
 		catch(SiscomandaException e) {
 			JSFUtil.addMessage(FacesMessage.SEVERITY_ERROR, e.getMessage());
+		}
+	}
+	
+	public void atualizaListaDeProdutos() {
+		List<Produto> produtos = pontoDeVendaService.corrigeNomeDaListaDeProdutos(getProdutos());
+		this.produtos = produtos;
+	}
+	
+	public void alterarTamanho() {
+		try {
+			Preco preco = precoService.porValor(getItem().getValor(), getItem().getProduto());
+			parametros.put("tamanho", preco.getTamanho());
+			getItem().setTotal(getItem().getValor() * getItem().getQuantidade());
+			complementos = adicionalService.todos();
+			
+			atualizaListaItensMeioAmeio();
+			atualizaListaDeComplementos();
+			atualizaNomeProduto();
+			calcularValorTotal();
+		}catch(SiscomandaException e) {
+			JSFUtil.addMessage(FacesMessage.SEVERITY_ERROR, e.getMessage());
+		}
+	}
+	
+	@SuppressWarnings("unchecked")
+	private void atualizaNomeProduto() {
+		String descricaoOriginalProduto = (String)parametros.get("descricaoProduto");
+		Tamanho tamanho = (Tamanho)parametros.get("tamanho");
+		String sigla = tamanho.getSigla();
+		
+		Map<String, Object> map = pontoDeVendaService.atualizaNomeDosProdutos(getItensMeioAmeio(), descricaoOriginalProduto, sigla);
+		String nomeProduto = (String)map.get("descricaoProduto");
+		List<ItemVenda> itens = (List<ItemVenda>)map.get("itens");
+		itensMeioAmeio = itens;
+		
+		getItem().getProduto().setDescricao(nomeProduto);
+	}
+	
+	private void atualizaListaItensMeioAmeio() {
+		try {
+			List<ItemVenda> itens = new ArrayList<ItemVenda>();
+			Tamanho tamanho = (Tamanho)parametros.get("tamanho");
+			itens = pontoDeVendaService.atualizaListaItemMeioAmeio(getItensMeioAmeio(), tamanho);
+			itensMeioAmeio = itens;
+		}
+		catch(SiscomandaException e) {
+			JSFUtil.addMessage(FacesMessage.SEVERITY_ERROR, e.getMessage());
+		}
+		finally {
+			if(getProdutosSelecionados() != null) {
+				getProdutosSelecionados().clear();
+			}
 		}
 	}
 	
 	public void btnPersonalizar() {
 		try {
-			getProdutosSelecionados().add(getItem().getProduto());
-			List<Preco> precos = precoService.porTamanhoProdutos(getProdutosSelecionados(), getPreco().getTamanho());
-			List<ItemVenda> itens = pontoDeVendaService.personalizar(precos, getItensMeioAmeio(), getItem().getQuantidade(), getEntity(), getAdicionais());
-			setItensMeioAmeio(itens);
+			List<ItemVenda> itens = new ArrayList<ItemVenda>();
+			Tamanho tamanho = (Tamanho)parametros.get("tamanho");
+			ItemVenda item = getItem().clonar(getItem());
+			itens = pontoDeVendaService.personalizar(getProdutosSelecionados(), getItensMeioAmeio(), tamanho, item, getEntity());
+			itensMeioAmeio = itens;
 			
-			setDescricaoProduto(pontoDeVendaService.atualizaNomeProduto(getItensMeioAmeio(), getDescricaoProduto(), getPreco().getTamanho().getSigla()));
-			this.personalizaTemMaisDeUmItem = getDescricaoProduto().contains("PIZZA PERSONALIZADA") ? true : false;
-			double total = pontoDeVendaService.atualizaValorTotalItemPersonalizado(getItensMeioAmeio(), getPreco().getPrecoVenda(), getItem().getQuantidade());
-
-			getItem().setTotal(total);
-			getItem().setValor(getPreco().getPrecoVenda());
+			atualizaNomeProduto();
+			calcularValorTotal();
+		} catch (SiscomandaException e) {
+			JSFUtil.addMessage(FacesMessage.SEVERITY_ERROR, e.getMessage());
+		}
+		finally {
 			getProdutosSelecionados().clear();
+		}
+	}
+	
+	public void adicionaComplementos(Adicional adicional) {
+		try {
+			List<ItemVenda> itens = new ArrayList<ItemVenda>();
+			
+			itens = pontoDeVendaService.adicionaComplemento(getItemSelecionado(), getItem(), adicional, getComplementos(), getItensMeioAmeio());
+			itensMeioAmeio = itens;
+			
+			atualizaListaDeComplementos();
+			calcularValorTotal();
+			
+			listaMeioAmeioTemUmRegistro();
 		}
 		catch(SiscomandaException e) {
 			JSFUtil.addMessage(FacesMessage.SEVERITY_ERROR, e.getMessage());
 		}
 	}
 	
-	public void btnRemoverItemPersonalizado(ItemVenda item) {
-		if(this.item.getProduto().equals(item.getProduto()) || getItensMeioAmeio().size() == 2) {
-			setDescricaoProduto(getProdutoSelecionado().getDescricao());
-			getItensMeioAmeio().clear();
-			atualizarValorTotalItem();
-			return;
+	private void listaMeioAmeioTemUmRegistro() {
+		List<ItemVenda> itens = pontoDeVendaService.listaItemMeioAmeioTiverUmRegistroRemovaTudo(getItensMeioAmeio());
+		itensMeioAmeio = itens;
+	}
+	
+	private void atualizaListaDeComplementos() {
+		List<Adicional> complementos = new ArrayList<Adicional>();
+		complementos = pontoDeVendaService.atualizaListaDeComplementos(getItemSelecionado(), getItem(), getComplementos());
+		this.complementos = complementos;
+	}
+	
+	public void btnRemover(ItemVenda item) {
+		try {
+			List<ItemVenda> itens = new ArrayList<ItemVenda>();
+			itens = pontoDeVendaService.removerItem(getItensMeioAmeio(), item, getItem().getProduto());
+			itensMeioAmeio = itens;
+			
+			atualizaListaItensMeioAmeio();
+			atualizaListaDeComplementos();
+			atualizaNomeProduto();
+			calcularValorTotal();
 		}
-		
-		getItensMeioAmeio().remove(item);
-		atualizarValorTotalItem();
-		JSFUtil.addMessage(FacesMessage.SEVERITY_INFO, "Item removido com sucesso.");
-	}
-	
-	public void incluirComplementos(Adicional complemento) {
-		List<ItemVenda> itens = pontoDeVendaService.adicionaComplementos(getItensMeioAmeio(), getItemSelecionado(), complemento);
-		setItensMeioAmeio(itens);
-		atualizarValorTotalItem();
-	}
-	
-	public void atualizarComplementos() {
-		this.adicionais = pontoDeVendaService.atualizaComplementos(adicionais, getItemSelecionado());
-		atualizarValorTotalItem();
-	}
-	
-	public void atualizarListaItensMeioAmeio() {
-		setItensMeioAmeio(pontoDeVendaService.atualizaListaItemMeioAmeio(getItensMeioAmeio(), getEntity(), getPreco().getTamanho()));
-		atualizarValorTotalItem();
-	}
-	
-	public void atualizarValorTotalItem() {
-		
-		if(getItensMeioAmeio().size() == 0) {
-			setItemSelecionado(getItem());
-			getItemSelecionado().setAdicionais(adicionalService.todos());
-			getItem().setTotal(getPreco().getPrecoVenda());
+		catch(SiscomandaException e) {
+			JSFUtil.addMessage(FacesMessage.SEVERITY_ERROR, e.getMessage());
 		}
-		
-		if(this.produtos == null) {
-			this.produtos = produtoService.todos();
-			this.produtos.remove(produtoSelecionado);
-		}
-		
-		if(getItensMeioAmeio().size() == 1) {
-			getItensMeioAmeio().clear();
-		}
-		
-		double total = new Double(0);
-		total = pontoDeVendaService.atualizaValorTotalItemPersonalizado(getItensMeioAmeio(), getItem().getTotal(), getItem().getQuantidade());
-		setDescricaoProduto(pontoDeVendaService.atualizaNomeProduto(getItensMeioAmeio(), getDescricaoProduto(), getPreco().getTamanho().getSigla()));
-		getItem().setTotal(total);
 	}
 	
-	public String converterValorMonetario(Double valor) {
-		return JSFUtil.converterParaValorMonetario(valor);
+	public void calcularValorTotal() {
+		double total = pontoDeVendaService.calcularValorTotal(getItensMeioAmeio(), getItem().getValor());
+		getItem().setTotal(total * getItem().getQuantidade());
 	}
-	
+		
+	public String paraMoedaPtBR(Double valor) {
+		return StringUtil.converterParaValorMonetario(valor);
+	}
+
 	@Override
 	protected void beforeSearch() {
+		
 	}
 
 	public boolean isNovoItem() {
 		return novoItem;
 	}
-	
-	public boolean isPersonalizar() {
-		return personalizar;
+
+	public void setNovoItem(boolean novoItem) {
+		this.novoItem = novoItem;
 	}
 
-	public Produto getProdutoSelecionado() {
-		return produtoSelecionado;
+	public boolean isIncluirItem() {
+		return incluirItem;
 	}
 
-	public void setProdutoSelecionado(Produto produtoSelecionado) {
-		this.produtoSelecionado = produtoSelecionado;
-	}
-	
-	public List<Preco> getPrecos() {
-		return precos;
+	public void setIncluirItem(boolean incluirItem) {
+		this.incluirItem = incluirItem;
 	}
 
 	public ItemVenda getItem() {
@@ -221,35 +254,27 @@ public class PontoDeVendaBean extends BaseBean<Venda> implements Serializable {
 	public void setItem(ItemVenda item) {
 		this.item = item;
 	}
-
-	public Preco getPreco() {
-		return preco;
-	}
-
-	public void setPreco(Preco preco) {
-		this.preco = preco;
+	
+	public List<Preco> getPrecos() {
+		return precos;
 	}
 	
-	public List<Adicional> getAdicionais() {
-		return adicionais;
+	public List<Adicional> getComplementos() {
+		return complementos;
 	}
-
-	public List<Adicional> getAdicionaisSelecionados() {
-		return adicionaisSelecionados;
+	
+	public List<ItemVenda> getItensMeioAmeio() {
+		return itensMeioAmeio;
 	}
-
+	
 	public List<Produto> getProdutos() {
 		return produtos;
-	}
-
-	public void setAdicionaisSelecionados(List<Adicional> adicionaisSelecionados) {
-		this.adicionaisSelecionados = adicionaisSelecionados;
 	}
 
 	public List<Produto> getProdutosSelecionados() {
 		return produtosSelecionados;
 	}
-	
+
 	public void setProdutosSelecionados(List<Produto> produtosSelecionados) {
 		this.produtosSelecionados = produtosSelecionados;
 	}
@@ -257,28 +282,8 @@ public class PontoDeVendaBean extends BaseBean<Venda> implements Serializable {
 	public ItemVenda getItemSelecionado() {
 		return itemSelecionado;
 	}
-
+	
 	public void setItemSelecionado(ItemVenda itemSelecionado) {
 		this.itemSelecionado = itemSelecionado;
-	}
-
-	public List<ItemVenda> getItensMeioAmeio() {
-		return itensMeioAmeio;
-	}
-
-	public void setItensMeioAmeio(List<ItemVenda> itensMeioAmeio) {
-		this.itensMeioAmeio = itensMeioAmeio;
-	}
-	
-	public boolean isPersonalizaTemMaisDeUmItem() {
-		return personalizaTemMaisDeUmItem;
-	}
-
-	public String getDescricaoProduto() {
-		return descricaoProduto;
-	}
-
-	public void setDescricaoProduto(String descricaoProduto) {
-		this.descricaoProduto = descricaoProduto;
 	}
 }

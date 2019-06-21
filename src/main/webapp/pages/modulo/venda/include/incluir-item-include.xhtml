@@ -6,10 +6,9 @@
 		
 	<div class="row">
 		<div class="col-md-12 col-sm-12 col-xs-12">
-			<p:selectOneRadio value="#{crudBean.preco}" converter="entityConverter">
-				<f:selectItems value="#{crudBean.precos}" var="preco" itemValue="#{preco}" itemLabel="(#{preco.tamanho.sigla}) #{crudBean.converterValorMonetario(preco.precoVenda)}" />
-				<p:ajax event="change" update="inpTotal itensMeioAmeio tabelaAdicinais inpDescricaoProduto" global="false" listener="#{crudBean.atualizarListaItensMeioAmeio}"
-					process="@this" />
+			<p:selectOneRadio value="#{crudBean.item.valor}">
+				<f:selectItems value="#{crudBean.precos}" var="preco" itemLabel="#{crudBean.paraMoedaPtBR(preco.precoVenda)} (#{preco.tamanho.sigla.toUpperCase()})" itemValue="#{preco.precoVenda}" />
+				<p:ajax event="change" update="inpTotal itensMeioAmeio inpDescricaoProduto tabelaComplementos scripts" global="false" process="@this" listener="#{crudBean.alterarTamanho()}" />
 			</p:selectOneRadio>
 		</div>
 	</div>
@@ -18,14 +17,14 @@
 	<div class="row">
 		<div class="col-md-8 col-sm-8 col-xs-12">
 			<label>Produto :</label>
-			<h:outputText id="inpDescricaoProduto" value="#{crudBean.descricaoProduto}" styleClass="form-control" />
+			<h:outputText id="inpDescricaoProduto" styleClass="form-control" value="#{crudBean.item.produto.descricao}" />
 		</div>
 		
 		<div class="col-md-2 col-sm-2 col-xs-12">
 			<label>Quantidade :</label>
 			<h:inputText styleClass="form-control currency" value="#{crudBean.item.quantidade}">
 				<f:convertNumber minFractionDigits="2" maxFractionDigits="2" locale="pt_BR" />
-				<p:ajax event="keyup" update="inpTotal" global="false" delay="300" listener="#{crudBean.atualizarValorTotalItem}" />
+				<p:ajax event="keyup" update="inpTotal inpDescricaoProduto scripts" global="false" delay="300" process="@this" listener="#{crudBean.calcularValorTotal()}" />
 			</h:inputText>
 		</div>
 		
@@ -40,14 +39,16 @@
 	<hr />
 	<div class="row">
 		<h:panelGroup layout="block" id="itensMeioAmeio" styleClass="col-md-12 col-sm-12 col-xs-12">
-			<p:commandButton styleClass="btn btn-primary" value="Personalizar" disabled="#{crudBean.item.total == 0.0}" 
-				oncomplete="PF('dlgPersonalizar').show();" update="dialogPersonalizar" />
+			<p:commandButton styleClass="btn btn-primary" value="Personalizar" disabled="#{crudBean.item.total eq 0.0}"
+				oncomplete="PF('dlgPersonalizar').show();" update="dialogPersonalizar" actionListener="#{crudBean.atualizaListaDeProdutos()}"/>
 			
-			<p:dataTable id="tabelaItemMeioAmeio" value="#{crudBean.itensMeioAmeio}" var="item" 
-				selection="#{crudBean.itemSelecionado}" selectionMode="single" rowKey="#{item.id}" emptyMessage="Sem dados" paginator="true" rows="10" paginatorPosition="top">
+			<p:dataTable id="tabelaItemMeioAmeio" var="item" value="#{crudBean.itensMeioAmeio}" selectionMode="single" rowKey="#{item.id}" 
+				 emptyMessage="Sem dados" paginator="true" rows="10" paginatorPosition="top" selection="#{crudBean.itemSelecionado}">
+				 
 				<f:facet name="header">Itens Meio a Meio</f:facet>
 				
-				<p:ajax event="rowSelect" process="tabelaItemMeioAmeio" global="false" update="crudform:tabelaAdicinais tabelaItemMeioAmeio" listener="#{crudBean.atualizarComplementos}" />
+				<p:ajax event="rowSelect" process="tabelaItemMeioAmeio" global="false" update="crudform:tabelaComplementos tabelaItemMeioAmeio"
+					listener="#{crudBean.atualizaListaDeComplementos()}" />
 				
 				<p:column>
 					<f:facet name="header">Descrição</f:facet>
@@ -56,10 +57,8 @@
 				
 				<p:column>
 					<f:facet name="header">Quantidade</f:facet>
-						<h:outputText value="1 / #{crudBean.itensMeioAmeio.size()}" rendered="#{crudBean.personalizaTemMaisDeUmItem}" />
-						<h:outputText value="#{item.quantidade}" rendered="#{not crudBean.personalizaTemMaisDeUmItem}">
-							<f:convertNumber pattern="000000" maxIntegerDigits="6" />
-						</h:outputText>
+						<h:outputText  />
+						<h:outputText value="1 / #{crudBean.itensMeioAmeio.size()}" />
 					<h:outputText />
 				</p:column>
 				
@@ -72,8 +71,8 @@
 				
 				<p:column>
 					<f:facet name="header">#</f:facet>
-					<p:commandButton value="Remover" styleClass="btn btn-danger" action="#{crudBean.btnRemoverItemPersonalizado(item)}"
-						update="tabelaItemMeioAmeio crudform:inpDescricaoProduto crudform:inpTotal scripts" global="false"/>
+					<p:commandButton value="Remover" styleClass="btn btn-danger" action="#{crudBean.btnRemover(item)}"
+						update="tabelaItemMeioAmeio crudform:inpDescricaoProduto crudform:inpTotal crudform:tabelaComplementos scripts" global="false"/>
 				</p:column>
 			</p:dataTable>
 		</h:panelGroup>
@@ -82,14 +81,14 @@
 	<hr />
 	<div class="row">
 		<div class="col-md-12 col-sm-12 col-xs-12">
-			<p:dataTable id="tabelaAdicinais" value="#{crudBean.adicionais}" var="adicional" emptyMessage="Sem dados" paginator="true" rows="10" paginatorPosition="top">
+			<p:dataTable id="tabelaComplementos" value="#{crudBean.complementos}" var="adicional" emptyMessage="Sem dados" paginator="true" rows="10" paginatorPosition="top">
 				
 				<f:facet name="header">Complementos</f:facet>
 				
 				<p:column styleClass="ui-datatable-center">
 					<p:selectBooleanCheckbox value="#{adicional.selecionado}">
-						<p:ajax event="change" update="crudform:inpTotal" listener="#{crudBean.incluirComplementos(adicional)}"
-							global="false" />
+						<p:ajax event="change" update="crudform:inpTotal tabelaComplementos crudform:tabelaItemMeioAmeio" process="@this"
+							global="false" listener="#{crudBean.adicionaComplementos(adicional)}" />
 					</p:selectBooleanCheckbox>
 				</p:column>
 				

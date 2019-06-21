@@ -37,4 +37,8 @@ public class PrecoService implements Serializable {
 		
 		return precos;
 	}
+	
+	public Preco porValor(Double valor, Produto produto) throws SiscomandaException {
+		return dao.porValor(valor, produto);
+	}
 }

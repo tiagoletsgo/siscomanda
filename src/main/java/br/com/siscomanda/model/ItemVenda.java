@@ -45,6 +45,21 @@ public class ItemVenda extends BaseEntity implements Serializable {
 		this.observacao = observacao;
 		this.adicionais = complementos;
 	}
+	
+	public ItemVenda clonar(ItemVenda item) {
+		ItemVenda it = new ItemVenda();
+		it.setId(item.getId());
+		it.setAdicionais(item.getAdicionais());
+		it.setObservacao(item.getObservacao());
+		it.setProduto(item.getProduto().clone(item.getProduto()));
+		it.setQuantidade(item.getQuantidade());
+		it.setSelecionado(item.isSelecionado());
+		it.setTotal(item.getTotal());
+		it.setValor(item.getValor());
+		it.setVenda(item.getVenda());
+		
+		return it;
+	}
 
 	public Venda getVenda() {
 		return venda;

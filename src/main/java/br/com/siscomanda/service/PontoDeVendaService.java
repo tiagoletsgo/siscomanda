@@ -1,6 +1,7 @@
 package br.com.siscomanda.service;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -8,6 +9,7 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
+import br.com.siscomanda.exception.SiscomandaException;
 import br.com.siscomanda.model.Adicional;
 import br.com.siscomanda.model.ItemVenda;
 import br.com.siscomanda.model.Preco;
@@ -23,147 +25,249 @@ public class PontoDeVendaService implements Serializable {
 	@Inject
 	private PrecoDAO precoDAO;
 	
-	
-	public ItemVenda item(Venda venda, Produto produto, Double valor, Double quantidade) {
+	public ItemVenda paraItemVenda(Venda venda, Produto produto) {
+		double valor = 0;
+		double quantidade = 1;
 		return new ItemVenda(venda, produto, valor, quantidade, "");
 	}
 	
-	public ItemVenda item(Long id, Venda venda, Produto produto, Double valor, Double quantidade, List<Adicional> complementos) {
-		return new ItemVenda(id, venda, produto, valor, quantidade, "", new ArrayList<Adicional>());
+	public ItemVenda alterarValorTotalPara(ItemVenda item) {
+		item.setValor(item.getValor());
+		item.setTotal(item.getValor() * item.getQuantidade());
+		return item;
 	}
 	
-	public List<ItemVenda> personalizar(List<Preco> precos, List<ItemVenda> itens, Double quantidade, Venda venda, List<Adicional> complementos) {
-		
-		long id = itens == null || itens.isEmpty() ? 1L : itens.get(itens.size() - 1).getId();
-		Map<Produto, ItemVenda> items = new HashMap<Produto, ItemVenda>();
-		
-		if(!itens.isEmpty()) {
-			for(ItemVenda item : itens) {
-				items.put(item.getProduto(), item);
-			}
-		}
-		
-		for(Preco preco : precos) {
-			id++;
+	public List<ItemVenda> paraItemVenda(Venda venda, List<Produto> produtos, Tamanho tamanho) {
+		List<ItemVenda> itens = new ArrayList<ItemVenda>();
+		if(!produtos.isEmpty()) {
+			List<Preco> precos = precoDAO.porTamanhoProduto(produtos, tamanho);
 			
-			ItemVenda item = item(id, venda, preco.getProduto(), preco.getPrecoVenda(), quantidade, new ArrayList<Adicional>());
-			items.put(preco.getProduto(), item);
-		}
-		
-		itens = new ArrayList<ItemVenda>();
-		for(Map.Entry<Produto, ItemVenda> entry : items.entrySet()) {
-			itens.add(entry.getValue());
+			int i = 0;
+			for(Preco preco : precos) {
+				itens.add(paraItemVenda(venda, preco.getProduto()));
+				itens.get(i).setValor(preco.getPrecoVenda());
+				itens.get(i).setId(new BigDecimal(i + 1).longValue());
+				i++;
+			}
 		}
 		
 		return itens;
 	}
 	
-	public String atualizaNomeProduto(List<ItemVenda> itens, String descricaoAtual, String sigla) {
-		// Regex para remover valores parenteses e os valores que 
-		// contiver entre os parenteses.
-		descricaoAtual = descricaoAtual.replaceAll("\\(.+?\\)", "");
-		
-		if(itens.size() > 1) {
-			descricaoAtual = "PIZZA PERSONALIZADA (" + sigla.toUpperCase() + ")";
-		}
-		else {
-			descricaoAtual = descricaoAtual + "(" + sigla + ")";
-		}
-		
-		return descricaoAtual;
-	}
-	
-	public List<ItemVenda> atualizaListaItemMeioAmeio(List<ItemVenda> itens, Venda venda, Tamanho tamanho) {
+	public List<ItemVenda> atualizaListaItemMeioAmeio(List<ItemVenda> itens, Tamanho tamanho) throws SiscomandaException {
 		List<Produto> produtos = new ArrayList<Produto>();
-		List<ItemVenda> itensAtualizados = new ArrayList<ItemVenda>();
 		
 		if(!itens.isEmpty()) {
 			for(ItemVenda item : itens) {
 				produtos.add(item.getProduto());
 			}
-		}
-		
-		if(!produtos.isEmpty()) {
+			
 			List<Preco> precos = precoDAO.porTamanhoProduto(produtos, tamanho);
 			
-			long id = 0;
-			for(ItemVenda item : itens) {
-				for(Preco preco : precos) {
-					if(item.getProduto().equals(preco.getProduto())) {
-						id++;
-						
-						ItemVenda novoItem = item(id, venda, preco.getProduto(), preco.getPrecoVenda(), item.getQuantidade(), item.getAdicionais());
-						itensAtualizados.add(novoItem);
-					}
-				}
+			if(precos.isEmpty()) {
+				throw new SiscomandaException("Não foi possivel atualizar a lista de itens meio a meio.");
 			}
 			
+			for(Preco preco : precos) {
+				for(ItemVenda item : itens) {
+					if(item.getProduto().equals(preco.getProduto())) {							
+						item.setValor((preco.getPrecoVenda() / produtos.size()));
+						item.setTotal(item.getValor() * item.getQuantidade());
+					}
+				}
+			}			
 		}
 		
-		if(!itensAtualizados.isEmpty()) {			
-			itens = itensAtualizados;
-		}
-		
-		produtos = null;
-		itensAtualizados = null;
 		return itens;
 	}
 	
-	public Double atualizaValorTotalItemPersonalizado(List<ItemVenda> itens, Double valorTotal, Double quantidade) {
-		Double total = new Double("0");
+	public Double calcularValorTotal(List<ItemVenda> itens, Double valorInicial) {
+		double total = itens.isEmpty() ? valorInicial : 0;
 		
-		for(ItemVenda item : itens) {
-			if(item.getAdicionais() != null) {				
-				for(Adicional adicional : item.getAdicionais()) {
-					if(adicional.isSelecionado()) {						
-						valorTotal += adicional.getPrecoVenda();
+		if(!itens.isEmpty()) {
+			for(ItemVenda item : itens) {
+				if(!item.getAdicionais().isEmpty()) {
+					for(Adicional complemento : item.getAdicionais()) {
+						total += complemento.getPrecoVenda();
+					}
+				}
+				total += item.getTotal();
+			}
+		}
+		
+		return total;
+	}
+	
+	public List<ItemVenda> removerItem(List<ItemVenda> itens, ItemVenda item, Produto produto) throws SiscomandaException {
+		if(!itens.contains(item)) {
+			throw new SiscomandaException("Este produto não pode ser excluído pois não existe na lista.");
+		}
+		
+		if(itens.size() == 2 || item.getProduto().equals(produto)) {
+			itens.clear();
+		}
+		else {			
+			itens.remove(item);
+		}
+		
+		return itens;
+	}
+	
+	public List<Adicional> atualizaListaDeComplementos(ItemVenda itemSelecionado, ItemVenda itemPrincipal, List<Adicional> complementos) {
+		if(itemSelecionado == null) {
+			itemSelecionado = itemPrincipal;
+		}
+		
+		if(!itemSelecionado.getAdicionais().isEmpty()) {
+			for(Adicional complemento : complementos) {
+				if(itemSelecionado.getAdicionais().contains(complemento)) {
+					complemento.setSelecionado(true);
+				}
+				else {
+					complemento.setSelecionado(false);
+				}
+			}
+		}
+		else {
+			for(Adicional complement : complementos) {
+				complement.setSelecionado(false);
+			}
+		}
+		
+//		itemSelecionado = null;
+		return complementos;
+	}
+	
+	public List<ItemVenda> adicionaComplemento(ItemVenda itemSelecionado, ItemVenda itemPrincipal, Adicional complemento, List<Adicional> complementos, List<ItemVenda> itens) throws SiscomandaException {
+		if(itemSelecionado == null && !itens.isEmpty()) {
+			for(Adicional adicional : complementos) {
+				adicional.setSelecionado(false);
+			}
+			throw new SiscomandaException("Antes de incluir um complemento por gentileza, selecione um item da lista de itens meio a meio.");
+		}
+		if(itemSelecionado == null && complemento.isSelecionado()) {
+			itemSelecionado = itemPrincipal;
+			itens.add(itemSelecionado);
+		}
+				
+		if(complemento.isSelecionado()) {
+			for(Adicional adicional: complementos) {
+				if(adicional.isSelecionado()) {
+					if(!itemSelecionado.getAdicionais().contains(adicional)) {					
+						itemSelecionado.getAdicionais().add(adicional);
+						adicional.setSelecionado(false);
+					}
+				}
+			}
+			
+			for(ItemVenda iten : itens) {
+				if(iten.equals(itemSelecionado)) {
+					iten = itemSelecionado;
+				}
+			}
+		}
+		else if(itemSelecionado != null) {
+			itemSelecionado.getAdicionais().remove(complemento);
+		}
+		else {
+			itemPrincipal.getAdicionais().remove(complemento);
+		}
+		
+//		itemSelecionado = null;
+		return itens;
+	}
+	
+	public List<Produto> corrigeNomeDaListaDeProdutos(List<Produto> produtos) {
+		for(Produto produto : produtos) {
+			String descricao = produto.getDescricao().replaceAll("\\(.+?\\)", "");
+			produto.setDescricao(descricao);
+		}
+		return produtos;
+	}
+	
+	public List<ItemVenda> personalizar(List<Produto> produtos, List<ItemVenda> itens, Tamanho tamanho, ItemVenda item, Venda venda) throws SiscomandaException {
+		if(produtos != null) {
+			for(Produto produto : produtos) {
+				for(ItemVenda iten : itens) {
+					if(iten.getProduto().equals(produto)) {
+						throw new SiscomandaException("Este(s) produto (s) já se encontra(m) incluido(s).");
+					}
+				}
+			}
+			
+			Map<Produto, List<Adicional>> map = new HashMap<Produto, List<Adicional>>();
+			
+			if(itens.isEmpty()) {
+				itens.add(item);
+			}
+			
+			for(ItemVenda iten : itens) {
+				produtos.add(iten.getProduto());
+				map.put(iten.getProduto(), iten.getAdicionais());
+			}
+			
+			itens.clear();
+			
+			if(!produtos.contains(item.getProduto())) {					
+				produtos.add(item.getProduto());
+			}
+			
+			List<Preco> precos = precoDAO.porTamanhoProduto(produtos, tamanho);
+			
+			long id = 1;
+			for(Preco preco : precos) {
+				for(Produto produto : produtos) {
+					if(produto.equals(preco.getProduto())) {
+						id++;						
+						ItemVenda itemm = new ItemVenda(venda, produto, (preco.getPrecoVenda() / produtos.size()), 1.0, "");
+						itemm.setId(id);
+						
+						itens.add(itemm);
+					}
+				}
+			}
+			
+			for(Map.Entry<Produto, List<Adicional>> entry : map.entrySet()) {
+				for(ItemVenda iten : itens) {
+					if(iten.getProduto().equals(entry.getKey())) {
+						iten.setAdicionais(entry.getValue());
 					}
 				}
 			}
 		}
 		
-		if(itens.isEmpty() || itens.size() == 1) {
-			total += (valorTotal * quantidade);
-		}
-		else if(!itens.isEmpty()) {
-			for(ItemVenda item : itens) {
-				total += item.getValor() * quantidade;
-			}
-		}
-		total = (valorTotal - total) + total;
-		return total;
+		return itens;
 	}
 	
-	public List<ItemVenda> adicionaComplementos(List<ItemVenda> itens, ItemVenda item, Adicional complemento) {
-		if(complemento.isSelecionado()) {
-			item.getAdicionais().add(complemento);
+	public Map<String, Object> atualizaNomeDosProdutos(List<ItemVenda> itens, String descricaoOriginalProduto, String sigla) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		
+		boolean ePersonalizado = itens.size() > 0 ? true : false;
+		String descricaoAlteradaProduto = null;
+		
+		for(ItemVenda item : itens) {
+			String descricaoProduto = item.getProduto().getDescricao().replaceAll("\\(.+?\\)", "");
+			descricaoProduto = descricaoProduto + "(" + sigla + ")";
+			item.getProduto().setDescricao(descricaoProduto);
+		}
+		
+		if(ePersonalizado) {
+			descricaoAlteradaProduto = "PIZZA PERSONALIZADA (" + sigla + ")";
 		}
 		else {
-			item.getAdicionais().remove(complemento);
+			descricaoAlteradaProduto = descricaoOriginalProduto + "(" + sigla + ")";
 		}
 		
-		List<ItemVenda> items = new ArrayList<ItemVenda>();
+		map.put("descricaoProduto", descricaoAlteradaProduto);
+		map.put("itens", itens);
 		
-		for(ItemVenda iten : itens) {
-			if(iten.equals(item)) {
-				iten = item;
-			}
-			items.add(iten);
-		}
-		
-		return items;
+		return map;
 	}
 	
-	public List<Adicional> atualizaComplementos(List<Adicional> complementos, ItemVenda item) {
-		for(Adicional adicional : complementos) {
-			if(item.getAdicionais().contains(adicional)) {
-				adicional.setSelecionado(true);
-			}
-			else {
-				adicional.setSelecionado(false);
-			}
+	public List<ItemVenda> listaItemMeioAmeioTiverUmRegistroRemovaTudo(List<ItemVenda> itens) {
+		if(itens.size() == 1) {
+			itens.clear();
 		}
-		
-		return complementos;
+		return itens;
 	}
 }
