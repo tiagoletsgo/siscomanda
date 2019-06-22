@@ -3,12 +3,20 @@
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:p="http://primefaces.org/ui">
-	
+		
+		<style>
+			.ui-text-left > .ui-column-title {
+				float: left;
+			}
+			.ui-text-right > .ui-column-title {
+				float: right;
+			}
+		</style>
 		<p:commandButton value="Novo Item" styleClass="btn btn-primary" update="@form" global="false" action="#{crudBean.btnNovoItem()}" />
 		<p:dataTable id="tabelaVendaItem" styleClass="table table-striped jambo_table" value="#{crudBean.entity.itens}" var="item"
 			emptyMessage="Sem dados">
 			
-			<p:column>
+			<p:column styleClass="ui-text-left">
 				<f:facet name="header">
 					<h:outputLabel value="Código" />
 				</f:facet>
