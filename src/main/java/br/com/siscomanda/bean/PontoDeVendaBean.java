@@ -73,6 +73,7 @@ public class PontoDeVendaBean extends BaseBean<Venda> implements Serializable {
 		builder = new VendaBuilder();
 		parametros = new HashMap<String, Object>();
 		itensMeioAmeio = new ArrayList<ItemVenda>();
+		produtosSelecionados = new ArrayList<Produto>();
 	}
 	
 	public void btnNovoItem() {
@@ -106,6 +107,8 @@ public class PontoDeVendaBean extends BaseBean<Venda> implements Serializable {
 	public void atualizaListaDeProdutos() {
 		List<Produto> produtos = pontoDeVendaService.corrigeNomeDaListaDeProdutos(getProdutos());
 		this.produtos = produtos;
+		
+		desmacarListaComplementos();
 	}
 	
 	public void alterarTamanho() {
@@ -115,10 +118,16 @@ public class PontoDeVendaBean extends BaseBean<Venda> implements Serializable {
 			getItem().setTotal(getItem().getValor() * getItem().getQuantidade());
 			complementos = adicionalService.todos();
 			
+			if(getItensMeioAmeio().isEmpty()) {
+				getItensMeioAmeio().add(getItem());				
+			}
+			
 			atualizaListaItensMeioAmeio();
 			atualizaListaDeComplementos();
 			atualizaNomeProduto();
 			calcularValorTotal();
+			
+			listaMeioAmeioTemUmRegistro();
 		}catch(SiscomandaException e) {
 			JSFUtil.addMessage(FacesMessage.SEVERITY_ERROR, e.getMessage());
 		}
@@ -165,6 +174,9 @@ public class PontoDeVendaBean extends BaseBean<Venda> implements Serializable {
 			
 			atualizaNomeProduto();
 			calcularValorTotal();
+			
+			listaMeioAmeioTemUmRegistro();
+			desmacarListaComplementos();
 		} catch (SiscomandaException e) {
 			JSFUtil.addMessage(FacesMessage.SEVERITY_ERROR, e.getMessage());
 		}
@@ -193,6 +205,8 @@ public class PontoDeVendaBean extends BaseBean<Venda> implements Serializable {
 	private void listaMeioAmeioTemUmRegistro() {
 		List<ItemVenda> itens = pontoDeVendaService.listaItemMeioAmeioTiverUmRegistroRemovaTudo(getItensMeioAmeio());
 		itensMeioAmeio = itens;
+		
+		atualizaListaDeComplementos();
 	}
 	
 	private void atualizaListaDeComplementos() {
@@ -203,6 +217,7 @@ public class PontoDeVendaBean extends BaseBean<Venda> implements Serializable {
 	
 	public void btnRemover(ItemVenda item) {
 		try {
+			setItemSelecionado(null);
 			List<ItemVenda> itens = new ArrayList<ItemVenda>();
 			itens = pontoDeVendaService.removerItem(getItensMeioAmeio(), item, getItem().getProduto());
 			itensMeioAmeio = itens;
@@ -211,6 +226,7 @@ public class PontoDeVendaBean extends BaseBean<Venda> implements Serializable {
 			atualizaListaDeComplementos();
 			atualizaNomeProduto();
 			calcularValorTotal();
+			desmacarListaComplementos();
 		}
 		catch(SiscomandaException e) {
 			JSFUtil.addMessage(FacesMessage.SEVERITY_ERROR, e.getMessage());
@@ -218,8 +234,12 @@ public class PontoDeVendaBean extends BaseBean<Venda> implements Serializable {
 	}
 	
 	public void calcularValorTotal() {
-		double total = pontoDeVendaService.calcularValorTotal(getItensMeioAmeio(), getItem().getValor());
+		double total = pontoDeVendaService.calcularValorTotal(getItensMeioAmeio(), getItem());
 		getItem().setTotal(total * getItem().getQuantidade());
+	}
+	
+	public void desmacarListaComplementos() {
+		complementos = pontoDeVendaService.desmarcarListaDeComplementos(getComplementos(), getItensMeioAmeio(), getItem());
 	}
 		
 	public String paraMoedaPtBR(Double valor) {

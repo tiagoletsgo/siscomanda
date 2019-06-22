@@ -40,7 +40,7 @@
 	<div class="row">
 		<h:panelGroup layout="block" id="itensMeioAmeio" styleClass="col-md-12 col-sm-12 col-xs-12">
 			<p:commandButton styleClass="btn btn-primary" value="Personalizar" disabled="#{crudBean.item.total eq 0.0}"
-				oncomplete="PF('dlgPersonalizar').show();" update="dialogPersonalizar" actionListener="#{crudBean.atualizaListaDeProdutos()}"/>
+				oncomplete="PF('dlgPersonalizar').show();" update="dialogPersonalizar crudform:tabelaComplementos" actionListener="#{crudBean.atualizaListaDeProdutos()}"/>
 			
 			<p:dataTable id="tabelaItemMeioAmeio" var="item" value="#{crudBean.itensMeioAmeio}" selectionMode="single" rowKey="#{item.id}" 
 				 emptyMessage="Sem dados" paginator="true" rows="10" paginatorPosition="top" selection="#{crudBean.itemSelecionado}">
@@ -50,6 +50,9 @@
 				<p:ajax event="rowSelect" process="tabelaItemMeioAmeio" global="false" update="crudform:tabelaComplementos tabelaItemMeioAmeio"
 					listener="#{crudBean.atualizaListaDeComplementos()}" />
 				
+				<p:ajax event="rowUnselect" global="false" update="crudform:tabelaComplementos"
+					listener="#{crudBean.desmacarListaComplementos()}"/>
+				
 				<p:column>
 					<f:facet name="header">Descrição</f:facet>
 					<h:outputText value="#{item.produto.descricao}" />
@@ -57,14 +60,20 @@
 				
 				<p:column>
 					<f:facet name="header">Quantidade</f:facet>
-						<h:outputText  />
 						<h:outputText value="1 / #{crudBean.itensMeioAmeio.size()}" />
 					<h:outputText />
 				</p:column>
 				
 				<p:column>
 					<f:facet name="header">Preço</f:facet>
-					<h:outputText value="#{item.valor}">
+					<h:outputText value="#{item.valor * crudBean.itensMeioAmeio.size()}" styleClass="text-danger">
+						<f:convertNumber maxFractionDigits="2" minFractionDigits="2" locale="pt_BR" type="currency" />
+					</h:outputText>
+				</p:column>
+				
+				<p:column>
+					<f:facet name="header">Venda</f:facet>
+					<h:outputText value="#{item.valor}" styleClass="text-success">
 						<f:convertNumber maxFractionDigits="2" minFractionDigits="2" locale="pt_BR" type="currency" />
 					</h:outputText>
 				</p:column>

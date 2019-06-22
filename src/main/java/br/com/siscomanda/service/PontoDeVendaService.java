@@ -54,6 +54,22 @@ public class PontoDeVendaService implements Serializable {
 		return itens;
 	}
 	
+	public List<Adicional> desmarcarListaDeComplementos(List<Adicional> complementos, List<ItemVenda> itens, ItemVenda item) {
+		for(Adicional complemento : complementos) {
+			complemento.setSelecionado(false);
+		}
+		
+		if(itens.isEmpty()) {
+			for(Adicional complemento : complementos) {
+				if(item.getAdicionais().contains(complemento)) {
+					complemento.setSelecionado(true);
+				}
+			}
+		}
+		
+		return complementos;
+	}
+	
 	public List<ItemVenda> atualizaListaItemMeioAmeio(List<ItemVenda> itens, Tamanho tamanho) throws SiscomandaException {
 		List<Produto> produtos = new ArrayList<Produto>();
 		
@@ -77,22 +93,28 @@ public class PontoDeVendaService implements Serializable {
 				}
 			}			
 		}
-		
+				
 		return itens;
 	}
 	
-	public Double calcularValorTotal(List<ItemVenda> itens, Double valorInicial) {
-		double total = itens.isEmpty() ? valorInicial : 0;
+	public Double calcularValorTotal(List<ItemVenda> itens, ItemVenda item) {
+		double total = itens.isEmpty() ? item.getValor() : 0;
 		
 		if(!itens.isEmpty()) {
-			for(ItemVenda item : itens) {
+			for(ItemVenda iten : itens) {
 				if(!item.getAdicionais().isEmpty()) {
-					for(Adicional complemento : item.getAdicionais()) {
+					for(Adicional complemento : iten.getAdicionais()) {
 						total += complemento.getPrecoVenda();
 					}
 				}
-				total += item.getTotal();
+				total += iten.getValor();
 			}
+		}
+		else 
+			if(itens.isEmpty()) {
+				for(Adicional complemento : item.getAdicionais()) {
+					total += complemento.getPrecoVenda();
+				}
 		}
 		
 		return total;
@@ -134,7 +156,6 @@ public class PontoDeVendaService implements Serializable {
 			}
 		}
 		
-//		itemSelecionado = null;
 		return complementos;
 	}
 	
@@ -171,9 +192,9 @@ public class PontoDeVendaService implements Serializable {
 		}
 		else {
 			itemPrincipal.getAdicionais().remove(complemento);
+			itens.add(itemPrincipal);
 		}
 		
-//		itemSelecionado = null;
 		return itens;
 	}
 	
@@ -242,7 +263,7 @@ public class PontoDeVendaService implements Serializable {
 	public Map<String, Object> atualizaNomeDosProdutos(List<ItemVenda> itens, String descricaoOriginalProduto, String sigla) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		
-		boolean ePersonalizado = itens.size() > 0 ? true : false;
+		boolean ePersonalizado = itens.size() > 1 ? true : false;
 		String descricaoAlteradaProduto = null;
 		
 		for(ItemVenda item : itens) {
@@ -259,7 +280,7 @@ public class PontoDeVendaService implements Serializable {
 		}
 		
 		map.put("descricaoProduto", descricaoAlteradaProduto);
-		map.put("itens", itens);
+		map.put("itens", itens);		
 		
 		return map;
 	}
