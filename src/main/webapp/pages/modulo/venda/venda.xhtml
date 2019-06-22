@@ -100,7 +100,7 @@
 			</h:form>
 			<f:facet name="footer">
 				<p:commandButton process="@this" styleClass="btn btn-success" value="Salvar" oncomplete="PF('dlgPersonalizar').hide();" 
-					update="crudform:itensMeioAmeio crudform:inpDescricaoProduto crudform:inpTotal scripts" action="#{crudBean.btnPersonalizar()}" />
+					update="crudform:itensMeioAmeio crudform:inpDescricaoProduto crudform:inpTotal scripts crudform:tabelaComplementos" action="#{crudBean.btnPersonalizar()}" />
 			</f:facet>
 		</p:dialog>
 	</ui:define>
