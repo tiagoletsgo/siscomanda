@@ -8,7 +8,7 @@
 		<div class="col-md-12 col-sm-12 col-xs-12">
 			<p:selectOneRadio value="#{crudBean.item.valor}">
 				<f:selectItems value="#{crudBean.precos}" var="preco" itemLabel="#{crudBean.paraMoedaPtBR(preco.precoVenda)} (#{preco.tamanho.sigla.toUpperCase()})" itemValue="#{preco.precoVenda}" />
-				<p:ajax event="change" update="inpTotal itensMeioAmeio inpDescricaoProduto tabelaComplementos scripts" global="false" process="@this" listener="#{crudBean.alterarTamanho()}" />
+				<p:ajax event="change" update="inpTotal observacoes itensMeioAmeio inpDescricaoProduto tabelaComplementos scripts" global="false" process="@this" listener="#{crudBean.alterarTamanho()}" />
 			</p:selectOneRadio>
 		</div>
 	</div>
@@ -43,7 +43,7 @@
 				oncomplete="PF('dlgPersonalizar').show();" update="dialogPersonalizar crudform:tabelaComplementos" actionListener="#{crudBean.atualizaListaDeProdutos()}"/>
 			
 			<p:dataTable id="tabelaItemMeioAmeio" var="item" value="#{crudBean.itensMeioAmeio}" selectionMode="single" rowKey="#{item.id}" 
-				 emptyMessage="Sem dados" paginator="true" rows="10" paginatorPosition="top" selection="#{crudBean.itemSelecionado}">
+				 emptyMessage="Sem dados" paginator="true" rows="10" paginatorPosition="top" selection="#{crudBean.itemSelecionado}" reflow="true">
 				 
 				<f:facet name="header">Itens Meio a Meio</f:facet>
 				
@@ -53,32 +53,32 @@
 				<p:ajax event="rowUnselect" global="false" update="crudform:tabelaComplementos"
 					listener="#{crudBean.desmacarListaComplementos()}"/>
 				
-				<p:column>
-					<f:facet name="header">Descrição</f:facet>
-					<h:outputText value="#{item.produto.descricao}" />
+				<p:column width="510" styleClass="ui-text-left">
+					<f:facet name="header">Descrição:</f:facet>
+					<h:outputText value="#{item.produto.descricao}" styleClass="ui-text-left" />
 				</p:column>
 				
-				<p:column>
-					<f:facet name="header">Quantidade</f:facet>
+				<p:column width="60">
+					<f:facet name="header">Qtd:</f:facet>
 						<h:outputText value="1 / #{crudBean.itensMeioAmeio.size()}" />
 					<h:outputText />
 				</p:column>
 				
-				<p:column>
-					<f:facet name="header">Preço</f:facet>
-					<h:outputText value="#{item.valor * crudBean.itensMeioAmeio.size()}" styleClass="text-danger">
+				<p:column width="90" styleClass="ui-text-right">
+					<f:facet name="header">Preço:</f:facet>
+					<h:outputText value="#{item.valor * crudBean.itensMeioAmeio.size()}" styleClass="text-danger ui-text-right">
 						<f:convertNumber maxFractionDigits="2" minFractionDigits="2" locale="pt_BR" type="currency" />
 					</h:outputText>
 				</p:column>
 				
-				<p:column>
-					<f:facet name="header">Venda</f:facet>
-					<h:outputText value="#{item.valor}" styleClass="text-success">
+				<p:column width="90" styleClass="ui-text-right">
+					<f:facet name="header">Venda:</f:facet>
+					<h:outputText value="#{item.valor}" styleClass="text-success ui-text-right">
 						<f:convertNumber maxFractionDigits="2" minFractionDigits="2" locale="pt_BR" type="currency" />
 					</h:outputText>
 				</p:column>
 				
-				<p:column>
+				<p:column width="130" >
 					<f:facet name="header">#</f:facet>
 					<p:commandButton value="Remover" styleClass="btn btn-danger" action="#{crudBean.btnRemover(item)}"
 						update="tabelaItemMeioAmeio crudform:inpDescricaoProduto crudform:inpTotal crudform:tabelaComplementos scripts" global="false"/>
@@ -94,7 +94,7 @@
 				
 				<f:facet name="header">Complementos</f:facet>
 				
-				<p:column styleClass="ui-datatable-center">
+				<p:column styleClass="ui-datatable-center" width="30">
 					<p:selectBooleanCheckbox value="#{adicional.selecionado}">
 						<p:ajax event="change" update="crudform:inpTotal tabelaComplementos crudform:tabelaItemMeioAmeio" process="@this"
 							global="false" listener="#{crudBean.adicionaComplementos(adicional)}" />
@@ -106,13 +106,22 @@
 					<h:outputText value="#{adicional.descricao}" />
 				</p:column>
 				
-				<p:column styleClass="ui-datatable-right">
+				<p:column styleClass="ui-datatable-right" width="130">
 					<f:facet name="header">Preço Venda</f:facet>
 					<h:outputText value="#{adicional.precoVenda}">
 						<f:convertNumber minFractionDigits="2" maxFractionDigits="2" locale="pt_BR" type="currency" />
 					</h:outputText>
 				</p:column>
 			</p:dataTable>
+		</div>
+	</div>
+	
+	<hr />
+	<div class="row">
+		<div class="col-md-12 col-sm-12 col-xs-12">
+			<label>Observações :</label>	
+			<p:inputTextarea id="observacoes" onkeyup="maiuscula(this)" styleClass="form-control" disabled="#{crudBean.item.total eq 0.0}" 
+			 value="#{crudBean.item.observacao}" />
 		</div>
 	</div>
 </ui:composition>

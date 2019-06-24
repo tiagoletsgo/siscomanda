@@ -370,3 +370,22 @@
 	position: relative !important;
     top: 24px !important;
 }
+
+.ui-datatable tbody td .ui-text-left,
+.ui-text-left > .ui-column-title {
+	float: left;
+}
+
+.ui-datatable tbody td .ui-text-right,
+.ui-text-right > .ui-column-title {
+	float: right;
+}
+
+@media (max-width: 640px) {
+	.ui-datatable tbody td .ui-text-left,
+	.ui-datatable tbody td .ui-text-right,
+	.ui-text-right > .ui-column-title,
+	.ui-text-left > .ui-column-title {
+		float: none;
+	}
+}

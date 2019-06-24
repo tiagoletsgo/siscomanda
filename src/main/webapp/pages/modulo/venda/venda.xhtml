@@ -93,7 +93,9 @@
 		<p:dialog id="dialogPersonalizar" widgetVar="dlgPersonalizar" modal="true" showEffect="fade" hideEffect="fade" responsive="true" resizable="false">
 			<f:facet name="header">Adicionar Item Meio a Meio</f:facet>
 			<h:form id="formPersonalizar">
-				<p:selectManyCheckbox value="#{crudBean.produtosSelecionados}" layout="grid" columns="1" converter="entityConverter">
+				<label>Pesquisar :</label>
+				<h:inputText styleClass="form-control" />
+				<p:selectManyCheckbox value="#{crudBean.produtosSelecionados}" layout="grid" columns="3" converter="entityConverter">
 					<f:selectItems value="#{crudBean.produtos}" var="produto" itemValue="#{produto}" itemLabel="#{produto.descricao}" />
 					<p:ajax event="change" process="@this" global="false" />
 				</p:selectManyCheckbox>
@@ -101,6 +103,8 @@
 			<f:facet name="footer">
 				<p:commandButton process="@this" styleClass="btn btn-success" value="Salvar" oncomplete="PF('dlgPersonalizar').hide();" 
 					update="crudform:itensMeioAmeio crudform:inpDescricaoProduto crudform:inpTotal scripts crudform:tabelaComplementos" action="#{crudBean.btnPersonalizar()}" />
+				
+				<p:commandButton styleClass="btn btn-danger" global="false" value="Cancelar" oncomplete="PF('dlgPersonalizar').hide();" />
 			</f:facet>
 		</p:dialog>
 	</ui:define>

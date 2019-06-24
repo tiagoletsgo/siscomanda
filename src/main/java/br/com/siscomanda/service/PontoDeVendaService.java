@@ -31,28 +31,28 @@ public class PontoDeVendaService implements Serializable {
 		return new ItemVenda(venda, produto, valor, quantidade, "");
 	}
 	
-	public ItemVenda alterarValorTotalPara(ItemVenda item) {
-		item.setValor(item.getValor());
-		item.setTotal(item.getValor() * item.getQuantidade());
-		return item;
-	}
+//	public ItemVenda alterarValorTotalPara(ItemVenda item) {
+//		item.setValor(item.getValor());
+//		item.setTotal(item.getValor() * item.getQuantidade());
+//		return item;
+//	}
 	
-	public List<ItemVenda> paraItemVenda(Venda venda, List<Produto> produtos, Tamanho tamanho) {
-		List<ItemVenda> itens = new ArrayList<ItemVenda>();
-		if(!produtos.isEmpty()) {
-			List<Preco> precos = precoDAO.porTamanhoProduto(produtos, tamanho);
-			
-			int i = 0;
-			for(Preco preco : precos) {
-				itens.add(paraItemVenda(venda, preco.getProduto()));
-				itens.get(i).setValor(preco.getPrecoVenda());
-				itens.get(i).setId(new BigDecimal(i + 1).longValue());
-				i++;
-			}
-		}
-		
-		return itens;
-	}
+//	public List<ItemVenda> paraItemVenda(Venda venda, List<Produto> produtos, Tamanho tamanho) {
+//		List<ItemVenda> itens = new ArrayList<ItemVenda>();
+//		if(!produtos.isEmpty()) {
+//			List<Preco> precos = precoDAO.porTamanhoProduto(produtos, tamanho);
+//			
+//			int i = 0;
+//			for(Preco preco : precos) {
+//				itens.add(paraItemVenda(venda, preco.getProduto()));
+//				itens.get(i).setValor(preco.getPrecoVenda());
+//				itens.get(i).setId(new BigDecimal(i + 1).longValue());
+//				i++;
+//			}
+//		}
+//		
+//		return itens;
+//	}
 	
 	public List<Adicional> desmarcarListaDeComplementos(List<Adicional> complementos, List<ItemVenda> itens, ItemVenda item) {
 		for(Adicional complemento : complementos) {
@@ -102,7 +102,7 @@ public class PontoDeVendaService implements Serializable {
 		
 		if(!itens.isEmpty()) {
 			for(ItemVenda iten : itens) {
-				if(!item.getAdicionais().isEmpty()) {
+				if(!iten.getAdicionais().isEmpty()) {
 					for(Adicional complemento : iten.getAdicionais()) {
 						total += complemento.getPrecoVenda();
 					}
@@ -122,7 +122,7 @@ public class PontoDeVendaService implements Serializable {
 	
 	public List<ItemVenda> removerItem(List<ItemVenda> itens, ItemVenda item, Produto produto) throws SiscomandaException {
 		if(!itens.contains(item)) {
-			throw new SiscomandaException("Este produto não pode ser excluído pois não existe na lista.");
+			throw new SiscomandaException("Este item não foi encontrado na lista.");
 		}
 		
 		if(itens.size() == 2 || item.getProduto().equals(produto)) {
