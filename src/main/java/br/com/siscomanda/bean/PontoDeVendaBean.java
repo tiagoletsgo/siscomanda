@@ -141,7 +141,7 @@ public class PontoDeVendaBean extends BaseBean<Venda> implements Serializable {
 		
 		Map<String, Object> map = pontoDeVendaService.atualizaNomeDosProdutos(getItensMeioAmeio(), descricaoOriginalProduto, sigla);
 		String nomeProduto = (String)map.get("descricaoProduto");
-		List<ItemVenda> itens = (List<ItemVenda>)map.get("itens");
+		List<ItemVenda> itens = (List<ItemVenda>)map.get("itens");		
 		itensMeioAmeio = itens;
 		
 		getItem().getProduto().setDescricao(nomeProduto);
@@ -213,10 +213,15 @@ public class PontoDeVendaBean extends BaseBean<Venda> implements Serializable {
 		List<Adicional> complementos = new ArrayList<Adicional>();
 		complementos = pontoDeVendaService.atualizaListaDeComplementos(getItemSelecionado(), getItem(), getComplementos());
 		this.complementos = complementos;
+		
+		atualizaObservacao();
 	}
 	
 	public void btnRemover(ItemVenda item) {
 		try {
+			setItemSelecionado(getItem());
+			atualizaObservacao();
+			
 			setItemSelecionado(null);
 			List<ItemVenda> itens = new ArrayList<ItemVenda>();
 			itens = pontoDeVendaService.removerItem(getItensMeioAmeio(), item, getItem().getProduto());
@@ -231,6 +236,14 @@ public class PontoDeVendaBean extends BaseBean<Venda> implements Serializable {
 		catch(SiscomandaException e) {
 			JSFUtil.addMessage(FacesMessage.SEVERITY_ERROR, e.getMessage());
 		}
+	}
+	
+	public void incluirObservacao() {
+		itensMeioAmeio = pontoDeVendaService.incluirObservacao(getItensMeioAmeio(), getItemSelecionado(), getItem().getObservacao());
+	}
+	
+	public void atualizaObservacao() {
+		getItem().setObservacao(pontoDeVendaService.observacao(getItensMeioAmeio(), getItemSelecionado() == null ? getItem() : getItemSelecionado()));
 	}
 	
 	public void calcularValorTotal() {

@@ -1,7 +1,6 @@
 package br.com.siscomanda.service;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -30,29 +29,6 @@ public class PontoDeVendaService implements Serializable {
 		double quantidade = 1;
 		return new ItemVenda(venda, produto, valor, quantidade, "");
 	}
-	
-//	public ItemVenda alterarValorTotalPara(ItemVenda item) {
-//		item.setValor(item.getValor());
-//		item.setTotal(item.getValor() * item.getQuantidade());
-//		return item;
-//	}
-	
-//	public List<ItemVenda> paraItemVenda(Venda venda, List<Produto> produtos, Tamanho tamanho) {
-//		List<ItemVenda> itens = new ArrayList<ItemVenda>();
-//		if(!produtos.isEmpty()) {
-//			List<Preco> precos = precoDAO.porTamanhoProduto(produtos, tamanho);
-//			
-//			int i = 0;
-//			for(Preco preco : precos) {
-//				itens.add(paraItemVenda(venda, preco.getProduto()));
-//				itens.get(i).setValor(preco.getPrecoVenda());
-//				itens.get(i).setId(new BigDecimal(i + 1).longValue());
-//				i++;
-//			}
-//		}
-//		
-//		return itens;
-//	}
 	
 	public List<Adicional> desmarcarListaDeComplementos(List<Adicional> complementos, List<ItemVenda> itens, ItemVenda item) {
 		for(Adicional complemento : complementos) {
@@ -216,15 +192,18 @@ public class PontoDeVendaService implements Serializable {
 				}
 			}
 			
-			Map<Produto, List<Adicional>> map = new HashMap<Produto, List<Adicional>>();
+			Map<ItemVenda, List<Adicional>> adicionais = new HashMap<ItemVenda, List<Adicional>>();
+			Map<ItemVenda, String> observacoes = new HashMap<ItemVenda, String>();
 			
 			if(itens.isEmpty()) {
 				itens.add(item);
 			}
 			
+			// para manter dados que ja existam
 			for(ItemVenda iten : itens) {
 				produtos.add(iten.getProduto());
-				map.put(iten.getProduto(), iten.getAdicionais());
+				adicionais.put(iten, iten.getAdicionais());
+				observacoes.put(iten, iten.getObservacao());
 			}
 			
 			itens.clear();
@@ -248,10 +227,20 @@ public class PontoDeVendaService implements Serializable {
 				}
 			}
 			
-			for(Map.Entry<Produto, List<Adicional>> entry : map.entrySet()) {
+			// recupera os adicionais
+			for(Map.Entry<ItemVenda, List<Adicional>> entry : adicionais.entrySet()) {
 				for(ItemVenda iten : itens) {
-					if(iten.getProduto().equals(entry.getKey())) {
+					if(iten.getProduto().equals(entry.getKey().getProduto())) {
 						iten.setAdicionais(entry.getValue());
+					}
+				}
+			}
+			
+			// recupera as observaçoes
+			for(Map.Entry<ItemVenda, String> entry : observacoes.entrySet()) {
+				for(ItemVenda iten : itens) {
+					if(iten.getProduto().equals(entry.getKey().getProduto())) {
+						iten.setObservacao(entry.getValue());
 					}
 				}
 			}
@@ -269,7 +258,10 @@ public class PontoDeVendaService implements Serializable {
 		for(ItemVenda item : itens) {
 			String descricaoProduto = item.getProduto().getDescricao().replaceAll("\\(.+?\\)", "");
 			descricaoProduto = descricaoProduto + "(" + sigla + ")";
-			item.getProduto().setDescricao(descricaoProduto);
+
+			Produto produto = item.getProduto();
+			produto.setDescricao(descricaoProduto);
+			item.setProduto(produto.clone(produto));
 		}
 		
 		if(ePersonalizado) {
@@ -290,5 +282,35 @@ public class PontoDeVendaService implements Serializable {
 			itens.clear();
 		}
 		return itens;
+	}
+	
+	public List<ItemVenda> incluirObservacao(List<ItemVenda> itens, ItemVenda itemSelecionado, String observacao) {
+		if(!itens.isEmpty()) {
+			for(ItemVenda item : itens) {
+				if(item.equals(itemSelecionado)) {
+					item.setObservacao(observacao);
+					break;
+				}
+			}
+		}
+		
+		return itens;
+	}
+	
+	public String observacao(List<ItemVenda> itens, ItemVenda item) {
+		String observacao = "";
+		
+		if(itens.isEmpty()) {
+			observacao = item.getObservacao();
+		}
+		else {
+			for(ItemVenda itemm : itens) {
+				if(itemm.getProduto().equals(item.getProduto())) {
+					observacao = itemm.getObservacao();
+				}
+			}
+		}
+		
+		return observacao;
 	}
 }

@@ -47,10 +47,10 @@
 				 
 				<f:facet name="header">Itens Meio a Meio</f:facet>
 				
-				<p:ajax event="rowSelect" process="tabelaItemMeioAmeio" global="false" update="crudform:tabelaComplementos tabelaItemMeioAmeio"
+				<p:ajax event="rowSelect" process="tabelaItemMeioAmeio" global="false" update="crudform:tabelaComplementos tabelaItemMeioAmeio crudform:observacoes"
 					listener="#{crudBean.atualizaListaDeComplementos()}" />
 				
-				<p:ajax event="rowUnselect" global="false" update="crudform:tabelaComplementos"
+				<p:ajax event="rowUnselect" global="false" update="crudform:tabelaComplementos crudform:observacoes"
 					listener="#{crudBean.desmacarListaComplementos()}"/>
 				
 				<p:column width="510" styleClass="ui-text-left">
@@ -81,7 +81,7 @@
 				<p:column width="130" >
 					<f:facet name="header">#</f:facet>
 					<p:commandButton value="Remover" styleClass="btn btn-danger" action="#{crudBean.btnRemover(item)}"
-						update="tabelaItemMeioAmeio crudform:inpDescricaoProduto crudform:inpTotal crudform:tabelaComplementos scripts" global="false"/>
+						update="tabelaItemMeioAmeio crudform:observacoes crudform:inpDescricaoProduto crudform:inpTotal crudform:tabelaComplementos scripts" global="false"/>
 				</p:column>
 			</p:dataTable>
 		</h:panelGroup>
@@ -121,7 +121,9 @@
 		<div class="col-md-12 col-sm-12 col-xs-12">
 			<label>Observações :</label>	
 			<p:inputTextarea id="observacoes" onkeyup="maiuscula(this)" styleClass="form-control" disabled="#{crudBean.item.total eq 0.0}" 
-			 value="#{crudBean.item.observacao}" />
+			 value="#{crudBean.item.observacao}">
+				<p:ajax event="change" process="@this" listener="#{crudBean.incluirObservacao()}" global="false" />
+			</p:inputTextarea>
 		</div>
 	</div>
 </ui:composition>
