@@ -7,6 +7,7 @@ import java.util.List;
 
 import br.com.siscomanda.enumeration.EStatus;
 import br.com.siscomanda.enumeration.ETipoVenda;
+import br.com.siscomanda.model.Adicional;
 import br.com.siscomanda.model.ItemVenda;
 import br.com.siscomanda.model.Venda;
 
@@ -78,11 +79,28 @@ public class VendaBuilder implements Serializable {
 		return this;
 	}
 	
-	public VendaBuilder comItem(ItemVenda item) {
-		this.subtotal = item.getValor() * item.getQuantidade();
-		this.valorTotal += new Double((subtotal + taxaServico + taxaEntrega) - desconto);
-		itens.add(item);
+	public VendaBuilder comItens(List<ItemVenda> itens) {
+		for(ItemVenda item : itens) {
+			incluirItem(item);
+			somaItensComplementar(item.getAdicionais());
+		}
+		
 		return this;
+	}
+	
+	private void incluirItem(ItemVenda item) {
+		this.subtotal += item.getValor() * item.getQuantidade(); 
+		this.valorTotal += new Double(((item.getValor() * item.getQuantidade()) + taxaServico + taxaEntrega) - desconto);
+		itens.add(item);
+	}
+	
+	private void somaItensComplementar(List<Adicional> complementos) {
+		if(!complementos.isEmpty()) {
+			for(Adicional complemento : complementos) {		
+				this.subtotal += complemento.getPrecoVenda();
+				this.valorTotal = subtotal;
+			}
+		}
 	}
 	
 	public Venda constroi() {

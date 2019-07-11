@@ -16,6 +16,7 @@ public class ItemVenda extends BaseEntity implements Serializable {
 	private Double total;
 	private Double quantidade;
 	private String observacao;
+	private Tamanho tamanho;
 	private List<Adicional> adicionais = new ArrayList<Adicional>();
 
 	public ItemVenda() {
@@ -115,5 +116,13 @@ public class ItemVenda extends BaseEntity implements Serializable {
 
 	public void setAdicionais(List<Adicional> adicionais) {
 		this.adicionais = adicionais;
+	}
+
+	public Tamanho getTamanho() {
+		return tamanho;
+	}
+
+	public void setTamanho(Tamanho tamanho) {
+		this.tamanho = tamanho;
 	}
 }

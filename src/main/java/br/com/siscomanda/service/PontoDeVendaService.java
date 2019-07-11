@@ -74,6 +74,7 @@ public class PontoDeVendaService implements Serializable {
 	}
 	
 	public Double calcularValorTotal(List<ItemVenda> itens, ItemVenda item) {
+		int quantidadeItens = itens.size();
 		double total = itens.isEmpty() ? item.getValor() : 0;
 		
 		if(!itens.isEmpty()) {
@@ -93,6 +94,7 @@ public class PontoDeVendaService implements Serializable {
 				}
 		}
 		
+		total = quantidadeItens > 0 ? (total / quantidadeItens) : (total / 1);
 		return total;
 	}
 	
@@ -146,7 +148,6 @@ public class PontoDeVendaService implements Serializable {
 			itemSelecionado = itemPrincipal;
 			itens.add(itemSelecionado);
 		}
-				
 		if(complemento.isSelecionado()) {
 			for(Adicional adicional: complementos) {
 				if(adicional.isSelecionado()) {
@@ -219,9 +220,9 @@ public class PontoDeVendaService implements Serializable {
 				for(Produto produto : produtos) {
 					if(produto.equals(preco.getProduto())) {
 						id++;						
-						ItemVenda itemm = new ItemVenda(venda, produto, (preco.getPrecoVenda() / produtos.size()), 1.0, "");
+						ItemVenda itemm = new ItemVenda(venda, produto, (preco.getPrecoVenda()), .5, "");
 						itemm.setId(id);
-						
+						itemm.setTamanho(tamanho);
 						itens.add(itemm);
 					}
 				}
@@ -249,6 +250,7 @@ public class PontoDeVendaService implements Serializable {
 		return itens;
 	}
 	
+	@Deprecated
 	public Map<String, Object> atualizaNomeDosProdutos(List<ItemVenda> itens, String descricaoOriginalProduto, String sigla) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		

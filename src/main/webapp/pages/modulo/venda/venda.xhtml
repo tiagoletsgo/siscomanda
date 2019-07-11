@@ -15,7 +15,8 @@
 		<h:panelGroup layout="block" rendered="#{crudBean.estadoViewBean.insert}">Inclusão</h:panelGroup>
 		<h:panelGroup layout="block" rendered="#{crudBean.estadoViewBean.update}">Edição</h:panelGroup>
 		<h:panelGroup layout="block" rendered="#{crudBean.novoItem}">Novo Item</h:panelGroup>
-		<h:panelGroup layout="block" rendered="#{not crudBean.estadoViewBean.insert and not crudBean.estadoViewBean.update and not crudBean.novoItem}">Consultar</h:panelGroup>
+		<h:panelGroup layout="block" rendered="#{crudBean.incluirItem}">Inclusão Novo Item</h:panelGroup>
+		<h:panelGroup layout="block" rendered="#{not crudBean.incluirItem and not crudBean.estadoViewBean.insert and not crudBean.estadoViewBean.update and not crudBean.novoItem}">Consultar</h:panelGroup>
 	</ui:define>
 	<ui:define name="title_form"> 
 		<h:panelGroup layout="block">Ponto de Venda (PDV) </h:panelGroup>
@@ -102,7 +103,7 @@
 			</h:form>
 			<f:facet name="footer">
 				<p:commandButton process="@this" styleClass="btn btn-success" value="Salvar" oncomplete="PF('dlgPersonalizar').hide();" 
-					update="crudform:itensMeioAmeio crudform:inpDescricaoProduto crudform:inpTotal scripts crudform:tabelaComplementos" action="#{crudBean.btnPersonalizar()}" />
+					update="crudform:itensMeioAmeio crudform:observacoes crudform:inpDescricaoProduto crudform:inpTotal scripts crudform:tabelaComplementos crudform:inpQuantidade" action="#{crudBean.btnPersonalizar()}" />
 				
 				<p:commandButton styleClass="btn btn-danger" global="false" value="Cancelar" oncomplete="PF('dlgPersonalizar').hide();" />
 			</f:facet>

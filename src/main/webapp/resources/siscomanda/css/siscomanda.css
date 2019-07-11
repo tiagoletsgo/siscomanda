@@ -151,6 +151,14 @@
 	text-shadow: inherit !important;
 }
 
+.ui-subtable th {
+	border-radius: 0px!important;
+	padding: inherit!important;
+}
+.ui-subtable span {
+	text-transform: none!important;
+}
+
 .ui-datatable-odd.ui-state-hover,
 .ui-datatable-even.ui-state-hover {
 	background-color: #ddd !important;

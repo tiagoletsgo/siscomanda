@@ -7,7 +7,7 @@
 	<p:commandButton value="Voltar" styleClass="btn btn-primary" update="@form" global="false" action="#{crudBean.btnVoltar()}" />
 	<p:dataTable id="tabelaVendaProduto" styleClass="table table-striped jambo_table" value="#{produtoFactoryBean.produtos}" var="produto"
 			 emptyMessage="Sem dados" paginator="true" rows="10" paginatorPosition="top">
-			
+		
 		<p:column>
 			<f:facet name="header">
 				<h:outputLabel value="Código" />

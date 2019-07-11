@@ -4,19 +4,20 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:p="http://primefaces.org/ui">
 		
-		<style>
-			.ui-text-left > .ui-column-title {
-				float: left;
-			}
-			.ui-text-right > .ui-column-title {
-				float: right;
-			}
-		</style>
 		<p:commandButton value="Novo Item" styleClass="btn btn-primary" update="@form" global="false" action="#{crudBean.btnNovoItem()}" />
 		<p:dataTable id="tabelaVendaItem" styleClass="table table-striped jambo_table" value="#{crudBean.entity.itens}" var="item"
 			emptyMessage="Sem dados">
 			
-			<p:column styleClass="ui-text-left">
+			<p:ajax event="rowToggle" global="false" />
+			
+			<p:column width="30">
+				<f:facet name="header">
+					<h:outputLabel value="#" />
+				</f:facet>
+				<p:rowToggler />
+			</p:column>
+
+			<p:column width="70">
 				<f:facet name="header">
 					<h:outputLabel value="Código" />
 				</f:facet>
@@ -24,21 +25,33 @@
 					<f:convertNumber pattern="000000" maxIntegerDigits="6" />
 				</h:outputText>
 			</p:column>
-			<p:column styleClass="ui-datatable-left">
+
+			<p:column width="320" styleClass="ui-text-left">
 				<f:facet name="header">
 					<h:outputLabel value="Descrição" />
 				</f:facet>
-				<h:outputText value="#{item.produto.descricao}"/>
+				<h:outputText value="#{item.produto.descricao}" styleClass="ui-text-left" />
 			</p:column>
-			<p:column>
+			
+			<p:column width="120">
+				<f:facet name="header">
+					<h:outputLabel value="Tamanho" />
+				</f:facet>
+				<h:outputText value="#{item.tamanho.sigla}" />
+				<h:outputText value="-" rendered="#{empty item.tamanho.sigla}" />
+			</p:column>
+			
+			<p:column width="90">
 				<f:facet name="header">
 					<h:outputLabel value="Quantidade" />
 				</f:facet>
-				<h:outputText value="#{item.quantidade}">
+				<h:outputText value="#{item.quantidade}" rendered="#{item.quantidade > 0.5}">
 					<f:convertNumber minFractionDigits="2" maxFractionDigits="2" locale="pt_BR" />
 				</h:outputText>
+				<h:outputText value="1/2" rendered="#{item.quantidade eq 0.5}" />
 			</p:column>
-			<p:column>
+			
+			<p:column width="80">
 				<f:facet name="header">
 					<h:outputLabel value="Subtotal" />
 				</f:facet>
@@ -46,7 +59,8 @@
 					<f:convertNumber minFractionDigits="2" maxFractionDigits="2" locale="pt_BR" />
 				</h:outputText>
 			</p:column>
-			<p:column>
+			
+			<p:column width="80">
 				<f:facet name="header">
 					<h:outputLabel value="Total" />
 				</f:facet>
@@ -54,12 +68,32 @@
 					<f:convertNumber minFractionDigits="2" maxFractionDigits="2" locale="pt_BR" />
 				</h:outputText>
 			</p:column>
-			<p:column>
-				<f:facet name="header">
-					<h:outputLabel value="#" />
-				</f:facet>
+			
+			<p:column width="80">
 				<p:commandButton styleClass="btn btn-warning btn-xs" value="Editar" action="#{crudBean.btnEditar(subcategoria)}" update="@form" />
 			</p:column>
+			
+			<p:rowExpansion>
+				<p:dataTable value="#{item.adicionais}" var="complemento" styleClass="table ui-subtable table-striped jambo_table">
+					<p:column width="70">
+						<f:facet name="header">Código</f:facet>
+						<h:outputText value="#{complemento.id}">
+							<f:convertNumber pattern="000000" maxIntegerDigits="6" />
+						</h:outputText>
+					</p:column>
+					<p:column width="400">
+						<f:facet name="header">Descrição</f:facet>
+						<h:outputText value="#{complemento.descricao}" />
+					</p:column>
+					<p:column width="80">
+						<f:facet name="header">Preço Venda</f:facet>
+						<h:outputText value="#{complemento.precoVenda}">
+							<f:convertNumber minFractionDigits="2" maxFractionDigits="2" locale="pt_BR" />
+						</h:outputText>
+					</p:column>
+				</p:dataTable>
+			</p:rowExpansion>
+			
 			<f:facet name="footer">
 				<p:commandButton styleClass="btn btn-danger btn-xs" style="float: left;" oncomplete="PF('dlgConfirmarExclusao').show();" value="Deletar" 
 					rendered="#{crudBean.elements.size() > 0 and not crudBean.estadoViewBean.update}"/>
