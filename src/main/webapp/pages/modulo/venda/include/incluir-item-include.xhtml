@@ -8,21 +8,26 @@
 		<div class="col-md-12 col-sm-12 col-xs-12">
 			<p:selectOneRadio value="#{crudBean.item.valor}">
 				<f:selectItems value="#{crudBean.precos}" var="preco" itemLabel="#{crudBean.paraMoedaPtBR(preco.precoVenda)} (#{preco.tamanho.sigla.toUpperCase()})" itemValue="#{preco.precoVenda}" />
-				<p:ajax event="change" update="inpTotal observacoes itensMeioAmeio inpDescricaoProduto tabelaComplementos scripts" global="false" process="@this" listener="#{crudBean.alterarTamanho()}" />
+				<p:ajax event="change" update="inpTotal observacoes inpTamanhoProduto itensMeioAmeio inpDescricaoProduto tabelaComplementos scripts" global="false" process="@this" listener="#{crudBean.alterarTamanho()}" />
 			</p:selectOneRadio>
 		</div>
 	</div>
 	
 	<hr />
 	<div class="row">
-		<div class="col-md-8 col-sm-8 col-xs-12">
+		<div class="col-md-5 col-sm-4 col-xs-12">
 			<label>Produto :</label>
 			<h:outputText id="inpDescricaoProduto" styleClass="form-control" value="#{crudBean.item.produto.descricao}" />
 		</div>
 		
+		<div class="col-md-3 col-sm-3 col-xs-12">
+			<label>Tamanho :</label>
+			<h:outputText id="inpTamanhoProduto" styleClass="form-control" value="#{crudBean.item.tamanho.descricao}" />
+		</div>
+		
 		<div class="col-md-2 col-sm-2 col-xs-12">
 			<label>Quantidade :</label>
-			<h:inputText styleClass="form-control currency" value="#{crudBean.item.quantidade}">
+			<h:inputText id="inpQuantidade" styleClass="form-control currency" value="#{crudBean.item.quantidade}" disabled="#{crudBean.itensMeioAmeio.size() > 0}">
 				<f:convertNumber minFractionDigits="2" maxFractionDigits="2" locale="pt_BR" />
 				<p:ajax event="keyup" update="inpTotal inpDescricaoProduto scripts" global="false" delay="300" process="@this" listener="#{crudBean.calcularValorTotal()}" />
 			</h:inputText>
@@ -51,11 +56,16 @@
 					listener="#{crudBean.atualizaListaDeComplementos()}" />
 				
 				<p:ajax event="rowUnselect" global="false" update="crudform:tabelaComplementos crudform:observacoes"
-					listener="#{crudBean.desmacarListaComplementos()}"/>
+					listener="#{crudBean.limparObservacaoEdesmacarListaDeComplemento()}"/>
 				
 				<p:column width="510" styleClass="ui-text-left">
 					<f:facet name="header">Descrição:</f:facet>
 					<h:outputText value="#{item.produto.descricao}" styleClass="ui-text-left" />
+				</p:column>
+				
+				<p:column width="90">
+					<f:facet name="header">Tamanho:</f:facet>
+					<h:outputText value="#{item.tamanho.sigla}" />
 				</p:column>
 				
 				<p:column width="60">
@@ -66,14 +76,14 @@
 				
 				<p:column width="90" styleClass="ui-text-right">
 					<f:facet name="header">Preço:</f:facet>
-					<h:outputText value="#{item.valor * crudBean.itensMeioAmeio.size()}" styleClass="text-danger ui-text-right">
+					<h:outputText value="#{item.valor}" styleClass="text-danger ui-text-right">
 						<f:convertNumber maxFractionDigits="2" minFractionDigits="2" locale="pt_BR" type="currency" />
 					</h:outputText>
 				</p:column>
 				
 				<p:column width="90" styleClass="ui-text-right">
 					<f:facet name="header">Venda:</f:facet>
-					<h:outputText value="#{item.valor}" styleClass="text-success ui-text-right">
+					<h:outputText value="#{item.valor / crudBean.itensMeioAmeio.size()}" styleClass="text-success ui-text-right">
 						<f:convertNumber maxFractionDigits="2" minFractionDigits="2" locale="pt_BR" type="currency" />
 					</h:outputText>
 				</p:column>
@@ -81,13 +91,13 @@
 				<p:column width="130" >
 					<f:facet name="header">#</f:facet>
 					<p:commandButton value="Remover" styleClass="btn btn-danger" action="#{crudBean.btnRemover(item)}"
-						update="tabelaItemMeioAmeio crudform:observacoes crudform:inpDescricaoProduto crudform:inpTotal crudform:tabelaComplementos scripts" global="false"/>
+						update="tabelaItemMeioAmeio crudform:observacoes crudform:inpQuantidade crudform:inpDescricaoProduto crudform:inpTotal crudform:tabelaComplementos scripts" global="false"/>
 				</p:column>
 			</p:dataTable>
 		</h:panelGroup>
 	</div>
 	
-	<hr />
+	<div class="ln_solid"></div>
 	<div class="row">
 		<div class="col-md-12 col-sm-12 col-xs-12">
 			<p:dataTable id="tabelaComplementos" value="#{crudBean.complementos}" var="adicional" emptyMessage="Sem dados" paginator="true" rows="10" paginatorPosition="top">
@@ -116,7 +126,7 @@
 		</div>
 	</div>
 	
-	<hr />
+	<div class="ln_solid"></div>
 	<div class="row">
 		<div class="col-md-12 col-sm-12 col-xs-12">
 			<label>Observações :</label>	
@@ -124,6 +134,17 @@
 			 value="#{crudBean.item.observacao}">
 				<p:ajax event="change" process="@this" listener="#{crudBean.incluirObservacao()}" global="false" />
 			</p:inputTextarea>
+		</div>
+	</div>
+	
+	<div class="form-group"></div>
+	<div class="clearfix"></div>
+	<div class="ln_solid"></div>
+	<div class="form-group">
+		<div class="col-md-12 col-sm-12 col-xs-12">
+			<p:commandButton styleClass="btn btn-success" value="Confirmar" update=":crudform" action="#{crudBean.btnConfirmar()}" />
+			<p:commandButton styleClass="btn btn-danger" value="Cancelar" action="#{crudBean.btnCancelarInclusaoNovoItem()}"
+				global="false" update=":crudform" />	
 		</div>
 	</div>
 </ui:composition>

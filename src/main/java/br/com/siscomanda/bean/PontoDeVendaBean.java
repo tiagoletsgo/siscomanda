@@ -2,6 +2,7 @@ package br.com.siscomanda.bean;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,6 +15,7 @@ import javax.inject.Named;
 import br.com.siscomanda.base.bean.BaseBean;
 import br.com.siscomanda.builder.VendaBuilder;
 import br.com.siscomanda.enumeration.EStateView;
+import br.com.siscomanda.enumeration.EStatus;
 import br.com.siscomanda.exception.SiscomandaException;
 import br.com.siscomanda.model.Adicional;
 import br.com.siscomanda.model.ItemVenda;
@@ -50,7 +52,7 @@ public class PontoDeVendaBean extends BaseBean<Venda> implements Serializable {
 	
 	private boolean incluirItem;
 	
-	private VendaBuilder builder;
+	private VendaBuilder vendaBuilder;
 	
 	private ItemVenda item;
 	
@@ -70,10 +72,19 @@ public class PontoDeVendaBean extends BaseBean<Venda> implements Serializable {
 	
 	@Override
 	protected void init() {
-		builder = new VendaBuilder();
+		vendaBuilder = new VendaBuilder();
 		parametros = new HashMap<String, Object>();
 		itensMeioAmeio = new ArrayList<ItemVenda>();
 		produtosSelecionados = new ArrayList<Produto>();
+		
+		vendaBuilder.comDataHora(new Date());
+		vendaBuilder.comDesconto(new Double(0));
+		vendaBuilder.comStatus(EStatus.EM_ABERTO);
+		vendaBuilder.comSubtotal(new Double(0));
+		vendaBuilder.comTaxaEntrega(new Double(0));
+		vendaBuilder.comTaxaServico(new Double(0));
+		vendaBuilder.comDesconto(new Double(0));
+		setEntity(vendaBuilder.constroi());
 	}
 	
 	public void btnNovoItem() {
@@ -90,17 +101,30 @@ public class PontoDeVendaBean extends BaseBean<Venda> implements Serializable {
 		try {
 			setNovoItem(false);
 			setIncluirItem(true);
-			setItem(pontoDeVendaService.paraItemVenda(getEntity(), produto));
+			
+			Produto prod = produto.clone(produto);
+			setItem(pontoDeVendaService.paraItemVenda(getEntity(), prod));
 
 			getItem().setId(1L);
-			precos = precoService.porProduto(produto);
+			precos = precoService.porProduto(prod);
 			produtos = produtoService.todos();
-			produtos.remove(produto);
+			produtos.remove(prod);
 			
-			parametros.put("descricaoProduto", produto.getDescricao());
+			parametros.put("descricaoProduto", prod.getDescricao());
 		}
 		catch(SiscomandaException e) {
 			JSFUtil.addMessage(FacesMessage.SEVERITY_ERROR, e.getMessage());
+		}
+	}
+	
+	public void btnCancelarInclusaoNovoItem() {
+		setIncluirItem(false);
+		setNovoItem(true);
+		getItensMeioAmeio().clear();
+		setItem(new ItemVenda());
+		
+		if(getComplementos() != null) {			
+			getComplementos().clear();
 		}
 	}
 	
@@ -115,6 +139,7 @@ public class PontoDeVendaBean extends BaseBean<Venda> implements Serializable {
 		try {
 			Preco preco = precoService.porValor(getItem().getValor(), getItem().getProduto());
 			parametros.put("tamanho", preco.getTamanho());
+			getItem().setTamanho(preco.getTamanho());
 			getItem().setTotal(getItem().getValor() * getItem().getQuantidade());
 			complementos = adicionalService.todos();
 			
@@ -133,17 +158,9 @@ public class PontoDeVendaBean extends BaseBean<Venda> implements Serializable {
 		}
 	}
 	
-	@SuppressWarnings("unchecked")
 	private void atualizaNomeProduto() {
-		String descricaoOriginalProduto = (String)parametros.get("descricaoProduto");
-		Tamanho tamanho = (Tamanho)parametros.get("tamanho");
-		String sigla = tamanho.getSigla();
-		
-		Map<String, Object> map = pontoDeVendaService.atualizaNomeDosProdutos(getItensMeioAmeio(), descricaoOriginalProduto, sigla);
-		String nomeProduto = (String)map.get("descricaoProduto");
-		List<ItemVenda> itens = (List<ItemVenda>)map.get("itens");		
-		itensMeioAmeio = itens;
-		
+		int quantidadeItens = getItensMeioAmeio().size();
+		String nomeProduto = quantidadeItens > 1 ? "PIZZA PERSONALIZADA" : (String)parametros.get("descricaoProduto");
 		getItem().getProduto().setDescricao(nomeProduto);
 	}
 	
@@ -177,6 +194,8 @@ public class PontoDeVendaBean extends BaseBean<Venda> implements Serializable {
 			
 			listaMeioAmeioTemUmRegistro();
 			desmacarListaComplementos();
+			
+			getItem().setObservacao("");
 		} catch (SiscomandaException e) {
 			JSFUtil.addMessage(FacesMessage.SEVERITY_ERROR, e.getMessage());
 		}
@@ -231,7 +250,7 @@ public class PontoDeVendaBean extends BaseBean<Venda> implements Serializable {
 			atualizaListaDeComplementos();
 			atualizaNomeProduto();
 			calcularValorTotal();
-			desmacarListaComplementos();
+			limparObservacaoEdesmacarListaDeComplemento();
 		}
 		catch(SiscomandaException e) {
 			JSFUtil.addMessage(FacesMessage.SEVERITY_ERROR, e.getMessage());
@@ -251,8 +270,29 @@ public class PontoDeVendaBean extends BaseBean<Venda> implements Serializable {
 		getItem().setTotal(total * getItem().getQuantidade());
 	}
 	
-	public void desmacarListaComplementos() {
+	private void desmacarListaComplementos() {
 		complementos = pontoDeVendaService.desmarcarListaDeComplementos(getComplementos(), getItensMeioAmeio(), getItem());
+	}
+	
+	public void btnConfirmar() {
+		
+		if(getItensMeioAmeio().isEmpty()) {
+			getItensMeioAmeio().add(getItem());
+		}
+		
+		vendaBuilder.comItens(getItensMeioAmeio());
+		setEntity(vendaBuilder.constroi());
+
+		getItensMeioAmeio().clear();
+		setIncluirItem(false);
+		btnVoltar();
+	}
+	
+	public void limparObservacaoEdesmacarListaDeComplemento() {
+		desmacarListaComplementos();
+		if(getItensMeioAmeio().size() > 1) {			
+			getItem().setObservacao("");
+		}
 	}
 		
 	public String paraMoedaPtBR(Double valor) {
