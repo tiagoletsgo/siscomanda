@@ -48,7 +48,7 @@ public class PontoDeVendaService implements Serializable {
 	
 	public List<ItemVenda> atualizaListaItemMeioAmeio(List<ItemVenda> itens, Tamanho tamanho) throws SiscomandaException {
 		List<Produto> produtos = new ArrayList<Produto>();
-		
+		double quantidadeItens = new Double(1) / new Double(itens.size());
 		if(!itens.isEmpty()) {
 			for(ItemVenda item : itens) {
 				produtos.add(item.getProduto());
@@ -63,8 +63,8 @@ public class PontoDeVendaService implements Serializable {
 			for(Preco preco : precos) {
 				for(ItemVenda item : itens) {
 					if(item.getProduto().equals(preco.getProduto())) {							
-						item.setValor((preco.getPrecoVenda() / produtos.size()));
-						item.setTotal(item.getValor() * item.getQuantidade());
+						item.setValor(preco.getPrecoVenda());
+						item.setTotal(item.getValor() * quantidadeItens);
 					}
 				}
 			}			
@@ -74,14 +74,15 @@ public class PontoDeVendaService implements Serializable {
 	}
 	
 	public Double calcularValorTotal(List<ItemVenda> itens, ItemVenda item) {
-		int quantidadeItens = itens.size();
 		double total = itens.isEmpty() ? item.getValor() : 0;
+		double totalComplemento = 0;
+		double quantidadeItens = !itens.isEmpty() ? (new Double(1) / new Double(itens.size())) : 1;
 		
 		if(!itens.isEmpty()) {
 			for(ItemVenda iten : itens) {
 				if(!iten.getAdicionais().isEmpty()) {
 					for(Adicional complemento : iten.getAdicionais()) {
-						total += complemento.getPrecoVenda();
+						totalComplemento += complemento.getPrecoVenda();
 					}
 				}
 				total += iten.getValor();
@@ -94,8 +95,7 @@ public class PontoDeVendaService implements Serializable {
 				}
 		}
 		
-		total = quantidadeItens > 0 ? (total / quantidadeItens) : (total / 1);
-		return total;
+		return (total * quantidadeItens) + totalComplemento;
 	}
 	
 	public List<ItemVenda> removerItem(List<ItemVenda> itens, ItemVenda item, Produto produto) throws SiscomandaException {
@@ -219,8 +219,9 @@ public class PontoDeVendaService implements Serializable {
 			for(Preco preco : precos) {
 				for(Produto produto : produtos) {
 					if(produto.equals(preco.getProduto())) {
-						id++;						
-						ItemVenda itemm = new ItemVenda(venda, produto, (preco.getPrecoVenda()), .5, "");
+						id++;				
+						Double quantidade = new Double(1) / new Double(produtos.size());
+						ItemVenda itemm = new ItemVenda(venda, produto, (preco.getPrecoVenda()), quantidade, "");
 						itemm.setId(id);
 						itemm.setTamanho(tamanho);
 						itens.add(itemm);

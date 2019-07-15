@@ -76,6 +76,7 @@ public class PontoDeVendaBean extends BaseBean<Venda> implements Serializable {
 		parametros = new HashMap<String, Object>();
 		itensMeioAmeio = new ArrayList<ItemVenda>();
 		produtosSelecionados = new ArrayList<Produto>();
+		complementos = new ArrayList<Adicional>();
 		
 		vendaBuilder.comDataHora(new Date());
 		vendaBuilder.comDesconto(new Double(0));
@@ -90,6 +91,10 @@ public class PontoDeVendaBean extends BaseBean<Venda> implements Serializable {
 	public void btnNovoItem() {
 		setNovoItem(true);
 		getEstadoViewBean().setCurrentView(null);
+		this.itensMeioAmeio = new ArrayList<ItemVenda>();
+		this.complementos = new ArrayList<Adicional>();
+		setItem(new ItemVenda());
+		setItemSelecionado(null);
 	}
 	
 	public void btnVoltar() {
@@ -274,6 +279,10 @@ public class PontoDeVendaBean extends BaseBean<Venda> implements Serializable {
 		complementos = pontoDeVendaService.desmarcarListaDeComplementos(getComplementos(), getItensMeioAmeio(), getItem());
 	}
 	
+	public String converteValorFracionado(Double valor) {
+		return StringUtil.converterValorFracionado(valor);
+	}
+	
 	public void btnConfirmar() {
 		
 		if(getItensMeioAmeio().isEmpty()) {
@@ -282,8 +291,6 @@ public class PontoDeVendaBean extends BaseBean<Venda> implements Serializable {
 		
 		vendaBuilder.comItens(getItensMeioAmeio());
 		setEntity(vendaBuilder.constroi());
-
-		getItensMeioAmeio().clear();
 		setIncluirItem(false);
 		btnVoltar();
 	}

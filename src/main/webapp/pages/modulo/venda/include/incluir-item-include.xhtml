@@ -83,7 +83,7 @@
 				
 				<p:column width="90" styleClass="ui-text-right">
 					<f:facet name="header">Venda:</f:facet>
-					<h:outputText value="#{item.valor / crudBean.itensMeioAmeio.size()}" styleClass="text-success ui-text-right">
+					<h:outputText value="#{item.total}" styleClass="text-success ui-text-right">
 						<f:convertNumber maxFractionDigits="2" minFractionDigits="2" locale="pt_BR" type="currency" />
 					</h:outputText>
 				</p:column>
@@ -142,7 +142,7 @@
 	<div class="ln_solid"></div>
 	<div class="form-group">
 		<div class="col-md-12 col-sm-12 col-xs-12">
-			<p:commandButton styleClass="btn btn-success" value="Confirmar" update=":crudform" action="#{crudBean.btnConfirmar()}" />
+			<p:commandButton styleClass="btn btn-success" value="Confirmar" update=":crudform tabelaComplementos" action="#{crudBean.btnConfirmar()}" />
 			<p:commandButton styleClass="btn btn-danger" value="Cancelar" action="#{crudBean.btnCancelarInclusaoNovoItem()}"
 				global="false" update=":crudform" />	
 		</div>

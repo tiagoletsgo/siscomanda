@@ -26,7 +26,6 @@ public class ItemVenda extends BaseEntity implements Serializable {
 	}
 
 	public ItemVenda(Venda venda, Produto produto, Double valor, Double quantidade, String observacao) {
-		super();
 		this.venda = venda;
 		this.produto = produto;
 		this.valor = valor;
@@ -36,7 +35,6 @@ public class ItemVenda extends BaseEntity implements Serializable {
 	}
 	
 	public ItemVenda(Long id, Venda venda, Produto produto, Double valor, Double quantidade, String observacao, List<Adicional> complementos) {
-		super();
 		setId(id);
 		this.venda = venda;
 		this.produto = produto;
