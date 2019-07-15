@@ -10,9 +10,33 @@ import br.com.siscomanda.exception.SiscomandaException;
 public class StringUtil {
 	
 	private static String simboloReal = "R$";
-	
+		
 	public static String parseDouble(Double valor) {
 		return simboloReal.concat(" ").concat(String.format("%.2f", valor));
+	}
+	
+	public static String converterValorFracionado(Double valor) {
+		String valorConvertido = "1/0";
+		
+		if(valor.toString().startsWith("0")) {
+			int count = 0;
+			double valorCalculado = 0.0;
+			
+			while(valorCalculado != valor) {
+				valorCalculado = (new Double(1) / new Double(count));
+				count++;
+			}
+			
+			valorConvertido = valorConvertido.replace("0", new Integer(count - 1).toString());
+		}
+		else {
+			DecimalFormat formater = new DecimalFormat("#,##0.00");
+			formater.setDecimalFormatSymbols(new DecimalFormatSymbols(new Locale("pt", "BR")));
+			valorConvertido = valor.toString();
+			valorConvertido = formater.format(new Double(valorConvertido));
+		}
+		
+		return valorConvertido;
 	}
 	
 	public static String converterParaValorMonetario(Double valor) {

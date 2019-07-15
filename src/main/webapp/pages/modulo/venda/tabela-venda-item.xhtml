@@ -14,7 +14,7 @@
 				<f:facet name="header">
 					<h:outputLabel value="#" />
 				</f:facet>
-				<p:rowToggler />
+				<p:rowToggler rendered="#{not empty item.adicionais}" />
 			</p:column>
 
 			<p:column width="70">
@@ -45,10 +45,7 @@
 				<f:facet name="header">
 					<h:outputLabel value="Quantidade" />
 				</f:facet>
-				<h:outputText value="#{item.quantidade}" rendered="#{item.quantidade > 0.5}">
-					<f:convertNumber minFractionDigits="2" maxFractionDigits="2" locale="pt_BR" />
-				</h:outputText>
-				<h:outputText value="1/2" rendered="#{item.quantidade eq 0.5}" />
+				<h:outputText value="#{crudBean.converteValorFracionado(item.quantidade)}"/>
 			</p:column>
 			
 			<p:column width="80">
