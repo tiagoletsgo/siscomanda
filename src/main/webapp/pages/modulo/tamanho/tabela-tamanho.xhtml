@@ -11,15 +11,21 @@
 			
 			<p:ajax event="page" global="false" />
 			
-			<p:column styleClass="ui-datatable-center" selectionMode="multiple" />
+			<p:column styleClass="ui-datatable-center" selectionMode="multiple" width="50" />
 			
 			<p:column styleClass="ui-datatable-left">
 				<f:facet name="header">
-					<h:outputLabel value="Descrição" />
+					<h:outputText value="Descrição" />
+				</f:facet>
+				<h:outputText value="#{tamanho.subCategoria.descricao}" />
+			</p:column>
+			<p:column styleClass="ui-datatable-left">
+				<f:facet name="header">
+					<h:outputLabel value="Unidade de Medida" />
 				</f:facet>
 				<h:outputText value="#{tamanho.descricao}"/>
 			</p:column>
-			<p:column>
+			<p:column width="110">
 				<f:facet name="header">
 					<h:outputLabel value="#" />
 				</f:facet>

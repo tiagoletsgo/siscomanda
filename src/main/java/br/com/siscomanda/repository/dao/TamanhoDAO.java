@@ -44,4 +44,13 @@ public class TamanhoDAO extends GenericDAO<Tamanho> implements Serializable {
 			throw new SiscomandaException("Nenhum registro encontrado. " + e.getMessage());
 		}
 	}
+	
+	public List<Tamanho> todos() {
+		StringBuilder sql = new StringBuilder();
+		sql.append("SELECT tamanho FROM Tamanho tamanho ");
+		sql.append("INNER JOIN FETCH tamanho.subCategoria subcategoria ");
+		TypedQuery<Tamanho> query = getEntityManager().createQuery(sql.toString(), Tamanho.class);
+		List<Tamanho> tamanhos = query.getResultList();
+		return tamanhos;
+	}
 }
