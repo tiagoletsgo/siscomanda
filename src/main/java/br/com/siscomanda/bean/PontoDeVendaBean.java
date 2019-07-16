@@ -112,7 +112,7 @@ public class PontoDeVendaBean extends BaseBean<Venda> implements Serializable {
 
 			getItem().setId(1L);
 			precos = precoService.porProduto(prod);
-			produtos = produtoService.todos();
+			produtos = produtoService.todos(true);
 			produtos.remove(prod);
 			
 			parametros.put("descricaoProduto", prod.getDescricao());

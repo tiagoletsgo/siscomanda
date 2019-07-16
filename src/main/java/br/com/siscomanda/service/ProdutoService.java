@@ -92,6 +92,10 @@ public class ProdutoService implements Serializable {
 		return dao.todos(Produto.class);
 	}
 	
+	public List<Produto> todos(boolean permitePersonalizar) {
+		return dao.todos(permitePersonalizar);
+	}
+	
 	@Transactional
 	public void remover(List<Produto> produtos) throws SiscomandaException {
 		if(produtos == null || produtos.isEmpty()) {

@@ -66,7 +66,7 @@ public class TamanhoService implements Serializable {
 	}
 	
 	public List<Tamanho> todos() {
-		return dao.todos(Tamanho.class);
+		return dao.todos();
 	}
 	
 	@Transactional

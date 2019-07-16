@@ -1,6 +1,8 @@
 package br.com.siscomanda.repository.dao;
 
 import java.io.Serializable;
+import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.NoResultException;
@@ -116,6 +118,28 @@ public class ProdutoDAO extends GenericDAO<Produto> implements Serializable {
 		}
 		
 		List<Produto> produtos = query.getResultList();
+		return produtos;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<Produto> todos(boolean permitePersonalizar) {
+		StringBuilder sql = new StringBuilder();
+		sql.append("SELECT DISTINCT prod.* FROM produto prod ");
+		sql.append("INNER JOIN tamanho t ON t.subcategoria_id = prod.subcategoria_id ");
+		sql.append("WHERE t.permite_meio_a_meio = :permitePersonalizar");
+		Query query = getEntityManager().createNativeQuery(sql.toString());
+		query.setParameter("permitePersonalizar", permitePersonalizar);
+		
+		List<Produto> produtos = new ArrayList<Produto>();
+		List<Object[]> objetos = query.getResultList();
+		
+		for(Object[] obj : objetos) {
+			Produto produto = new Produto();
+			produto.setId(new BigInteger(obj[0].toString()).longValue());
+			produto.setDescricao(obj[3].toString());
+			produtos.add(produto);
+		}
+		
 		return produtos;
 	}
 }
