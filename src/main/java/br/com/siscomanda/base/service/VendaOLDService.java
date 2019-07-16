@@ -13,7 +13,7 @@ import br.com.siscomanda.model.Adicional;
 import br.com.siscomanda.model.ItemVendaOLD;
 import br.com.siscomanda.model.Produto;
 import br.com.siscomanda.model.VendaOLD;
-import br.com.siscomanda.service.DefinicaoGeralService;
+import br.com.siscomanda.service.ConfiguracaoGeralService;
 import br.com.siscomanda.util.JSFUtil;
 
 public abstract class VendaOLDService implements Serializable {
@@ -21,12 +21,12 @@ public abstract class VendaOLDService implements Serializable {
 	private static final long serialVersionUID = -8273876283694756574L;
 	
 	@Inject
-	private DefinicaoGeralService definicaoGeralService;
+	private ConfiguracaoGeralService configuracaoGeralService;
 	
 	private List<Produto> listTemp = new ArrayList<>();
 		
 	public Double getTaxaServico() {
-		Double valor = definicaoGeralService.carregaDefinicaoSistema().getTaxaServico();
+		Double valor = configuracaoGeralService.carregaDefinicaoSistema().getTaxaServico();
 		return (valor / 100);
 	}
 	
@@ -49,7 +49,7 @@ public abstract class VendaOLDService implements Serializable {
 			}
 		}
 		
-		if(produtos.size() > definicaoGeralService.carregaDefinicaoSistema().getPermiteQuantoSabores()) {
+		if(produtos.size() > configuracaoGeralService.carregaDefinicaoSistema().getPermiteQuantoSabores()) {
 			listTemp.remove(produtoCheck);
 			produtos.remove(produtoCheck);
 			JSFUtil.addMessage(FacesMessage.SEVERITY_ERROR, "A quantidade de sabores selecionado excede o limite configurado.");

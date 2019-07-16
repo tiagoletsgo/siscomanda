@@ -41,7 +41,7 @@ public class VendaMesaComandaOLDService extends VendaOLDService implements Seria
 	private ItemVendaAdicionalOLDDAO itemVendaAdicionalDAO;
 	
 	@Inject
-	private DefinicaoGeralService definicaoGeralService;
+	private ConfiguracaoGeralService definicaoGeralService;
 		
 	public List<VendaOLD> porFiltro(VendaOLD venda, boolean editando) {
 		return vendaDAO.buscaPor(venda, editando);

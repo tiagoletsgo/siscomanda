@@ -14,8 +14,8 @@ import br.com.siscomanda.base.model.BaseEntity;
 import br.com.siscomanda.enumeration.ESistema;
 
 @Entity
-@Table(name = "definicao_geral")
-public class DefinicaoGeral extends BaseEntity implements Serializable {
+@Table(name = "configuracao_geral")
+public class ConfiguracaoGeral extends BaseEntity implements Serializable {
 
 	private static final long serialVersionUID = 5565669778293412878L;
 	
@@ -50,7 +50,7 @@ public class DefinicaoGeral extends BaseEntity implements Serializable {
 	@Column(name = "permite_quantos_sabores")
 	private Integer permiteQuantoSabores;
 	
-	public DefinicaoGeral() {
+	public ConfiguracaoGeral() {
 		setEndereco(new Endereco());
 	}
 
