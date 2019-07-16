@@ -8,7 +8,7 @@ import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
 import br.com.siscomanda.model.Caixa;
-import br.com.siscomanda.model.PagamentoVenda;
+import br.com.siscomanda.model.Pagamento;
 import br.com.siscomanda.repository.base.GenericDAO;
 import br.com.siscomanda.util.DateUtil;
 
@@ -17,10 +17,10 @@ public class CaixaDAO extends GenericDAO<Caixa> implements Serializable {
 	private static final long serialVersionUID = -7623759446618936499L;
 	
 	@SuppressWarnings("unchecked")
-	public List<PagamentoVenda> lancamentos() {
+	public List<Pagamento> lancamentos() {
 		StringBuilder sql = new StringBuilder();
 		
-		sql.append("SELECT pg.* FROM pagamento_venda pg ");
+		sql.append("SELECT pg.* FROM pagamento pg ");
 		sql.append("INNER JOIN venda v on pg.venda_id = v.id ");
 		sql.append("INNER JOIN caixa c on c.id = v.caixa_id ");
 		sql.append("LEFT OUTER JOIN forma_pagamento fp on fp.id = pg.forma_pagamento_id ");
@@ -30,8 +30,8 @@ public class CaixaDAO extends GenericDAO<Caixa> implements Serializable {
 		sql.append("   OR not v.pago ");
 		sql.append("ORDER BY v.id ASC ");
 		
-		Query query = getEntityManager().createNativeQuery(sql.toString(), PagamentoVenda.class);
-		List<PagamentoVenda> lancamentos = query.getResultList();
+		Query query = getEntityManager().createNativeQuery(sql.toString(), Pagamento.class);
+		List<Pagamento> lancamentos = query.getResultList();
 		return lancamentos;
 	}
 	

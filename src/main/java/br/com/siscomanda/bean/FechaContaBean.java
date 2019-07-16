@@ -20,7 +20,7 @@ import br.com.siscomanda.model.Adicional;
 import br.com.siscomanda.model.Bandeira;
 import br.com.siscomanda.model.FormaPagamento;
 import br.com.siscomanda.model.ItemVendaOLD;
-import br.com.siscomanda.model.PagamentoVenda;
+import br.com.siscomanda.model.Pagamento;
 import br.com.siscomanda.model.VendaOLD;
 import br.com.siscomanda.service.FechaContaService;
 import br.com.siscomanda.util.JSFUtil;
@@ -37,9 +37,9 @@ public class FechaContaBean extends BaseBean<VendaOLD> implements Serializable {
 	
 	private List<Bandeira> bandeiras;
 	
-	private PagamentoVenda pagamento;
+	private Pagamento pagamento;
 	
-	private PagamentoVenda pagamentoSelecionado;
+	private Pagamento pagamentoSelecionado;
 	
 	private Long codigo;
 	
@@ -93,7 +93,7 @@ public class FechaContaBean extends BaseBean<VendaOLD> implements Serializable {
 	
 	public void btnIncluirPagamento() {
 		try {			
-			PagamentoVenda pagamento = new PagamentoVenda();
+			Pagamento pagamento = new Pagamento();
 			pagamento = service.incluiPagamento(getPagamento(), getEntity().getPagamentos(), valorFaltante);
 			
 			pagamento.setVenda(getEntity());
@@ -201,11 +201,11 @@ public class FechaContaBean extends BaseBean<VendaOLD> implements Serializable {
 		this.bandeiras = bandeiras;
 	}
 
-	public PagamentoVenda getPagamento() {
+	public Pagamento getPagamento() {
 		return pagamento;
 	}
 
-	public void setPagamento(PagamentoVenda pagamento) {
+	public void setPagamento(Pagamento pagamento) {
 		this.pagamento = pagamento;
 	}
 	
@@ -221,11 +221,11 @@ public class FechaContaBean extends BaseBean<VendaOLD> implements Serializable {
 		this.totalPagar = totalPagar;
 	}
 	
-	public PagamentoVenda getPagamentoSelecionado() {
+	public Pagamento getPagamentoSelecionado() {
 		return pagamentoSelecionado;
 	}
 
-	public void setPagamentoSelecionado(PagamentoVenda pagamentoSelecionado) {
+	public void setPagamentoSelecionado(Pagamento pagamentoSelecionado) {
 		this.pagamentoSelecionado = pagamentoSelecionado;
 	}
 
