@@ -31,7 +31,7 @@ public class VendaOLD extends BaseEntity implements Serializable {
 	private static final long serialVersionUID = 2583564472683970706L;
 		
 	@OneToMany(mappedBy = "venda", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
-	private List<PagamentoVenda> pagamentos = new ArrayList<>();
+	private List<Pagamento> pagamentos = new ArrayList<>();
 	
 	@OneToMany(mappedBy = "venda", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<ItemVendaOLD> itens = new ArrayList<>();
@@ -99,11 +99,11 @@ public class VendaOLD extends BaseEntity implements Serializable {
 		setId(id);
 	}
 
-	public List<PagamentoVenda> getPagamentos() {
+	public List<Pagamento> getPagamentos() {
 		return pagamentos;
 	}
 
-	public void setPagamentos(List<PagamentoVenda> pagamentos) {
+	public void setPagamentos(List<Pagamento> pagamentos) {
 		this.pagamentos = pagamentos;
 	}
 

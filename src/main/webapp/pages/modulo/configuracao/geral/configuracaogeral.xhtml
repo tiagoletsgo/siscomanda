@@ -5,7 +5,7 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:p="http://primefaces.org/ui">
 	
-	<ui:param name="crudBean" value="#{definicaoGeralBean}" />
+	<ui:param name="crudBean" value="#{configuracaoGeralBean}" />
 	<ui:param name="hideTableList" value="#{crudBean.estadoViewBean.search}" />
 	
 	<ui:define name="title_main"> 
@@ -14,12 +14,12 @@
 		<h:panelGroup layout="block"  rendered="#{not crudBean.estadoViewBean.insert and not crudBean.estadoViewBean.update}">Consultar</h:panelGroup>
 	</ui:define>
 	<ui:define name="title_form"> 
-		<h:panelGroup layout="block">Definição Geral</h:panelGroup>
+		<h:panelGroup layout="block">Configuração Geral</h:panelGroup>
 	</ui:define>
 			
 	<ui:define name="content">
 		<h:panelGroup layout="block" rendered="#{crudBean.estadoViewBean.insert or crudBean.estadoViewBean.update}">
-			<ui:include src="/pages/modulo/configuracao/definicaogeral/cadastro-definicao-geral.xhtml" />
+			<ui:include src="/pages/modulo/configuracao/geral/cadastro-configuracao-geral.xhtml" />
 		</h:panelGroup>
 	</ui:define>
 </ui:composition>

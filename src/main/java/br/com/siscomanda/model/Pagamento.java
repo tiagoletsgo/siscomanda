@@ -15,8 +15,8 @@ import javax.persistence.TemporalType;
 import br.com.siscomanda.base.model.BaseEntity;
 
 @Entity
-@Table(name = "pagamento_venda")
-public class PagamentoVenda extends BaseEntity implements Serializable {
+@Table(name = "pagamento")
+public class Pagamento extends BaseEntity implements Serializable {
 
 	private static final long serialVersionUID = -9027193982094115085L;
 	

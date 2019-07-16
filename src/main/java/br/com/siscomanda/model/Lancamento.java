@@ -19,8 +19,8 @@ import br.com.siscomanda.base.model.BaseEntity;
 import br.com.siscomanda.enumeration.ETipoOperacao;
 
 @Entity
-@Table(name = "caixa_lancamento")
-public class CaixaLancamento extends BaseEntity implements Serializable, Comparable<CaixaLancamento> {
+@Table(name = "lancamento")
+public class Lancamento extends BaseEntity implements Serializable, Comparable<Lancamento> {
 
 	private static final long serialVersionUID = -2358883859884996436L;
 	
@@ -138,7 +138,7 @@ public class CaixaLancamento extends BaseEntity implements Serializable, Compara
 	}
 
 	@Override
-	public int compareTo(CaixaLancamento o) {
+	public int compareTo(Lancamento o) {
 		if(o.getId() != null && getId() != null) {
 			if(getId() < o.getId()) {
 				return -1;

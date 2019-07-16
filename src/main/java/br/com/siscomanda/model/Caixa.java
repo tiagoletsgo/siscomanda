@@ -47,7 +47,7 @@ public class Caixa extends BaseEntity implements Serializable {
 	private Double totalSaida;
 	
 	@OneToMany(mappedBy = "caixa", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-	private List<CaixaLancamento> lancamentos = new ArrayList<>();
+	private List<Lancamento> lancamentos = new ArrayList<>();
 	
 	public Caixa() {
 	}
@@ -112,11 +112,11 @@ public class Caixa extends BaseEntity implements Serializable {
 		this.totalSaida = totalSaida;
 	}
 
-	public List<CaixaLancamento> getLancamentos() {
+	public List<Lancamento> getLancamentos() {
 		return lancamentos;
 	}
 
-	public void setLancamentos(List<CaixaLancamento> lancamentos) {
+	public void setLancamentos(List<Lancamento> lancamentos) {
 		this.lancamentos = lancamentos;
 	}
 	

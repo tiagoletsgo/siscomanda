@@ -18,7 +18,7 @@ import br.com.siscomanda.model.Bandeira;
 import br.com.siscomanda.model.Caixa;
 import br.com.siscomanda.model.FormaPagamento;
 import br.com.siscomanda.model.ItemVendaOLD;
-import br.com.siscomanda.model.PagamentoVenda;
+import br.com.siscomanda.model.Pagamento;
 import br.com.siscomanda.model.VendaOLD;
 import br.com.siscomanda.repository.dao.BandeiraDAO;
 import br.com.siscomanda.repository.dao.CaixaDAO;
@@ -42,18 +42,18 @@ public class FechaContaService extends VendaOLDService implements Serializable {
 	@Inject
 	private CaixaDAO caixaDAO;
 	
-	public PagamentoVenda carregaPagamento(VendaOLD venda) {
+	public Pagamento carregaPagamento(VendaOLD venda) {
 		
 		Double troco = new Double(0);
 		if(!venda.getPagamentos().isEmpty()) {
-			for(PagamentoVenda pagamento : venda.getPagamentos()) {
+			for(Pagamento pagamento : venda.getPagamentos()) {
 				if(pagamento.getValorTroco() > new Double(0)) {
 					troco = pagamento.getValorTroco();
 				}
 			}
 		}
 		
-		PagamentoVenda pagamento = new PagamentoVenda();
+		Pagamento pagamento = new Pagamento();
 		pagamento.setValorTroco(new Double(0));
 		pagamento.setValorPago(venda.getValorPago() == null ? new Double(0) : venda.getValorPago());
 		pagamento.setDesconto(venda.getDesconto() == null ? new Double(0) : venda.getDesconto());
@@ -66,14 +66,14 @@ public class FechaContaService extends VendaOLDService implements Serializable {
 		return pagamento;
 	}
 	
-	public void limpaId(List<PagamentoVenda> pagamentos) {
-		for(PagamentoVenda pagamento : pagamentos) {
+	public void limpaId(List<Pagamento> pagamentos) {
+		for(Pagamento pagamento : pagamentos) {
 			pagamento.setId(null);
 		}
 	}
 	
 	@Transactional
-	public VendaOLD salvar(VendaOLD venda, PagamentoVenda pagamento) throws SiscomandaException {
+	public VendaOLD salvar(VendaOLD venda, Pagamento pagamento) throws SiscomandaException {
 		Caixa caixa = caixaDAO.temCaixaAberto();
 		
 		if(caixa == null) {
@@ -102,7 +102,7 @@ public class FechaContaService extends VendaOLDService implements Serializable {
 		venda.setPago(isPago(venda));
 		venda.setCaixa(caixa);
 		
-		for(PagamentoVenda pag : venda.getPagamentos()) {
+		for(Pagamento pag : venda.getPagamentos()) {
 			pag.setDataPagamento(new Date());
 			pag.setCaixa(venda.getCaixa());
 		}
@@ -151,7 +151,7 @@ public class FechaContaService extends VendaOLDService implements Serializable {
 		return bandeiraDAO.porFormaPagamento(formaPagamento, true);
 	}
 	
-	public PagamentoVenda incluiPagamento(PagamentoVenda pagamento, List<PagamentoVenda> pagamentos, Double valorFaltante) throws SiscomandaException {
+	public Pagamento incluiPagamento(Pagamento pagamento, List<Pagamento> pagamentos, Double valorFaltante) throws SiscomandaException {
 		
 		if(pagamento.getValorRecebido() == null || pagamento.getValorRecebido().equals(new Double(0))) {
 			throw new SiscomandaException("Informe ou selecione um valor para incluir pagamento.");
@@ -171,7 +171,7 @@ public class FechaContaService extends VendaOLDService implements Serializable {
 		
 		Long id = pagamentos.isEmpty() ? 1L : pagamentos.get(pagamentos.size() -1).getId() + 1;
 		
-		PagamentoVenda pagamentoClone = new PagamentoVenda();
+		Pagamento pagamentoClone = new Pagamento();
 		pagamentoClone.setId(id);
 		pagamentoClone.setBandeira(pagamento.getBandeira());
 		pagamentoClone.setValorRecebido(pagamento.getValorRecebido());
@@ -207,7 +207,7 @@ public class FechaContaService extends VendaOLDService implements Serializable {
 		return total;
 	}
 	
-	public Double estornarFormaPagamento(PagamentoVenda pagamento, FormaPagamento formaPagamento, Double valorFaltante) {
+	public Double estornarFormaPagamento(Pagamento pagamento, FormaPagamento formaPagamento, Double valorFaltante) {
 		Double valorEstornado = pagamento.getValorPago() != 0.0 ? pagamento.getValorTroco() : 0.0;
 		if(formaPagamento.getDescricao().equals("DINHEIRO")) {
 			if(pagamento.getValorTotal() > pagamento.getValorPago()) {
@@ -222,9 +222,9 @@ public class FechaContaService extends VendaOLDService implements Serializable {
 		return valorEstornado;
 	}
 	
-	public Double calculaTotalPago(List<PagamentoVenda> pagamentos) {
+	public Double calculaTotalPago(List<Pagamento> pagamentos) {
 		Double total = BigDecimal.ZERO.doubleValue();
-		for(PagamentoVenda pagamento : pagamentos) {
+		for(Pagamento pagamento : pagamentos) {
 			total += pagamento.getValorRecebido();
 		}
 		return total;

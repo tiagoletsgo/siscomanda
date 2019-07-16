@@ -16,7 +16,7 @@ import br.com.siscomanda.base.bean.BaseBean;
 import br.com.siscomanda.enumeration.ETipoOperacao;
 import br.com.siscomanda.exception.SiscomandaException;
 import br.com.siscomanda.model.Caixa;
-import br.com.siscomanda.model.CaixaLancamento;
+import br.com.siscomanda.model.Lancamento;
 import br.com.siscomanda.model.FormaPagamento;
 import br.com.siscomanda.service.CaixaService;
 import br.com.siscomanda.util.JSFUtil;
@@ -32,7 +32,7 @@ public class CaixaBean extends BaseBean<Caixa> implements Serializable {
 	
 	private List<FormaPagamento> formaPagamentos;
 	
-	private CaixaLancamento lancamento;
+	private Lancamento lancamento;
 	
 	private Double valor;
 	
@@ -49,7 +49,7 @@ public class CaixaBean extends BaseBean<Caixa> implements Serializable {
 	@Override
 	protected void init() {
 		formaPagamentos = service.buscaFormaPagamentoPorDescricao("DINHEIRO");
-		lancamento = new CaixaLancamento();
+		lancamento = new Lancamento();
 		valor = new Double(0);
 		totalDinheiro = new Double(0);
 		
@@ -110,7 +110,7 @@ public class CaixaBean extends BaseBean<Caixa> implements Serializable {
 			atualizaTabelaLancamento();
 			executaCalculaTotalizador();
 			
-			lancamento = new CaixaLancamento();
+			lancamento = new Lancamento();
 			valor = new Double(0);
 			JSFUtil.addMessage(FacesMessage.SEVERITY_INFO, "Lançamento incluido com sucesso.");
 		}catch(SiscomandaException e) {
@@ -176,11 +176,11 @@ public class CaixaBean extends BaseBean<Caixa> implements Serializable {
 		return service.operacoes();
 	}
 
-	public CaixaLancamento getLancamento() {
+	public Lancamento getLancamento() {
 		return lancamento;
 	}
 
-	public void setLancamento(CaixaLancamento lancamento) {
+	public void setLancamento(Lancamento lancamento) {
 		this.lancamento = lancamento;
 	}
 

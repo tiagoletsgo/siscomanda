@@ -21,13 +21,13 @@ import br.com.siscomanda.interfaces.lancamentoImpl.LancamentoDespesa;
 import br.com.siscomanda.interfaces.lancamentoImpl.LancamentoEntrada;
 import br.com.siscomanda.interfaces.lancamentoImpl.LancamentoSaida;
 import br.com.siscomanda.model.Caixa;
-import br.com.siscomanda.model.CaixaLancamento;
+import br.com.siscomanda.model.Lancamento;
 import br.com.siscomanda.model.ContaPagar;
 import br.com.siscomanda.model.FormaPagamento;
-import br.com.siscomanda.model.PagamentoVenda;
+import br.com.siscomanda.model.Pagamento;
 import br.com.siscomanda.model.VendaOLD;
 import br.com.siscomanda.repository.dao.CaixaDAO;
-import br.com.siscomanda.repository.dao.CaixaLancamentoDAO;
+import br.com.siscomanda.repository.dao.LancamentoDAO;
 import br.com.siscomanda.repository.dao.ContaPagarDAO;
 import br.com.siscomanda.repository.dao.FormaPagamentoDAO;
 import br.com.siscomanda.repository.dao.VendaOLDDAO;
@@ -44,7 +44,7 @@ public class CaixaService implements Serializable {
 	private CaixaDAO caixaDAO;
 	
 	@Inject
-	private CaixaLancamentoDAO caixaLancamentoDAO;
+	private LancamentoDAO lancamentoDAO;
 	
 	@Inject
 	private FormaPagamentoDAO formaPagamentoDAO;
@@ -89,7 +89,7 @@ public class CaixaService implements Serializable {
 	}
 	
 	@Transactional
-	public void removeLancamento(CaixaLancamento lancamento) throws SiscomandaException {
+	public void removeLancamento(Lancamento lancamento) throws SiscomandaException {
 		if(lancamento.getTipoOperacao().equals(ETipoOperacao.VENDA)) {
 			throw new SiscomandaException("Lançamentos gerados a partir de uma venda não pode ser excluido, pelo fechamento de caixa.");
 		}
@@ -99,11 +99,11 @@ public class CaixaService implements Serializable {
 		}
 		
 		removeLancamentoContaPagar(lancamento);
-		caixaLancamentoDAO.remover(CaixaLancamento.class, lancamento.getId());
+		lancamentoDAO.remover(Lancamento.class, lancamento.getId());
 	}
 	
 	@Transactional
-	private void removeLancamentoContaPagar(CaixaLancamento lancamento) throws SiscomandaException {
+	private void removeLancamentoContaPagar(Lancamento lancamento) throws SiscomandaException {
 		if(lancamento.getTipoOperacao().equals(ETipoOperacao.DESPESA)) {
 			Map<String, Object> filter = new HashMap<String, Object>();
 			filter.put("dataPagamentoInicial", lancamento.getDataHora());
@@ -135,13 +135,13 @@ public class CaixaService implements Serializable {
 		return caixa;
 	}
 	
-	public Map<String, Object> calculaTotalizador(List<CaixaLancamento> lancamentos) {
+	public Map<String, Object> calculaTotalizador(List<Lancamento> lancamentos) {
 		Map<String, Object> totalizadores = new HashMap<>();
 		Double totalEntrada = new Double(0);
 		Double totalSaida = new Double(0);
 		Double totalDinheiro = new Double(0);
 		
-		for(CaixaLancamento lancamento : lancamentos) {
+		for(Lancamento lancamento : lancamentos) {
 			totalEntrada += lancamento.getValorEntrada() == null ? new Double(0) : lancamento.getValorEntrada();
 			totalSaida += lancamento.getValorSaida() == null ? new Double(0) : lancamento.getValorSaida();
 			if(lancamento.getFormaPagamento().getDescricao().equals("DINHEIRO")) {
@@ -159,7 +159,7 @@ public class CaixaService implements Serializable {
 	}
 	
 	@Transactional
-	public CaixaLancamento adicionaEntradaSaida(CaixaLancamento lancamento, Double valor, Double totalDinheiro) throws SiscomandaException {
+	public Lancamento adicionaEntradaSaida(Lancamento lancamento, Double valor, Double totalDinheiro) throws SiscomandaException {
 		lancamento.setDataHora(new Date());
 		
 		if(lancamento.getCaixa().isNovo() && lancamento.getCaixa().isFechado()) {
@@ -196,13 +196,13 @@ public class CaixaService implements Serializable {
 		lancamento = calcula.executaCalculo(lancamento, lancamento.getTipoOperacao(), valor);
 		inserirLancamentoDespesaContaPagar(lancamento, lancamento.getTipoOperacao());
 		
-		caixaLancamentoDAO.salvar(lancamento);
+		lancamentoDAO.salvar(lancamento);
 		
 		return lancamento;
 	}
 	
 	@Transactional
-	private void inserirLancamentoDespesaContaPagar(CaixaLancamento lancamento, ETipoOperacao tipoOperacao) {
+	private void inserirLancamentoDespesaContaPagar(Lancamento lancamento, ETipoOperacao tipoOperacao) {
 		if(lancamento.getTipoOperacao().equals(ETipoOperacao.DESPESA)) {
 			ContaPagar conta = new ContaPagar();
 			conta.setDescricao("SAÍDA DO CAIXA " + lancamento.getCaixa().getId() + " - " + lancamento.getDescricao());
@@ -233,7 +233,7 @@ public class CaixaService implements Serializable {
 			throw new SiscomandaException("Não é possível abrir o caixa com saldo zerado.");
 		}
 		
-		CaixaLancamento lancamento = new CaixaLancamento();
+		Lancamento lancamento = new Lancamento();
 		lancamento.setDataHora(new Date());
 		FormaPagamento formaPagamento = formaPagamentoDAO.porDescricao("DINHEIRO", FormaPagamento.class).get(0);
 		lancamento.setFormaPagamento(formaPagamento);
@@ -268,20 +268,20 @@ public class CaixaService implements Serializable {
 		caixaDAO.salvar(caixa);
 	}
 	
-	public List<CaixaLancamento> lancamentos(Caixa caixa) {
+	public List<Lancamento> lancamentos(Caixa caixa) {
 		
 		if(Objects.isNull(caixa)) {
 			caixa = initCaixa();
 			return new ArrayList<>();
 		}
 		
-		List<CaixaLancamento> lancamentos = new ArrayList<>();
-		List<PagamentoVenda> pagamentos = caixaDAO.lancamentos();
+		List<Lancamento> lancamentos = new ArrayList<>();
+		List<Pagamento> pagamentos = caixaDAO.lancamentos();
 		
 		lancamentos.addAll(caixa.getLancamentos());
-		for(PagamentoVenda pagamento : pagamentos) {
+		for(Pagamento pagamento : pagamentos) {
 			if(pagamento.getCaixa().equals(caixa)) {
-				CaixaLancamento lancamento = new CaixaLancamento();
+				Lancamento lancamento = new Lancamento();
 				lancamento.setId(pagamento.getId());
 				lancamento.setDataHora(pagamento.getVenda().getIniciado());
 				lancamento.setFormaPagamento(pagamento.getFormaPagamento());

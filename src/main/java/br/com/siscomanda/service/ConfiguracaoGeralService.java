@@ -8,20 +8,20 @@ import javax.inject.Inject;
 
 import br.com.siscomanda.config.jpa.Transactional;
 import br.com.siscomanda.exception.SiscomandaException;
-import br.com.siscomanda.model.DefinicaoGeral;
-import br.com.siscomanda.repository.dao.DefinicaoGeralDAO;
+import br.com.siscomanda.model.ConfiguracaoGeral;
+import br.com.siscomanda.repository.dao.ConfiguracaoGeralDAO;
 import br.com.siscomanda.util.JSFUtil;
 import br.com.siscomanda.util.StringUtil;
 
-public class DefinicaoGeralService implements Serializable {
+public class ConfiguracaoGeralService implements Serializable {
 
 	private static final long serialVersionUID = -214593377317757605L;
 
 	@Inject
-	private DefinicaoGeralDAO dao;
+	private ConfiguracaoGeralDAO dao;
 		
 	@Transactional
-	public DefinicaoGeral salvar(DefinicaoGeral definicaoGeral) throws SiscomandaException {
+	public ConfiguracaoGeral salvar(ConfiguracaoGeral definicaoGeral) throws SiscomandaException {
 		validacao(definicaoGeral);
 		if(definicaoGeral.isNovo()) {
 			definicaoGeral = dao.salvar(definicaoGeral);
@@ -34,15 +34,15 @@ public class DefinicaoGeralService implements Serializable {
 		return dao.salvar(definicaoGeral);
 	}
 	
-	public DefinicaoGeral carregaDefinicaoSistema() {
-		List<DefinicaoGeral> definicoesSistema = dao.todos(DefinicaoGeral.class);
+	public ConfiguracaoGeral carregaDefinicaoSistema() {
+		List<ConfiguracaoGeral> definicoesSistema = dao.todos(ConfiguracaoGeral.class);
 		if(definicoesSistema != null && !definicoesSistema.isEmpty()) {
-			return dao.todos(DefinicaoGeral.class).get(0);
+			return dao.todos(ConfiguracaoGeral.class).get(0);
 		}
-		return new DefinicaoGeral();
+		return new ConfiguracaoGeral();
 	}
 	
-	private void validacao(DefinicaoGeral definicaoGeral) throws SiscomandaException {
+	private void validacao(ConfiguracaoGeral definicaoGeral) throws SiscomandaException {
 		if(definicaoGeral == null) {
 			throw new SiscomandaException("Por gentileza preencha corretamente os campos.");
 		}

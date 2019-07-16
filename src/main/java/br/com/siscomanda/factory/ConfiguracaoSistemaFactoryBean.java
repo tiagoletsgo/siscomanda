@@ -9,16 +9,16 @@ import javax.faces.bean.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import br.com.siscomanda.service.DefinicaoGeralService;
+import br.com.siscomanda.service.ConfiguracaoGeralService;
 
 @Named
 @ViewScoped
-public class DefinicaoSistemaFactoryBean implements Serializable {
+public class ConfiguracaoSistemaFactoryBean implements Serializable {
 	
 	private static final long serialVersionUID = -4289888959926133557L;
 
 	@Inject
-	private DefinicaoGeralService service;
+	private ConfiguracaoGeralService service;
 	
 	private List<Integer> sistema;
 	
