@@ -53,9 +53,6 @@ public class Produto extends BaseEntity implements Serializable {
 	@Column(name = "estoque_maximo")
 	private Double estoqueMaximo = BigDecimal.ZERO.doubleValue();
 	
-	@Column(name = "permite_adicional", nullable = false)
-	private boolean permiteAdicional;
-	
 	@OneToMany(mappedBy = "produto", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Preco> precos = new ArrayList<Preco>();
 	
@@ -83,7 +80,6 @@ public class Produto extends BaseEntity implements Serializable {
 		prod.setControlaEstoque(produto.getControlaEstoque());
 		prod.setEstoqueMinimo(produto.getEstoqueMinimo());
 		prod.setEstoqueMaximo(produto.getEstoqueMaximo());
-		prod.setPermiteAdicional(produto.isPermiteAdicional());
 		prod.setPrecos(produto.getPrecos());
 		return prod;
 	}
@@ -158,14 +154,6 @@ public class Produto extends BaseEntity implements Serializable {
 
 	public void setEstoqueMaximo(Double estoqueMaximo) {
 		this.estoqueMaximo = estoqueMaximo;
-	}
-
-	public boolean isPermiteAdicional() {
-		return permiteAdicional;
-	}
-
-	public void setPermiteAdicional(boolean permiteAdicional) {
-		this.permiteAdicional = permiteAdicional;
 	}
 
 	public List<Preco> getPrecos() {
