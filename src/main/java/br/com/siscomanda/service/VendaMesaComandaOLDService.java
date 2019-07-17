@@ -13,8 +13,8 @@ import br.com.siscomanda.enumeration.EStatus;
 import br.com.siscomanda.exception.SiscomandaException;
 import br.com.siscomanda.exception.SiscomandaRuntimeException;
 import br.com.siscomanda.model.Adicional;
-import br.com.siscomanda.model.ItemVendaOLD;
 import br.com.siscomanda.model.ItemVendaAdicionalOLD;
+import br.com.siscomanda.model.ItemVendaOLD;
 import br.com.siscomanda.model.Produto;
 import br.com.siscomanda.model.SubCategoria;
 import br.com.siscomanda.model.VendaOLD;
@@ -160,14 +160,14 @@ public class VendaMesaComandaOLDService extends VendaOLDService implements Seria
 		
 		List<ItemVendaOLD> temp = venda.getItens();
 		
-		for(ItemVendaOLD item : itens) {
-			for(ItemVendaOLD item2 : temp) {
-				if(item.getProduto().equals(item2.getProduto()) && item.getProduto().isPermiteAdicional()) {
-					item2.setAdicionais(item.getAdicionais());						
-					break;
-				}
-			}
-		}
+//		for(ItemVendaOLD item : itens) {
+//			for(ItemVendaOLD item2 : temp) {
+//				if(item.getProduto().equals(item2.getProduto()) && item.getProduto().isPermiteAdicional()) {
+//					item2.setAdicionais(item.getAdicionais());						
+//					break;
+//				}
+//			}
+//		}
 		
 		for(ItemVendaOLD item : temp) {
 			for(Adicional adicional : item.getAdicionais()) {
