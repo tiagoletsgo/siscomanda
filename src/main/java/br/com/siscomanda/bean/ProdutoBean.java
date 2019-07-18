@@ -18,6 +18,7 @@ import br.com.siscomanda.service.ProdutoService;
 import br.com.siscomanda.service.SubCategoriaService;
 import br.com.siscomanda.service.TamanhoService;
 import br.com.siscomanda.util.JSFUtil;
+import br.com.siscomanda.util.StringUtil;
 
 @Named
 @ViewScoped
@@ -118,6 +119,10 @@ public class ProdutoBean extends BaseBean<Produto> implements Serializable {
 		catch(SiscomandaException e) {
 			JSFUtil.addMessage(FacesMessage.SEVERITY_WARN, e.getMessage());
 		}
+	}
+	
+	public String leftPad(String valor) {
+		return StringUtil.leftPad(valor, 14, "0");
 	}
 	
 	@Override

@@ -13,6 +13,7 @@ import br.com.siscomanda.exception.SiscomandaException;
 import br.com.siscomanda.model.Cliente;
 import br.com.siscomanda.service.ClienteService;
 import br.com.siscomanda.util.JSFUtil;
+import br.com.siscomanda.util.StringUtil;
 
 @Named
 @ViewScoped
@@ -86,6 +87,10 @@ public class ClienteBean extends BaseBean<Cliente> implements Serializable {
 			setElements(clienteService.todos());
 		}
 		setEntity(new Cliente());
+	}
+	
+	public String maskCelular(String numeroCelular) {
+		return StringUtil.maskCelular(numeroCelular);
 	}
 		
 	public List<Cliente> getClientes() {

@@ -8,7 +8,7 @@
 	<p:dataTable id="tabelaVendaProduto" styleClass="table table-striped jambo_table" value="#{produtoFactoryBean.produtos}" var="produto"
 			 emptyMessage="Sem dados" paginator="true" rows="10" paginatorPosition="top">
 		
-		<p:column width="80">
+		<p:column width="50">
 			<f:facet name="header">
 				<h:outputLabel value="Código" />
 			</f:facet>
@@ -16,19 +16,19 @@
 				<f:convertNumber pattern="000000" maxIntegerDigits="6" />
 			</h:outputText>
 		</p:column>
-		<p:column styleClass="ui-text-left" width="350">
+		<p:column styleClass="ui-text-left" width="250">
 			<f:facet name="header">
 				<h:outputLabel value="Descrição" />
 			</f:facet>
 			<h:outputText value="#{produto.descricao}" styleClass="ui-text-left" />
 		</p:column>
-		<p:column width="180">
+		<p:column width="60">
 			<f:facet name="header">
 				<h:outputLabel value="Código Ean" />
 			</f:facet>
-			<h:outputText value="#{produto.codigoEan}" />
+			<h:outputText value="#{crudBean.leftPad(produto.codigoEan)}" />
 		</p:column>
-		<p:column width="60">
+		<p:column width="35">
 			<f:facet name="header">
 				<h:outputLabel value="#" />
 			</f:facet>

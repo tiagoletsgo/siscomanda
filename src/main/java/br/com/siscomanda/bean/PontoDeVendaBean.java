@@ -304,6 +304,10 @@ public class PontoDeVendaBean extends BaseBean<Venda> implements Serializable {
 			getItem().setObservacao("");
 		}
 	}
+	
+	public String leftPad(String valor) {
+		return StringUtil.leftPad(valor, 14, "0");
+	}
 		
 	public String paraMoedaPtBR(Double valor) {
 		return StringUtil.converterParaValorMonetario(valor);

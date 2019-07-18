@@ -97,4 +97,71 @@ public class StringUtil {
 	public static String removeEspacoEmBranco(String value) {
 		return value.replaceAll("\\s", "").trim();
 	}
+	
+	/**
+	 * <p>Metodo para complementar uma string com algum caracter a esquerda. Se o valor for maior 
+	 * que o pad um corte será realizado ate que o valor fique do tamanho do pad.
+	 * </p>
+	 * @param valor
+	 * @param pad - Com quantos caracteres a esquerda, por exemplo: 10
+	 * @param caracter - Com qual caracter a ser complementado por exemplo: 0 ou A
+	 * @return 
+	 */
+	public static String leftPad(String valor, int pad, String caracter) {
+		int tamanho = valor.length();
+		int soma = pad - tamanho;
+		int count = 0;
+		
+		if(soma < 0) {
+			while(soma < 0) {
+				valor = valor.substring(1);
+				tamanho = valor.length();
+				soma = pad - tamanho;
+			}
+		}
+		
+		StringBuilder padding = new StringBuilder();
+		while(count < soma) {
+			padding.append(caracter);
+			count++;
+		}
+		
+		return padding.append(valor).toString();
+	}
+	
+	public static String maskCelular(String numeroCelular) {
+		StringBuilder mask = new StringBuilder();
+		mask.append("(");
+		mask.append(numeroCelular.substring(0, 2));
+		mask.append(") ");
+		mask.append(numeroCelular.substring(2, 3));
+		mask.append(" ");
+		mask.append(numeroCelular.substring(3, 7));
+		mask.append("-");
+		mask.append(numeroCelular.substring(7, 11));
+		return mask.toString();
+	}
+	
+	public static String maskCpfouCnpj(String mascara) {
+		StringBuilder mask = new StringBuilder();
+
+		if(mascara.length() == 11) {
+			mask.append(mascara.substring(0, 3)).append(".");
+			mask.append(mascara.substring(3, 6)).append(".");
+			mask.append(mascara.substring(6, 9)).append("-");
+			mask.append(mascara.substring(9, 11));
+		}
+		else if(mascara.length() == 14) {
+			mask.append(mascara.substring(0, 2)).append(".");
+			mask.append(mascara.substring(2, 5)).append(".");
+			mask.append(mascara.substring(5, 8)).append("/");
+			mask.append(mascara.substring(8, 12)).append("-");
+			mask.append(mascara.substring(12, 14));
+		}
+		else {
+			mask.append(mascara);
+		}
+		
+		return mask.toString();
+	}
 }

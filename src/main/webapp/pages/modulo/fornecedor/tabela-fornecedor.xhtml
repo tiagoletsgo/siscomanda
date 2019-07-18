@@ -6,29 +6,30 @@
 	
 	
 		<p:dataTable id="tabelaFornecedor" styleClass="table table-striped jambo_table" value="#{crudBean.elements}" var="fornecedor"
-			selection="#{crudBean.fornecedoresSelecionados}" rowKey="#{fornecedor.id}" emptyMessage="Sem dados" reflow="true">
+			selection="#{crudBean.fornecedoresSelecionados}" rowKey="#{fornecedor.id}" emptyMessage="Sem dados" reflow="true"
+			paginator="true" rows="10" paginatorPosition="top">
 			
-			<p:column styleClass="ui-datatable-center" selectionMode="multiple" />
+			<p:column styleClass="ui-datatable-center" selectionMode="multiple" width="35" />
 			
-			<p:column styleClass="ui-datatable-left">
+			<p:column styleClass="ui-datatable-left" width="250">
 				<f:facet name="header">
 					<h:outputLabel value="Razão Social" />
 				</f:facet>
 				<h:outputText value="#{fornecedor.razaoSocial}"/>
 			</p:column>
-			<p:column>
+			<p:column width="150">
 				<f:facet name="header">
 					<h:outputLabel value="Nome Fantasia" />
 				</f:facet>
 				<h:outputText value="#{fornecedor.nomeFantasia}" />
 			</p:column>
-			<p:column>
+			<p:column width="120">
 				<f:facet name="header">
 					<h:outputLabel value="CPF/CNPJ" />
 				</f:facet>
-				<h:outputText value="#{fornecedor.cpfCnpj}" />
+				<h:outputText value="#{crudBean.maskCpfouCpnj(fornecedor.cpfCnpj)}" />
 			</p:column>
-			<p:column>
+			<p:column width="70">
 				<f:facet name="header">
 					<h:outputLabel value="#" />
 				</f:facet>
