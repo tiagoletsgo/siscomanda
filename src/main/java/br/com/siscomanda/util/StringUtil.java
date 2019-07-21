@@ -164,4 +164,8 @@ public class StringUtil {
 		
 		return mask.toString();
 	}
+	
+	public static String addValorVazio() {
+		return "";
+	}
 }

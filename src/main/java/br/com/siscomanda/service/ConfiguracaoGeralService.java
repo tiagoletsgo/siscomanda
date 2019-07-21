@@ -34,7 +34,7 @@ public class ConfiguracaoGeralService implements Serializable {
 		return dao.salvar(definicaoGeral);
 	}
 	
-	public ConfiguracaoGeral carregaDefinicaoSistema() {
+	public ConfiguracaoGeral definicaoSistema() {
 		List<ConfiguracaoGeral> definicoesSistema = dao.todos(ConfiguracaoGeral.class);
 		if(definicoesSistema != null && !definicoesSistema.isEmpty()) {
 			return dao.todos(ConfiguracaoGeral.class).get(0);

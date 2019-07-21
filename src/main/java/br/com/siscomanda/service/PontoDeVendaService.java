@@ -10,12 +10,14 @@ import javax.inject.Inject;
 
 import br.com.siscomanda.exception.SiscomandaException;
 import br.com.siscomanda.model.Adicional;
+import br.com.siscomanda.model.ConfiguracaoGeral;
 import br.com.siscomanda.model.ItemVenda;
 import br.com.siscomanda.model.Preco;
 import br.com.siscomanda.model.Produto;
 import br.com.siscomanda.model.Tamanho;
 import br.com.siscomanda.model.Venda;
 import br.com.siscomanda.repository.dao.PrecoDAO;
+import br.com.siscomanda.repository.dao.ProdutoDAO;
 
 public class PontoDeVendaService implements Serializable {
 
@@ -23,6 +25,11 @@ public class PontoDeVendaService implements Serializable {
 	
 	@Inject
 	private PrecoDAO precoDAO;
+	
+	@Inject
+	private ProdutoDAO produtoDAO;
+	
+	private List<Produto> produtosTemp = new ArrayList<Produto>();
 	
 	public ItemVenda paraItemVenda(Venda venda, Produto produto) {
 		double valor = 0;
@@ -315,5 +322,65 @@ public class PontoDeVendaService implements Serializable {
 		}
 		
 		return observacao;
+	}
+	
+	public List<Produto> localizaProdutoParaPersonalizar(List<Produto> produtos, Produto produto, String valorParaPesquisar) {
+		List<Produto> produtosLocalizado = new ArrayList<Produto>();
+		
+		if(!valorParaPesquisar.isEmpty()) {
+			for(Produto prod : produtos) {
+				if(prod.getDescricao().contains(valorParaPesquisar.toUpperCase())) {
+					produtosLocalizado.add(prod);
+				}
+			}
+		}
+		
+		if(!produtosLocalizado.isEmpty()) {
+			return produtosLocalizado;
+		}
+		
+		produtos = produtoDAO.todos(true);
+		produtos.remove(produto);
+		
+		return produtos;
+	}
+	
+	public List<Produto> atualizaListaProdutoSelecionado(List<Produto> listaProdutoPrincipal, List<Produto> listProdutoSelecionado) {
+		if(listProdutoSelecionado != null) {	
+			for(Produto produto : listProdutoSelecionado) {
+				if(!listaProdutoPrincipal.contains(produto)) {
+					listaProdutoPrincipal.add(produto);
+				}
+			}
+		}
+		
+		return listaProdutoPrincipal;
+	}
+	
+	public List<Produto> validaQuantidadePermitida(List<Produto> produtos, ConfiguracaoGeral configuracao) throws SiscomandaException {
+		Produto produtoCheck = new Produto();
+		
+		if(produtos.size() < produtosTemp.size()) {
+			produtosTemp.clear();
+			produtosTemp.addAll(produtos);
+		}
+		
+		if(produtos.size() > produtosTemp.size()) {
+			for(Produto produto : produtos) {
+				if(!produtosTemp.contains(produto)) {
+					produtoCheck = produto;
+					produtosTemp.add(produtoCheck);
+					break;
+				}
+			}
+		}
+		
+		if(produtos.size() > configuracao.getPermiteQuantoSabores()) {
+			produtosTemp.remove(produtoCheck);
+			produtos.remove(produtoCheck);
+			throw new SiscomandaException("A quantidade de sabores selecionado excede o limite configurado.");
+		}
+		
+		return produtos;
 	}
 }

@@ -13,9 +13,7 @@ function init() {
 function maiuscula(obj) {
 	var valor = obj.value.toUpperCase();
 	obj.value = valor;
-	obj.value = removeAcentuacao(obj.value);
-	
-	console.log(obj.value);
+	obj.value = removeAcentuacao(obj.value);	
 }
 
 function removeAcentuacao(text) {
