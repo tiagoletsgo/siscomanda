@@ -110,5 +110,17 @@
 				<p:commandButton styleClass="btn btn-danger" global="false" value="Cancelar" oncomplete="PF('dlgPersonalizar').hide();" />
 			</f:facet>
 		</p:dialog>
+		
+		<p:dialog id="dialogTipoVenda" widgetVar="dlgTipoVenda" modal="true" showEffect="fade" hideEffect="fade" responsive="true" resizable="false">
+			<f:facet name="header">Selecionar Tipo Venda</f:facet>
+			<h:form id="formTipoVenda">
+			</h:form>
+			
+			<f:facet name="footer">
+				<p:commandButton process="@this" styleClass="btn btn-success" value="Salvar" oncomplete="PF('dlgTipoVenda').hide();" global="false" />
+				
+				<p:commandButton styleClass="btn btn-danger" global="false" value="Cancelar" oncomplete="PF('dlgTipoVenda').hide();" />
+			</f:facet>
+		</p:dialog>
 	</ui:define>
 </ui:composition>
