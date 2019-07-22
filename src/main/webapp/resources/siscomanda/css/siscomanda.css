@@ -397,3 +397,7 @@
 		float: none;
 	}
 }
+
+.nav-sm .container.body .col-md-3.left_col {
+	width: 80px !important;
+}
