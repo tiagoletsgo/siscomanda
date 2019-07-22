@@ -14,6 +14,7 @@ import br.com.siscomanda.exception.SiscomandaException;
 import br.com.siscomanda.model.Fornecedor;
 import br.com.siscomanda.service.FornecedorService;
 import br.com.siscomanda.util.JSFUtil;
+import br.com.siscomanda.util.StringUtil;
 
 @Named
 @ViewScoped
@@ -62,6 +63,10 @@ public class FornecedorBean extends BaseBean<Fornecedor> implements Serializable
 		catch(SiscomandaException e) {
 			JSFUtil.addMessage(FacesMessage.SEVERITY_WARN, e.getMessage());
 		}
+	}
+	
+	public String maskCpfouCpnj(String mascara) {
+		return StringUtil.maskCpfouCnpj(mascara);
 	}
 	
 	@Override

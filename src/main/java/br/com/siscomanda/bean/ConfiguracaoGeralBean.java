@@ -24,7 +24,7 @@ public class ConfiguracaoGeralBean extends BaseBean<ConfiguracaoGeral> {
 	
 	@Override
 	protected void init() {
-		setEntity(configuracaoGeralService.carregaDefinicaoSistema());
+		setEntity(configuracaoGeralService.definicaoSistema());
 	}
 	
 	public void btnSalvar() {

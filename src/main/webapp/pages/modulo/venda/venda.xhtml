@@ -95,14 +95,16 @@
 			<f:facet name="header">Adicionar Item Meio a Meio</f:facet>
 			<h:form id="formPersonalizar">
 				<label>Pesquisar :</label>
-				<h:inputText styleClass="form-control" />
+				<h:inputText styleClass="form-control" value="#{crudBean.pesquisaDescricaoProduto}">
+					<p:ajax event="keyup" global="false" process="@this" update="formPersonalizar" delay="500" listener="#{crudBean.buscaProdutoParaItemPersonalizado()}" />
+				</h:inputText>
 				<p:selectManyCheckbox value="#{crudBean.produtosSelecionados}" layout="grid" columns="3" converter="entityConverter">
 					<f:selectItems value="#{crudBean.produtos}" var="produto" itemValue="#{produto}" itemLabel="#{produto.descricao}" />
-					<p:ajax event="change" process="@this" global="false" />
+					<p:ajax event="change" update="@form" global="false" listener="#{crudBean.atualizaListaProdutoSelecionados()}" />
 				</p:selectManyCheckbox>
 			</h:form>
 			<f:facet name="footer">
-				<p:commandButton process="@this" styleClass="btn btn-success" value="Salvar" oncomplete="PF('dlgPersonalizar').hide();" 
+				<p:commandButton process="@this" styleClass="btn btn-success" value="Salvar" oncomplete="PF('dlgPersonalizar').hide();" global="false"
 					update="crudform:itensMeioAmeio crudform:observacoes crudform:inpDescricaoProduto crudform:inpTotal scripts crudform:tabelaComplementos crudform:inpQuantidade" action="#{crudBean.btnPersonalizar()}" />
 				
 				<p:commandButton styleClass="btn btn-danger" global="false" value="Cancelar" oncomplete="PF('dlgPersonalizar').hide();" />

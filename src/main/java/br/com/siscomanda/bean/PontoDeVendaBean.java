@@ -18,12 +18,14 @@ import br.com.siscomanda.enumeration.EStateView;
 import br.com.siscomanda.enumeration.EStatus;
 import br.com.siscomanda.exception.SiscomandaException;
 import br.com.siscomanda.model.Adicional;
+import br.com.siscomanda.model.ConfiguracaoGeral;
 import br.com.siscomanda.model.ItemVenda;
 import br.com.siscomanda.model.Preco;
 import br.com.siscomanda.model.Produto;
 import br.com.siscomanda.model.Tamanho;
 import br.com.siscomanda.model.Venda;
 import br.com.siscomanda.service.AdicionalService;
+import br.com.siscomanda.service.ConfiguracaoGeralService;
 import br.com.siscomanda.service.PontoDeVendaService;
 import br.com.siscomanda.service.PrecoService;
 import br.com.siscomanda.service.ProdutoService;
@@ -48,6 +50,9 @@ public class PontoDeVendaBean extends BaseBean<Venda> implements Serializable {
 	@Inject
 	private AdicionalService adicionalService;
 	
+	@Inject
+	private ConfiguracaoGeralService configuracaoService;
+	
 	private boolean novoItem;
 	
 	private boolean incluirItem;
@@ -70,6 +75,10 @@ public class PontoDeVendaBean extends BaseBean<Venda> implements Serializable {
 	
 	private Map<String, Object> parametros;
 	
+	private String pesquisaDescricaoProduto;
+	
+	private ConfiguracaoGeral configuracao;
+	
 	@Override
 	protected void init() {
 		vendaBuilder = new VendaBuilder();
@@ -86,6 +95,8 @@ public class PontoDeVendaBean extends BaseBean<Venda> implements Serializable {
 		vendaBuilder.comTaxaServico(new Double(0));
 		vendaBuilder.comDesconto(new Double(0));
 		setEntity(vendaBuilder.constroi());
+		
+		configuracao = configuracaoService.definicaoSistema();
 	}
 	
 	public void btnNovoItem() {
@@ -134,9 +145,9 @@ public class PontoDeVendaBean extends BaseBean<Venda> implements Serializable {
 	}
 	
 	public void atualizaListaDeProdutos() {
-		List<Produto> produtos = pontoDeVendaService.corrigeNomeDaListaDeProdutos(getProdutos());
-		this.produtos = produtos;
-		
+		this.produtos = produtoService.todos(true);
+		this.produtos.remove(getItem().getProduto());
+		setPesquisaDescricaoProduto(StringUtil.addValorVazio());
 		desmacarListaComplementos();
 	}
 	
@@ -194,6 +205,7 @@ public class PontoDeVendaBean extends BaseBean<Venda> implements Serializable {
 			List<ItemVenda> itens = new ArrayList<ItemVenda>();
 			Tamanho tamanho = (Tamanho)parametros.get("tamanho");
 			ItemVenda item = getItem().clonar(getItem());
+			
 			itens = pontoDeVendaService.personalizar(getProdutosSelecionados(), getItensMeioAmeio(), tamanho, item, getEntity());
 			itensMeioAmeio = itens;
 			
@@ -203,7 +215,7 @@ public class PontoDeVendaBean extends BaseBean<Venda> implements Serializable {
 			listaMeioAmeioTemUmRegistro();
 			desmacarListaComplementos();
 			
-			getItem().setObservacao("");
+			getItem().setObservacao(StringUtil.addValorVazio());
 		} catch (SiscomandaException e) {
 			JSFUtil.addMessage(FacesMessage.SEVERITY_ERROR, e.getMessage());
 		}
@@ -293,6 +305,7 @@ public class PontoDeVendaBean extends BaseBean<Venda> implements Serializable {
 		}
 		
 		vendaBuilder.comItens(getItensMeioAmeio());
+		vendaBuilder.comTaxaServico(configuracao.getTaxaServico());
 		setEntity(vendaBuilder.constroi());
 		setIncluirItem(false);
 		btnVoltar();
@@ -301,8 +314,37 @@ public class PontoDeVendaBean extends BaseBean<Venda> implements Serializable {
 	public void limparObservacaoEdesmacarListaDeComplemento() {
 		desmacarListaComplementos();
 		if(getItensMeioAmeio().size() > 1) {			
-			getItem().setObservacao("");
+			getItem().setObservacao(StringUtil.addValorVazio());
 		}
+	}
+	
+	public void buscaProdutoParaItemPersonalizado() {
+		Produto produto = getItem().getProduto();
+		this.produtos = pontoDeVendaService.localizaProdutoParaPersonalizar(getProdutos(), produto, pesquisaDescricaoProduto);
+		if(!pesquisaDescricaoProduto.isEmpty()) {			
+			parametros.put("produtosSelecionados", getProdutosSelecionados());
+		}
+	}
+	
+	@SuppressWarnings("unchecked")
+	public void atualizaListaProdutoSelecionados() {
+		List<Produto> listProdutoPrincipal = new ArrayList<Produto>();
+		try {
+			List<Produto> listProdutoSelecionado = (List<Produto>) parametros.get("produtosSelecionados");
+			listProdutoPrincipal = pontoDeVendaService.atualizaListaProdutoSelecionado(getProdutosSelecionados(), listProdutoSelecionado);
+			listProdutoPrincipal = pontoDeVendaService.validaQuantidadePermitida(listProdutoPrincipal, configuracao);
+			parametros.remove("produtosSelecionados");			
+		}
+		catch(SiscomandaException e) {
+			JSFUtil.addMessage(FacesMessage.SEVERITY_ERROR, e.getMessage());
+		}
+		finally {
+			setProdutosSelecionados(listProdutoPrincipal);
+		}
+	}
+	
+	public String leftPad(String valor) {
+		return StringUtil.leftPad(valor, 14, "0");
 	}
 		
 	public String paraMoedaPtBR(Double valor) {
@@ -368,5 +410,17 @@ public class PontoDeVendaBean extends BaseBean<Venda> implements Serializable {
 	
 	public void setItemSelecionado(ItemVenda itemSelecionado) {
 		this.itemSelecionado = itemSelecionado;
+	}
+
+	public String getPesquisaDescricaoProduto() {
+		return pesquisaDescricaoProduto;
+	}
+
+	public void setPesquisaDescricaoProduto(String pesquisaDescricaoProduto) {
+		this.pesquisaDescricaoProduto = pesquisaDescricaoProduto;
+	}
+	
+	public ConfiguracaoGeral getConfiguracao() {
+		return configuracao;
 	}
 }

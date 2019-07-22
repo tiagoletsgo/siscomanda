@@ -8,39 +8,33 @@
 			selection="#{crudBean.produtosSelecionados}" rowKey="#{produto.id}" emptyMessage="Sem dados" reflow="true" 
 			paginator="true" rows="10" paginatorPosition="top">
 			
-			<p:column styleClass="ui-datatable-center" selectionMode="multiple" />
+			<p:column styleClass="ui-datatable-center" selectionMode="multiple" width="35" />
 			
-			<p:column>
-				<f:facet name="header">
-					<h:outputLabel value="Código Ean" />
-				</f:facet>
-				<h:outputText value="#{produto.codigoEan}" />
-			</p:column>
-			<p:column>
+			<p:column width="250" styleClass="ui-text-left">
 				<f:facet name="header">
 					<h:outputLabel value="Descrição" />
 				</f:facet>
-				<h:outputText value="#{produto.descricao}"/>
+				<h:outputText value="#{produto.descricao}" styleClass="ui-text-left" />
 			</p:column>
-			<p:column>
+			<p:column width="130">
+				<f:facet name="header">
+					<h:outputLabel value="Código Ean" />
+				</f:facet>
+				<h:outputText value="#{crudBean.leftPad(produto.codigoEan)}" />
+			</p:column>
+			<p:column width="120">
 				<f:facet name="header">
 					<h:outputLabel value="Categoria" />
 				</f:facet>
 				<h:outputText value="#{produto.categoria.descricao}" />
 			</p:column>
-			<p:column>
+			<p:column width="120">
 				<f:facet name="header">
 					<h:outputLabel value="Controla Estoque" />
 				</f:facet>
 				<h:outputText value="#{produto.controlaEstoque ? 'SIM' : 'NÃO'}" />
 			</p:column>
-			<p:column>
-				<f:facet name="header">
-					<h:outputLabel value="Permite Adicional" />
-				</f:facet>
-				<h:outputText value="#{produto.controlaEstoque ? 'SIM' : 'NÃO'}" />
-			</p:column>
-			<p:column>
+			<p:column width="60">
 				<f:facet name="header">
 					<h:outputLabel value="#" />
 				</f:facet>

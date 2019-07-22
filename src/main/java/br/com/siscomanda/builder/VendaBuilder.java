@@ -65,7 +65,8 @@ public class VendaBuilder implements Serializable {
 	}
 	
 	public VendaBuilder comTaxaServico(Double taxaServico) {
-		this.taxaServico = taxaServico;
+		this.taxaServico = (taxaServico * subtotal) / 100;
+		this.valorTotal += this.taxaServico;
 		return this;
 	}
 	
@@ -90,7 +91,7 @@ public class VendaBuilder implements Serializable {
 	
 	private void incluirItem(ItemVenda item) {
 		this.subtotal += item.getValor() * item.getQuantidade(); 
-		this.valorTotal += new Double(((item.getValor() * item.getQuantidade()) + taxaServico + taxaEntrega) - desconto);
+		this.valorTotal += new Double(((item.getValor() * item.getQuantidade()) + taxaEntrega) - desconto);
 		
 		long id = itens.isEmpty() ? 1L : itens.get(itens.size() -1).getId() +1;
 		item.setId(id);
