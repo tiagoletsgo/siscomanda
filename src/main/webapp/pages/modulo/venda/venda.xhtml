@@ -113,46 +113,48 @@
 		
 		<p:dialog id="dialogTipoVenda" widgetVar="dlgTipoVenda" modal="true" showEffect="fade" hideEffect="fade" responsive="true" resizable="false">
 			<f:facet name="header">Selecionar Tipo Venda</f:facet>
-			<h:form id="formTipoVenda">
+			<h:form id="formTipoVenda" styleClass="form-horizontal">
 				<div class="col-md-12 col-sm-12 col-xs-12">
 					<label>Selecione o Tipo de Venda :</label>
-					<div class="checkbox">
-						<h:selectOneRadio layout="pageDirection">
-							<f:selectItems value="#{crudBean.tipoVendas}" var="tipoVenda" itemValue="#{tipoVenda}" itemLabel="#{tipoVenda.descricao}" />
-						</h:selectOneRadio>
-					</div>
+					<p:selectOneRadio value="#{crudBean.entity.tipoVenda}">
+						<f:selectItems value="#{crudBean.tipoVendas}" var="tipoVenda" itemValue="#{tipoVenda}" itemLabel="#{tipoVenda.descricao}" />
+						<p:ajax event="change" process="@this" update="@form" global="false" />
+					</p:selectOneRadio>
+					
+					<div class="clearfix"></div>
+					<div class="ln_solid"></div>
 				</div>
-				
 				
 				<div class="col-md-12 col-sm-12 col-xs-12">
 					<label>Selecione Mesa / Comanda :</label>
-					<h:selectOneMenu styleClass="form-control">
+					#{not empty crudBean.entity.tipoVenda and crudBean.entity.tipoVenda eq 'DELIVERY'  and not empty crudBean.entity.tipoVenda and crudBean.entity.tipoVenda eq 'BALCAO'}" teste1...
+					<h:selectOneMenu styleClass="form-control" disabled="#{not empty crudBean.entity.tipoVenda and crudBean.entity.tipoVenda eq 'DELIVERY'  or not empty crudBean.entity.tipoVenda and crudBean.entity.tipoVenda eq 'BALCAO'}">
 						<f:selectItem itemLabel="Selecione" noSelectionOption="true" />
 					</h:selectOneMenu>
 				</div>
 				
 				<div class="col-md-6 col-sm-6 col-xs-12">
 					<label>Selecione Cliente :</label>
-					<h:selectOneMenu styleClass="form-control">
+					<h:selectOneMenu styleClass="form-control" disabled="true">
 						<f:selectItem itemLabel="Selecione" noSelectionOption="true" />
 					</h:selectOneMenu>
 				</div>
 				
 				<div class="col-md-6 col-sm-6 col-xs-12">
 					<label>Pesquisar Cliente :</label>
-					<h:inputText styleClass="form-control" />
+					<h:inputText styleClass="form-control" disabled="true" />
 				</div>
 			
 				<div class="col-md-6 col-sm-6 col-xs-12">
 					<label>Selecione Entregador :</label>
-					<h:selectOneMenu styleClass="form-control">
+					<h:selectOneMenu styleClass="form-control" disabled="true">
 						<f:selectItem itemLabel="Selecione" noSelectionOption="true" />
 					</h:selectOneMenu>
 				</div>
 				
 				<div class="col-md-6 col-sm-6 col-xs-12">
 					<label>Pesquisar Entregador :</label>
-					<h:inputText styleClass="form-control" />
+					<h:inputText styleClass="form-control" disabled="true" />
 				</div>
 			</h:form>
 			
