@@ -378,7 +378,7 @@ public class PontoDeVendaService implements Serializable {
 		if(produtos.size() > configuracao.getPermiteQuantoSabores()) {
 			produtosTemp.remove(produtoCheck);
 			produtos.remove(produtoCheck);
-			throw new SiscomandaException("A quantidade de sabores selecionado excede o limite configurado.");
+ 			throw new SiscomandaException("A quantidade de sabores selecionado excede o limite configurado.");
 		}
 		
 		return produtos;
