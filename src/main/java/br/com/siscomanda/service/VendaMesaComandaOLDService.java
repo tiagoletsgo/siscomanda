@@ -53,7 +53,7 @@ public class VendaMesaComandaOLDService extends VendaOLDService implements Seria
 	
 	public List<Integer> geraMesasComandas() {
 		List<Integer> mesas = new ArrayList<>();
-		int qtdMesasComandas = definicaoGeralService.carregaDefinicaoSistema().getQtdMesaComanda();
+		int qtdMesasComandas = definicaoGeralService.definicaoSistema().getQtdMesaComanda();
 		for(int i = 1; i <= qtdMesasComandas; i++) {
 			mesas.add(i);
 		}
