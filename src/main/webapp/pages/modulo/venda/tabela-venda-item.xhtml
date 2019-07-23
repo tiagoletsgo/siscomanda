@@ -4,7 +4,7 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:p="http://primefaces.org/ui">
 		
-		<p:commandButton value="Novo Item" styleClass="btn btn-primary" update="@form" global="false" action="#{crudBean.btnNovoItem()}" />
+		<p:commandButton value="Novo Item" styleClass="btn btn-primary" update="@form" global="false" disabled="#{empty crudBean.entity.tipoVenda}" action="#{crudBean.btnNovoItem()}" />
 		<p:dataTable id="tabelaVendaItem" styleClass="table table-striped jambo_table" value="#{crudBean.entity.itens}" var="item"
 			emptyMessage="Sem dados">
 			
@@ -52,7 +52,7 @@
 				<f:facet name="header">
 					<h:outputLabel value="Subtotal" />
 				</f:facet>
-				<h:outputText value="#{item.valor}">
+				<h:outputText value="#{item.valor}" styleClass="font-family-default">
 					<f:convertNumber minFractionDigits="2" maxFractionDigits="2" locale="pt_BR" />
 				</h:outputText>
 			</p:column>
@@ -61,7 +61,7 @@
 				<f:facet name="header">
 					<h:outputLabel value="Total" />
 				</f:facet>
-				<h:outputText value="#{item.total}">
+				<h:outputText value="#{item.total}" styleClass="font-family-default">
 					<f:convertNumber minFractionDigits="2" maxFractionDigits="2" locale="pt_BR" />
 				</h:outputText>
 			</p:column>

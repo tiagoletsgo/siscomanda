@@ -25,7 +25,7 @@ public class ConfiguracaoSistemaFactoryBean implements Serializable {
 	@PostConstruct
 	public void init() {
 		sistema = new ArrayList<Integer>();
-		Integer quantidade = service.carregaDefinicaoSistema().getQtdMesaComanda();
+		Integer quantidade = service.definicaoSistema().getQtdMesaComanda();
 		for(int i = 1; i <= quantidade; i++) {
 			sistema.add(i);
 		}

@@ -22,6 +22,7 @@
  
  input[type="text"], td {
  	text-transform: uppercase !important;
+ 	font-family: "montserrat"!important;
  }
    
 .ui-button {
@@ -400,4 +401,7 @@
 
 .nav-sm .container.body .col-md-3.left_col {
 	width: 80px !important;
+}
+.nav-sm footer {
+    margin-left: 80px !important;
 }

@@ -26,7 +26,7 @@ public abstract class VendaOLDService implements Serializable {
 	private List<Produto> listTemp = new ArrayList<>();
 		
 	public Double getTaxaServico() {
-		Double valor = configuracaoGeralService.carregaDefinicaoSistema().getTaxaServico();
+		Double valor = configuracaoGeralService.definicaoSistema().getTaxaServico();
 		return (valor / 100);
 	}
 	
@@ -49,7 +49,7 @@ public abstract class VendaOLDService implements Serializable {
 			}
 		}
 		
-		if(produtos.size() > configuracaoGeralService.carregaDefinicaoSistema().getPermiteQuantoSabores()) {
+		if(produtos.size() > configuracaoGeralService.definicaoSistema().getPermiteQuantoSabores()) {
 			listTemp.remove(produtoCheck);
 			produtos.remove(produtoCheck);
 			JSFUtil.addMessage(FacesMessage.SEVERITY_ERROR, "A quantidade de sabores selecionado excede o limite configurado.");

@@ -24,7 +24,7 @@ public class ProdutoDAO extends GenericDAO<Produto> implements Serializable {
 		StringBuilder sql = new StringBuilder();
 		sql.append("SELECT produto.* FROM produto produto WHERE produto.subcategoria_id = ");
 		sql.append("(SELECT subcategoria.id FROM subcategoria subcategoria WHERE subcategoria.descricao LIKE :descricao) ");
-		sql.append("AND produto.permite_meio_a_meio");
+//		sql.append("AND produto.permite_meio_a_meio");
 		
 		Query query = getEntityManager().createNativeQuery(sql.toString(), Produto.class);
 		query.setParameter("descricao", "%" + descricao.toUpperCase() + "%");

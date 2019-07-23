@@ -8,6 +8,7 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
+import br.com.siscomanda.enumeration.ETipoVenda;
 import br.com.siscomanda.exception.SiscomandaException;
 import br.com.siscomanda.model.Adicional;
 import br.com.siscomanda.model.ConfiguracaoGeral;
@@ -382,5 +383,22 @@ public class PontoDeVendaService implements Serializable {
 		}
 		
 		return produtos;
+	}
+	
+	public List<ETipoVenda> tiposDeVenda(ConfiguracaoGeral configuracao) {
+		List<ETipoVenda> tiposDeVenda = new ArrayList<ETipoVenda>();
+		tiposDeVenda.add(ETipoVenda.DELIVERY);
+		tiposDeVenda.add(ETipoVenda.BALCAO);
+		
+		if(configuracao != null && configuracao.getSistema() != null) {
+			if(configuracao.getSistema().getDescricao().toUpperCase().equals(ETipoVenda.COMANDA.toString())) {
+				tiposDeVenda.add(ETipoVenda.COMANDA);
+			}
+			else {
+				tiposDeVenda.add(ETipoVenda.MESA);
+			}
+		}
+		
+		return tiposDeVenda;
 	}
 }

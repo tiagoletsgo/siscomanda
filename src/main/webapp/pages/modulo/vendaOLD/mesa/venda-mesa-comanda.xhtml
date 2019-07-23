@@ -8,7 +8,7 @@
 	<ui:param name="md" value="12" />
 	<ui:param name="sm" value="12" />
 	<ui:param name="xs" value="12" />
-	<ui:param name="crudBean" value="#{vendaMesaComandaBean}" />
+	<ui:param name="crudBean" value="#{vendaMesaComandaOLDBean}" />
 	<ui:param name="hideTableList" value="#{crudBean.estadoViewBean.search}" />
 	
 	<ui:define name="title_main"> 
@@ -26,17 +26,17 @@
 	<ui:define name="content">
 		<h:panelGroup layout="block" id="grid_form">
 			<h:panelGroup layout="block" rendered="#{crudBean.estadoViewBean.insert or crudBean.estadoViewBean.update}">
-				<ui:include src="/pages/modulo/venda/mesa/cadastroVendaMesaComandaInclude.xhtml" />
+				<ui:include src="/pages/modulo/vendaOLD/mesa/cadastroVendaMesaComandaInclude.xhtml" />
 			</h:panelGroup>
 			<h:panelGroup layout="block" rendered="#{not crudBean.estadoViewBean.insert and not crudBean.estadoViewBean.update}">
-				<ui:include src="/pages/modulo/venda/mesa/consultaVendaMesaComandaInclude.xhtml" />
+				<ui:include src="/pages/modulo/vendaOLD/mesa/consultaVendaMesaComandaInclude.xhtml" />
 			</h:panelGroup>
 		</h:panelGroup>
 	</ui:define>
 	
 	<ui:define name="table">
 		<h:panelGroup layout="block" rendered="#{crudBean.estadoViewBean.search}">
-			<ui:include src="/pages/modulo/venda/mesa/tabelaVendaMesaComandaInclude.xhtml" />
+			<ui:include src="/pages/modulo/vendaOLD/mesa/tabelaVendaMesaComandaInclude.xhtml" />
 		</h:panelGroup>
 	</ui:define>
 </ui:composition>

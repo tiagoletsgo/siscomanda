@@ -43,20 +43,6 @@
 							<h:outputText value="#{produto.codigoEan}" />
 						</p:column>
 						
-						<p:column styleClass="ui-datatable-left" style="width: 10%; border-radius: 0px">
-							<f:facet name="header">Preço custo</f:facet>
-							<h:outputText value="#{produto.precoCusto}">
-								<f:convertNumber type="currency" />
-							</h:outputText>
-						</p:column>
-						
-						<p:column styleClass="ui-datatable-left" style="width: 10%; border-radius: 0px">
-							<f:facet name="header">Preço venda</f:facet>
-							<h:outputText value="#{produto.precoVenda}">
-								<f:convertNumber type="currency" />
-							</h:outputText>
-						</p:column>
-						
 						<p:column styleClass="ui-datatable-center" style="width: 12%; border-radius: 0px">
 							<f:facet name="header">Incluir</f:facet>
 							<p:commandLink styleClass="btn btn-round btn-success btn-xs fa fa-plus" update=":crudform:dialogAdicionaProduto" 

@@ -16,6 +16,7 @@ import br.com.siscomanda.base.bean.BaseBean;
 import br.com.siscomanda.builder.VendaBuilder;
 import br.com.siscomanda.enumeration.EStateView;
 import br.com.siscomanda.enumeration.EStatus;
+import br.com.siscomanda.enumeration.ETipoVenda;
 import br.com.siscomanda.exception.SiscomandaException;
 import br.com.siscomanda.model.Adicional;
 import br.com.siscomanda.model.ConfiguracaoGeral;
@@ -422,5 +423,9 @@ public class PontoDeVendaBean extends BaseBean<Venda> implements Serializable {
 	
 	public ConfiguracaoGeral getConfiguracao() {
 		return configuracao;
+	}
+	
+	public List<ETipoVenda> getTipoVendas() {
+		return pontoDeVendaService.tiposDeVenda(configuracao);
 	}
 }

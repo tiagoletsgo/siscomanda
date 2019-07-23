@@ -19,11 +19,11 @@
 					<p:commandLink value="Cancelar" styleClass="btn btn-warning pull-right" action="#{crudBean.btnCancelar}" update="@form" disabled="#{crudBean.entity.notCancelavel}" />
 					<p:commandLink value="Excluir" styleClass="btn btn-danger pull-right" action="#{crudBean.btnExcluir}" update="@form" disabled="#{crudBean.entity.notExcluivel}" />
 					
-					<p:link value="Pagar" outcome="/pages/modulo/venda/mesa/fecha-conta?view=insert" styleClass="btn btn-success pull-right" disabled="#{crudBean.entity.notPagavel}">
+					<p:link value="Pagar" outcome="/pages/modulo/vendaOLD/mesa/fecha-conta?view=insert" styleClass="btn btn-success pull-right" disabled="#{crudBean.entity.notPagavel}">
 						<f:param name="codigo" value="#{crudBean.entity.id}" />
 					</p:link>
 					
-					<p:link value="Voltar" styleClass="btn btn-primary pull-right" outcome="/pages/modulo/venda/mesa/venda-mesa-comanda?view=search" />
+					<p:link value="Voltar" styleClass="btn btn-primary pull-right" outcome="/pages/modulo/vendaOLD/mesa/venda-mesa-comanda?view=search" />
 				</h:panelGroup>
 			</div>
 	
@@ -31,7 +31,7 @@
 				<div class="col-md-12 col-sm-12 col-xs-12">
 					<p:commandLink value="Mesa / Comanda" styleClass="btn btn-primary pull-left" global="false" oncomplete="PF('dialogSelecionaMesaComanda').show();" />
 					<p:commandLink value="Delivery / Balcão" styleClass="btn btn-primary pull-left" global="false" oncomplete="PF('dialogSelecionaDeliveryBalcao').show();" />
-					<p:link value="Voltar" styleClass="btn btn-primary pull-right" outcome="/pages/modulo/venda/mesa/venda-mesa-comanda?view=search" />
+					<p:link value="Voltar" styleClass="btn btn-primary pull-right" outcome="/pages/modulo/vendaOLD/mesa/venda-mesa-comanda?view=search" />
 				</div>
 			</h:panelGroup>
 		</h:panelGroup>

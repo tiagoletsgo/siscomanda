@@ -32,9 +32,20 @@ public class ClienteDAO extends GenericDAO<Cliente> implements Serializable {
 		}
 	}
 	
+	public List<Cliente> todos() {
+		StringBuilder sql = new StringBuilder();
+		sql.append("FROM Cliente cliente ");
+		sql.append("LEFT JOIN FETCH cliente.servico ");
+		
+		TypedQuery<Cliente> query = getEntityManager().createQuery(sql.toString(), Cliente.class);
+		List<Cliente> clientes = query.getResultList();
+		return clientes;
+	}
+	
 	public boolean isExists(Cliente cliente) {
 		StringBuilder sql = new StringBuilder();
 		sql.append(" FROM Cliente cli ");
+		sql.append("LEFT JOIN FETCH cli.servico ");
 		sql.append(" WHERE 1 = 1 ");
 		sql.append(StringUtil.isNotEmpty(cliente.getCpf()) ? " AND cli.cpf = :cpf " : "");
 		sql.append(StringUtil.isNotEmpty(cliente.getRg()) ? " AND cli.rg = :rg " : "");
@@ -65,6 +76,7 @@ public class ClienteDAO extends GenericDAO<Cliente> implements Serializable {
 	public List<Cliente> buscaPor(Cliente cliente) {
 		StringBuilder sql = new StringBuilder();
 		sql.append(" FROM Cliente cli ");
+		sql.append(" LEFT JOIN FETCH cli.servico ");
 		sql.append(" WHERE 1 = 1 ");
 		sql.append(StringUtil.isNotEmpty(cliente.getNomeCompleto()) ? "AND cli.nomeCompleto LIKE :nome " : "");
 		sql.append(StringUtil.isNotEmpty(cliente.getRg()) ? "AND cli.rg = :rg " : "");
@@ -96,6 +108,7 @@ public class ClienteDAO extends GenericDAO<Cliente> implements Serializable {
 		try {			
 			StringBuilder sql = new StringBuilder();
 			sql.append(" FROM Cliente cli ");
+			sql.append(" LEFT JOIN FETCH cli.servico ");
 			sql.append(" WHERE cli.nomeCompleto LIKE :nome ");
 			
 			TypedQuery<Cliente> query = getEntityManager().createQuery(sql.toString(), Cliente.class);
@@ -111,6 +124,7 @@ public class ClienteDAO extends GenericDAO<Cliente> implements Serializable {
 		try {			
 			StringBuilder sql = new StringBuilder();
 			sql.append(" FROM Cliente cli ");
+			sql.append(" LEFT JOIN FETCH cli.servico ");
 			sql.append(" WHERE cli.rg = :rg ");
 			
 			TypedQuery<Cliente> query = getEntityManager().createQuery(sql.toString(), Cliente.class);
@@ -126,6 +140,7 @@ public class ClienteDAO extends GenericDAO<Cliente> implements Serializable {
 		try {			
 			StringBuilder sql = new StringBuilder();
 			sql.append(" FROM Cliente cli ");
+			sql.append(" LEFT JOIN FETCH cli.servico ");
 			sql.append(" WHERE cli.cpf = :cpf ");
 			
 			TypedQuery<Cliente> query = getEntityManager().createQuery(sql.toString(), Cliente.class);
@@ -141,6 +156,7 @@ public class ClienteDAO extends GenericDAO<Cliente> implements Serializable {
 		try {			
 			StringBuilder sql = new StringBuilder();
 			sql.append(" FROM Cliente cli ");
+			sql.append(" LEFT JOIN FETCH cli.servico ");
 			sql.append(" WHERE cli.telefoneCelular = :celular ");
 			
 			TypedQuery<Cliente> query = getEntityManager().createQuery(sql.toString(), Cliente.class);

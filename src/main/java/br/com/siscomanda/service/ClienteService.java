@@ -90,7 +90,7 @@ public class ClienteService implements Serializable {
 	}
 	
 	public List<Cliente> todos() {
-		return dao.todos(Cliente.class);
+		return dao.todos();
 	}
 	
 	@Transactional

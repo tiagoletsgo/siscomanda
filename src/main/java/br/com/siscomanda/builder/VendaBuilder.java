@@ -65,8 +65,12 @@ public class VendaBuilder implements Serializable {
 	}
 	
 	public VendaBuilder comTaxaServico(Double taxaServico) {
+		if(taxaServico == null) {
+			taxaServico = new Double(0);
+		}
+		
 		this.taxaServico = (taxaServico * subtotal) / 100;
-		this.valorTotal += this.taxaServico;
+		this.valorTotal = (this.taxaServico + subtotal);
 		return this;
 	}
 	
