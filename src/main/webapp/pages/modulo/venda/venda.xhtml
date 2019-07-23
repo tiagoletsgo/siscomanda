@@ -110,5 +110,57 @@
 				<p:commandButton styleClass="btn btn-danger" global="false" value="Cancelar" oncomplete="PF('dlgPersonalizar').hide();" />
 			</f:facet>
 		</p:dialog>
+		
+		<p:dialog id="dialogTipoVenda" widgetVar="dlgTipoVenda" modal="true" showEffect="fade" hideEffect="fade" responsive="true" resizable="false">
+			<f:facet name="header">Selecionar Tipo Venda</f:facet>
+			<h:form id="formTipoVenda">
+				<div class="col-md-12 col-sm-12 col-xs-12">
+					<label>Selecione o Tipo de Venda :</label>
+					<div class="checkbox">
+						<h:selectOneRadio layout="pageDirection">
+							<f:selectItems value="#{crudBean.tipoVendas}" var="tipoVenda" itemValue="#{tipoVenda}" itemLabel="#{tipoVenda.descricao}" />
+						</h:selectOneRadio>
+					</div>
+				</div>
+				
+				
+				<div class="col-md-12 col-sm-12 col-xs-12">
+					<label>Selecione Mesa / Comanda :</label>
+					<h:selectOneMenu styleClass="form-control">
+						<f:selectItem itemLabel="Selecione" noSelectionOption="true" />
+					</h:selectOneMenu>
+				</div>
+				
+				<div class="col-md-6 col-sm-6 col-xs-12">
+					<label>Selecione Cliente :</label>
+					<h:selectOneMenu styleClass="form-control">
+						<f:selectItem itemLabel="Selecione" noSelectionOption="true" />
+					</h:selectOneMenu>
+				</div>
+				
+				<div class="col-md-6 col-sm-6 col-xs-12">
+					<label>Pesquisar Cliente :</label>
+					<h:inputText styleClass="form-control" />
+				</div>
+			
+				<div class="col-md-6 col-sm-6 col-xs-12">
+					<label>Selecione Entregador :</label>
+					<h:selectOneMenu styleClass="form-control">
+						<f:selectItem itemLabel="Selecione" noSelectionOption="true" />
+					</h:selectOneMenu>
+				</div>
+				
+				<div class="col-md-6 col-sm-6 col-xs-12">
+					<label>Pesquisar Entregador :</label>
+					<h:inputText styleClass="form-control" />
+				</div>
+			</h:form>
+			
+			<f:facet name="footer">
+				<p:commandButton process="@this" styleClass="btn btn-success" value="Salvar" oncomplete="PF('dlgTipoVenda').hide();" global="false" />
+				
+				<p:commandButton styleClass="btn btn-danger" global="false" value="Cancelar" oncomplete="PF('dlgTipoVenda').hide();" />
+			</f:facet>
+		</p:dialog>
 	</ui:define>
 </ui:composition>

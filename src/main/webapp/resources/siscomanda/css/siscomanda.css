@@ -398,3 +398,10 @@
 		float: none;
 	}
 }
+
+.nav-sm .container.body .col-md-3.left_col {
+	width: 80px !important;
+}
+.nav-sm footer {
+    margin-left: 80px !important;
+}
