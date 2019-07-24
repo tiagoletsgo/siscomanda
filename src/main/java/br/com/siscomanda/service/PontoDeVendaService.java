@@ -19,6 +19,7 @@ import br.com.siscomanda.model.Tamanho;
 import br.com.siscomanda.model.Venda;
 import br.com.siscomanda.repository.dao.PrecoDAO;
 import br.com.siscomanda.repository.dao.ProdutoDAO;
+import br.com.siscomanda.repository.dao.VendaOLDDAO;
 
 public class PontoDeVendaService implements Serializable {
 
@@ -29,6 +30,9 @@ public class PontoDeVendaService implements Serializable {
 	
 	@Inject
 	private ProdutoDAO produtoDAO;
+	
+	@Inject
+	private VendaOLDDAO vendaDAO;
 	
 	private List<Produto> produtosTemp = new ArrayList<Produto>();
 	
@@ -400,5 +404,15 @@ public class PontoDeVendaService implements Serializable {
 		}
 		
 		return tiposDeVenda;
+	}
+	
+	public List<Integer> gerarControladores(ConfiguracaoGeral configuracao) {
+		List<Integer> controladores = new ArrayList<Integer>();
+		
+		for(int i = 1; i <= configuracao.getQtdMesaComanda(); i++) {
+			controladores.add(new Integer(i));
+		}
+		
+		return controladores;
 	}
 }

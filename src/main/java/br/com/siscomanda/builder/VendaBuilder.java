@@ -24,6 +24,7 @@ public class VendaBuilder implements Serializable {
 	private Double taxaEntrega;
 	private Double desconto;
 	private Double valorTotal;
+	private Integer controle;
 	private List<ItemVenda> itens = new ArrayList<ItemVenda>();
 	
 	public VendaBuilder() {
@@ -32,10 +33,16 @@ public class VendaBuilder implements Serializable {
 		this.taxaEntrega = new Double(0);
 		this.desconto = new Double(0);
 		this.valorTotal = new Double(0);
+		this.controle = new Integer(0);
 	}
 	
 	public VendaBuilder comNumeroPedido(Integer numeroPedido) {
 		this.numeroPedido = numeroPedido;
+		return this;
+	}
+	
+	public VendaBuilder comControle(Integer numeroControle) {
+		this.controle = numeroControle;
 		return this;
 	}
 	
@@ -113,6 +120,6 @@ public class VendaBuilder implements Serializable {
 	}
 	
 	public Venda constroi() {
-		return new Venda(numeroPedido, tipoVenda, status, operador, dataHora, subtotal, taxaServico, taxaEntrega, desconto, valorTotal, itens);
+		return new Venda(numeroPedido, tipoVenda, status, operador, dataHora, subtotal, taxaServico, taxaEntrega, desconto, valorTotal, itens, controle);
 	}
 }

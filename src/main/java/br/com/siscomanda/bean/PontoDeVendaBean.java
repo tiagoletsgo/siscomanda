@@ -19,6 +19,7 @@ import br.com.siscomanda.enumeration.EStatus;
 import br.com.siscomanda.enumeration.ETipoVenda;
 import br.com.siscomanda.exception.SiscomandaException;
 import br.com.siscomanda.model.Adicional;
+import br.com.siscomanda.model.Cliente;
 import br.com.siscomanda.model.ConfiguracaoGeral;
 import br.com.siscomanda.model.ItemVenda;
 import br.com.siscomanda.model.Preco;
@@ -26,6 +27,7 @@ import br.com.siscomanda.model.Produto;
 import br.com.siscomanda.model.Tamanho;
 import br.com.siscomanda.model.Venda;
 import br.com.siscomanda.service.AdicionalService;
+import br.com.siscomanda.service.ClienteService;
 import br.com.siscomanda.service.ConfiguracaoGeralService;
 import br.com.siscomanda.service.PontoDeVendaService;
 import br.com.siscomanda.service.PrecoService;
@@ -54,6 +56,9 @@ public class PontoDeVendaBean extends BaseBean<Venda> implements Serializable {
 	@Inject
 	private ConfiguracaoGeralService configuracaoService;
 	
+	@Inject
+	private ClienteService clienteService;
+	
 	private boolean novoItem;
 	
 	private boolean incluirItem;
@@ -76,10 +81,14 @@ public class PontoDeVendaBean extends BaseBean<Venda> implements Serializable {
 	
 	private Map<String, Object> parametros;
 	
-	private String pesquisaDescricaoProduto;
-	
 	private ConfiguracaoGeral configuracao;
 	
+	private List<Cliente> clientes;
+	
+	private String pesquisaDescricaoProduto;
+	
+	private String pesquisaPorNomeCliente;
+
 	@Override
 	protected void init() {
 		vendaBuilder = new VendaBuilder();
@@ -98,6 +107,7 @@ public class PontoDeVendaBean extends BaseBean<Venda> implements Serializable {
 		setEntity(vendaBuilder.constroi());
 		
 		configuracao = configuracaoService.definicaoSistema();
+		clientes = clienteService.todos();
 	}
 	
 	public void btnNovoItem() {
@@ -304,12 +314,21 @@ public class PontoDeVendaBean extends BaseBean<Venda> implements Serializable {
 		if(getItensMeioAmeio().isEmpty()) {
 			getItensMeioAmeio().add(getItem());
 		}
-		
+		getEntity();
 		vendaBuilder.comItens(getItensMeioAmeio());
 		vendaBuilder.comTaxaServico(configuracao.getTaxaServico());
+		vendaBuilder.comControle(getEntity().getControle());
+		vendaBuilder.comTipoVenda(getEntity().getTipoVenda());
 		setEntity(vendaBuilder.constroi());
 		setIncluirItem(false);
 		btnVoltar();
+	}
+	
+	public void btnSalvarTipoVenda() {
+		if(getEntity().getTipoVenda().equals(ETipoVenda.BALCAO)
+				|| getEntity().getTipoVenda().equals(ETipoVenda.DELIVERY)) {
+			getEntity().setControle(new Integer(999999));
+		}
 	}
 	
 	public void limparObservacaoEdesmacarListaDeComplemento() {
@@ -350,6 +369,17 @@ public class PontoDeVendaBean extends BaseBean<Venda> implements Serializable {
 		
 	public String paraMoedaPtBR(Double valor) {
 		return StringUtil.converterParaValorMonetario(valor);
+	}
+	
+	public void pesquisaNomeCliente() {
+		try {
+			Cliente cliente = new Cliente();
+			cliente.setNomeCompleto(pesquisaPorNomeCliente);
+			clientes = clienteService.pesquisar(cliente);
+		}
+		catch(SiscomandaException e) {
+			JSFUtil.addMessage(FacesMessage.SEVERITY_ERROR, e.getMessage());
+		}
 	}
 
 	@Override
@@ -427,5 +457,21 @@ public class PontoDeVendaBean extends BaseBean<Venda> implements Serializable {
 	
 	public List<ETipoVenda> getTipoVendas() {
 		return pontoDeVendaService.tiposDeVenda(configuracao);
+	}
+	
+	public List<Integer> getControladores() {
+		return pontoDeVendaService.gerarControladores(configuracao);
+	}
+	
+	public List<Cliente> getClientes() {
+		return clientes;
+	}
+
+	public String getPesquisaPorNomeCliente() {
+		return pesquisaPorNomeCliente;
+	}
+
+	public void setPesquisaPorNomeCliente(String pesquisaPorNomeCliente) {
+		this.pesquisaPorNomeCliente = pesquisaPorNomeCliente;
 	}
 }
