@@ -405,3 +405,8 @@
 .nav-sm footer {
     margin-left: 80px !important;
 }
+
+.ui-radiobutton-icon {
+    margin-left: 0px !important;
+    margin-top: -1px !important;
+}
