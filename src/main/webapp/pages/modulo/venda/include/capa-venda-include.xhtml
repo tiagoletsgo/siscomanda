@@ -19,7 +19,9 @@
 			
 			<div class="col-md-2 col-sm-2 col-xs-12">
 				<label for="crudform:numero">#{crudBean.configuracao.sistema eq 'MESA' ? 'Nº Mesa' : 'Nº Comanda'} :</label>
-				<h:outputText id="numero" styleClass="form-control" value="001" />
+				<h:outputText id="numero" styleClass="form-control" value="#{crudBean.entity.controle}">
+					<f:convertNumber maxIntegerDigits="6" pattern="000000" locale="pt_BR" />
+				</h:outputText>
 			</div>
 			
 			<div class="col-md-3 col-sm-3 col-xs-12">

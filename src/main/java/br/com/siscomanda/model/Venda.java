@@ -4,6 +4,9 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
+
+import javax.persistence.Transient;
 
 import br.com.siscomanda.base.model.BaseEntity;
 import br.com.siscomanda.enumeration.EStatus;
@@ -23,12 +26,13 @@ public class Venda extends BaseEntity implements Serializable {
 	private Double taxaEntrega;
 	private Double desconto;
 	private Double total;
+	private Integer controle;
 	private List<ItemVenda> itens = new ArrayList<ItemVenda>();
 	
 	public Venda() {	}
 	
 	public Venda(Integer numeroPedido, ETipoVenda tipoVenda, EStatus status, String operador, Date dataHora,
-			Double subtotal, Double taxaServico, Double taxaEntrega, Double desconto, Double total, List<ItemVenda> itens) {
+			Double subtotal, Double taxaServico, Double taxaEntrega, Double desconto, Double total, List<ItemVenda> itens, Integer controle) {
 		
 		this.numeroPedido = numeroPedido;
 		this.tipoVenda = tipoVenda;
@@ -40,6 +44,7 @@ public class Venda extends BaseEntity implements Serializable {
 		this.taxaEntrega = taxaEntrega;
 		this.desconto = desconto;
 		this.total = total;
+		this.controle = controle;
 		this.itens = itens;
 	}
 
@@ -123,11 +128,50 @@ public class Venda extends BaseEntity implements Serializable {
 		this.total = total;
 	}
 
+	public Integer getControle() {
+		return controle;
+	}
+
+	public void setControle(Integer controle) {
+		this.controle = controle;
+	}
+
 	public List<ItemVenda> getItens() {
 		return itens;
 	}
 
 	public void setItens(List<ItemVenda> itens) {
 		this.itens = itens;
+	}
+	
+	@Transient
+	public boolean isBloqueiaVendaMesaOuComanda() {
+		
+		if(Objects.nonNull(getTipoVenda()) && getTipoVenda().equals(ETipoVenda.MESA) || 
+				Objects.nonNull(getTipoVenda()) && getTipoVenda().equals(ETipoVenda.COMANDA)) {
+			return true;
+		}
+		
+		return false;
+	}
+	
+	@Transient
+	public boolean isNotBloqueiaVendaMesaOuComanda() {
+		return !isBloqueiaVendaMesaOuComanda();
+	}
+	
+	@Transient
+	public boolean isBloqueiaVendaDelivery() {
+		
+		if(Objects.nonNull(getTipoVenda()) && getTipoVenda().equals(ETipoVenda.DELIVERY)) {
+			return true;
+		}
+		
+		return false;
+	}
+	
+	@Transient
+	public boolean isNotBloqueiaVendaDelivery() {
+		return !isBloqueiaVendaDelivery();
 	}
 }

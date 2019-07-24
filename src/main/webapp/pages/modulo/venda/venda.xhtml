@@ -127,40 +127,40 @@
 				
 				<div class="col-md-12 col-sm-12 col-xs-12">
 					<label>Selecione Mesa / Comanda :</label>
-					#{not empty crudBean.entity.tipoVenda and crudBean.entity.tipoVenda eq 'DELIVERY'  and not empty crudBean.entity.tipoVenda and crudBean.entity.tipoVenda eq 'BALCAO'}" teste1...
-					<h:selectOneMenu styleClass="form-control" disabled="#{not empty crudBean.entity.tipoVenda and crudBean.entity.tipoVenda eq 'DELIVERY'  or not empty crudBean.entity.tipoVenda and crudBean.entity.tipoVenda eq 'BALCAO'}">
+					<h:selectOneMenu styleClass="form-control" value="#{crudBean.entity.controle}" disabled="#{crudBean.entity.notBloqueiaVendaMesaOuComanda}">
 						<f:selectItem itemLabel="Selecione" noSelectionOption="true" />
+						<f:selectItems value="#{crudBean.controladores}" var="controle" itemLabel="#{crudBean.configuracao.sistema eq 'MESA' ? 'Mesa Nº' : 'Comanda Nº'} - #{controle}" itemValue="#{controle}" />
+						<p:ajax event="change" process="@this" update="@form" global="false" />
 					</h:selectOneMenu>
 				</div>
-				
-				<div class="col-md-6 col-sm-6 col-xs-12">
-					<label>Selecione Cliente :</label>
-					<h:selectOneMenu styleClass="form-control" disabled="true">
-						<f:selectItem itemLabel="Selecione" noSelectionOption="true" />
-					</h:selectOneMenu>
-				</div>
-				
+
 				<div class="col-md-6 col-sm-6 col-xs-12">
 					<label>Pesquisar Cliente :</label>
-					<h:inputText styleClass="form-control" disabled="true" />
+					<h:inputText styleClass="form-control" value="#{crudBean.pesquisaPorNomeCliente}" disabled="#{crudBean.entity.notBloqueiaVendaDelivery}">
+						<p:ajax event="keyup" delay="500" global="false" update="comboCliente" process="@this" listener="#{crudBean.pesquisaNomeCliente}" />
+					</h:inputText>
 				</div>
-			
+								
 				<div class="col-md-6 col-sm-6 col-xs-12">
-					<label>Selecione Entregador :</label>
-					<h:selectOneMenu styleClass="form-control" disabled="true">
+					<label>Selecione Cliente :</label>
+					<h:selectOneMenu id="comboCliente" styleClass="form-control" disabled="#{crudBean.entity.notBloqueiaVendaDelivery}" converter="entityConverter">
 						<f:selectItem itemLabel="Selecione" noSelectionOption="true" />
+						<f:selectItems value="#{crudBean.clientes}" var="cliente" itemLabel="#{cliente.nomeCompleto}" itemValue="#{cliente}" />
 					</h:selectOneMenu>
 				</div>
-				
-				<div class="col-md-6 col-sm-6 col-xs-12">
-					<label>Pesquisar Entregador :</label>
-					<h:inputText styleClass="form-control" disabled="true" />
+			
+				<div class="col-md-12 col-sm-12 col-xs-12">
+					<label>Selecione Entregador :</label>
+					<h:selectOneMenu styleClass="form-control" disabled="#{crudBean.entity.notBloqueiaVendaDelivery}" converter="entityConverter">
+						<f:selectItem itemLabel="Selecione" noSelectionOption="true" />
+					</h:selectOneMenu>
 				</div>
 			</h:form>
 			
 			<f:facet name="footer">
-				<p:commandButton process="@this" styleClass="btn btn-success" value="Salvar" oncomplete="PF('dlgTipoVenda').hide();" global="false" />
-				
+				<p:commandButton value="Salvar" styleClass="btn btn-success" oncomplete="PF('dlgTipoVenda').hide();">
+					<p:ajax event="click" update="crudform" process="@this" global="false" listener="#{crudBean.btnSalvarTipoVenda}" />
+				</p:commandButton>
 				<p:commandButton styleClass="btn btn-danger" global="false" value="Cancelar" oncomplete="PF('dlgTipoVenda').hide();" />
 			</f:facet>
 		</p:dialog>

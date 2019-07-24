@@ -5,6 +5,24 @@
 	xmlns:p="http://primefaces.org/ui">
 		
 		<ui:include src="/pages/modulo/venda/include/capa-venda-include.xhtml" />
+		
+		<style>
+			.ui-menubutton.btn-primary .ui-button.state-hover {
+				background-color: red;
+			} 
+			.btn-primary.ui-button  {
+				color:#fff !important;
+				background-color:#337ab7 !important;
+				border-color:#2e6da4 !important;
+				text-shadow: inherit;
+			}
+			.ui-menubutton .ui-button.ui-state-hover.btn-primary {
+				color:#fff !important;
+				background-color:#286090 !important;
+				border-color:#204d74 !important;
+			    text-shadow: inherit;
+			}
+		</style>
 				
 		<div class="form-group"></div>
 		<div class="clearfix"></div>
@@ -12,6 +30,9 @@
 		<div class="form-group">
 			<div class="col-md-12 col-sm-12 col-xs-12">
 				<p:commandButton styleClass="btn btn-primary" value="Tipo Venda" oncomplete="PF('dlgTipoVenda').show();" />
+				
+				<p:menuButton value="Opções" styleClass="btn btn-primary" menuStyleClass="btn btn-primary">
+				</p:menuButton>
 			</div>	
 			<div class="clearfix"></div>
 		</div>
