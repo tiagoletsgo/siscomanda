@@ -19,7 +19,7 @@ import br.com.siscomanda.model.Tamanho;
 import br.com.siscomanda.model.Venda;
 import br.com.siscomanda.repository.dao.PrecoDAO;
 import br.com.siscomanda.repository.dao.ProdutoDAO;
-import br.com.siscomanda.repository.dao.VendaOLDDAO;
+import br.com.siscomanda.repository.dao.VendaDAO;
 
 public class PontoDeVendaService implements Serializable {
 
@@ -32,7 +32,7 @@ public class PontoDeVendaService implements Serializable {
 	private ProdutoDAO produtoDAO;
 	
 	@Inject
-	private VendaOLDDAO vendaDAO;
+	private VendaDAO vendaDAO;
 	
 	private List<Produto> produtosTemp = new ArrayList<Produto>();
 	

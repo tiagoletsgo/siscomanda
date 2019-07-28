@@ -19,8 +19,10 @@ import br.com.siscomanda.interfaces.calculadoraImpl.AplicaTaxaEntrega;
 import br.com.siscomanda.model.Adicional;
 import br.com.siscomanda.model.Bandeira;
 import br.com.siscomanda.model.FormaPagamento;
+import br.com.siscomanda.model.ItemVenda;
 import br.com.siscomanda.model.ItemVendaOLD;
 import br.com.siscomanda.model.Pagamento;
+import br.com.siscomanda.model.Venda;
 import br.com.siscomanda.model.VendaOLD;
 import br.com.siscomanda.service.FechaContaService;
 import br.com.siscomanda.util.JSFUtil;
@@ -28,7 +30,7 @@ import br.com.siscomanda.util.StringUtil;
 
 @Named
 @ViewScoped
-public class FechaContaBean extends BaseBean<VendaOLD> implements Serializable {
+public class FechaContaBean extends BaseBean<Venda> implements Serializable {
 
 	private static final long serialVersionUID = 3299850942772424169L;
 	
@@ -57,7 +59,7 @@ public class FechaContaBean extends BaseBean<VendaOLD> implements Serializable {
 			ExternalContext external = context.getExternalContext();
 			
 			codigo = Long.parseLong(external.getRequestParameterMap().get("codigo"));
-			setEntity(new VendaOLD(codigo));
+			setEntity(new Venda(codigo));
 			
 			buscaVenda();
 		}
@@ -69,12 +71,12 @@ public class FechaContaBean extends BaseBean<VendaOLD> implements Serializable {
 			pagamento = service.carregaPagamento(getEntity());						
 			valorFaltante = service.calculaValorFantante(pagamento.getValorTotal(), pagamento.getValorPago());
 			
-			for(ItemVendaOLD item : getEntity().getItens()) {
-				for(Adicional adicional : service.carregaAdicionais(item)) {
-					adicional.setQuantidade(new Double(1));
-					item.getAdicionais().add(adicional);
-				}
-			}
+//			for(ItemVenda item : getEntity().getItens()) {
+//				for(Adicional adicional : service.carregaAdicionais(item)) {
+//					adicional.setQuantidade(new Double(1));
+//					item.getAdicionais().add(adicional);
+//				}
+//			}
 		}
 		catch(SiscomandaException e) {
 			JSFUtil.addMessage(FacesMessage.SEVERITY_ERROR, "Erro ao localizar venda. " + e.getMessage());

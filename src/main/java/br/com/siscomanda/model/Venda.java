@@ -6,32 +6,90 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
 import br.com.siscomanda.base.model.BaseEntity;
 import br.com.siscomanda.enumeration.EStatus;
 import br.com.siscomanda.enumeration.ETipoVenda;
 
+@Entity
+@Table(name = "venda")
 public class Venda extends BaseEntity implements Serializable {
 
 	private static final long serialVersionUID = 1323965645259119303L;
-
+	
+	@Column(name = "numero_pedido")
 	private Integer numeroPedido;
+	
+	@Enumerated(EnumType.STRING)
+	@Column(name = "tipo_venda", nullable = false)
 	private ETipoVenda tipoVenda;
+	
+	@Enumerated(EnumType.STRING)
+	@Column(name = "status", nullable = false)
 	private EStatus status;
-	private String operador;
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "usuario_id", nullable = false)
+	private Usuario operador;
+	
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = "data_hora", nullable = false)
 	private Date dataHora;
+	
+	@Column(name = "subtotal", nullable = false)
 	private Double subtotal;
+	
+	@Column(name = "taxa_servico", nullable = false)
 	private Double taxaServico;
+	
+	@Column(name = "taxa_entrega", nullable = false)
 	private Double taxaEntrega;
+	
+	@Column(name = "desconto", nullable = false)
 	private Double desconto;
+	
+	@Column(name = "total", nullable = false)
 	private Double total;
+	
+	@Column(name = "controle", nullable = false)
 	private Integer controle;
+	
+	@Column(name = "valor_pago", nullable = false)
+	private Double valorPago;
+	
+	@Column(name = "pago", nullable = false)
+	private boolean pago;
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "cliente_id", nullable = true)
+	private Cliente cliente;
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "caixa_id", nullable = true)
+	private Caixa caixa;
+	
+	@OneToMany(mappedBy = "venda", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<ItemVenda> itens = new ArrayList<ItemVenda>();
+	
+	@OneToMany(mappedBy = "venda", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<Pagamento> pagamentos = new ArrayList<>();
 	
 	public Venda() {	}
 	
-	public Venda(Integer numeroPedido, ETipoVenda tipoVenda, EStatus status, String operador, Date dataHora,
+	public Venda(Integer numeroPedido, ETipoVenda tipoVenda, EStatus status, Usuario operador, Date dataHora,
 			Double subtotal, Double taxaServico, Double taxaEntrega, Double desconto, Double total, List<ItemVenda> itens, Integer controle) {
 		
 		this.numeroPedido = numeroPedido;
@@ -46,6 +104,10 @@ public class Venda extends BaseEntity implements Serializable {
 		this.total = total;
 		this.controle = controle;
 		this.itens = itens;
+	}
+	
+	public Venda(Long id) {
+		setId(id);
 	}
 
 	public Integer getNumeroPedido() {
@@ -72,11 +134,11 @@ public class Venda extends BaseEntity implements Serializable {
 		this.status = status;
 	}
 
-	public String getOperador() {
+	public Usuario getOperador() {
 		return operador;
 	}
 
-	public void setOperador(String operador) {
+	public void setOperador(Usuario operador) {
 		this.operador = operador;
 	}
 
@@ -144,6 +206,46 @@ public class Venda extends BaseEntity implements Serializable {
 		this.itens = itens;
 	}
 	
+	public Cliente getCliente() {
+		return cliente;
+	}
+
+	public void setCliente(Cliente cliente) {
+		this.cliente = cliente;
+	}
+
+	public Caixa getCaixa() {
+		return caixa;
+	}
+
+	public void setCaixa(Caixa caixa) {
+		this.caixa = caixa;
+	}
+
+	public List<Pagamento> getPagamentos() {
+		return pagamentos;
+	}
+
+	public void setPagamentos(List<Pagamento> pagamentos) {
+		this.pagamentos = pagamentos;
+	}
+	
+	public Double getValorPago() {
+		return valorPago;
+	}
+
+	public void setValorPago(Double valorPago) {
+		this.valorPago = valorPago;
+	}
+
+	public boolean isPago() {
+		return pago;
+	}
+
+	public void setPago(boolean pago) {
+		this.pago = pago;
+	}
+
 	@Transient
 	public boolean isBloqueiaVendaMesaOuComanda() {
 		
@@ -173,5 +275,10 @@ public class Venda extends BaseEntity implements Serializable {
 	@Transient
 	public boolean isNotBloqueiaVendaDelivery() {
 		return !isBloqueiaVendaDelivery();
+	}
+	
+	@Transient
+	public boolean isNotPago() {
+		return !isPago();
 	}
 }

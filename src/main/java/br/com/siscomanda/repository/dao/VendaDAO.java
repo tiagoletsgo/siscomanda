@@ -9,15 +9,16 @@ import javax.persistence.TypedQuery;
 import br.com.siscomanda.exception.SiscomandaException;
 import br.com.siscomanda.model.Adicional;
 import br.com.siscomanda.model.ItemVendaOLD;
+import br.com.siscomanda.model.Venda;
 import br.com.siscomanda.model.VendaOLD;
 import br.com.siscomanda.repository.base.GenericDAO;
 
-public class VendaOLDDAO extends GenericDAO<VendaOLD> implements Serializable {
+public class VendaDAO extends GenericDAO<Venda> implements Serializable {
 
 	private static final long serialVersionUID = 5272635544808053392L;
 	
 	@SuppressWarnings("unchecked")
-	public List<VendaOLD> buscaPor(VendaOLD venda, boolean editando) {
+	public List<Venda> buscaPor(Venda venda, boolean editando) {
 		StringBuilder sql = new StringBuilder();
 		sql.append("SELECT DISTINCT venda.* FROM venda venda ");
 		sql.append("INNER JOIN item_venda item ON venda.id = item.venda_id ");
@@ -28,10 +29,10 @@ public class VendaOLDDAO extends GenericDAO<VendaOLD> implements Serializable {
 		sql.append(editando == false ? " AND caixa.caixa_aberto OR NOT venda.pago " : "");
 		sql.append(venda.getId() != null ? "AND venda.id = :venda " : "");
 		sql.append(venda.getStatus() != null ? "AND venda.status = :status " : "");
-		sql.append(venda.getMesaComanda() != null && venda.getMesaComanda() > 0 ? "AND venda.mesa_comanda = :mesaComanda " : "");
+		sql.append(venda.getControle() != null && venda.getControle() > 0 ? "AND venda.mesa_comanda = :mesaComanda " : "");
 		sql.append(venda.getTipoVenda() != null ? "AND venda.tipo_venda = :tipoVenda " : "");
 		sql.append("ORDER BY venda.id ASC ");
-		Query query = getEntityManager().createNativeQuery(sql.toString(), VendaOLD.class);
+		Query query = getEntityManager().createNativeQuery(sql.toString(), Venda.class);
 		
 		if(venda.getId() != null) {			
 			query.setParameter("venda", venda.getId());
@@ -41,15 +42,15 @@ public class VendaOLDDAO extends GenericDAO<VendaOLD> implements Serializable {
 			query.setParameter("status", venda.getStatus().name());
 		}
 		
-		if(venda.getMesaComanda() != null && venda.getMesaComanda() > 0) {
-			query.setParameter("mesaComanda", venda.getMesaComanda());
+		if(venda.getControle() != null && venda.getControle() > 0) {
+			query.setParameter("mesaComanda", venda.getControle());
 		}
 		
 		if(venda.getTipoVenda() != null) {
 			query.setParameter("tipoVenda", venda.getTipoVenda().name());
 		}
 		
-		List<VendaOLD> vendas  = query.getResultList();
+		List<Venda> vendas  = query.getResultList();
 		return vendas;
 	}
 	

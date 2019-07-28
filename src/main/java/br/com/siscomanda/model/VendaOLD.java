@@ -6,90 +6,78 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
 import br.com.siscomanda.base.model.BaseEntity;
 import br.com.siscomanda.enumeration.EStatus;
 import br.com.siscomanda.enumeration.ETipoVenda;
 
-@Entity
-@Table(name = "venda")
+//@Entity
+//@Table(name = "venda")
 public class VendaOLD extends BaseEntity implements Serializable {
 
 	private static final long serialVersionUID = 2583564472683970706L;
 		
-	@OneToMany(mappedBy = "venda", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+//	@OneToMany(mappedBy = "venda", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Pagamento> pagamentos = new ArrayList<>();
 	
-	@OneToMany(mappedBy = "venda", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+//	@OneToMany(mappedBy = "venda", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<ItemVendaOLD> itens = new ArrayList<>();
 	
-	@Column(name = "pago", nullable = false)
+//	@Column(name = "pago", nullable = false)
 	private boolean pago;
 	
-	@Enumerated(EnumType.STRING)
-	@Column(name = "status", nullable = false)
+//	@Enumerated(EnumType.STRING)
+//	@Column(name = "status", nullable = false)
 	private EStatus status;
 	
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "cliente_id", nullable = true)
+//	@ManyToOne(fetch = FetchType.LAZY)
+//	@JoinColumn(name = "cliente_id", nullable = true)
 	private Cliente cliente;
 	
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "caixa_id", nullable = true)
+//	@ManyToOne(fetch = FetchType.LAZY)
+//	@JoinColumn(name = "caixa_id", nullable = true)
 	private Caixa caixa;
 	
-	@Temporal(TemporalType.DATE)
-	@Column(name = "data_venda", nullable = false)
+//	@Temporal(TemporalType.DATE)
+//	@Column(name = "data_venda", nullable = false)
 	private Date dataVenda;
 	
-	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "data_iniciado", nullable = false)
+//	@Temporal(TemporalType.TIMESTAMP)
+//	@Column(name = "data_iniciado", nullable = false)
 	private Date iniciado;
 	
-	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "data_finalizado", nullable = true)
+//	@Temporal(TemporalType.TIMESTAMP)
+//	@Column(name = "data_finalizado", nullable = true)
 	private Date finalizado;
 	
-	@Column(name = "subtotal", nullable = false)
+//	@Column(name = "subtotal", nullable = false)
 	private Double subtotal;
 	
-	@Column(name = "taxa_servico", nullable = false)
+//	@Column(name = "taxa_servico", nullable = false)
 	private Double taxaServico;
 	
-	@Column(name = "taxa_entrega", nullable = false)
+//	@Column(name = "taxa_entrega", nullable = false)
 	private Double taxaEntrega;
 	
-	@Column(name = "desconto", nullable = false)
+//	@Column(name = "desconto", nullable = false)
 	private Double desconto;
 	
 //	@ManyToOne(fetch = FetchType.LAZY)
 //	@JoinColumn(name = "usuario_id", nullable = false)
 //	private Usuario operador
 	
-	@Column(name = "total", nullable = false)
+//	@Column(name = "total", nullable = false)
 	private Double total;
 	
-	@Column(name = "valor_pago", nullable = false)
+//	@Column(name = "valor_pago", nullable = false)
 	private Double valorPago;
 	
-	@Column(name = "mesa_comanda", nullable = false)
+//	@Column(name = "mesa_comanda", nullable = false)
 	private Integer mesaComanda;
 	
-	@Enumerated(EnumType.STRING)
-	@Column(name = "tipo_venda", nullable = false)
+//	@Enumerated(EnumType.STRING)
+//	@Column(name = "tipo_venda", nullable = false)
 	private ETipoVenda tipoVenda;
 	
 	public VendaOLD() {

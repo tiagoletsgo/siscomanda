@@ -9,6 +9,7 @@ import br.com.siscomanda.enumeration.EStatus;
 import br.com.siscomanda.enumeration.ETipoVenda;
 import br.com.siscomanda.model.Adicional;
 import br.com.siscomanda.model.ItemVenda;
+import br.com.siscomanda.model.Usuario;
 import br.com.siscomanda.model.Venda;
 
 public class VendaBuilder implements Serializable {
@@ -17,7 +18,7 @@ public class VendaBuilder implements Serializable {
 	private Integer numeroPedido;
 	private ETipoVenda tipoVenda;
 	private EStatus status;
-	private String operador;
+	private Usuario operador;
 	private Date dataHora;
 	private Double subtotal;
 	private Double taxaServico;
@@ -34,6 +35,8 @@ public class VendaBuilder implements Serializable {
 		this.desconto = new Double(0);
 		this.valorTotal = new Double(0);
 		this.controle = new Integer(0);
+		this.status = EStatus.EM_ABERTO;
+		this.dataHora = new Date();
 	}
 	
 	public VendaBuilder comNumeroPedido(Integer numeroPedido) {
@@ -56,7 +59,7 @@ public class VendaBuilder implements Serializable {
 		return this;
 	}
 	
-	public VendaBuilder comOperador(String operador) {
+	public VendaBuilder comOperador(Usuario operador) {
 		this.operador = operador;
 		return this;
 	}

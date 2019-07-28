@@ -2,7 +2,6 @@ package br.com.siscomanda.bean;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,7 +14,6 @@ import javax.inject.Named;
 import br.com.siscomanda.base.bean.BaseBean;
 import br.com.siscomanda.builder.VendaBuilder;
 import br.com.siscomanda.enumeration.EStateView;
-import br.com.siscomanda.enumeration.EStatus;
 import br.com.siscomanda.enumeration.ETipoVenda;
 import br.com.siscomanda.exception.SiscomandaException;
 import br.com.siscomanda.model.Adicional;
@@ -25,6 +23,7 @@ import br.com.siscomanda.model.ItemVenda;
 import br.com.siscomanda.model.Preco;
 import br.com.siscomanda.model.Produto;
 import br.com.siscomanda.model.Tamanho;
+import br.com.siscomanda.model.Usuario;
 import br.com.siscomanda.model.Venda;
 import br.com.siscomanda.service.AdicionalService;
 import br.com.siscomanda.service.ClienteService;
@@ -97,13 +96,7 @@ public class PontoDeVendaBean extends BaseBean<Venda> implements Serializable {
 		produtosSelecionados = new ArrayList<Produto>();
 		complementos = new ArrayList<Adicional>();
 		
-		vendaBuilder.comDataHora(new Date());
-		vendaBuilder.comDesconto(new Double(0));
-		vendaBuilder.comStatus(EStatus.EM_ABERTO);
-		vendaBuilder.comSubtotal(new Double(0));
-		vendaBuilder.comTaxaEntrega(new Double(0));
-		vendaBuilder.comTaxaServico(new Double(0));
-		vendaBuilder.comDesconto(new Double(0));
+		vendaBuilder.comOperador(new Usuario("Administrador"));
 		setEntity(vendaBuilder.constroi());
 		
 		configuracao = configuracaoService.definicaoSistema();
@@ -319,6 +312,7 @@ public class PontoDeVendaBean extends BaseBean<Venda> implements Serializable {
 		vendaBuilder.comTaxaServico(configuracao.getTaxaServico());
 		vendaBuilder.comControle(getEntity().getControle());
 		vendaBuilder.comTipoVenda(getEntity().getTipoVenda());
+		vendaBuilder.comOperador(new Usuario("Administrador"));
 		setEntity(vendaBuilder.constroi());
 		setIncluirItem(false);
 		btnVoltar();
