@@ -49,6 +49,10 @@ public class Venda extends BaseEntity implements Serializable {
 	@Column(name = "data_hora", nullable = false)
 	private Date dataHora;
 	
+	@Temporal(TemporalType.DATE)
+	@Column(name = "data_venda", nullable = false)
+	private Date dataVenda;
+	
 	@Column(name = "subtotal", nullable = false)
 	private Double subtotal;
 	
@@ -67,24 +71,29 @@ public class Venda extends BaseEntity implements Serializable {
 	@Column(name = "controle", nullable = false)
 	private Integer controle;
 	
-	@Column(name = "valor_pago", nullable = false)
+	@Transient
+//	@Column(name = "valor_pago", nullable = false)
 	private Double valorPago;
 	
-	@Column(name = "pago", nullable = false)
+	@Transient
+//	@Column(name = "pago", nullable = false)
 	private boolean pago;
 	
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "cliente_id", nullable = true)
+	@Transient
+//	@ManyToOne(fetch = FetchType.LAZY)
+//	@JoinColumn(name = "cliente_id", nullable = true)
 	private Cliente cliente;
 	
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "caixa_id", nullable = true)
+	@Transient
+//	@ManyToOne(fetch = FetchType.LAZY)
+//	@JoinColumn(name = "caixa_id", nullable = true)
 	private Caixa caixa;
 	
 	@OneToMany(mappedBy = "venda", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<ItemVenda> itens = new ArrayList<ItemVenda>();
 	
-	@OneToMany(mappedBy = "venda", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+	@Transient
+//	@OneToMany(mappedBy = "venda", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Pagamento> pagamentos = new ArrayList<>();
 	
 	public Venda() {	}
@@ -104,6 +113,7 @@ public class Venda extends BaseEntity implements Serializable {
 		this.total = total;
 		this.controle = controle;
 		this.itens = itens;
+		this.dataVenda = dataHora;
 	}
 	
 	public Venda(Long id) {
@@ -244,6 +254,14 @@ public class Venda extends BaseEntity implements Serializable {
 
 	public void setPago(boolean pago) {
 		this.pago = pago;
+	}
+	
+	public Date getDataVenda() {
+		return dataVenda;
+	}
+
+	public void setDataVenda(Date dataVenda) {
+		this.dataVenda = dataVenda;
 	}
 
 	@Transient

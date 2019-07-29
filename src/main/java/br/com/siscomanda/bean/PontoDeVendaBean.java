@@ -23,7 +23,6 @@ import br.com.siscomanda.model.ItemVenda;
 import br.com.siscomanda.model.Preco;
 import br.com.siscomanda.model.Produto;
 import br.com.siscomanda.model.Tamanho;
-import br.com.siscomanda.model.Usuario;
 import br.com.siscomanda.model.Venda;
 import br.com.siscomanda.service.AdicionalService;
 import br.com.siscomanda.service.ClienteService;
@@ -31,6 +30,7 @@ import br.com.siscomanda.service.ConfiguracaoGeralService;
 import br.com.siscomanda.service.PontoDeVendaService;
 import br.com.siscomanda.service.PrecoService;
 import br.com.siscomanda.service.ProdutoService;
+import br.com.siscomanda.service.UsuarioService;
 import br.com.siscomanda.util.JSFUtil;
 import br.com.siscomanda.util.StringUtil;
 
@@ -57,6 +57,9 @@ public class PontoDeVendaBean extends BaseBean<Venda> implements Serializable {
 	
 	@Inject
 	private ClienteService clienteService;
+	
+	@Inject
+	private UsuarioService usuarioService;
 	
 	private boolean novoItem;
 	
@@ -96,7 +99,7 @@ public class PontoDeVendaBean extends BaseBean<Venda> implements Serializable {
 		produtosSelecionados = new ArrayList<Produto>();
 		complementos = new ArrayList<Adicional>();
 		
-		vendaBuilder.comOperador(new Usuario("Administrador"));
+		vendaBuilder.comOperador(usuarioService.porCodigo(1L));
 		setEntity(vendaBuilder.constroi());
 		
 		configuracao = configuracaoService.definicaoSistema();
@@ -115,6 +118,14 @@ public class PontoDeVendaBean extends BaseBean<Venda> implements Serializable {
 	public void btnVoltar() {
 		setNovoItem(false);
 		getEstadoViewBean().setCurrentView(EStateView.INSERT);
+	}
+	
+	public void btnSalvarVenda() {
+		List<ItemVenda> itens = new ArrayList<ItemVenda>();
+		itens.addAll(getEntity().getItens());
+		
+		Venda venda = pontoDeVendaService.salvar(getEntity(), itens);
+		setEntity(venda);
 	}
 	
 	public void btnIncluir(Produto produto) {
@@ -307,12 +318,12 @@ public class PontoDeVendaBean extends BaseBean<Venda> implements Serializable {
 		if(getItensMeioAmeio().isEmpty()) {
 			getItensMeioAmeio().add(getItem());
 		}
-		getEntity();
+		
 		vendaBuilder.comItens(getItensMeioAmeio());
 		vendaBuilder.comTaxaServico(configuracao.getTaxaServico());
 		vendaBuilder.comControle(getEntity().getControle());
 		vendaBuilder.comTipoVenda(getEntity().getTipoVenda());
-		vendaBuilder.comOperador(new Usuario("Administrador"));
+		vendaBuilder.comOperador(usuarioService.porCodigo(1L));
 		setEntity(vendaBuilder.constroi());
 		setIncluirItem(false);
 		btnVoltar();

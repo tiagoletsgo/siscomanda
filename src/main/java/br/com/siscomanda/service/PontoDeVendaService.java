@@ -6,8 +6,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.faces.application.FacesMessage;
 import javax.inject.Inject;
 
+import br.com.siscomanda.config.jpa.Transactional;
 import br.com.siscomanda.enumeration.ETipoVenda;
 import br.com.siscomanda.exception.SiscomandaException;
 import br.com.siscomanda.model.Adicional;
@@ -20,6 +22,7 @@ import br.com.siscomanda.model.Venda;
 import br.com.siscomanda.repository.dao.PrecoDAO;
 import br.com.siscomanda.repository.dao.ProdutoDAO;
 import br.com.siscomanda.repository.dao.VendaDAO;
+import br.com.siscomanda.util.JSFUtil;
 
 public class PontoDeVendaService implements Serializable {
 
@@ -35,6 +38,25 @@ public class PontoDeVendaService implements Serializable {
 	private VendaDAO vendaDAO;
 	
 	private List<Produto> produtosTemp = new ArrayList<Produto>();
+	
+	@Transactional
+	public Venda salvar(Venda venda, List<ItemVenda> itens) {
+		
+		for(ItemVenda item : itens) {
+			item.setId(null);
+			item.setVenda(venda);
+			venda.getItens().add(item);
+		}
+		
+		if(venda.isNovo()) {
+			venda = vendaDAO.salvar(venda);
+			JSFUtil.addMessage(FacesMessage.SEVERITY_INFO, "Registro salvo com sucesso.");
+			return venda;
+		}
+		
+		JSFUtil.addMessage(FacesMessage.SEVERITY_INFO, "Registro alterado com sucesso.");
+		return vendaDAO.salvar(venda);
+	}
 	
 	public ItemVenda paraItemVenda(Venda venda, Produto produto) {
 		double valor = 0;
