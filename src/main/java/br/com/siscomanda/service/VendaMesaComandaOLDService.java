@@ -21,7 +21,7 @@ import br.com.siscomanda.model.VendaOLD;
 import br.com.siscomanda.repository.dao.AdicionalDAO;
 import br.com.siscomanda.repository.dao.ItemVendaAdicionalOLDDAO;
 import br.com.siscomanda.repository.dao.ProdutoDAO;
-import br.com.siscomanda.repository.dao.VendaOLDDAO;
+import br.com.siscomanda.repository.dao.VendaDAO;
 import br.com.siscomanda.util.JSFUtil;
 
 public class VendaMesaComandaOLDService extends VendaOLDService implements Serializable {
@@ -29,7 +29,7 @@ public class VendaMesaComandaOLDService extends VendaOLDService implements Seria
 	private static final long serialVersionUID = -7365230528253341931L;
 	
 	@Inject
-	private VendaOLDDAO vendaDAO;
+	private VendaDAO vendaDAO;
 	
 	@Inject
 	private ProdutoDAO produtoDAO;

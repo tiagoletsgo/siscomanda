@@ -22,7 +22,7 @@ public class Pagamento extends BaseEntity implements Serializable {
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "venda_id", nullable = false)
-	private VendaOLD venda;
+	private Venda venda;
 	
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "forma_pagamento_id", nullable = false)
@@ -64,11 +64,11 @@ public class Pagamento extends BaseEntity implements Serializable {
 	@JoinColumn(name = "caixa_id", nullable = false)
 	private Caixa caixa;
 
-	public VendaOLD getVenda() {
+	public Venda getVenda() {
 		return venda;
 	}
 
-	public void setVenda(VendaOLD venda) {
+	public void setVenda(Venda venda) {
 		this.venda = venda;
 	}
 

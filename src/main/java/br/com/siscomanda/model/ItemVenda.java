@@ -4,19 +4,50 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+
 import br.com.siscomanda.base.model.BaseEntity;
 
+@Entity
+@Table(name = "item_venda")
 public class ItemVenda extends BaseEntity implements Serializable {
 
 	private static final long serialVersionUID = 3248279660381728704L;
-
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "venda_id", nullable = false)
 	private Venda venda;
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "produto_id", nullable = false)
 	private Produto produto;
+	
+	@Column(name = "valor", nullable = false)
 	private Double valor;
+	
+	@Column(name = "total", nullable = false)
 	private Double total;
+	
+	@Column(name = "quantidade", nullable = false)
 	private Double quantidade;
+	
+	@Column(name = "observacao", nullable = false)
 	private String observacao;
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "tamanho_id", nullable = false)
 	private Tamanho tamanho;
+	
+	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+	@JoinTable(name = "item_adicional", joinColumns = @JoinColumn(name = "adicional_id", unique = false), inverseJoinColumns = @JoinColumn(name = "item_venda_id", unique = false))
 	private List<Adicional> adicionais = new ArrayList<Adicional>();
 
 	public ItemVenda() {

@@ -30,7 +30,7 @@ import br.com.siscomanda.repository.dao.CaixaDAO;
 import br.com.siscomanda.repository.dao.LancamentoDAO;
 import br.com.siscomanda.repository.dao.ContaPagarDAO;
 import br.com.siscomanda.repository.dao.FormaPagamentoDAO;
-import br.com.siscomanda.repository.dao.VendaOLDDAO;
+import br.com.siscomanda.repository.dao.VendaDAO;
 import br.com.siscomanda.util.JSFUtil;
 import br.com.siscomanda.util.StringUtil;
 
@@ -50,7 +50,7 @@ public class CaixaService implements Serializable {
 	private FormaPagamentoDAO formaPagamentoDAO;
 	
 	@Inject
-	private VendaOLDDAO vendaDAO;
+	private VendaDAO vendaDAO;
 	
 	@Inject
 	private ContaPagarDAO contaPagarDAO;
@@ -283,7 +283,7 @@ public class CaixaService implements Serializable {
 			if(pagamento.getCaixa().equals(caixa)) {
 				Lancamento lancamento = new Lancamento();
 				lancamento.setId(pagamento.getId());
-				lancamento.setDataHora(pagamento.getVenda().getIniciado());
+				lancamento.setDataHora(pagamento.getVenda().getDataHora());
 				lancamento.setFormaPagamento(pagamento.getFormaPagamento());
 				lancamento.setDescricao("PEDIDO Nº " + pagamento.getVenda().getId());
 				lancamento.setValorEntrada(pagamento.getValorRecebido() - pagamento.getValorTroco());

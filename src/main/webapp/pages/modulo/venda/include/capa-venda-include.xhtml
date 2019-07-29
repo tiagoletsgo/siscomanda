@@ -26,7 +26,7 @@
 			
 			<div class="col-md-3 col-sm-3 col-xs-12">
 				<label for="crudform:operador">Operador :</label>
-				<h:outputText id="operador" styleClass="form-control" value="Administrador" />
+				<h:outputText id="operador" styleClass="form-control" value="#{crudBean.entity.operador.login.toUpperCase()}" />
 			</div>
 			
 			<div class="col-md-3 col-sm-3 col-xs-12">

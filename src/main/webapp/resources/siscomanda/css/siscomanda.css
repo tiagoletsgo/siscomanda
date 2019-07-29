@@ -24,7 +24,123 @@
  	text-transform: uppercase !important;
  	font-family: "montserrat"!important;
  }
-   
+ 
+ .ui-menubutton.btn-primary .ui-button {
+	background: #337ab7!important;
+	border: 1px solid #337ab7!important; 
+	color: #fff!important;
+} 
+
+.ui-menubutton.btn-primary .ui-button.ui-state-hover {
+	color:#fff !important;
+	background:#286090 !important;
+	border: 1px solid #286090 !important;
+    text-shadow: inherit;
+}
+
+.ui-menubutton.btn-primary .ui-button.ui-state-active {
+	color:#fff !important;
+	background:#337ab7!important;
+	border: 1px solid #337ab7 !important;
+    text-shadow: inherit;
+}
+
+.ui-menubutton.btn-danger .ui-button {
+	color:#fff !important;
+	background: #d9534f !important;
+    border: 1px solid #d43f3a !important;
+	text-shadow: inherit;
+} 
+
+.ui-menubutton.btn-danger .ui-button.ui-state-hover {
+	color: #fff !important;
+	background:#c9302c !important;
+	border: 1px solid #ac2925 !important;
+    text-shadow: inherit;
+}
+
+.ui-menubutton.btn-danger .ui-button.ui-state-active {
+	color:#fff !important;
+	background: #d9534f !important;
+    border: 1px solid #d43f3a !important;
+	text-shadow: inherit;
+}
+
+.ui-menubutton.btn-success .ui-button {
+	color:#fff !important;
+	background:#5cb85c !important;
+	border: 1px solid #4cae4c !important;
+	text-shadow: inherit;
+} 
+
+.ui-menubutton.btn-success .ui-button.ui-state-hover {
+	color:#fff !important;
+	background:#449d44 !important;
+	border: 1px solid #398439 !important;
+	text-shadow: inherit;
+}
+
+.ui-menubutton.btn-success .ui-button.ui-state-active {
+	color:#fff !important;
+	background:#5cb85c !important;
+	border: 1px solid #4cae4c !important;
+	text-shadow: inherit;
+}
+
+.ui-menubutton.btn-warning .ui-button {
+	color:#fff !important;
+	background:#f0ad4e !important;
+	border: 1px solid #eea236 !important;
+	text-shadow: inherit;
+} 
+
+.ui-menubutton.btn-warning .ui-button.ui-state-hover {
+	color:#fff !important;
+	background:#ec971f !important;
+	border: 1px solid #d58512 !important;
+	text-shadow: inherit;
+}
+
+.ui-menubutton.btn-warning .ui-button.ui-state-active {
+	color:#fff !important;
+	background:#f0ad4e !important;
+	border: 1px solid #eea236 !important;
+	text-shadow: inherit;
+}
+
+.ui-menubutton.btn:active {
+    background-image: none;
+    -webkit-box-shadow: none!important;
+    box-shadow: none!important;
+}
+
+.ui-menubutton > .ui-button-text-icon-left .ui-button-text {
+    padding: 0.1em 1em .3em 2.1em!important;
+}
+
+.ui-menubutton > .ui-button {
+	height: 34px!important;
+}
+
+.ui-menubutton.btn-primary,
+.ui-menubutton.btn-danger,
+.ui-menubutton.btn-success,
+.ui-menubutton.btn-warning {
+    width: 0px!important;
+	border: none!important;
+}
+
+.pull-right > .ui-menubutton.btn-primary,
+.pull-right > .ui-menubutton.btn-danger,
+.pull-right > .ui-menubutton.btn-success,
+.pull-right > .ui-menubutton.btn-warning,
+.pull-left > .ui-menubutton.btn-primary,
+.pull-left > .ui-menubutton.btn-danger,
+.pull-left > .ui-menubutton.btn-success,
+.pull-left > .ui-menubutton.btn-warning {
+	width: inherit!important;
+}
+
 .ui-button {
 	text-shadow: inherit;
 	box-shadow: inherit;

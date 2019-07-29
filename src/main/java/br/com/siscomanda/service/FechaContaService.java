@@ -19,11 +19,11 @@ import br.com.siscomanda.model.Caixa;
 import br.com.siscomanda.model.FormaPagamento;
 import br.com.siscomanda.model.ItemVendaOLD;
 import br.com.siscomanda.model.Pagamento;
-import br.com.siscomanda.model.VendaOLD;
+import br.com.siscomanda.model.Venda;
 import br.com.siscomanda.repository.dao.BandeiraDAO;
 import br.com.siscomanda.repository.dao.CaixaDAO;
 import br.com.siscomanda.repository.dao.FormaPagamentoDAO;
-import br.com.siscomanda.repository.dao.VendaOLDDAO;
+import br.com.siscomanda.repository.dao.VendaDAO;
 import br.com.siscomanda.util.JSFUtil;
 
 public class FechaContaService extends VendaOLDService implements Serializable {
@@ -31,7 +31,7 @@ public class FechaContaService extends VendaOLDService implements Serializable {
 	private static final long serialVersionUID = -3622747048753270872L;
 	
 	@Inject
-	private VendaOLDDAO vendaDAO;
+	private VendaDAO vendaDAO;
 	
 	@Inject
 	private FormaPagamentoDAO formaPagamentoDAO;
@@ -42,7 +42,7 @@ public class FechaContaService extends VendaOLDService implements Serializable {
 	@Inject
 	private CaixaDAO caixaDAO;
 	
-	public Pagamento carregaPagamento(VendaOLD venda) {
+	public Pagamento carregaPagamento(Venda venda) {
 		
 		Double troco = new Double(0);
 		if(!venda.getPagamentos().isEmpty()) {
@@ -73,7 +73,7 @@ public class FechaContaService extends VendaOLDService implements Serializable {
 	}
 	
 	@Transactional
-	public VendaOLD salvar(VendaOLD venda, Pagamento pagamento) throws SiscomandaException {
+	public Venda salvar(Venda venda, Pagamento pagamento) throws SiscomandaException {
 		Caixa caixa = caixaDAO.temCaixaAberto();
 		
 		if(caixa == null) {
@@ -131,7 +131,7 @@ public class FechaContaService extends VendaOLDService implements Serializable {
 		return status;
 	}
 	
-	private boolean isPago(VendaOLD venda) {
+	private boolean isPago(Venda venda) {
 		if(venda.getStatus().equals(EStatus.PAGO)) {
 			return true;
 		}
@@ -240,8 +240,8 @@ public class FechaContaService extends VendaOLDService implements Serializable {
 		return total;
 	}
 	
-	public VendaOLD buscaVenda(VendaOLD venda) throws SiscomandaException {
-		List<VendaOLD> vendas = vendaDAO.buscaPor(venda, true);
+	public Venda buscaVenda(Venda venda) throws SiscomandaException {
+		List<Venda> vendas = vendaDAO.buscaPor(venda, true);
 		
 		if(vendas.isEmpty()) {
 			throw new SiscomandaException("Registro não encontrado.");

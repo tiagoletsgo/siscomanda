@@ -2,7 +2,6 @@ package br.com.siscomanda.bean;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,7 +14,6 @@ import javax.inject.Named;
 import br.com.siscomanda.base.bean.BaseBean;
 import br.com.siscomanda.builder.VendaBuilder;
 import br.com.siscomanda.enumeration.EStateView;
-import br.com.siscomanda.enumeration.EStatus;
 import br.com.siscomanda.enumeration.ETipoVenda;
 import br.com.siscomanda.exception.SiscomandaException;
 import br.com.siscomanda.model.Adicional;
@@ -32,6 +30,7 @@ import br.com.siscomanda.service.ConfiguracaoGeralService;
 import br.com.siscomanda.service.PontoDeVendaService;
 import br.com.siscomanda.service.PrecoService;
 import br.com.siscomanda.service.ProdutoService;
+import br.com.siscomanda.service.UsuarioService;
 import br.com.siscomanda.util.JSFUtil;
 import br.com.siscomanda.util.StringUtil;
 
@@ -58,6 +57,9 @@ public class PontoDeVendaBean extends BaseBean<Venda> implements Serializable {
 	
 	@Inject
 	private ClienteService clienteService;
+	
+	@Inject
+	private UsuarioService usuarioService;
 	
 	private boolean novoItem;
 	
@@ -97,13 +99,7 @@ public class PontoDeVendaBean extends BaseBean<Venda> implements Serializable {
 		produtosSelecionados = new ArrayList<Produto>();
 		complementos = new ArrayList<Adicional>();
 		
-		vendaBuilder.comDataHora(new Date());
-		vendaBuilder.comDesconto(new Double(0));
-		vendaBuilder.comStatus(EStatus.EM_ABERTO);
-		vendaBuilder.comSubtotal(new Double(0));
-		vendaBuilder.comTaxaEntrega(new Double(0));
-		vendaBuilder.comTaxaServico(new Double(0));
-		vendaBuilder.comDesconto(new Double(0));
+		vendaBuilder.comOperador(usuarioService.porCodigo(1L));
 		setEntity(vendaBuilder.constroi());
 		
 		configuracao = configuracaoService.definicaoSistema();
@@ -122,6 +118,14 @@ public class PontoDeVendaBean extends BaseBean<Venda> implements Serializable {
 	public void btnVoltar() {
 		setNovoItem(false);
 		getEstadoViewBean().setCurrentView(EStateView.INSERT);
+	}
+	
+	public void btnSalvarVenda() {
+		List<ItemVenda> itens = new ArrayList<ItemVenda>();
+		itens.addAll(getEntity().getItens());
+		
+		Venda venda = pontoDeVendaService.salvar(getEntity(), itens);
+		setEntity(venda);
 	}
 	
 	public void btnIncluir(Produto produto) {
@@ -314,11 +318,12 @@ public class PontoDeVendaBean extends BaseBean<Venda> implements Serializable {
 		if(getItensMeioAmeio().isEmpty()) {
 			getItensMeioAmeio().add(getItem());
 		}
-		getEntity();
+		
 		vendaBuilder.comItens(getItensMeioAmeio());
 		vendaBuilder.comTaxaServico(configuracao.getTaxaServico());
 		vendaBuilder.comControle(getEntity().getControle());
 		vendaBuilder.comTipoVenda(getEntity().getTipoVenda());
+		vendaBuilder.comOperador(usuarioService.porCodigo(1L));
 		setEntity(vendaBuilder.constroi());
 		setIncluirItem(false);
 		btnVoltar();

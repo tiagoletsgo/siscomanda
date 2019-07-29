@@ -2,34 +2,28 @@ package br.com.siscomanda.model;
 
 import java.io.Serializable;
 
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
-
 import br.com.siscomanda.base.model.BaseEntity;
 
-@Entity
-@Table(name = "item_venda_adicional")
+//@Entity
+//@Table(name = "item_venda_adicional")
 public class ItemVendaAdicionalOLD extends BaseEntity implements Serializable {
 
 	private static final long serialVersionUID = 4175750690428927319L;
 	
-	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "adicional_id", nullable = false)
+//	@ManyToOne(fetch = FetchType.EAGER)
+//	@JoinColumn(name = "adicional_id", nullable = false)
 	private Adicional adicional;
 	
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "produto_id", nullable = false)
+//	@ManyToOne(fetch = FetchType.LAZY)
+//	@JoinColumn(name = "produto_id", nullable = false)
 	private Produto produto;
 	
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "venda_id", nullable = false)
+//	@ManyToOne(fetch = FetchType.LAZY)
+//	@JoinColumn(name = "venda_id", nullable = false)
 	private VendaOLD venda;
 	
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "item_venda_id", nullable = false)
+//	@ManyToOne(fetch = FetchType.LAZY)
+//	@JoinColumn(name = "item_venda_id", nullable = false)
 	private ItemVendaOLD itemVenda;
 
 	public Adicional getAdicional() {
