@@ -2,6 +2,7 @@ package br.com.siscomanda.model;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -98,10 +99,9 @@ public class Venda extends BaseEntity implements Serializable {
 	
 	public Venda() {	}
 	
-	public Venda(Integer numeroPedido, ETipoVenda tipoVenda, EStatus status, Usuario operador, Date dataHora,
-			Double subtotal, Double taxaServico, Double taxaEntrega, Double desconto, Double total, List<ItemVenda> itens, Integer controle) {
+	public Venda(ETipoVenda tipoVenda, EStatus status, Usuario operador, Date dataHora,
+			Double subtotal, Double taxaServico, Double taxaEntrega, Double desconto, Double total, Integer controle) {
 		
-		this.numeroPedido = numeroPedido;
 		this.tipoVenda = tipoVenda;
 		this.status = status;
 		this.operador = operador;
@@ -112,7 +112,6 @@ public class Venda extends BaseEntity implements Serializable {
 		this.desconto = desconto;
 		this.total = total;
 		this.controle = controle;
-		this.itens = itens;
 		this.dataVenda = dataHora;
 	}
 	
@@ -209,11 +208,12 @@ public class Venda extends BaseEntity implements Serializable {
 	}
 
 	public List<ItemVenda> getItens() {
-		return itens;
+		return Collections.unmodifiableList(itens);
 	}
-
-	public void setItens(List<ItemVenda> itens) {
-		this.itens = itens;
+	
+	public void adicionaItem(ItemVenda item) {
+		itens.add(item);
+		item.setVenda(this);
 	}
 	
 	public Cliente getCliente() {

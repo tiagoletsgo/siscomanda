@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 import br.com.siscomanda.enumeration.EStatus;
 import br.com.siscomanda.enumeration.ETipoVenda;
@@ -15,7 +16,7 @@ import br.com.siscomanda.model.Venda;
 public class VendaBuilder implements Serializable {
 	
 	private static final long serialVersionUID = 2294314144962576823L;
-	private Integer numeroPedido;
+	private Long numeroVenda;
 	private ETipoVenda tipoVenda;
 	private EStatus status;
 	private Usuario operador;
@@ -39,8 +40,8 @@ public class VendaBuilder implements Serializable {
 		this.dataHora = new Date();
 	}
 	
-	public VendaBuilder comNumeroPedido(Integer numeroPedido) {
-		this.numeroPedido = numeroPedido;
+	public VendaBuilder comNumeroVenda(Long numeroVenda) {
+		this.numeroVenda = numeroVenda;
 		return this;
 	}
 	
@@ -122,7 +123,24 @@ public class VendaBuilder implements Serializable {
 		}
 	}
 	
-	public Venda constroi() {
-		return new Venda(numeroPedido, tipoVenda, status, operador, dataHora, subtotal, taxaServico, taxaEntrega, desconto, valorTotal, itens, controle);
+	private Venda insereIdSeNaoForNovaVenda(Venda venda) {
+		Long id = this.numeroVenda;
+		
+		if(Objects.nonNull(id)) {
+			venda.setId(id);
+		}
+		
+		return venda;
+	}
+	
+	public Venda construir() {
+		Venda venda = new Venda(tipoVenda, status, operador, dataHora, subtotal, taxaServico, taxaEntrega, desconto, valorTotal, controle); 
+		venda = insereIdSeNaoForNovaVenda(venda);
+		
+		for(ItemVenda item : itens) {
+			venda.adicionaItem(item);
+		}
+		
+		return venda;
 	}
 }

@@ -39,15 +39,12 @@ public class PontoDeVendaService implements Serializable {
 	
 	private List<Produto> produtosTemp = new ArrayList<Produto>();
 	
+	public Venda porCodigo(Long codigo) throws SiscomandaException {
+		return vendaDAO.porCodigo(codigo);
+	}
+	
 	@Transactional
-	public Venda salvar(Venda venda, List<ItemVenda> itens) {
-		
-		for(ItemVenda item : itens) {
-			item.setId(null);
-			item.setVenda(venda);
-			venda.getItens().add(item);
-		}
-		
+	public Venda salvar(Venda venda) {
 		if(venda.isNovo()) {
 			venda = vendaDAO.salvar(venda);
 			JSFUtil.addMessage(FacesMessage.SEVERITY_INFO, "Registro salvo com sucesso.");
@@ -61,7 +58,9 @@ public class PontoDeVendaService implements Serializable {
 	public ItemVenda paraItemVenda(Venda venda, Produto produto) {
 		double valor = 0;
 		double quantidade = 1;
-		return new ItemVenda(venda, produto, valor, quantidade, "");
+		ItemVenda item = new ItemVenda(produto, valor, quantidade, "");
+		venda.adicionaItem(item);
+		return item;
 	}
 	
 	public List<Adicional> desmarcarListaDeComplementos(List<Adicional> complementos, List<ItemVenda> itens, ItemVenda item) {
@@ -255,9 +254,10 @@ public class PontoDeVendaService implements Serializable {
 					if(produto.equals(preco.getProduto())) {
 						id++;				
 						Double quantidade = new Double(1) / new Double(produtos.size());
-						ItemVenda itemm = new ItemVenda(venda, produto, (preco.getPrecoVenda()), quantidade, "");
+						ItemVenda itemm = new ItemVenda(produto, (preco.getPrecoVenda()), quantidade, "");
 						itemm.setId(id);
 						itemm.setTamanho(tamanho);
+						itemm.setVenda(venda);
 						itens.add(itemm);
 					}
 				}
