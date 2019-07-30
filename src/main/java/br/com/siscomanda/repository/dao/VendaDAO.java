@@ -72,13 +72,17 @@ public class VendaDAO extends GenericDAO<Venda> implements Serializable {
 		return vendas;
 	}
 	
-	public VendaOLD porCodigo(Long codigo) throws SiscomandaException {
+	public Venda porCodigo(Long codigo) throws SiscomandaException {
 		try {
 			StringBuilder sql = new StringBuilder();
-			sql.append("FROM DISTINCT Venda venda JOIN FETCH venda.itens WHERE venda.id = :codigo ");
-			TypedQuery<VendaOLD> query = getEntityManager().createQuery(sql.toString(), VendaOLD.class);
+			sql.append("SELECT venda FROM Venda venda ");
+			sql.append("INNER JOIN FETCH venda.itens itens ");
+			sql.append("INNER JOIN FETCH itens.tamanho tamanho ");
+			sql.append("INNER JOIN FETCH itens.produto produto ");
+			sql.append("WHERE venda.id = :codigo ");
+			TypedQuery<Venda> query = getEntityManager().createQuery(sql.toString(), Venda.class);
 			query.setParameter("codigo", codigo);
-			VendaOLD venda  = query.getSingleResult();
+			Venda venda  = query.getSingleResult();
 			return venda;
 		}
 		catch(Exception e) {

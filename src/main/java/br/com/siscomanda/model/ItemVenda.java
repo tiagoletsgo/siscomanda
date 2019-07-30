@@ -65,6 +65,14 @@ public class ItemVenda extends BaseEntity implements Serializable {
 		this.observacao = observacao;
 	}
 	
+	public ItemVenda(Produto produto, Double valor, Double quantidade, String observacao) {
+		this.produto = produto;
+		this.valor = valor;
+		this.quantidade = quantidade;
+		this.total = (valor * quantidade);
+		this.observacao = observacao;
+	}
+	
 	public ItemVenda(Long id, Venda venda, Produto produto, Double valor, Double quantidade, String observacao, List<Adicional> complementos) {
 		setId(id);
 		this.venda = venda;

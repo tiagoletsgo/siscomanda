@@ -100,7 +100,7 @@ public class PontoDeVendaBean extends BaseBean<Venda> implements Serializable {
 		complementos = new ArrayList<Adicional>();
 		
 		vendaBuilder.comOperador(usuarioService.porCodigo(1L));
-		setEntity(vendaBuilder.constroi());
+		setEntity(vendaBuilder.construir());
 		
 		configuracao = configuracaoService.definicaoSistema();
 		clientes = clienteService.todos();
@@ -121,11 +121,14 @@ public class PontoDeVendaBean extends BaseBean<Venda> implements Serializable {
 	}
 	
 	public void btnSalvarVenda() {
-		List<ItemVenda> itens = new ArrayList<ItemVenda>();
-		itens.addAll(getEntity().getItens());
-		
-		Venda venda = pontoDeVendaService.salvar(getEntity(), itens);
-		setEntity(venda);
+		try {
+			Venda venda = pontoDeVendaService.salvar(getEntity());
+			venda = pontoDeVendaService.porCodigo(venda.getId());
+			setEntity(venda);
+		}
+		catch(SiscomandaException e) {
+			JSFUtil.addMessage(FacesMessage.SEVERITY_ERROR, e.getMessage());
+		}
 	}
 	
 	public void btnIncluir(Produto produto) {
@@ -319,12 +322,15 @@ public class PontoDeVendaBean extends BaseBean<Venda> implements Serializable {
 			getItensMeioAmeio().add(getItem());
 		}
 		
+		vendaBuilder.comNumeroVenda(getEntity().getId());
 		vendaBuilder.comItens(getItensMeioAmeio());
 		vendaBuilder.comTaxaServico(configuracao.getTaxaServico());
 		vendaBuilder.comControle(getEntity().getControle());
 		vendaBuilder.comTipoVenda(getEntity().getTipoVenda());
 		vendaBuilder.comOperador(usuarioService.porCodigo(1L));
-		setEntity(vendaBuilder.constroi());
+		Venda venda = vendaBuilder.construir();
+		
+		setEntity(venda);
 		setIncluirItem(false);
 		btnVoltar();
 	}
