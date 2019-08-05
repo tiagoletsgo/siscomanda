@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -46,8 +45,8 @@ public class ItemVenda extends BaseEntity implements Serializable {
 	@JoinColumn(name = "tamanho_id", nullable = false)
 	private Tamanho tamanho;
 	
-	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-	@JoinTable(name = "item_adicional", joinColumns = @JoinColumn(name = "adicional_id", unique = false), inverseJoinColumns = @JoinColumn(name = "item_venda_id", unique = false))
+	@OneToMany(fetch = FetchType.LAZY)
+	@JoinTable(name = "item_adicional", joinColumns = @JoinColumn(name = "item_venda_id", unique = false), inverseJoinColumns = @JoinColumn(name = "adicional_id", unique = false))
 	private List<Adicional> adicionais = new ArrayList<Adicional>();
 
 	public ItemVenda() {
@@ -95,6 +94,7 @@ public class ItemVenda extends BaseEntity implements Serializable {
 		it.setTotal(item.getTotal());
 		it.setValor(item.getValor());
 		it.setVenda(item.getVenda());
+		it.setTamanho(item.getTamanho());
 		
 		return it;
 	}

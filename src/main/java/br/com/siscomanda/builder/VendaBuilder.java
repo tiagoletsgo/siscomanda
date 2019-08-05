@@ -27,6 +27,7 @@ public class VendaBuilder implements Serializable {
 	private Double desconto;
 	private Double valorTotal;
 	private Integer controle;
+	private Double valorPago;
 	private List<ItemVenda> itens = new ArrayList<ItemVenda>();
 	
 	public VendaBuilder() {
@@ -36,6 +37,7 @@ public class VendaBuilder implements Serializable {
 		this.desconto = new Double(0);
 		this.valorTotal = new Double(0);
 		this.controle = new Integer(0);
+		this.valorPago = new Double(0);
 		this.status = EStatus.EM_ABERTO;
 		this.dataHora = new Date();
 	}
@@ -67,11 +69,6 @@ public class VendaBuilder implements Serializable {
 	
 	public VendaBuilder comDataHora(Date dataHora) {
 		this.dataHora = dataHora;
-		return this;
-	}
-	
-	public VendaBuilder comSubtotal(Double subtotal) {
-		this.subtotal = subtotal;
 		return this;
 	}
 	
@@ -135,6 +132,8 @@ public class VendaBuilder implements Serializable {
 	
 	public Venda construir() {
 		Venda venda = new Venda(tipoVenda, status, operador, dataHora, subtotal, taxaServico, taxaEntrega, desconto, valorTotal, controle); 
+		venda.setValorPago(valorPago);
+		
 		venda = insereIdSeNaoForNovaVenda(venda);
 		
 		for(ItemVenda item : itens) {

@@ -12,10 +12,13 @@
 		<div class="form-group">
 			<div class="col-md-12 col-sm-12 col-xs-12">
 				<p:commandButton styleClass="btn btn-success" value="Salvar Venda" disabled="#{empty crudBean.entity.itens}"
-					action="#{crudBean.btnSalvarVenda()}" />
+					action="#{crudBean.btnSalvarVenda()}" update="crudform" />
 					
-				<p:commandButton styleClass="btn btn-primary pull-right" value="Tipo Venda" oncomplete="PF('dlgTipoVenda').show();" />
+				<p:commandButton styleClass="btn btn-primary pull-right" value="Tipo Venda" oncomplete="PF('dlgTipoVenda').show();" 
+					disabled="#{not crudBean.entity.novo}"/>
 				
+				<p:link outcome="/pages/modulo/venda/venda?view=search" value="Voltar" styleClass="btn btn-primary pull-right" />
+
 				<p:menuButton value="Opções" styleClass="btn btn-primary" disabled="true">
 					<p:menuitem value="Cancelar" icon="fa fa-angle-double-right"/>
 					<p:menuitem value="Excluir" icon="fa fa-angle-double-right"/>
@@ -23,6 +26,7 @@
 					<p:menuitem value="Nova Venda" icon="fa fa-angle-double-right"/>
 					<p:menuitem value="Pagar" icon="fa fa-angle-double-right"/>
 				</p:menuButton>
+				
 			</div>	
 			<div class="clearfix"></div>
 		</div>

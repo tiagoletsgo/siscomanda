@@ -42,8 +42,8 @@
 			</h:panelGroup>
 		</h:panelGroup>
 		<h:panelGroup layout="block" id="formconsulta">
-			<h:panelGroup layout="block" rendered="#{not crudBean.estadoViewBean.insert and not crudBean.estadoViewBean.update}">
-				<!-- <ui:include src="/pages/modulo/tamanho/consulta-tamanho.xhtml" /> -->
+			<h:panelGroup layout="block" rendered="#{not crudBean.estadoViewBean.insert and not crudBean.estadoViewBean.update and not crudBean.novoItem and not crudBean.incluirItem}">
+				<ui:include src="/pages/modulo/venda/consulta-venda.xhtml" />
 			</h:panelGroup>
 		</h:panelGroup>
 	</ui:define>
@@ -59,7 +59,7 @@
 			</h:panelGroup>
 			
 			<h:panelGroup layout="block" rendered="#{crudBean.estadoViewBean.search}">
-				<!-- <ui:include src="/pages/modulo/venda/tabela-venda-item.xhtml" /> -->
+				<ui:include src="/pages/modulo/venda/tabela-venda.xhtml" />
 			</h:panelGroup>
 		</h:panelGroup>
 	</ui:define>

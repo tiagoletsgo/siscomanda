@@ -3,10 +3,18 @@
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:p="http://primefaces.org/ui">
-		
+	
+	<style>
+		.ui-selectoneradio  .ui-state-disabled {
+		    cursor: no-drop!important;
+		    opacity: inherit!important;
+		    background: inherit;
+		}
+	</style>
+	
 	<div class="row">
 		<div class="col-md-12 col-sm-12 col-xs-12">
-			<p:selectOneRadio value="#{crudBean.item.valor}">
+			<p:selectOneRadio value="#{crudBean.item.valor}" disabled="#{crudBean.modificandoItem}">
 				<f:selectItems value="#{crudBean.precos}" var="preco" itemLabel="#{crudBean.paraMoedaPtBR(preco.precoVenda)} (#{preco.tamanho.sigla.toUpperCase()})" itemValue="#{preco.precoVenda}" />
 				<p:ajax event="change" update="inpTotal observacoes inpTamanhoProduto itensMeioAmeio inpDescricaoProduto tabelaComplementos scripts" global="false" process="@this" listener="#{crudBean.alterarTamanho()}" />
 			</p:selectOneRadio>

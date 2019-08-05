@@ -14,6 +14,7 @@ import javax.inject.Named;
 import br.com.siscomanda.base.bean.BaseBean;
 import br.com.siscomanda.builder.VendaBuilder;
 import br.com.siscomanda.enumeration.EStateView;
+import br.com.siscomanda.enumeration.EStatus;
 import br.com.siscomanda.enumeration.ETipoVenda;
 import br.com.siscomanda.exception.SiscomandaException;
 import br.com.siscomanda.model.Adicional;
@@ -90,7 +91,9 @@ public class PontoDeVendaBean extends BaseBean<Venda> implements Serializable {
 	private String pesquisaDescricaoProduto;
 	
 	private String pesquisaPorNomeCliente;
-
+	
+	private boolean modificandoItem;
+	
 	@Override
 	protected void init() {
 		vendaBuilder = new VendaBuilder();
@@ -104,6 +107,7 @@ public class PontoDeVendaBean extends BaseBean<Venda> implements Serializable {
 		
 		configuracao = configuracaoService.definicaoSistema();
 		clientes = clienteService.todos();
+		setElements(pontoDeVendaService.vendasNaoPagas());
 	}
 	
 	public void btnNovoItem() {
@@ -139,7 +143,7 @@ public class PontoDeVendaBean extends BaseBean<Venda> implements Serializable {
 			Produto prod = produto.clone(produto);
 			setItem(pontoDeVendaService.paraItemVenda(getEntity(), prod));
 
-			getItem().setId(1L);
+			getItem().setId(999999L);
 			precos = precoService.porProduto(prod);
 			produtos = produtoService.todos(true);
 			produtos.remove(prod);
@@ -155,6 +159,7 @@ public class PontoDeVendaBean extends BaseBean<Venda> implements Serializable {
 		setIncluirItem(false);
 		setNovoItem(true);
 		getItensMeioAmeio().clear();
+		getEntity().removeItem(getItem());
 		setItem(new ItemVenda());
 		
 		if(getComplementos() != null) {			
@@ -318,18 +323,20 @@ public class PontoDeVendaBean extends BaseBean<Venda> implements Serializable {
 	
 	public void btnConfirmar() {
 		
-		if(getItensMeioAmeio().isEmpty()) {
+		if(getItensMeioAmeio().isEmpty() && !modificandoItem) {
 			getItensMeioAmeio().add(getItem());
 		}
 		
-		vendaBuilder.comNumeroVenda(getEntity().getId());
-		vendaBuilder.comItens(getItensMeioAmeio());
-		vendaBuilder.comTaxaServico(configuracao.getTaxaServico());
-		vendaBuilder.comControle(getEntity().getControle());
-		vendaBuilder.comTipoVenda(getEntity().getTipoVenda());
-		vendaBuilder.comOperador(usuarioService.porCodigo(1L));
+		vendaBuilder.comNumeroVenda(getEntity().getId())
+		.comItens(getItensMeioAmeio())
+		.comTaxaServico(configuracao.getTaxaServico())
+		.comControle(getEntity().getControle())
+		.comTipoVenda(getEntity().getTipoVenda())
+		.comOperador(usuarioService.porCodigo(1L));
+		
 		Venda venda = vendaBuilder.construir();
 		
+		modificandoItem = false;
 		setEntity(venda);
 		setIncluirItem(false);
 		btnVoltar();
@@ -392,10 +399,66 @@ public class PontoDeVendaBean extends BaseBean<Venda> implements Serializable {
 			JSFUtil.addMessage(FacesMessage.SEVERITY_ERROR, e.getMessage());
 		}
 	}
+	
+	public void btnEditarVenda(Venda venda) {
+		try {
+			getEstadoViewBean().setCurrentView(EStateView.UPDATE);
+			
+			venda = pontoDeVendaService.porCodigo(venda.getId());
+			
+			vendaBuilder.comControle(venda.getControle())
+			.comDesconto(venda.getDesconto())
+			.comTaxaEntrega(venda.getTaxaEntrega())
+			.comItens(venda.getItens())
+			.comOperador(venda.getOperador())
+			.comTaxaServico(venda.getTaxaServico())
+			.comNumeroVenda(venda.getId())
+			.comTipoVenda(venda.getTipoVenda())
+			.comStatus(venda.getStatus())
+			.comDataHora(venda.getDataHora());
+			
+			setEntity(vendaBuilder.construir());
+			
+		} catch (SiscomandaException e) {
+			JSFUtil.addMessage(FacesMessage.SEVERITY_ERROR, e.getMessage());
+		}
+	}
+	
+	public void btnEditarItem(ItemVenda item) {
+		try {
+			modificandoItem = true;
+			setItem(new ItemVenda().clonar(item));
+			precos = precoService.porProduto(item.getProduto());
+			
+			if(item.getTamanho().isPermiteMeioAmeio()) {
+				for(Adicional adicional : item.getAdicionais()) {
+					adicional.setSelecionado(true);
+				}
+				
+				for(Adicional adicional : adicionalService.todos()) {
+					for(Adicional complemento : item.getAdicionais()) {
+						if(adicional.equals(complemento) && complemento.isSelecionado()) {
+							adicional.setSelecionado(true);
+						}
+					}
+					this.complementos.add(adicional);
+				}
+			}
+			
+			setNovoItem(false);
+			setIncluirItem(true);
+			getEstadoViewBean().setCurrentView(null);
+		}
+		catch(SiscomandaException e) {
+			JSFUtil.addMessage(FacesMessage.SEVERITY_ERROR, e.getMessage());
+		}
+	}
 
 	@Override
 	protected void beforeSearch() {
-		
+		parametros.put("venda", getEntity()); 
+		setElements(pontoDeVendaService.buscarPor(parametros));
+		setEntity(vendaBuilder.construir());
 	}
 
 	public boolean isNovoItem() {
@@ -484,5 +547,13 @@ public class PontoDeVendaBean extends BaseBean<Venda> implements Serializable {
 
 	public void setPesquisaPorNomeCliente(String pesquisaPorNomeCliente) {
 		this.pesquisaPorNomeCliente = pesquisaPorNomeCliente;
+	}
+	
+	public EStatus[] getStatusVenda() {
+		return EStatus.values();
+	}
+	
+	public boolean isModificandoItem() {
+		return modificandoItem;
 	}
 }
