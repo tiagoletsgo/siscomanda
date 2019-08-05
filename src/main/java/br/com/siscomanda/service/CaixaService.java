@@ -21,15 +21,15 @@ import br.com.siscomanda.interfaces.lancamentoImpl.LancamentoDespesa;
 import br.com.siscomanda.interfaces.lancamentoImpl.LancamentoEntrada;
 import br.com.siscomanda.interfaces.lancamentoImpl.LancamentoSaida;
 import br.com.siscomanda.model.Caixa;
-import br.com.siscomanda.model.Lancamento;
 import br.com.siscomanda.model.ContaPagar;
 import br.com.siscomanda.model.FormaPagamento;
+import br.com.siscomanda.model.Lancamento;
 import br.com.siscomanda.model.Pagamento;
-import br.com.siscomanda.model.VendaOLD;
+import br.com.siscomanda.model.Venda;
 import br.com.siscomanda.repository.dao.CaixaDAO;
-import br.com.siscomanda.repository.dao.LancamentoDAO;
 import br.com.siscomanda.repository.dao.ContaPagarDAO;
 import br.com.siscomanda.repository.dao.FormaPagamentoDAO;
+import br.com.siscomanda.repository.dao.LancamentoDAO;
 import br.com.siscomanda.repository.dao.VendaDAO;
 import br.com.siscomanda.util.JSFUtil;
 import br.com.siscomanda.util.StringUtil;
@@ -233,9 +233,14 @@ public class CaixaService implements Serializable {
 			throw new SiscomandaException("Não é possível abrir o caixa com saldo zerado.");
 		}
 		
+		List<FormaPagamento> formasDePagamento = formaPagamentoDAO.porDescricao("DINHEIRO", FormaPagamento.class);
+		if(formasDePagamento.isEmpty()) {
+			throw new SiscomandaException("Forma de pagamento DINHEIRO não foi encontrada. Por gentileza verifique.");
+		}
+		
 		Lancamento lancamento = new Lancamento();
 		lancamento.setDataHora(new Date());
-		FormaPagamento formaPagamento = formaPagamentoDAO.porDescricao("DINHEIRO", FormaPagamento.class).get(0);
+		FormaPagamento formaPagamento = formasDePagamento.get(0);
 		lancamento.setFormaPagamento(formaPagamento);
 		lancamento.setDescricao(SALDO_INICIAL);
 		lancamento.setValorEntrada(caixa.getSaldoInicial());
@@ -258,7 +263,7 @@ public class CaixaService implements Serializable {
 	@Transactional
 	public void fecharCaixa(Caixa caixa) throws SiscomandaException {
 		
-		List<VendaOLD> vendasEmAberto = vendaDAO.vendasNaoPagas();
+		List<Venda> vendasEmAberto = vendaDAO.naoPagas();
 		if(!vendasEmAberto.isEmpty()) {
 			throw new SiscomandaException("Existem ( " + vendasEmAberto.size() + " ) vendas não finalizadas.");
 		}

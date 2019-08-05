@@ -1,6 +1,7 @@
 package br.com.siscomanda.model;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -30,9 +31,6 @@ import br.com.siscomanda.enumeration.ETipoVenda;
 public class Venda extends BaseEntity implements Serializable {
 
 	private static final long serialVersionUID = 1323965645259119303L;
-	
-	@Column(name = "numero_pedido")
-	private Integer numeroPedido;
 	
 	@Enumerated(EnumType.STRING)
 	@Column(name = "tipo_venda", nullable = false)
@@ -72,29 +70,24 @@ public class Venda extends BaseEntity implements Serializable {
 	@Column(name = "controle", nullable = false)
 	private Integer controle;
 	
-	@Transient
-//	@Column(name = "valor_pago", nullable = false)
+	@Column(name = "valor_pago", nullable = false)
 	private Double valorPago;
 	
-	@Transient
-//	@Column(name = "pago", nullable = false)
+	@Column(name = "pago")
 	private boolean pago;
 	
-	@Transient
-//	@ManyToOne(fetch = FetchType.LAZY)
-//	@JoinColumn(name = "cliente_id", nullable = true)
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "cliente_id", nullable = true)
 	private Cliente cliente;
 	
-	@Transient
-//	@ManyToOne(fetch = FetchType.LAZY)
-//	@JoinColumn(name = "caixa_id", nullable = true)
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "caixa_id", nullable = true)
 	private Caixa caixa;
 	
 	@OneToMany(mappedBy = "venda", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<ItemVenda> itens = new ArrayList<ItemVenda>();
 	
-	@Transient
-//	@OneToMany(mappedBy = "venda", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToMany(mappedBy = "venda", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Pagamento> pagamentos = new ArrayList<>();
 	
 	public Venda() {	}
@@ -117,14 +110,6 @@ public class Venda extends BaseEntity implements Serializable {
 	
 	public Venda(Long id) {
 		setId(id);
-	}
-
-	public Integer getNumeroPedido() {
-		return numeroPedido;
-	}
-
-	public void setNumeroPedido(Integer numeroPedido) {
-		this.numeroPedido = numeroPedido;
 	}
 
 	public ETipoVenda getTipoVenda() {
@@ -216,6 +201,10 @@ public class Venda extends BaseEntity implements Serializable {
 		item.setVenda(this);
 	}
 	
+	public void removeItem(ItemVenda item) {
+		itens.remove(item);
+	}
+	
 	public Cliente getCliente() {
 		return cliente;
 	}
@@ -241,7 +230,7 @@ public class Venda extends BaseEntity implements Serializable {
 	}
 	
 	public Double getValorPago() {
-		return valorPago;
+		return valorPago == null ? new Double(0) : valorPago;
 	}
 
 	public void setValorPago(Double valorPago) {
@@ -298,5 +287,17 @@ public class Venda extends BaseEntity implements Serializable {
 	@Transient
 	public boolean isNotPago() {
 		return !isPago();
+	}
+	
+	@Transient
+	public Double getDiferenca() {
+		Double pago = getValorPago() == null ? new Double(0) : getValorPago(); 
+		Double total = getTotal() == null ? new Double(0) : getTotal();
+		Double diferenca = total - pago; 
+		if(diferenca < BigDecimal.ZERO.doubleValue()) {
+			diferenca = BigDecimal.ZERO.doubleValue();
+		}
+		
+		return diferenca;
 	}
 }

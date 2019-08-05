@@ -39,6 +39,14 @@ public class PontoDeVendaService implements Serializable {
 	
 	private List<Produto> produtosTemp = new ArrayList<Produto>();
 	
+	public List<Venda> buscarPor(Map<String, Object> filter) {
+		return vendaDAO.buscarPor(filter);
+	}
+	
+	public List<Venda> vendasNaoPagas() {
+		return vendaDAO.naoPagas();
+	}
+	
 	public Venda porCodigo(Long codigo) throws SiscomandaException {
 		return vendaDAO.porCodigo(codigo);
 	}
@@ -58,8 +66,10 @@ public class PontoDeVendaService implements Serializable {
 	public ItemVenda paraItemVenda(Venda venda, Produto produto) {
 		double valor = 0;
 		double quantidade = 1;
+		
 		ItemVenda item = new ItemVenda(produto, valor, quantidade, "");
 		venda.adicionaItem(item);
+		
 		return item;
 	}
 	
@@ -177,10 +187,12 @@ public class PontoDeVendaService implements Serializable {
 			}
 			throw new SiscomandaException("Antes de incluir um complemento por gentileza, selecione um item da lista de itens meio a meio.");
 		}
+		
 		if(itemSelecionado == null && complemento.isSelecionado()) {
 			itemSelecionado = itemPrincipal;
 			itens.add(itemSelecionado);
 		}
+		
 		if(complemento.isSelecionado()) {
 			for(Adicional adicional: complementos) {
 				if(adicional.isSelecionado()) {
@@ -206,14 +218,6 @@ public class PontoDeVendaService implements Serializable {
 		}
 		
 		return itens;
-	}
-	
-	public List<Produto> corrigeNomeDaListaDeProdutos(List<Produto> produtos) {
-		for(Produto produto : produtos) {
-			String descricao = produto.getDescricao().replaceAll("\\(.+?\\)", "");
-			produto.setDescricao(descricao);
-		}
-		return produtos;
 	}
 	
 	public List<ItemVenda> personalizar(List<Produto> produtos, List<ItemVenda> itens, Tamanho tamanho, ItemVenda item, Venda venda) throws SiscomandaException {
@@ -248,11 +252,11 @@ public class PontoDeVendaService implements Serializable {
 			
 			List<Preco> precos = precoDAO.porTamanhoProduto(produtos, tamanho);
 			
-			long id = 1;
+			long id = 999999;
 			for(Preco preco : precos) {
 				for(Produto produto : produtos) {
 					if(produto.equals(preco.getProduto())) {
-						id++;				
+						id--;				
 						Double quantidade = new Double(1) / new Double(produtos.size());
 						ItemVenda itemm = new ItemVenda(produto, (preco.getPrecoVenda()), quantidade, "");
 						itemm.setId(id);
@@ -283,35 +287,6 @@ public class PontoDeVendaService implements Serializable {
 		}
 		
 		return itens;
-	}
-	
-	@Deprecated
-	public Map<String, Object> atualizaNomeDosProdutos(List<ItemVenda> itens, String descricaoOriginalProduto, String sigla) {
-		Map<String, Object> map = new HashMap<String, Object>();
-		
-		boolean ePersonalizado = itens.size() > 1 ? true : false;
-		String descricaoAlteradaProduto = null;
-		
-		for(ItemVenda item : itens) {
-			String descricaoProduto = item.getProduto().getDescricao().replaceAll("\\(.+?\\)", "");
-			descricaoProduto = descricaoProduto + "(" + sigla + ")";
-
-			Produto produto = item.getProduto();
-			produto.setDescricao(descricaoProduto);
-			item.setProduto(produto.clone(produto));
-		}
-		
-		if(ePersonalizado) {
-			descricaoAlteradaProduto = "PIZZA PERSONALIZADA (" + sigla + ")";
-		}
-		else {
-			descricaoAlteradaProduto = descricaoOriginalProduto + "(" + sigla + ")";
-		}
-		
-		map.put("descricaoProduto", descricaoAlteradaProduto);
-		map.put("itens", itens);		
-		
-		return map;
 	}
 	
 	public List<ItemVenda> listaItemMeioAmeioTiverUmRegistroRemovaTudo(List<ItemVenda> itens) {

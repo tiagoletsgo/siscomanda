@@ -67,7 +67,7 @@
 			</p:column>
 			
 			<p:column width="80">
-				<p:commandButton styleClass="btn btn-warning btn-xs" value="Editar" action="#{crudBean.btnEditar(subcategoria)}" update="@form" />
+				<p:commandButton styleClass="btn btn-warning btn-xs" value="Editar" action="#{crudBean.btnEditarItem(item)}" update="@form" />
 			</p:column>
 			
 			<p:rowExpansion>
@@ -90,11 +90,5 @@
 					</p:column>
 				</p:dataTable>
 			</p:rowExpansion>
-			
-			<f:facet name="footer">
-				<p:commandButton styleClass="btn btn-danger btn-xs" style="float: left;" oncomplete="PF('dlgConfirmarExclusao').show();" value="Deletar" 
-					rendered="#{crudBean.elements.size() > 0 and not crudBean.estadoViewBean.update}"/>
-				<div class="clearfix"></div>
-			</f:facet>
 		</p:dataTable>				
 </ui:composition>
