@@ -155,16 +155,21 @@ public class PontoDeVendaBean extends BaseBean<Venda> implements Serializable {
 		}
 	}
 	
-	public void btnCancelarInclusaoNovoItem() {
-		setIncluirItem(false);
-		setNovoItem(true);
-		getItensMeioAmeio().clear();
-		getEntity().removeItem(getItem());
-		setItem(new ItemVenda());
+	public void btnCancelarItem() {
+		boolean novoItem = false;
+		boolean incluirItem = true;
 		
-		if(getComplementos() != null) {			
-			getComplementos().clear();
+		if(!modificandoItem) {
+			novoItem = false;
+			incluirItem = false;
+			getEntity().removeItem(getItem());
 		}
+		
+		setIncluirItem(novoItem);
+		setNovoItem(incluirItem);
+		getItensMeioAmeio().clear();		
+		setItem(new ItemVenda());
+		this.complementos = new ArrayList<>();
 	}
 	
 	public void atualizaListaDeProdutos() {
