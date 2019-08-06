@@ -17,7 +17,7 @@ import br.com.siscomanda.base.model.BaseEntity;
 
 @Entity
 @Table(name = "item_venda")
-public class ItemVenda extends BaseEntity implements Serializable {
+public class ItemVenda extends BaseEntity implements Serializable, Comparable<ItemVenda> {
 
 	private static final long serialVersionUID = 3248279660381728704L;
 	
@@ -165,5 +165,13 @@ public class ItemVenda extends BaseEntity implements Serializable {
 
 	public void setTamanho(Tamanho tamanho) {
 		this.tamanho = tamanho;
+	}
+
+	@Override
+	public int compareTo(ItemVenda o) {
+		if(o.getId() > getId()) {
+			return -1;
+		}
+		return 0;
 	}
 }

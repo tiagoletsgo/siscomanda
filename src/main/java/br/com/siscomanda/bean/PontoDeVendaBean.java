@@ -2,6 +2,7 @@ package br.com.siscomanda.bean;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -159,12 +160,10 @@ public class PontoDeVendaBean extends BaseBean<Venda> implements Serializable {
 		boolean novoItem = false;
 		boolean incluirItem = true;
 		
-		if(!modificandoItem) {
-			getEntity().removeItem(getItem());
-		}
-		else if(modificandoItem) {
+		if(modificandoItem) {
 			novoItem = false;
 			incluirItem = false;
+			vendaBuilder.comItens(Arrays.asList(getItem()));
 			getEstadoViewBean().setCurrentView(EStateView.UPDATE);
 		}
 		
