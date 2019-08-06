@@ -160,11 +160,15 @@ public class PontoDeVendaBean extends BaseBean<Venda> implements Serializable {
 		boolean incluirItem = true;
 		
 		if(!modificandoItem) {
-			novoItem = false;
-			incluirItem = false;
 			getEntity().removeItem(getItem());
 		}
+		else if(modificandoItem) {
+			novoItem = false;
+			incluirItem = false;
+			getEstadoViewBean().setCurrentView(EStateView.UPDATE);
+		}
 		
+		modificandoItem = false;
 		setIncluirItem(novoItem);
 		setNovoItem(incluirItem);
 		getItensMeioAmeio().clear();		
@@ -232,7 +236,7 @@ public class PontoDeVendaBean extends BaseBean<Venda> implements Serializable {
 		try {
 			List<ItemVenda> itens = new ArrayList<ItemVenda>();
 			Tamanho tamanho = (Tamanho)parametros.get("tamanho");
-			ItemVenda item = getItem().clonar(getItem());
+			ItemVenda item = getItem().clone(getItem());
 			
 			itens = pontoDeVendaService.personalizar(getProdutosSelecionados(), getItensMeioAmeio(), tamanho, item, getEntity());
 			itensMeioAmeio = itens;
@@ -328,7 +332,7 @@ public class PontoDeVendaBean extends BaseBean<Venda> implements Serializable {
 	
 	public void btnConfirmar() {
 		
-		if(getItensMeioAmeio().isEmpty() && !modificandoItem) {
+		if(getItensMeioAmeio().isEmpty()) {
 			getItensMeioAmeio().add(getItem());
 		}
 		
@@ -340,9 +344,11 @@ public class PontoDeVendaBean extends BaseBean<Venda> implements Serializable {
 		.comOperador(usuarioService.porCodigo(1L));
 		
 		Venda venda = vendaBuilder.construir();
-		
-		modificandoItem = false;
+		this.itensMeioAmeio = new ArrayList<ItemVenda>();
+
 		setEntity(venda);
+		setItem(new ItemVenda());
+		modificandoItem = false;
 		setIncluirItem(false);
 		btnVoltar();
 	}
@@ -432,8 +438,10 @@ public class PontoDeVendaBean extends BaseBean<Venda> implements Serializable {
 	public void btnEditarItem(ItemVenda item) {
 		try {
 			modificandoItem = true;
-			setItem(new ItemVenda().clonar(item));
+			vendaBuilder.removerItem(item);
+			setItem(new ItemVenda().clone(item));
 			precos = precoService.porProduto(item.getProduto());
+			this.complementos = new ArrayList<Adicional>();
 			
 			if(item.getTamanho().isPermiteMeioAmeio()) {
 				for(Adicional adicional : item.getAdicionais()) {
