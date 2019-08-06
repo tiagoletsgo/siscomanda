@@ -17,7 +17,7 @@ import br.com.siscomanda.base.model.BaseEntity;
 
 @Entity
 @Table(name = "item_venda")
-public class ItemVenda extends BaseEntity implements Serializable {
+public class ItemVenda extends BaseEntity implements Serializable, Comparable<ItemVenda> {
 
 	private static final long serialVersionUID = 3248279660381728704L;
 	
@@ -83,20 +83,24 @@ public class ItemVenda extends BaseEntity implements Serializable {
 		this.adicionais = complementos;
 	}
 	
-	public ItemVenda clonar(ItemVenda item) {
-		ItemVenda it = new ItemVenda();
-		it.setId(item.getId());
-		it.setAdicionais(item.getAdicionais());
-		it.setObservacao(item.getObservacao());
-		it.setProduto(item.getProduto().clone(item.getProduto()));
-		it.setQuantidade(item.getQuantidade());
-		it.setSelecionado(item.isSelecionado());
-		it.setTotal(item.getTotal());
-		it.setValor(item.getValor());
-		it.setVenda(item.getVenda());
-		it.setTamanho(item.getTamanho());
+	public ItemVenda clone(ItemVenda item) {
+		ItemVenda itemm = new ItemVenda();
+		itemm.setId(item.getId());
 		
-		return it;
+		List<Adicional> adicionais = new ArrayList<Adicional>();
+		adicionais.addAll(item.getAdicionais());
+		itemm.setAdicionais(adicionais);
+		
+		itemm.setObservacao(item.getObservacao());
+		itemm.setProduto(item.getProduto().clone(item.getProduto()));
+		itemm.setQuantidade(item.getQuantidade());
+		itemm.setSelecionado(item.isSelecionado());
+		itemm.setTotal(item.getTotal());
+		itemm.setValor(item.getValor());
+		itemm.setVenda(item.getVenda());
+		itemm.setTamanho(item.getTamanho());
+		
+		return itemm;
 	}
 
 	public Venda getVenda() {
@@ -161,5 +165,13 @@ public class ItemVenda extends BaseEntity implements Serializable {
 
 	public void setTamanho(Tamanho tamanho) {
 		this.tamanho = tamanho;
+	}
+
+	@Override
+	public int compareTo(ItemVenda o) {
+		if(o.getId() > getId()) {
+			return -1;
+		}
+		return 0;
 	}
 }
