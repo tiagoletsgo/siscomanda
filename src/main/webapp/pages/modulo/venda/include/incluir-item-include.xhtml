@@ -35,7 +35,7 @@
 		
 		<div class="col-md-2 col-sm-2 col-xs-12">
 			<label>Quantidade :</label>
-			<h:inputText id="inpQuantidade" styleClass="form-control currency" value="#{crudBean.item.quantidade}" disabled="#{crudBean.itensMeioAmeio.size() > 0}">
+			<h:inputText id="inpQuantidade" styleClass="form-control currency" value="#{crudBean.item.quantidade}" disabled="#{crudBean.itensMeioAmeio.size() gt 0 or crudBean.item.quantidade lt 1}">
 				<f:convertNumber minFractionDigits="2" maxFractionDigits="2" locale="pt_BR" />
 				<p:ajax event="keyup" update="inpTotal inpDescricaoProduto scripts" global="false" delay="300" process="@this" listener="#{crudBean.calcularValorTotal()}" />
 			</h:inputText>
@@ -52,7 +52,7 @@
 	<hr />
 	<div class="row">
 		<h:panelGroup layout="block" id="itensMeioAmeio" styleClass="col-md-12 col-sm-12 col-xs-12">
-			<p:commandButton styleClass="btn btn-primary" value="Personalizar" disabled="#{not crudBean.item.tamanho.permiteMeioAmeio}"
+			<p:commandButton styleClass="btn btn-primary" value="Personalizar" disabled="#{not crudBean.item.tamanho.permiteMeioAmeio or crudBean.modificandoItem}"
 				oncomplete="PF('dlgPersonalizar').show();" update="dialogPersonalizar crudform:tabelaComplementos" actionListener="#{crudBean.atualizaListaDeProdutos()}"/>
 			
 			<p:dataTable id="tabelaItemMeioAmeio" var="item" value="#{crudBean.itensMeioAmeio}" selectionMode="single" rowKey="#{item.id}" 

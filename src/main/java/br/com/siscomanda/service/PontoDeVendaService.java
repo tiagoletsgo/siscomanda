@@ -63,14 +63,8 @@ public class PontoDeVendaService implements Serializable {
 		return vendaDAO.salvar(venda);
 	}
 	
-	public ItemVenda paraItemVenda(Venda venda, Produto produto) {
-		double valor = 0;
-		double quantidade = 1;
-		
-		ItemVenda item = new ItemVenda(produto, valor, quantidade, "");
-		venda.adicionaItem(item);
-		
-		return item;
+	public ItemVenda paraItemVenda(Produto produto) {
+		return new ItemVenda(produto, 0D, 1D, "");
 	}
 	
 	public List<Adicional> desmarcarListaDeComplementos(List<Adicional> complementos, List<ItemVenda> itens, ItemVenda item) {
@@ -134,11 +128,12 @@ public class PontoDeVendaService implements Serializable {
 		else 
 			if(itens.isEmpty()) {
 				for(Adicional complemento : item.getAdicionais()) {
-					total += complemento.getPrecoVenda();
+					totalComplemento += complemento.getPrecoVenda();
 				}
 		}
 		
-		return (total * quantidadeItens) + totalComplemento;
+		total = (total * quantidadeItens) * item.getQuantidade();
+		return total + totalComplemento;
 	}
 	
 	public List<ItemVenda> removerItem(List<ItemVenda> itens, ItemVenda item, Produto produto) throws SiscomandaException {
