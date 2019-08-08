@@ -132,6 +132,10 @@ public class PontoDeVendaService implements Serializable {
 				}
 		}
 		
+		if(item.getQuantidade() == null || item.getQuantidade().equals(new Double(0))) {
+			item.setQuantidade(1D);
+		}
+		
 		total = (total * quantidadeItens) * item.getQuantidade();
 		return total + totalComplemento;
 	}

@@ -441,6 +441,7 @@ public class PontoDeVendaBean extends BaseBean<Venda> implements Serializable {
 			setItem(new ItemVenda().clone(item));
 			precos = precoService.porProduto(item.getProduto());
 			this.complementos = new ArrayList<Adicional>();
+			parametros.put("descricaoProduto", item.getProduto().getDescricao());
 			
 			if(item.getTamanho().isPermiteMeioAmeio()) {
 				for(Adicional adicional : item.getAdicionais()) {

@@ -14,7 +14,7 @@
 	
 	<div class="row">
 		<div class="col-md-12 col-sm-12 col-xs-12">
-			<p:selectOneRadio value="#{crudBean.item.valor}" disabled="#{crudBean.modificandoItem}">
+			<p:selectOneRadio value="#{crudBean.item.valor}" disabled="#{crudBean.item.quantidade lt 1}">
 				<f:selectItems value="#{crudBean.precos}" var="preco" itemLabel="#{crudBean.paraMoedaPtBR(preco.precoVenda)} (#{preco.tamanho.sigla.toUpperCase()})" itemValue="#{preco.precoVenda}" />
 				<p:ajax event="change" update="inpTotal observacoes inpTamanhoProduto itensMeioAmeio inpDescricaoProduto tabelaComplementos scripts" global="false" process="@this" listener="#{crudBean.alterarTamanho()}" />
 			</p:selectOneRadio>
@@ -35,10 +35,15 @@
 		
 		<div class="col-md-2 col-sm-2 col-xs-12">
 			<label>Quantidade :</label>
-			<h:inputText id="inpQuantidade" styleClass="form-control currency" value="#{crudBean.item.quantidade}" disabled="#{crudBean.itensMeioAmeio.size() gt 0 or crudBean.item.quantidade lt 1}">
-				<f:convertNumber minFractionDigits="2" maxFractionDigits="2" locale="pt_BR" />
-				<p:ajax event="keyup" update="inpTotal inpDescricaoProduto scripts" global="false" delay="300" process="@this" listener="#{crudBean.calcularValorTotal()}" />
-			</h:inputText>
+			<p:inputNumber id="inpQuantidade" inputStyleClass="form-control" rendered="#{crudBean.item.quantidade >= 1}" value="#{crudBean.item.quantidade}" decimalSeparator="," thousandSeparator="" maxlength="6"
+				disabled="#{crudBean.itensMeioAmeio.size() gt 0 or crudBean.item.quantidade lt 1}" placeholder="1,00">
+
+				<p:ajax event="keyup" update="inpTotal" process="@this" global="false" listener="#{crudBean.calcularValorTotal()}" />
+				<f:convertNumber locale="pt_BR" />
+			</p:inputNumber>
+			<p:inputText disabled="true" styleClass="form-control" rendered="#{crudBean.item.quantidade lt 1}" value="#{crudBean.item.quantidade}">
+				<f:convertNumber  locale="pt_BR" minFractionDigits="2" maxFractionDigits="2" />
+			</p:inputText>
 		</div>
 		
 		<div class="col-md-2 col-sm-2 col-xs-12">

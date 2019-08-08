@@ -1,5 +1,6 @@
 package br.com.siscomanda.util;
 
+import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.List;
@@ -167,5 +168,10 @@ public class StringUtil {
 	
 	public static String addValorVazio() {
 		return "";
+	}
+	
+	public static double parseDouble(String valorParse) {
+		valorParse = valorParse.replace(".", "").replace(",", ".");
+		return new BigDecimal(valorParse).doubleValue();
 	}
 }
