@@ -142,7 +142,7 @@ public class PontoDeVendaBean extends BaseBean<Venda> implements Serializable {
 			setIncluirItem(true);
 			
 			Produto prod = produto.clone(produto);
-			setItem(pontoDeVendaService.paraItemVenda(getEntity(), prod));
+			setItem(pontoDeVendaService.paraItemVenda(prod));
 
 			getItem().setId(999999L);
 			precos = precoService.porProduto(prod);
@@ -318,7 +318,7 @@ public class PontoDeVendaBean extends BaseBean<Venda> implements Serializable {
 	
 	public void calcularValorTotal() {
 		double total = pontoDeVendaService.calcularValorTotal(getItensMeioAmeio(), getItem());
-		getItem().setTotal(total * getItem().getQuantidade());
+		getItem().setTotal(total);
 	}
 	
 	private void desmacarListaComplementos() {
@@ -441,6 +441,7 @@ public class PontoDeVendaBean extends BaseBean<Venda> implements Serializable {
 			setItem(new ItemVenda().clone(item));
 			precos = precoService.porProduto(item.getProduto());
 			this.complementos = new ArrayList<Adicional>();
+			parametros.put("descricaoProduto", item.getProduto().getDescricao());
 			
 			if(item.getTamanho().isPermiteMeioAmeio()) {
 				for(Adicional adicional : item.getAdicionais()) {

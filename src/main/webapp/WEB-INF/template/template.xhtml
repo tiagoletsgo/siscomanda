@@ -124,13 +124,18 @@
 		<h:panelGroup id="scripts">
 			<script>
 			 	/* <![CDATA[ */
-				$(function(){
+			 		
+			 	function configMoeda() {
 					$(".currency").maskMoney({
-						thousands:'.', 
-						decimal:',',
+						thousands:".", 
+						decimal:",",
 						allowZero: true
 					});
-				});
+			 	}
+				
+			 	$(document).ready(function(){
+			 		configMoeda();
+			 	})
 			 	
 			 	function somenteNumero(num) {
 			 		var expressaoRegular = /[^0-9]/;
