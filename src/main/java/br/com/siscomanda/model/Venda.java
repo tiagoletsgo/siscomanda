@@ -199,6 +199,10 @@ public class Venda extends BaseEntity implements Serializable {
 	public void adicionaItem(ItemVenda item) {
 		itens.add(item);
 		item.setVenda(this);
+		
+		if(item.getItemPai() != null) {
+			item.getItemPai().setVenda(this);
+		}
 	}
 	
 	public void removeItem(ItemVenda item) {

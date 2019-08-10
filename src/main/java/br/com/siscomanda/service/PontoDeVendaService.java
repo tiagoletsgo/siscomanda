@@ -219,7 +219,8 @@ public class PontoDeVendaService implements Serializable {
 		return itens;
 	}
 	
-	public List<ItemVenda> personalizar(List<Produto> produtos, List<ItemVenda> itens, Tamanho tamanho, ItemVenda item, Venda venda) throws SiscomandaException {
+	public List<ItemVenda> personalizar(List<Produto> produtos, List<ItemVenda> itens, ItemVenda item) throws SiscomandaException {
+		
 		if(produtos != null) {
 			for(Produto produto : produtos) {
 				for(ItemVenda iten : itens) {
@@ -249,22 +250,31 @@ public class PontoDeVendaService implements Serializable {
 				produtos.add(item.getProduto());
 			}
 			
-			List<Preco> precos = precoDAO.porTamanhoProduto(produtos, tamanho);
+			List<Preco> precos = precoDAO.porTamanhoProduto(produtos, item.getTamanho());
+			Double quantidade = new Double(1) / new Double(produtos.size());
 			
-			long id = 999999;
+			Tamanho tamanho = item.getTamanho();
+			item = new ItemVenda(item.getProduto(), item.getValor(), quantidade, "");
+			
 			for(Preco preco : precos) {
 				for(Produto produto : produtos) {
 					if(produto.equals(preco.getProduto())) {
-						id--;				
-						Double quantidade = new Double(1) / new Double(produtos.size());
 						ItemVenda itemm = new ItemVenda(produto, (preco.getPrecoVenda()), quantidade, "");
-						itemm.setId(id);
-						itemm.setTamanho(tamanho);
-						itemm.setVenda(venda);
-						itens.add(itemm);
+						
+						if(!item.getProduto().equals(itemm.getProduto())) {
+							itens.add(itemm);
+						}
 					}
 				}
 			}
+			
+			for(ItemVenda itemFilho : itens) {
+				item.setTamanho(tamanho);
+				itemFilho.setTamanho(tamanho);
+				item.adicionaItemFilho(itemFilho);
+			}
+			
+			itens.add(item);
 			
 			// recupera os adicionais
 			for(Map.Entry<ItemVenda, List<Adicional>> entry : adicionais.entrySet()) {

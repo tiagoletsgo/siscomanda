@@ -32,7 +32,7 @@
 			<f:facet name="header">
 				<h:outputLabel value="#" />
 			</f:facet>
-			<p:commandButton value="Incluir" styleClass="btn btn-primary" update="@form scripts" global="false" action="#{crudBean.btnIncluir(produto)}" />
+			<p:commandButton icon="fa fa-plus" title="Adicionar novo item" styleClass="btn btn-success btn-xs" update="@form scripts" global="false" action="#{crudBean.btnIncluir(produto)}" />
 		</p:column>
 	</p:dataTable>
 </ui:composition>

@@ -144,7 +144,6 @@ public class PontoDeVendaBean extends BaseBean<Venda> implements Serializable {
 			Produto prod = produto.clone(produto);
 			setItem(pontoDeVendaService.paraItemVenda(prod));
 
-			getItem().setId(999999L);
 			precos = precoService.porProduto(prod);
 			produtos = produtoService.todos(true);
 			produtos.remove(prod);
@@ -234,10 +233,10 @@ public class PontoDeVendaBean extends BaseBean<Venda> implements Serializable {
 	public void btnPersonalizar() {
 		try {
 			List<ItemVenda> itens = new ArrayList<ItemVenda>();
-			Tamanho tamanho = (Tamanho)parametros.get("tamanho");
+			getItem().setTamanho((Tamanho)parametros.get("tamanho"));
 			ItemVenda item = getItem().clone(getItem());
 			
-			itens = pontoDeVendaService.personalizar(getProdutosSelecionados(), getItensMeioAmeio(), tamanho, item, getEntity());
+			itens = pontoDeVendaService.personalizar(getProdutosSelecionados(), getItensMeioAmeio(), item);
 			itensMeioAmeio = itens;
 			
 			atualizaNomeProduto();
@@ -287,12 +286,13 @@ public class PontoDeVendaBean extends BaseBean<Venda> implements Serializable {
 		atualizaObservacao();
 	}
 	
-	public void btnRemover(ItemVenda item) {
+	public void btnRemover(int index, ItemVenda item) {
 		try {
+			item.setId(new Long(index));
 			setItemSelecionado(getItem());
 			atualizaObservacao();
-			
 			setItemSelecionado(null);
+
 			List<ItemVenda> itens = new ArrayList<ItemVenda>();
 			itens = pontoDeVendaService.removerItem(getItensMeioAmeio(), item, getItem().getProduto());
 			itensMeioAmeio = itens;

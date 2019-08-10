@@ -118,10 +118,6 @@ public class VendaBuilder implements Serializable {
 	private void incluirItem(ItemVenda item) {
 		this.subtotal += item.getValor() * item.getQuantidade(); 
 		this.valorTotal += new Double(((item.getValor() * item.getQuantidade()) + taxaEntrega) - desconto);
-		
-		long id = itens.isEmpty() ? 1L : itens.get(itens.size() -1).getId() +1;
-		item.setId(item.getId() != null ? item.getId() : id);
-		
 		itens.add(item);
 	}
 	

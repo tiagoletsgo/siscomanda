@@ -2,8 +2,10 @@ package br.com.siscomanda.model;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -38,17 +40,24 @@ public class ItemVenda extends BaseEntity implements Serializable, Comparable<It
 	@Column(name = "quantidade", nullable = false)
 	private Double quantidade;
 	
-	@Column(name = "observacao", nullable = false)
+	@Column(name = "observacao", nullable = true)
 	private String observacao;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "tamanho_id", nullable = false)
 	private Tamanho tamanho;
 	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "item_pai", nullable = true, insertable = true)
+	private ItemVenda itemPai;
+	
+	@OneToMany(mappedBy = "itemPai", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+	private List<ItemVenda> itensFilhos = new ArrayList<ItemVenda>();
+	
 	@OneToMany(fetch = FetchType.LAZY)
 	@JoinTable(name = "item_adicional", joinColumns = @JoinColumn(name = "item_venda_id", unique = false), inverseJoinColumns = @JoinColumn(name = "adicional_id", unique = false))
 	private List<Adicional> adicionais = new ArrayList<Adicional>();
-
+	
 	public ItemVenda() {
 		this.valor = new Double(0);
 		this.total = new Double(0);
@@ -167,10 +176,29 @@ public class ItemVenda extends BaseEntity implements Serializable, Comparable<It
 		this.tamanho = tamanho;
 	}
 
+	public ItemVenda getItemPai() {
+		return itemPai;
+	}
+
+	public void setItemPai(ItemVenda itemPai) {
+		this.itemPai = itemPai;
+	}
+	
+	public List<ItemVenda> getItensFilhos() {
+		return Collections.unmodifiableList(itensFilhos);
+	}
+	
+	public void adicionaItemFilho(ItemVenda itemFilho) {
+		itensFilhos.add(itemFilho);
+		itemFilho.setItemPai(this);
+	}
+
 	@Override
 	public int compareTo(ItemVenda o) {
-		if(o.getId() > getId()) {
-			return -1;
+		if(o.getId() != null && getId() != null) {
+			if(o.getId() > getId()) {
+				return -1;
+			}
 		}
 		return 0;
 	}

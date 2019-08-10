@@ -20,6 +20,10 @@
  	font-family: "montserrat";
  }
  
+ .btn[disabled] {
+ 	cursor: no-drop!important;
+ }
+ 
  input[type="text"], td {
  	text-transform: uppercase !important;
  	font-family: "montserrat"!important;
