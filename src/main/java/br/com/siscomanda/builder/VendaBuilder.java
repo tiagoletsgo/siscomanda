@@ -2,6 +2,7 @@ package br.com.siscomanda.builder;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -94,7 +95,12 @@ public class VendaBuilder implements Serializable {
 	}
 	
 	public VendaBuilder comItens(List<ItemVenda> itens) {
+		long id = 0;
 		for(ItemVenda item : itens) {
+			
+			item.setId(item.getId() == null ? id : item.getId());
+			id++;
+			
 			incluirItem(item);
 			somaItensComplementar(item.getAdicionais());
 		}
@@ -102,22 +108,33 @@ public class VendaBuilder implements Serializable {
 		return this;
 	}
 	
-	public VendaBuilder removerItem(ItemVenda item) {
-		this.subtotal -= item.getValor() * item.getQuantidade(); 
-		this.valorTotal -= new Double(((item.getValor() * item.getQuantidade()) + taxaEntrega) - desconto);
-		
-		for(Adicional adicional : item.getAdicionais()) {
-			this.subtotal -= adicional.getPrecoVenda();
-			this.valorTotal = subtotal;
-		}
-		
-		itens.remove(item);
+	public VendaBuilder comItemPosicionado(Integer index, ItemVenda item) {
+		calculaValorTotalDeItens(item);
+		somaItensComplementar(item.getAdicionais());
+		itens.add(index, item);
 		return this;
 	}
 	
+	public VendaBuilder comItem(ItemVenda item) {
+		return comItens(Arrays.asList(item));
+	}
+	
+	public VendaBuilder removerItemPorIndex(int index, ItemVenda item) { 
+		item.setId(item.getId() == null ? index : item.getId());
+		return removerItem(item);
+//		calculaValorTotalDeItemRemovido(item);
+//		itens.remove(index);
+//		return this;
+	}
+	
+	public VendaBuilder removerItem(ItemVenda item) {
+		calculaValorTotalDeItemRemovido(item);
+		itens.remove(item);
+		return this;
+	}
+		
 	private void incluirItem(ItemVenda item) {
-		this.subtotal += item.getValor() * item.getQuantidade(); 
-		this.valorTotal += new Double(((item.getValor() * item.getQuantidade()) + taxaEntrega) - desconto);
+		calculaValorTotalDeItens(item);
 		itens.add(item);
 	}
 	
@@ -127,6 +144,21 @@ public class VendaBuilder implements Serializable {
 				this.subtotal += complemento.getPrecoVenda();
 				this.valorTotal = subtotal;
 			}
+		}
+	}
+	
+	private void calculaValorTotalDeItens(ItemVenda item) {
+		this.subtotal += item.getValor() * item.getQuantidade(); 
+		this.valorTotal += new Double(((item.getValor() * item.getQuantidade()) + taxaEntrega) - desconto);
+	}
+	
+	private void calculaValorTotalDeItemRemovido(ItemVenda item) {
+		this.subtotal -= item.getValor() * item.getQuantidade(); 
+		this.valorTotal -= new Double(((item.getValor() * item.getQuantidade()) + taxaEntrega) - desconto);
+		
+		for(Adicional adicional : item.getAdicionais()) {
+			this.subtotal -= adicional.getPrecoVenda();
+			this.valorTotal = subtotal;
 		}
 	}
 	

@@ -2,6 +2,7 @@ package br.com.siscomanda.service;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -9,6 +10,7 @@ import java.util.Map;
 import javax.faces.application.FacesMessage;
 import javax.inject.Inject;
 
+import br.com.siscomanda.builder.VendaBuilder;
 import br.com.siscomanda.config.jpa.Transactional;
 import br.com.siscomanda.enumeration.ETipoVenda;
 import br.com.siscomanda.exception.SiscomandaException;
@@ -62,7 +64,7 @@ public class PontoDeVendaService implements Serializable {
 		JSFUtil.addMessage(FacesMessage.SEVERITY_INFO, "Registro alterado com sucesso.");
 		return vendaDAO.salvar(venda);
 	}
-	
+			
 	public ItemVenda paraItemVenda(Produto produto) {
 		return new ItemVenda(produto, 0D, 1D, "");
 	}
@@ -255,26 +257,23 @@ public class PontoDeVendaService implements Serializable {
 			
 			Tamanho tamanho = item.getTamanho();
 			item = new ItemVenda(item.getProduto(), item.getValor(), quantidade, "");
+			itens.add(item);
 			
 			for(Preco preco : precos) {
 				for(Produto produto : produtos) {
 					if(produto.equals(preco.getProduto())) {
-						ItemVenda itemm = new ItemVenda(produto, (preco.getPrecoVenda()), quantidade, "");
+						ItemVenda itemFilho = new ItemVenda(produto, (preco.getPrecoVenda()), quantidade, "");
 						
-						if(!item.getProduto().equals(itemm.getProduto())) {
-							itens.add(itemm);
+						item.setTamanho(tamanho);
+						itemFilho.setTamanho(tamanho);
+
+						if(!item.getProduto().equals(itemFilho.getProduto())) {
+							item.adicionaItemFilho(itemFilho);
+							itens.add(itemFilho);
 						}
 					}
 				}
 			}
-			
-			for(ItemVenda itemFilho : itens) {
-				item.setTamanho(tamanho);
-				itemFilho.setTamanho(tamanho);
-				item.adicionaItemFilho(itemFilho);
-			}
-			
-			itens.add(item);
 			
 			// recupera os adicionais
 			for(Map.Entry<ItemVenda, List<Adicional>> entry : adicionais.entrySet()) {
@@ -420,5 +419,54 @@ public class PontoDeVendaService implements Serializable {
 		}
 		
 		return controladores;
+	}
+	
+	public VendaBuilder confirmarItem(VendaBuilder builder, List<ItemVenda> itens, ItemVenda item, boolean modificandoItem, Integer index) {
+		List<ItemVenda> listItens = itens.isEmpty() ? Arrays.asList(item) : itens;
+		
+		if(modificandoItem && index != null) {
+			builder.comItemPosicionado(index, item);
+		}
+		else {
+			builder.comItens(listItens);
+		}
+		
+		modificandoItem = false;
+		itens = new ArrayList<ItemVenda>();
+		
+		return builder;
+	}
+	
+	public List<Adicional> carregarItensComplementares(List<Adicional> adicionais, ItemVenda item) {
+		List<Adicional> complementos = new ArrayList<Adicional>();
+		
+		if(item.getTamanho().isPermiteMeioAmeio()) {
+			for(Adicional adicional : item.getAdicionais()) {
+				adicional.setSelecionado(true);
+			}
+			
+			for(Adicional adicional : adicionais) {
+				for(Adicional complemento : item.getAdicionais()) {
+					if(adicional.equals(complemento) && complemento.isSelecionado()) {
+						adicional.setSelecionado(true);
+					}
+				}
+				complementos.add(adicional);
+			}
+		}
+		
+		return complementos;
+	}
+	
+	public VendaBuilder removeItem(VendaBuilder builder, ItemVenda item, int index) {
+		int countIndex = index;
+		
+		for(ItemVenda itemFilho : item.getItensFilhos()) {
+			countIndex++;
+			builder.removerItemPorIndex(countIndex, itemFilho);
+		}
+		
+		builder.removerItemPorIndex(index, item);
+		return builder;
 	}
 }

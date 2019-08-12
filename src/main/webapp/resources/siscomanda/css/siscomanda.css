@@ -24,6 +24,10 @@
  	cursor: no-drop!important;
  }
  
+ .ui-button-icon-only .ui-icon.fa {
+    margin-top: -6px!important;
+}
+ 
  input[type="text"], td {
  	text-transform: uppercase !important;
  	font-family: "montserrat"!important;

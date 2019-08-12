@@ -51,11 +51,11 @@ public class ItemVenda extends BaseEntity implements Serializable, Comparable<It
 	@JoinColumn(name = "item_pai", nullable = true, insertable = true)
 	private ItemVenda itemPai;
 	
-	@OneToMany(mappedBy = "itemPai", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+	@OneToMany(mappedBy = "itemPai", cascade = CascadeType.PERSIST, orphanRemoval = true, fetch = FetchType.EAGER)
 	private List<ItemVenda> itensFilhos = new ArrayList<ItemVenda>();
 	
 	@OneToMany(fetch = FetchType.LAZY)
-	@JoinTable(name = "item_adicional", joinColumns = @JoinColumn(name = "item_venda_id", unique = false), inverseJoinColumns = @JoinColumn(name = "adicional_id", unique = false))
+	@JoinTable(name = "item_adicional", joinColumns = @JoinColumn(name = "item_venda_id"), inverseJoinColumns = @JoinColumn(name = "adicional_id"))
 	private List<Adicional> adicionais = new ArrayList<Adicional>();
 	
 	public ItemVenda() {
@@ -108,6 +108,16 @@ public class ItemVenda extends BaseEntity implements Serializable, Comparable<It
 		itemm.setValor(item.getValor());
 		itemm.setVenda(item.getVenda());
 		itemm.setTamanho(item.getTamanho());
+		
+		if(item.getItensFilhos().isEmpty()) {
+			itemm.setItemPai(item.getItemPai());
+		
+		} else if(item.getItemPai() == null) {
+			
+			for(ItemVenda itemFilho : item.getItensFilhos()) {
+				itemm.adicionaItemFilho(itemFilho);
+			}
+		}
 		
 		return itemm;
 	}

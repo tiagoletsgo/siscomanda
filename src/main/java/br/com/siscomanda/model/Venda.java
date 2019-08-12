@@ -209,6 +209,11 @@ public class Venda extends BaseEntity implements Serializable {
 		itens.remove(item);
 	}
 	
+	public void removeItem(int index, ItemVenda item) {
+		item.setId(item.getId() == null ? new Long(index) : item.getId());
+		itens.remove(item);
+	}
+	
 	public Cliente getCliente() {
 		return cliente;
 	}
