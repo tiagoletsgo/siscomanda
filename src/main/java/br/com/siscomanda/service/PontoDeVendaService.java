@@ -2,6 +2,7 @@ package br.com.siscomanda.service;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -9,6 +10,7 @@ import java.util.Map;
 import javax.faces.application.FacesMessage;
 import javax.inject.Inject;
 
+import br.com.siscomanda.builder.VendaBuilder;
 import br.com.siscomanda.config.jpa.Transactional;
 import br.com.siscomanda.enumeration.ETipoVenda;
 import br.com.siscomanda.exception.SiscomandaException;
@@ -62,7 +64,7 @@ public class PontoDeVendaService implements Serializable {
 		JSFUtil.addMessage(FacesMessage.SEVERITY_INFO, "Registro alterado com sucesso.");
 		return vendaDAO.salvar(venda);
 	}
-	
+			
 	public ItemVenda paraItemVenda(Produto produto) {
 		return new ItemVenda(produto, 0D, 1D, "");
 	}
@@ -219,7 +221,8 @@ public class PontoDeVendaService implements Serializable {
 		return itens;
 	}
 	
-	public List<ItemVenda> personalizar(List<Produto> produtos, List<ItemVenda> itens, Tamanho tamanho, ItemVenda item, Venda venda) throws SiscomandaException {
+	public List<ItemVenda> personalizar(List<Produto> produtos, List<ItemVenda> itens, ItemVenda item) throws SiscomandaException {
+		
 		if(produtos != null) {
 			for(Produto produto : produtos) {
 				for(ItemVenda iten : itens) {
@@ -249,19 +252,25 @@ public class PontoDeVendaService implements Serializable {
 				produtos.add(item.getProduto());
 			}
 			
-			List<Preco> precos = precoDAO.porTamanhoProduto(produtos, tamanho);
+			List<Preco> precos = precoDAO.porTamanhoProduto(produtos, item.getTamanho());
+			Double quantidade = new Double(1) / new Double(produtos.size());
 			
-			long id = 999999;
+			Tamanho tamanho = item.getTamanho();
+			item = new ItemVenda(item.getProduto(), item.getValor(), quantidade, "");
+			itens.add(item);
+			
 			for(Preco preco : precos) {
 				for(Produto produto : produtos) {
 					if(produto.equals(preco.getProduto())) {
-						id--;				
-						Double quantidade = new Double(1) / new Double(produtos.size());
-						ItemVenda itemm = new ItemVenda(produto, (preco.getPrecoVenda()), quantidade, "");
-						itemm.setId(id);
-						itemm.setTamanho(tamanho);
-						itemm.setVenda(venda);
-						itens.add(itemm);
+						ItemVenda itemFilho = new ItemVenda(produto, (preco.getPrecoVenda()), quantidade, "");
+						
+						item.setTamanho(tamanho);
+						itemFilho.setTamanho(tamanho);
+
+						if(!item.getProduto().equals(itemFilho.getProduto())) {
+							item.adicionaItemFilho(itemFilho);
+							itens.add(itemFilho);
+						}
 					}
 				}
 			}
@@ -410,5 +419,54 @@ public class PontoDeVendaService implements Serializable {
 		}
 		
 		return controladores;
+	}
+	
+	public VendaBuilder confirmarItem(VendaBuilder builder, List<ItemVenda> itens, ItemVenda item, boolean modificandoItem, Integer index) {
+		List<ItemVenda> listItens = itens.isEmpty() ? Arrays.asList(item) : itens;
+		
+		if(modificandoItem && index != null) {
+			builder.comItemPosicionado(index, item);
+		}
+		else {
+			builder.comItens(listItens);
+		}
+		
+		modificandoItem = false;
+		itens = new ArrayList<ItemVenda>();
+		
+		return builder;
+	}
+	
+	public List<Adicional> carregarItensComplementares(List<Adicional> adicionais, ItemVenda item) {
+		List<Adicional> complementos = new ArrayList<Adicional>();
+		
+		if(item.getTamanho().isPermiteMeioAmeio()) {
+			for(Adicional adicional : item.getAdicionais()) {
+				adicional.setSelecionado(true);
+			}
+			
+			for(Adicional adicional : adicionais) {
+				for(Adicional complemento : item.getAdicionais()) {
+					if(adicional.equals(complemento) && complemento.isSelecionado()) {
+						adicional.setSelecionado(true);
+					}
+				}
+				complementos.add(adicional);
+			}
+		}
+		
+		return complementos;
+	}
+	
+	public VendaBuilder removeItem(VendaBuilder builder, ItemVenda item, int index) {
+		int countIndex = index;
+		
+		for(ItemVenda itemFilho : item.getItensFilhos()) {
+			countIndex++;
+			builder.removerItemPorIndex(countIndex, itemFilho);
+		}
+		
+		builder.removerItemPorIndex(index, item);
+		return builder;
 	}
 }

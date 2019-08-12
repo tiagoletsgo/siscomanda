@@ -122,6 +122,8 @@ public class PontoDeVendaBean extends BaseBean<Venda> implements Serializable {
 	
 	public void btnVoltar() {
 		setNovoItem(false);
+		this.complementos = new ArrayList<Adicional>();
+		this.itensMeioAmeio = new ArrayList<ItemVenda>();
 		getEstadoViewBean().setCurrentView(EStateView.INSERT);
 	}
 	
@@ -144,7 +146,6 @@ public class PontoDeVendaBean extends BaseBean<Venda> implements Serializable {
 			Produto prod = produto.clone(produto);
 			setItem(pontoDeVendaService.paraItemVenda(prod));
 
-			getItem().setId(999999L);
 			precos = precoService.porProduto(prod);
 			produtos = produtoService.todos(true);
 			produtos.remove(prod);
@@ -234,10 +235,10 @@ public class PontoDeVendaBean extends BaseBean<Venda> implements Serializable {
 	public void btnPersonalizar() {
 		try {
 			List<ItemVenda> itens = new ArrayList<ItemVenda>();
-			Tamanho tamanho = (Tamanho)parametros.get("tamanho");
+			getItem().setTamanho((Tamanho)parametros.get("tamanho"));
 			ItemVenda item = getItem().clone(getItem());
 			
-			itens = pontoDeVendaService.personalizar(getProdutosSelecionados(), getItensMeioAmeio(), tamanho, item, getEntity());
+			itens = pontoDeVendaService.personalizar(getProdutosSelecionados(), getItensMeioAmeio(), item);
 			itensMeioAmeio = itens;
 			
 			atualizaNomeProduto();
@@ -287,12 +288,13 @@ public class PontoDeVendaBean extends BaseBean<Venda> implements Serializable {
 		atualizaObservacao();
 	}
 	
-	public void btnRemover(ItemVenda item) {
+	public void btnRemover(int index, ItemVenda item) {
 		try {
+			item.setId(new Long(index));
 			setItemSelecionado(getItem());
 			atualizaObservacao();
-			
 			setItemSelecionado(null);
+
 			List<ItemVenda> itens = new ArrayList<ItemVenda>();
 			itens = pontoDeVendaService.removerItem(getItensMeioAmeio(), item, getItem().getProduto());
 			itensMeioAmeio = itens;
@@ -331,25 +333,23 @@ public class PontoDeVendaBean extends BaseBean<Venda> implements Serializable {
 	
 	public void btnConfirmar() {
 		
-		if(getItensMeioAmeio().isEmpty()) {
-			getItensMeioAmeio().add(getItem());
-		}
-		
-		vendaBuilder.comNumeroVenda(getEntity().getId())
-		.comItens(getItensMeioAmeio())
+		Integer index = (Integer)parametros.get("itemIndexEdit");
+		vendaBuilder = pontoDeVendaService.confirmarItem(vendaBuilder, getItensMeioAmeio(), getItem(), modificandoItem, index);
+
+		vendaBuilder
+		.comNumeroVenda(getEntity().getId())
 		.comTaxaServico(configuracao.getTaxaServico())
 		.comControle(getEntity().getControle())
 		.comTipoVenda(getEntity().getTipoVenda())
 		.comOperador(usuarioService.porCodigo(1L));
 		
-		Venda venda = vendaBuilder.construir();
-		this.itensMeioAmeio = new ArrayList<ItemVenda>();
-
-		setEntity(venda);
+		setEntity(vendaBuilder.construir());
 		setItem(new ItemVenda());
-		modificandoItem = false;
 		setIncluirItem(false);
 		btnVoltar();
+
+		parametros.remove("itemIndexEdit");
+		
 	}
 	
 	public void btnSalvarTipoVenda() {
@@ -416,7 +416,8 @@ public class PontoDeVendaBean extends BaseBean<Venda> implements Serializable {
 			
 			venda = pontoDeVendaService.porCodigo(venda.getId());
 			
-			vendaBuilder.comControle(venda.getControle())
+			vendaBuilder
+			.comControle(venda.getControle())
 			.comDesconto(venda.getDesconto())
 			.comTaxaEntrega(venda.getTaxaEntrega())
 			.comItens(venda.getItens())
@@ -434,37 +435,31 @@ public class PontoDeVendaBean extends BaseBean<Venda> implements Serializable {
 		}
 	}
 	
-	public void btnEditarItem(ItemVenda item) {
+	public void btnEditarItem(int index, ItemVenda item) {
 		try {
 			modificandoItem = true;
-			vendaBuilder.removerItem(item);
 			setItem(new ItemVenda().clone(item));
-			precos = precoService.porProduto(item.getProduto());
-			this.complementos = new ArrayList<Adicional>();
-			parametros.put("descricaoProduto", item.getProduto().getDescricao());
+			vendaBuilder.removerItemPorIndex(index, getItem());
+
+
+			parametros.put("itemIndexEdit", index);
+			parametros.put("descricaoProduto", getItem().getProduto().getDescricao());
 			
-			if(item.getTamanho().isPermiteMeioAmeio()) {
-				for(Adicional adicional : item.getAdicionais()) {
-					adicional.setSelecionado(true);
-				}
-				
-				for(Adicional adicional : adicionalService.todos()) {
-					for(Adicional complemento : item.getAdicionais()) {
-						if(adicional.equals(complemento) && complemento.isSelecionado()) {
-							adicional.setSelecionado(true);
-						}
-					}
-					this.complementos.add(adicional);
-				}
-			}
+			precos = precoService.porProduto(getItem().getProduto());
+			this.complementos = pontoDeVendaService.carregarItensComplementares(adicionalService.todos(), getItem());
 			
 			setNovoItem(false);
 			setIncluirItem(true);
 			getEstadoViewBean().setCurrentView(null);
 		}
-		catch(SiscomandaException e) {
+		catch (SiscomandaException e) {
 			JSFUtil.addMessage(FacesMessage.SEVERITY_ERROR, e.getMessage());
 		}
+	}
+	
+	public void btnRemoveItem(int index, ItemVenda item) {
+		vendaBuilder = pontoDeVendaService.removeItem(vendaBuilder, item, index);
+		setEntity(vendaBuilder.construir());
 	}
 
 	@Override

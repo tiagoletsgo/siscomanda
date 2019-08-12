@@ -60,7 +60,7 @@
 			<p:commandButton styleClass="btn btn-primary" value="Personalizar" disabled="#{not crudBean.item.tamanho.permiteMeioAmeio or crudBean.modificandoItem}"
 				oncomplete="PF('dlgPersonalizar').show();" update="dialogPersonalizar crudform:tabelaComplementos" actionListener="#{crudBean.atualizaListaDeProdutos()}"/>
 			
-			<p:dataTable id="tabelaItemMeioAmeio" var="item" value="#{crudBean.itensMeioAmeio}" selectionMode="single" rowKey="#{item.id}" 
+			<p:dataTable id="tabelaItemMeioAmeio" var="item" value="#{crudBean.itensMeioAmeio}" selectionMode="single" rowIndexVar="index" rowKey="#{item.produto.id}"
 				 emptyMessage="Sem dados" paginator="true" rows="10" paginatorPosition="top" selection="#{crudBean.itemSelecionado}" reflow="true">
 				 
 				<f:facet name="header">Itens Meio a Meio</f:facet>
@@ -103,7 +103,7 @@
 				
 				<p:column width="130" >
 					<f:facet name="header">#</f:facet>
-					<p:commandButton value="Remover" styleClass="btn btn-danger" action="#{crudBean.btnRemover(item)}"
+					<p:commandButton title="Remover item" icon="fa fa-remove" styleClass="btn btn-danger btn-xs" action="#{crudBean.btnRemover(index, item)}"
 						update="tabelaItemMeioAmeio crudform:observacoes crudform:inpQuantidade crudform:inpDescricaoProduto crudform:inpTotal crudform:tabelaComplementos scripts" global="false"/>
 				</p:column>
 			</p:dataTable>

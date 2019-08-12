@@ -14,10 +14,10 @@
 				<p:commandButton styleClass="btn btn-success" value="Salvar Venda" disabled="#{empty crudBean.entity.itens}"
 					action="#{crudBean.btnSalvarVenda()}" update="crudform" />
 					
+				<p:link outcome="/pages/modulo/venda/venda?view=search" value="Voltar" styleClass="btn btn-primary pull-right" />
+
 				<p:commandButton styleClass="btn btn-primary pull-right" value="Tipo Venda" oncomplete="PF('dlgTipoVenda').show();" 
 					disabled="#{not crudBean.entity.novo}"/>
-				
-				<p:link outcome="/pages/modulo/venda/venda?view=search" value="Voltar" styleClass="btn btn-primary pull-right" />
 
 				<p:menuButton value="Opções" styleClass="btn btn-primary" disabled="true">
 					<p:menuitem value="Cancelar" icon="fa fa-angle-double-right"/>
