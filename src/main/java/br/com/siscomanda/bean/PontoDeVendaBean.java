@@ -18,6 +18,7 @@ import br.com.siscomanda.enumeration.EStateView;
 import br.com.siscomanda.enumeration.EStatus;
 import br.com.siscomanda.enumeration.ETipoVenda;
 import br.com.siscomanda.exception.SiscomandaException;
+import br.com.siscomanda.exception.SiscomandaRuntimeException;
 import br.com.siscomanda.model.Adicional;
 import br.com.siscomanda.model.Cliente;
 import br.com.siscomanda.model.ConfiguracaoGeral;
@@ -97,7 +98,7 @@ public class PontoDeVendaBean extends BaseBean<Venda> implements Serializable {
 	
 	@Override
 	protected void init() {
-		vendaBuilder = new VendaBuilder();
+		vendaBuilder = new VendaBuilder(getEntity());
 		parametros = new HashMap<String, Object>();
 		itensMeioAmeio = new ArrayList<ItemVenda>();
 		produtosSelecionados = new ArrayList<Produto>();
@@ -288,6 +289,8 @@ public class PontoDeVendaBean extends BaseBean<Venda> implements Serializable {
 		atualizaObservacao();
 	}
 	
+	// remove um item quando esta sendo personalizado
+	//
 	public void btnRemover(int index, ItemVenda item) {
 		try {
 			item.setId(new Long(index));
@@ -333,9 +336,9 @@ public class PontoDeVendaBean extends BaseBean<Venda> implements Serializable {
 	
 	public void btnConfirmar() {
 		
-		Integer index = (Integer)parametros.get("itemIndexEdit");
-		vendaBuilder = pontoDeVendaService.confirmarItem(vendaBuilder, getItensMeioAmeio(), getItem(), modificandoItem, index);
-
+		vendaBuilder = pontoDeVendaService.confirmarItem(vendaBuilder, getItensMeioAmeio(), getItem(), modificandoItem);
+		modificandoItem = false;
+		
 		vendaBuilder
 		.comNumeroVenda(getEntity().getId())
 		.comTaxaServico(configuracao.getTaxaServico())
@@ -343,13 +346,11 @@ public class PontoDeVendaBean extends BaseBean<Venda> implements Serializable {
 		.comTipoVenda(getEntity().getTipoVenda())
 		.comOperador(usuarioService.porCodigo(1L));
 		
+		getEntity().calculaValorTotalDaVenda();
 		setEntity(vendaBuilder.construir());
 		setItem(new ItemVenda());
 		setIncluirItem(false);
 		btnVoltar();
-
-		parametros.remove("itemIndexEdit");
-		
 	}
 	
 	public void btnSalvarTipoVenda() {
@@ -417,17 +418,18 @@ public class PontoDeVendaBean extends BaseBean<Venda> implements Serializable {
 			venda = pontoDeVendaService.porCodigo(venda.getId());
 			
 			vendaBuilder
+			.comNumeroVenda(venda.getId())
 			.comControle(venda.getControle())
 			.comDesconto(venda.getDesconto())
 			.comTaxaEntrega(venda.getTaxaEntrega())
+			.comTaxaServico(configuracao.getTaxaServico())
 			.comItens(venda.getItens())
 			.comOperador(venda.getOperador())
-			.comTaxaServico(venda.getTaxaServico())
-			.comNumeroVenda(venda.getId())
 			.comTipoVenda(venda.getTipoVenda())
 			.comStatus(venda.getStatus())
 			.comDataHora(venda.getDataHora());
 			
+			getEntity().calculaValorTotalDaVenda();
 			setEntity(vendaBuilder.construir());
 			
 		} catch (SiscomandaException e) {
@@ -438,11 +440,8 @@ public class PontoDeVendaBean extends BaseBean<Venda> implements Serializable {
 	public void btnEditarItem(int index, ItemVenda item) {
 		try {
 			modificandoItem = true;
-			setItem(new ItemVenda().clone(item));
-			vendaBuilder.removerItemPorIndex(index, getItem());
+			setItem(getEntity().getItem(index));
 
-
-			parametros.put("itemIndexEdit", index);
 			parametros.put("descricaoProduto", getItem().getProduto().getDescricao());
 			
 			precos = precoService.porProduto(getItem().getProduto());
@@ -458,8 +457,13 @@ public class PontoDeVendaBean extends BaseBean<Venda> implements Serializable {
 	}
 	
 	public void btnRemoveItem(int index, ItemVenda item) {
-		vendaBuilder = pontoDeVendaService.removeItem(vendaBuilder, item, index);
-		setEntity(vendaBuilder.construir());
+		try {
+			getEntity().removerItem(index, item);
+			JSFUtil.addMessage(FacesMessage.SEVERITY_INFO, "Registro removido com sucesso. Para confirmar exclusão salve a venda.");
+		}
+		catch(SiscomandaRuntimeException e) {
+			JSFUtil.addMessage(FacesMessage.SEVERITY_ERROR, e.getMessage());
+		}
 	}
 
 	@Override
