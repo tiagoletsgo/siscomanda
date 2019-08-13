@@ -421,17 +421,14 @@ public class PontoDeVendaService implements Serializable {
 		return controladores;
 	}
 	
-	public VendaBuilder confirmarItem(VendaBuilder builder, List<ItemVenda> itens, ItemVenda item, boolean modificandoItem, Integer index) {
+	public VendaBuilder confirmarItem(VendaBuilder builder, List<ItemVenda> itens, ItemVenda item, boolean atualizar) {
 		List<ItemVenda> listItens = itens.isEmpty() ? Arrays.asList(item) : itens;
 		
-		if(modificandoItem && index != null) {
-			builder.comItemPosicionado(index, item);
-		}
-		else {
+		if(!atualizar) {
 			builder.comItens(listItens);
 		}
 		
-		modificandoItem = false;
+		atualizar = false;
 		itens = new ArrayList<ItemVenda>();
 		
 		return builder;
@@ -458,15 +455,15 @@ public class PontoDeVendaService implements Serializable {
 		return complementos;
 	}
 	
-	public VendaBuilder removeItem(VendaBuilder builder, ItemVenda item, int index) {
-		int countIndex = index;
-		
-		for(ItemVenda itemFilho : item.getItensFilhos()) {
-			countIndex++;
-			builder.removerItemPorIndex(countIndex, itemFilho);
-		}
-		
-		builder.removerItemPorIndex(index, item);
-		return builder;
-	}
+//	public VendaBuilder removeItem(VendaBuilder builder, ItemVenda item, int index) {
+//		int countIndex = index;
+//		
+//		for(ItemVenda itemFilho : item.getItensFilhos()) {
+//			countIndex++;
+//			builder.removerItemPorIndex(countIndex, itemFilho);
+//		}
+//		
+//		builder.removerItemPorIndex(index, item);
+//		return builder;
+//	}
 }
