@@ -110,11 +110,11 @@ public class FechaContaService extends VendaOLDService implements Serializable {
 		venda = vendaDAO.salvar(venda);
 		
 		if(venda.isPago()) {
-			JSFUtil.addMessage(FacesMessage.SEVERITY_INFO, "Pagamento fechado com sucesso.");
+			JSFUtil.addMessage(FacesMessage.SEVERITY_INFO, "Pagamento efetuado com sucesso.");
 		}
 		
 		if(venda.isNotPago()) {
-			JSFUtil.addMessage(FacesMessage.SEVERITY_WARN, "Pagamento salvo com valor parcial.");
+			JSFUtil.addMessage(FacesMessage.SEVERITY_WARN, "Pagamento efetuado com valor parcial.");
 		}
 				
 		return venda;

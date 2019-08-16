@@ -12,6 +12,7 @@ import javax.inject.Inject;
 
 import br.com.siscomanda.builder.VendaBuilder;
 import br.com.siscomanda.config.jpa.Transactional;
+import br.com.siscomanda.enumeration.EStatus;
 import br.com.siscomanda.enumeration.ETipoVenda;
 import br.com.siscomanda.exception.SiscomandaException;
 import br.com.siscomanda.model.Adicional;
@@ -54,7 +55,32 @@ public class PontoDeVendaService implements Serializable {
 	}
 	
 	@Transactional
-	public Venda salvar(Venda venda) {
+	public Venda salvar(Venda venda) throws SiscomandaException {
+		
+		if(venda.getItens().isEmpty()) {
+			throw new SiscomandaException("Não é permitido salvar pedido sem itens.");
+		}
+		
+		if(venda.getTotal() < new Double(0)) {
+			throw new SiscomandaException("Não é permitido salvar pedido com valor negativo.");
+		}
+		
+		if(venda.getStatus() == null) {
+			throw new SiscomandaException("Não é permitido salvar pedido com status em branco.");
+		}
+		
+		if(!venda.isNovo() && venda.getStatus().equals(EStatus.PAGO)) {
+			throw new SiscomandaException("Venda com status pago não pode ser alterado/excluído.");
+		}
+		
+		if(!venda.isNovo() && venda.getStatus().equals(EStatus.PAGO_PARCIAL)) {
+			throw new SiscomandaException("Venda com status pago parcial não pode ser excluído.");
+		}
+		
+		if(!venda.isNovo() && venda.getStatus().equals(EStatus.CANCELADO)) {
+			throw new SiscomandaException("Venda com status cancelado não pode ser excluído/alterado.");
+		}
+		
 		if(venda.isNovo()) {
 			venda = vendaDAO.salvar(venda);
 			JSFUtil.addMessage(FacesMessage.SEVERITY_INFO, "Registro salvo com sucesso.");

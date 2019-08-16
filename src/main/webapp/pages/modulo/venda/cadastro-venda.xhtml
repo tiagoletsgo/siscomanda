@@ -19,12 +19,18 @@
 				<p:commandButton styleClass="btn btn-primary pull-right" value="Tipo Venda" oncomplete="PF('dlgTipoVenda').show();" 
 					disabled="#{not crudBean.entity.novo}"/>
 
-				<p:menuButton value="Opções" styleClass="btn btn-primary" disabled="true">
+				<p:menuButton value="Opções" styleClass="btn btn-primary">
 					<p:menuitem value="Cancelar" icon="fa fa-angle-double-right"/>
 					<p:menuitem value="Excluir" icon="fa fa-angle-double-right"/>
 					<p:menuitem value="Imprimir" icon="fa fa-angle-double-right"/>
-					<p:menuitem value="Nova Venda" icon="fa fa-angle-double-right"/>
-					<p:menuitem value="Pagar" icon="fa fa-angle-double-right"/>
+					
+					<p:menuitem value="Nova Venda" icon="fa fa-angle-double-right" 
+						outcome="/pages/modulo/venda/venda?view=insert" />
+					 
+					<p:menuitem value="Pagar" icon="fa fa-angle-double-right" disabled="#{crudBean.entity.notPagavel}"
+						outcome="/pages/modulo/venda/pagamento/fecha-conta?view=insert">
+						<f:param name="codigo" value="#{crudBean.entity.id}" />
+					</p:menuitem>
 				</p:menuButton>
 				
 			</div>	

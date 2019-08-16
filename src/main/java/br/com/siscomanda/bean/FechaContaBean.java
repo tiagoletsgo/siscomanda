@@ -1,6 +1,5 @@
 package br.com.siscomanda.bean;
 
-import java.io.IOException;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.List;
@@ -18,7 +17,7 @@ import br.com.siscomanda.interfaces.calculadoraImpl.AplicaDesconto;
 import br.com.siscomanda.interfaces.calculadoraImpl.AplicaTaxaEntrega;
 import br.com.siscomanda.model.Bandeira;
 import br.com.siscomanda.model.FormaPagamento;
-import br.com.siscomanda.model.ItemVendaOLD;
+import br.com.siscomanda.model.ItemVenda;
 import br.com.siscomanda.model.Pagamento;
 import br.com.siscomanda.model.Venda;
 import br.com.siscomanda.service.FechaContaService;
@@ -160,7 +159,7 @@ public class FechaContaBean extends BaseBean<Venda> implements Serializable {
 		valorFaltante = service.calculaValorFantante(pagamento.getValorTotal(), pagamento.getValorPago());
 	}
 	
-	public Double calculaSubTotalItem(ItemVendaOLD item) {
+	public Double calculaSubTotalItem(ItemVenda item) {
 		return service.calculaSubTotalItem(item);
 	}
 	
@@ -170,9 +169,10 @@ public class FechaContaBean extends BaseBean<Venda> implements Serializable {
 
 	public void btnVoltar() {
 		try {
-			FacesContext.getCurrentInstance().getExternalContext().redirect("venda-mesa-comanda.xhtml?view=search&faces-redirect=true&codigo=" + codigo);
-		} catch (IOException e) {
-			e.printStackTrace();
+			String url = "/pages/modulo/venda/venda.xhtml?view=search&faces-redirect=true&codigo=" + codigo;
+			JSFUtil.redirect(JSFUtil.applicationPath() + url);
+		} catch (SiscomandaException e) {
+			JSFUtil.addMessage(FacesMessage.SEVERITY_ERROR, "Não foi possível realizar o redirecionamento da página. " + e.getMessage());
 		}
 	}
 

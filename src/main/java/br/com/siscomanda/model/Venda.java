@@ -74,9 +74,6 @@ public class Venda extends BaseEntity implements Serializable {
 	@Column(name = "valor_pago", nullable = false)
 	private Double valorPago;
 	
-	@Column(name = "pago")
-	private boolean pago;
-	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "cliente_id", nullable = true)
 	private Cliente cliente;
@@ -84,6 +81,9 @@ public class Venda extends BaseEntity implements Serializable {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "caixa_id", nullable = true)
 	private Caixa caixa;
+	
+	@Column(name = "pago")
+	private boolean pago;
 	
 	@OneToMany(mappedBy = "venda", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<ItemVenda> itens = new ArrayList<ItemVenda>();
@@ -216,14 +216,6 @@ public class Venda extends BaseEntity implements Serializable {
 		this.valorPago = valorPago;
 	}
 
-	public boolean isPago() {
-		return pago;
-	}
-
-	public void setPago(boolean pago) {
-		this.pago = pago;
-	}
-	
 	public Date getDataVenda() {
 		return dataVenda;
 	}
@@ -234,6 +226,15 @@ public class Venda extends BaseEntity implements Serializable {
 	
 	public void setFatorCalculoTaxaServico(Double fatorCalculoTaxaServico) {
 		this.fatorCalculoTaxaServico = fatorCalculoTaxaServico;
+	}
+	
+	public void setPago(boolean pago) {
+		this.pago = pago;
+	}
+
+	public boolean isPago() {
+		return valorPago >= total && getDiferenca().equals(0D)
+				&& getStatus().equals(EStatus.PAGO);
 	}
 
 	@Transient
@@ -320,8 +321,42 @@ public class Venda extends BaseEntity implements Serializable {
 	}
 	
 	@Transient
+	public boolean isExcluivel() {
+		return !isNovo() && getStatus().equals(EStatus.CANCELADO)
+				|| !isNovo() && getStatus().equals(EStatus.EM_ABERTO);
+	}
+	
+	@Transient
+	public boolean isNotExcluivel() {
+		return !isExcluivel();
+	}
+	
+	@Transient
 	public boolean isNotBloqueiaVendaDelivery() {
 		return !isBloqueiaVendaDelivery();
+	}
+	
+	@Transient
+	public boolean isCancelavel() {
+		return !isNovo() && getStatus().equals(EStatus.EM_ABERTO)
+				|| !isNovo() && getStatus().equals(EStatus.PAGO_PARCIAL);
+	}
+	
+	@Transient
+	public boolean isNotCancelavel() {
+		return !isCancelavel();
+	}
+	
+	@Transient
+	public boolean isEditavel() {
+		return !isNovo() && getStatus().equals(EStatus.EM_ABERTO)
+				|| isNovo() && getStatus().equals(EStatus.EM_ABERTO)
+				|| !isNovo() && getStatus().equals(EStatus.PAGO_PARCIAL);
+	}
+	
+	@Transient
+	public boolean isNotEditavel() {
+		return !isEditavel();
 	}
 	
 	@Transient
@@ -339,5 +374,16 @@ public class Venda extends BaseEntity implements Serializable {
 		}
 		
 		return diferenca;
+	}
+	
+	@Transient
+	public boolean isPagavel() {
+		return !isNovo() && !getStatus().equals(EStatus.PAGO) && !getStatus().equals(EStatus.CANCELADO)
+				&& isNotPago();
+	}
+	
+	@Transient
+	public boolean isNotPagavel() {
+		return !isPagavel();
 	}
 }
