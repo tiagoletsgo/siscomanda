@@ -2,10 +2,10 @@ package br.com.siscomanda.bean;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ViewScoped;
@@ -103,13 +103,25 @@ public class PontoDeVendaBean extends BaseBean<Venda> implements Serializable {
 		itensMeioAmeio = new ArrayList<ItemVenda>();
 		produtosSelecionados = new ArrayList<Produto>();
 		complementos = new ArrayList<Adicional>();
-		
-		vendaBuilder.comOperador(usuarioService.porCodigo(1L));
-		setEntity(vendaBuilder.construir());
-		
 		configuracao = configuracaoService.definicaoSistema();
 		clientes = clienteService.todos();
+		
 		setElements(pontoDeVendaService.vendasNaoPagas());
+		initEntity();
+	}
+	
+	private void initEntity() {
+		try {
+			String codigo = JSFUtil.getRequest().getParameter("codigo");
+			vendaBuilder.comOperador(usuarioService.porCodigo(1L));
+			setEntity(Objects.isNull(codigo) ? vendaBuilder.construir() : pontoDeVendaService.porCodigo(new Long(codigo)));
+			
+			if(Objects.nonNull(codigo)) {
+				getEstadoViewBean().setCurrentView(EStateView.UPDATE);
+			}
+		} catch (NumberFormatException | SiscomandaException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public void btnNovoItem() {
@@ -165,7 +177,6 @@ public class PontoDeVendaBean extends BaseBean<Venda> implements Serializable {
 		if(modificandoItem) {
 			novoItem = false;
 			incluirItem = false;
-			vendaBuilder.comItens(Arrays.asList(getItem()));
 			getEstadoViewBean().setCurrentView(EStateView.UPDATE);
 		}
 		
@@ -429,8 +440,8 @@ public class PontoDeVendaBean extends BaseBean<Venda> implements Serializable {
 			.comStatus(venda.getStatus())
 			.comDataHora(venda.getDataHora());
 			
-			getEntity().calculaValorTotalDaVenda();
 			setEntity(vendaBuilder.construir());
+			getEntity().calculaValorTotalDaVenda();
 			
 		} catch (SiscomandaException e) {
 			JSFUtil.addMessage(FacesMessage.SEVERITY_ERROR, e.getMessage());

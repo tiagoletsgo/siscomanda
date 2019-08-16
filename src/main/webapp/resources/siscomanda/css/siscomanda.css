@@ -526,7 +526,8 @@
 .nav-sm .container.body .col-md-3.left_col {
 	width: 80px !important;
 }
-.nav-sm footer {
+.nav-sm footer,
+.nav-sm .container.body .right_col {
     margin-left: 80px !important;
 }
 

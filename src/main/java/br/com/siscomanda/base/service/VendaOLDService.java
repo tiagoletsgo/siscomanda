@@ -10,6 +10,7 @@ import javax.inject.Inject;
 
 import br.com.siscomanda.exception.SiscomandaException;
 import br.com.siscomanda.model.Adicional;
+import br.com.siscomanda.model.ItemVenda;
 import br.com.siscomanda.model.ItemVendaOLD;
 import br.com.siscomanda.model.Produto;
 import br.com.siscomanda.model.VendaOLD;
@@ -96,12 +97,12 @@ public abstract class VendaOLDService implements Serializable {
 		return subtotal;
 	}
 	
-	public Double calculaSubTotalItem(ItemVendaOLD item) {
+	public Double calculaSubTotalItem(ItemVenda item) {
 		Double subtotal = new Double(0);
 		for(Adicional adicional : item.getAdicionais()) {
 			subtotal += adicional.getPrecoVenda();
 		}
-		return subtotal + (item.getPrecoVenda() * item.getQuantidade());
+		return subtotal + (item.getValor() * item.getQuantidade());
 	}
 	
 	public Double calculaTotal(VendaOLD venda) {
