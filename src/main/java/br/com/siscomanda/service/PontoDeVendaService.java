@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import javax.faces.application.FacesMessage;
 import javax.inject.Inject;
@@ -42,6 +43,60 @@ public class PontoDeVendaService implements Serializable {
 	
 	private List<Produto> produtosTemp = new ArrayList<Produto>();
 	
+	public void validaSituacaoVenda(Venda venda) throws SiscomandaException {
+		if(venda.getItens().isEmpty()) {
+			throw new SiscomandaException("Não é permitido salvar uma venda sem itens.");
+		}
+		
+		if(venda.getTotal() < new Double(0)) {
+			throw new SiscomandaException("Não é permitido salvar uma venda com valor negativo.");
+		}
+		
+		if(venda.getStatus() == null) {
+			throw new SiscomandaException("Não é permitido salvar uma venda com status em branco.");
+		}
+		
+		if(!venda.isNovo() && venda.getStatus().equals(EStatus.PAGO)) {
+			throw new SiscomandaException("Venda com status pago não pode ser alterado/excluído.");
+		}
+		
+		if(!venda.isNovo() && venda.getStatus().equals(EStatus.PAGO_PARCIAL)) {
+			throw new SiscomandaException("Venda com status pago parcial não pode ser excluído.");
+		}
+		
+		if(!venda.isNovo() && venda.getStatus().equals(EStatus.CANCELADO)) {
+			throw new SiscomandaException("Venda com status cancelado não pode ser excluído/alterado.");
+		}
+	}
+	
+	@Transactional
+	public void cancelar(Venda venda) throws SiscomandaException {
+		try {
+			validaSituacaoVenda(venda);
+			venda.setStatus(EStatus.CANCELADO);
+			vendaDAO.salvar(venda);
+			
+		} catch (SiscomandaException e) {
+			throw new SiscomandaException(e.getMessage());
+		}
+	}
+	
+	@Transactional
+	public void remover(Venda venda) throws SiscomandaException {
+		try {
+			validaSituacaoVenda(venda);
+			
+			if(Objects.isNull(venda.getId())) {
+				throw new SiscomandaException("Erro ao remover, Venda sem código de identificação.");
+			}
+			
+			vendaDAO.remover(Venda.class, venda.getId());
+			
+		} catch (SiscomandaException e) {
+			throw new SiscomandaException(e.getMessage());
+		}
+	}
+	
 	public List<Venda> buscarPor(Map<String, Object> filter) {
 		return vendaDAO.buscarPor(filter);
 	}
@@ -56,31 +111,7 @@ public class PontoDeVendaService implements Serializable {
 	
 	@Transactional
 	public Venda salvar(Venda venda) throws SiscomandaException {
-		
-		if(venda.getItens().isEmpty()) {
-			throw new SiscomandaException("Não é permitido salvar pedido sem itens.");
-		}
-		
-		if(venda.getTotal() < new Double(0)) {
-			throw new SiscomandaException("Não é permitido salvar pedido com valor negativo.");
-		}
-		
-		if(venda.getStatus() == null) {
-			throw new SiscomandaException("Não é permitido salvar pedido com status em branco.");
-		}
-		
-		if(!venda.isNovo() && venda.getStatus().equals(EStatus.PAGO)) {
-			throw new SiscomandaException("Venda com status pago não pode ser alterado/excluído.");
-		}
-		
-		if(!venda.isNovo() && venda.getStatus().equals(EStatus.PAGO_PARCIAL)) {
-			throw new SiscomandaException("Venda com status pago parcial não pode ser excluído.");
-		}
-		
-		if(!venda.isNovo() && venda.getStatus().equals(EStatus.CANCELADO)) {
-			throw new SiscomandaException("Venda com status cancelado não pode ser excluído/alterado.");
-		}
-		
+		validaSituacaoVenda(venda);
 		if(venda.isNovo()) {
 			venda = vendaDAO.salvar(venda);
 			JSFUtil.addMessage(FacesMessage.SEVERITY_INFO, "Registro salvo com sucesso.");
@@ -481,15 +512,32 @@ public class PontoDeVendaService implements Serializable {
 		return complementos;
 	}
 	
-//	public VendaBuilder removeItem(VendaBuilder builder, ItemVenda item, int index) {
-//		int countIndex = index;
-//		
-//		for(ItemVenda itemFilho : item.getItensFilhos()) {
-//			countIndex++;
-//			builder.removerItemPorIndex(countIndex, itemFilho);
-//		}
-//		
-//		builder.removerItemPorIndex(index, item);
-//		return builder;
-//	}
+	public Venda salvarTipoVenda(Venda venda) throws SiscomandaException {
+		
+		if(venda.getTipoVenda() == null) {
+			throw new SiscomandaException("Para continuar é necessário informar o tipo venda.");
+		}
+		
+		if(venda.getTipoVenda().equals(ETipoVenda.BALCAO)
+				|| venda.getTipoVenda().equals(ETipoVenda.DELIVERY)) {
+			venda.setControle(new Integer(999999));
+		}
+		
+		if(venda.getTipoVenda().equals(ETipoVenda.BALCAO)
+				|| venda.getTipoVenda().equals(ETipoVenda.MESA)) {
+			venda.setCliente(null);
+			venda.setTaxaEntrega(0D);
+		}
+		
+		if(Objects.nonNull(venda.getCliente())
+				&& Objects.nonNull(venda.getCliente().getServico())) {
+			venda.setTaxaEntrega(venda.getCliente().getServico().getValor());
+		}
+		
+		if(venda.getTipoVenda().equals(ETipoVenda.DELIVERY)	&& venda.getCliente() == null) {
+			throw new SiscomandaException("Para o tipo de venda Delivery é necessário informar o cliente. Por gentileza informe o cliente, para continuar.");
+		}
+		
+		return venda;
+	}
 }

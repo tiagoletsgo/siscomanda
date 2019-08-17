@@ -274,13 +274,22 @@ public class Venda extends BaseEntity implements Serializable {
 		this.total = 0D;
 		this.subtotal = 0D;
 		
+		if(this.taxaEntrega > 0D) {
+			this.subtotal = this.taxaEntrega;
+		}
+
 		for(ItemVenda item : itens) {
 			this.subtotal += item.getValor() * item.getQuantidade();
 		}
 		
+		if(!itens.isEmpty()) {
+			this.subtotal -= this.taxaEntrega;
+			this.total += this.taxaEntrega;
+		}
+		
 		calculaValorTotalItensComplementares();
 		this.taxaServico = (this.fatorCalculoTaxaServico * this.subtotal) / 100D;
-		this.total = (this.subtotal + this.taxaEntrega + this.taxaServico) - this.desconto;
+		this.total += (this.subtotal + this.taxaServico) - this.desconto;
 		Collections.sort(itens);
 	}
 	
@@ -322,8 +331,7 @@ public class Venda extends BaseEntity implements Serializable {
 	
 	@Transient
 	public boolean isExcluivel() {
-		return !isNovo() && getStatus().equals(EStatus.CANCELADO)
-				|| !isNovo() && getStatus().equals(EStatus.EM_ABERTO);
+		return isCancelavel();
 	}
 	
 	@Transient
@@ -338,8 +346,7 @@ public class Venda extends BaseEntity implements Serializable {
 	
 	@Transient
 	public boolean isCancelavel() {
-		return !isNovo() && getStatus().equals(EStatus.EM_ABERTO)
-				|| !isNovo() && getStatus().equals(EStatus.PAGO_PARCIAL);
+		return !isNovo() && getStatus().equals(EStatus.EM_ABERTO);
 	}
 	
 	@Transient
@@ -350,8 +357,7 @@ public class Venda extends BaseEntity implements Serializable {
 	@Transient
 	public boolean isEditavel() {
 		return !isNovo() && getStatus().equals(EStatus.EM_ABERTO)
-				|| isNovo() && getStatus().equals(EStatus.EM_ABERTO)
-				|| !isNovo() && getStatus().equals(EStatus.PAGO_PARCIAL);
+				|| isNovo() && getStatus().equals(EStatus.EM_ABERTO);
 	}
 	
 	@Transient

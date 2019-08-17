@@ -19,7 +19,12 @@
 		<h:panelGroup layout="block" rendered="#{not crudBean.incluirItem and not crudBean.estadoViewBean.insert and not crudBean.estadoViewBean.update and not crudBean.novoItem}">Consultar</h:panelGroup>
 	</ui:define>
 	<ui:define name="title_form"> 
-		<h:panelGroup layout="block">Ponto de Venda (PDV) </h:panelGroup>
+		<h:panelGroup layout="block">
+			Ponto de Venda (PDV)<br/>
+		</h:panelGroup>
+		<!-- <h:panelGroup layout="block" styleClass="pull-right" rendered="#{crudBean.entity.tipoVenda eq 'DELIVERY' and not empty crudBean.entity.cliente}">
+			<span class="text-danger"><strong>* Dados do cliente:</strong> #{crudBean.entity.cliente.nomeCompleto} / #{crudBean.entity.cliente.telefoneCelular}</span>
+		</h:panelGroup>  -->
 	</ui:define>
 	<ui:define name="title_form_table"> 
 		<h:panelGroup layout="block" rendered="#{crudBean.estadoViewBean.search}">Minhas Vendas</h:panelGroup>
@@ -143,9 +148,12 @@
 								
 				<div class="col-md-6 col-sm-6 col-xs-12">
 					<label>Selecione Cliente :</label>
-					<h:selectOneMenu id="comboCliente" styleClass="form-control" disabled="#{crudBean.entity.notBloqueiaVendaDelivery}" converter="entityConverter">
+					<h:selectOneMenu id="comboCliente" styleClass="form-control" disabled="#{crudBean.entity.notBloqueiaVendaDelivery}"
+						value="#{crudBean.entity.cliente}" converter="entityConverter">
+						
 						<f:selectItem itemLabel="Selecione" noSelectionOption="true" />
 						<f:selectItems value="#{crudBean.clientes}" var="cliente" itemLabel="#{cliente.nomeCompleto}" itemValue="#{cliente}" />
+						<p:ajax event="change" process="@this" global="false" />
 					</h:selectOneMenu>
 				</div>
 			
@@ -161,7 +169,42 @@
 				<p:commandButton value="Salvar" styleClass="btn btn-success" oncomplete="PF('dlgTipoVenda').hide();">
 					<p:ajax event="click" update="crudform" process="@this" global="false" listener="#{crudBean.btnSalvarTipoVenda}" />
 				</p:commandButton>
+				<p:commandButton value="save" action="#{crudBean.btnSalvarTipoVenda}" update="crudform" process="@this" global="false" />
 				<p:commandButton styleClass="btn btn-danger" global="false" value="Cancelar" oncomplete="PF('dlgTipoVenda').hide();" />
+			</f:facet>
+		</p:dialog>
+		
+		<p:dialog id="dialogConfirmarExclusaoVenda" widgetVar="dlgConfirmarExclusaoVenda" modal="true" showEffect="fade" hideEffect="fade" responsive="true" resizable="false">
+			<f:facet name="header">Confirma exclusão da venda</f:facet>
+			
+			<h:form id="formExcluirVenda">
+				<div class="col-md-12 col-sm-12 col-xs-12 text-center">
+					Tem certeza que deseja remover a venda <b>#{crudBean.vendaSelecionada.id}</b> ?
+				</div>
+			</h:form>
+			
+			<f:facet name="footer">
+				<p:commandButton process="@this" styleClass="btn btn-success" value="Confirmar" oncomplete="PF('dlgConfirmarExclusaoVenda').hide();" update="crudform"
+					action="#{crudBean.btnRemoverVenda()}" />
+					
+				<p:commandButton styleClass="btn btn-danger" global="false" value="Cancelar" oncomplete="PF('dlgConfirmarExclusaoVenda').hide(); return false;"  />	
+			</f:facet>
+		</p:dialog>
+		
+		<p:dialog id="dialogConfirmarExclusaoItemVenda" widgetVar="dlgConfirmarExclusaoItemVenda" modal="true" showEffect="fade" hideEffect="fade" responsive="true" resizable="false">
+			<f:facet name="header">Confirma exclusão do item</f:facet>
+			
+			<h:form id="formExcluirItemVenda">
+				<div class="col-md-12 col-sm-12 col-xs-12 text-center">
+					Tem certeza que deseja remover o item <b>#{crudBean.itemSelecionado.produto.descricao}</b> ?
+				</div>
+			</h:form>
+			
+			<f:facet name="footer">
+				<p:commandButton process="@this" styleClass="btn btn-success" value="Confirmar" oncomplete="PF('dlgConfirmarExclusaoItemVenda').hide();" update="crudform"
+					action="#{crudBean.btnRemoveItem(crudBean.index, crudBean.itemSelecionado)}" />
+					
+				<p:commandButton styleClass="btn btn-danger" global="false" value="Cancelar" oncomplete="PF('dlgConfirmarExclusaoItemVenda').hide(); return false;"  />	
 			</f:facet>
 		</p:dialog>
 	</ui:define>

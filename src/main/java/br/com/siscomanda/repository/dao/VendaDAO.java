@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
@@ -64,25 +65,6 @@ public class VendaDAO extends GenericDAO<Venda> implements Serializable {
 		return vendas;
 	}
 	
-//	@SuppressWarnings("unchecked")
-//	public List<VendaOLD> vendasNaoPagasDiaCorrente() {
-//		StringBuilder sql = new StringBuilder();
-//		sql.append("SELECT v.* FROM venda v WHERE (CAST (v.data_iniciado AS DATE)) = current_date AND v.pago = false AND NOT v.status = 'CANCELADO' ");
-//		Query query = getEntityManager().createNativeQuery(sql.toString(), VendaOLD.class);
-//		List<VendaOLD> vendas  = query.getResultList();
-//		return vendas;
-//	}
-	
-//	@Deprecated
-//	@SuppressWarnings("unchecked")
-//	public List<VendaOLD> vendasNaoPagas() {
-//		StringBuilder sql = new StringBuilder();
-//		sql.append("SELECT v.* FROM venda v WHERE v.pago = false AND NOT v.status = 'CANCELADO' ");
-//		Query query = getEntityManager().createNativeQuery(sql.toString(), VendaOLD.class);
-//		List<VendaOLD> vendas  = query.getResultList();
-//		return vendas;
-//	}
-	
 	public List<Venda> buscarPor(Map<String, Object> filter) {
 		Venda venda = (Venda) filter.get("venda");
 		
@@ -92,9 +74,31 @@ public class VendaDAO extends GenericDAO<Venda> implements Serializable {
 		sql.append("LEFT JOIN FETCH venda.cliente cliente ");
 		sql.append("LEFT JOIN FETCH cliente.servico servico ");
 		sql.append("LEFT JOIN FETCH venda.caixa caixa ");
-		sql.append("WHERE 1 = 1");
+		sql.append("LEFT JOIN FETCH venda.operador operador ");
+		sql.append("WHERE 1 = 1 ");
+		sql.append(Objects.nonNull(venda.getId()) ? "AND venda.id = :numeroVenda " : "");
+		sql.append(Objects.nonNull(venda.getStatus()) ? "AND venda.status = :status " : "");
+		sql.append(Objects.nonNull(venda.getControle()) ? "AND venda.controle = :controle " : "");
+		sql.append(Objects.nonNull(venda.getTipoVenda()) ? "AND venda.tipoVenda = :tipoVenda " : "");
 		sql.append("ORDER BY venda.id ASC ");
 		TypedQuery<Venda> query = getEntityManager().createQuery(sql.toString(), Venda.class);
+		
+		if(Objects.nonNull(venda.getId())) {
+			query.setParameter("numeroVenda", venda.getId());
+		}
+		
+		if(Objects.nonNull(venda.getStatus())) {
+			query.setParameter("status", venda.getStatus());
+		}
+		
+		if(Objects.nonNull(venda.getControle())) {
+			query.setParameter("controle", venda.getControle());
+		}
+		
+		if(Objects.nonNull(venda.getTipoVenda())) {
+			query.setParameter("tipoVenda", venda.getTipoVenda());
+		}
+		
 		List<Venda> vendas = query.getResultList();
 		return vendas;
 	}
