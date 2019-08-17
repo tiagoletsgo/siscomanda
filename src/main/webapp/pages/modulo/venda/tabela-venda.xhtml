@@ -87,7 +87,12 @@
 				<f:facet name="header">
 					<h:outputLabel value="#" />
 				</f:facet>
-				<p:commandButton value="Editar" action="#{crudBean.btnEditarVenda(venda)}" styleClass="btn btn-warning btn-xs"  update="@form"  process="@this" />
+				<p:commandButton title="Editar Venda" icon="fa fa-pencil" action="#{crudBean.btnEditarVenda(venda)}" styleClass="btn btn-warning btn-xs"  update="@form"  process="@this" />
+				
+				<p:commandButton title="Remover Venda" icon="fa fa-remove" styleClass="btn btn-danger btn-xs" oncomplete="PF('dlgConfirmarExclusaoVenda').show();"
+					disabled="#{venda.notExcluivel}" process="@this" update="dialogConfirmarExclusaoVenda formExcluirVenda">
+					<f:setPropertyActionListener value="#{venda}" target="#{crudBean.vendaSelecionada}" />
+				</p:commandButton>
 			</p:column>
 		</p:dataTable>
 </ui:composition>

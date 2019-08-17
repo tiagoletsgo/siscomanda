@@ -96,6 +96,10 @@ public class PontoDeVendaBean extends BaseBean<Venda> implements Serializable {
 	
 	private boolean modificandoItem;
 	
+	private Venda vendaSelecionada;
+	
+	private int index;
+	
 	@Override
 	protected void init() {
 		vendaBuilder = new VendaBuilder(getEntity());
@@ -105,6 +109,7 @@ public class PontoDeVendaBean extends BaseBean<Venda> implements Serializable {
 		complementos = new ArrayList<Adicional>();
 		configuracao = configuracaoService.definicaoSistema();
 		clientes = clienteService.todos();
+		item = new ItemVenda();
 		
 		setElements(pontoDeVendaService.vendasNaoPagas());
 		initEntity();
@@ -119,6 +124,9 @@ public class PontoDeVendaBean extends BaseBean<Venda> implements Serializable {
 			if(Objects.nonNull(codigo)) {
 				getEstadoViewBean().setCurrentView(EStateView.UPDATE);
 			}
+			
+			codigo = null;
+			
 		} catch (NumberFormatException | SiscomandaException e) {
 			e.printStackTrace();
 		}
@@ -145,6 +153,38 @@ public class PontoDeVendaBean extends BaseBean<Venda> implements Serializable {
 			Venda venda = pontoDeVendaService.salvar(getEntity());
 			venda = pontoDeVendaService.porCodigo(venda.getId());
 			setEntity(venda);
+		}
+		catch(SiscomandaException e) {
+			JSFUtil.addMessage(FacesMessage.SEVERITY_ERROR, e.getMessage());
+		}
+	}
+	
+	public void btnCancelarVenda() {
+		try {
+			pontoDeVendaService.cancelar(getEntity());
+			JSFUtil.addMessage(FacesMessage.SEVERITY_INFO, "Registro cancelado com sucesso.");
+		}
+		catch(SiscomandaException e) {
+			JSFUtil.addMessage(FacesMessage.SEVERITY_ERROR, e.getMessage());
+		}
+	}
+	
+	public void btnRemoverVenda() {
+		try {
+			
+			if(Objects.nonNull(getVendaSelecionada())) {
+				setEntity(getVendaSelecionada());
+			}
+			
+			setEntity(pontoDeVendaService.porCodigo(getEntity().getId()));
+			pontoDeVendaService.remover(getEntity());
+			setEntity(new Venda());
+			setVendaSelecionada(null);
+			
+			init();
+			getEstadoViewBean().setCurrentView(EStateView.SEARCH);
+			
+			JSFUtil.addMessage(FacesMessage.SEVERITY_INFO, "Registro excluído com sucesso.");
 		}
 		catch(SiscomandaException e) {
 			JSFUtil.addMessage(FacesMessage.SEVERITY_ERROR, e.getMessage());
@@ -352,22 +392,33 @@ public class PontoDeVendaBean extends BaseBean<Venda> implements Serializable {
 		
 		vendaBuilder
 		.comNumeroVenda(getEntity().getId())
-		.comTaxaServico(configuracao.getTaxaServico())
 		.comControle(getEntity().getControle())
+		.comDesconto(getEntity().getDesconto())
+		.comTaxaEntrega(getEntity().getTaxaEntrega())
+		.comValorPago(getEntity().getValorPago())
+		.comTaxaServico(configuracao.getTaxaServico())
 		.comTipoVenda(getEntity().getTipoVenda())
+		.comStatus(getEntity().getStatus())
+		.comDataHora(getEntity().getDataHora())
 		.comOperador(usuarioService.porCodigo(1L));
 		
-		getEntity().calculaValorTotalDaVenda();
 		setEntity(vendaBuilder.construir());
+		getEntity().calculaValorTotalDaVenda();
+		
 		setItem(new ItemVenda());
 		setIncluirItem(false);
 		btnVoltar();
 	}
 	
 	public void btnSalvarTipoVenda() {
-		if(getEntity().getTipoVenda().equals(ETipoVenda.BALCAO)
-				|| getEntity().getTipoVenda().equals(ETipoVenda.DELIVERY)) {
-			getEntity().setControle(new Integer(999999));
+		try {
+			setEntity(pontoDeVendaService.salvarTipoVenda(getEntity()));
+			getEntity().calculaValorTotalDaVenda();
+			
+			JSFUtil.addMessage(FacesMessage.SEVERITY_INFO, "Tipo venda selecionado com sucesso.");
+		}
+		catch(SiscomandaException e) {
+			JSFUtil.addMessage(FacesMessage.SEVERITY_ERROR, e.getMessage());
 		}
 	}
 	
@@ -424,15 +475,17 @@ public class PontoDeVendaBean extends BaseBean<Venda> implements Serializable {
 	
 	public void btnEditarVenda(Venda venda) {
 		try {
-			getEstadoViewBean().setCurrentView(EStateView.UPDATE);
 			
 			venda = pontoDeVendaService.porCodigo(venda.getId());
+			
+			getEstadoViewBean().setCurrentView(EStateView.UPDATE);
 			
 			vendaBuilder
 			.comNumeroVenda(venda.getId())
 			.comControle(venda.getControle())
 			.comDesconto(venda.getDesconto())
 			.comTaxaEntrega(venda.getTaxaEntrega())
+			.comValorPago(venda.getValorPago())
 			.comTaxaServico(configuracao.getTaxaServico())
 			.comItens(venda.getItens())
 			.comOperador(venda.getOperador())
@@ -450,6 +503,8 @@ public class PontoDeVendaBean extends BaseBean<Venda> implements Serializable {
 	
 	public void btnEditarItem(int index, ItemVenda item) {
 		try {
+			
+			pontoDeVendaService.validaSituacaoVenda(getEntity());
 			modificandoItem = true;
 			setItem(getEntity().getItem(index));
 
@@ -469,10 +524,13 @@ public class PontoDeVendaBean extends BaseBean<Venda> implements Serializable {
 	
 	public void btnRemoveItem(int index, ItemVenda item) {
 		try {
+			pontoDeVendaService.validaSituacaoVenda(getEntity());
 			getEntity().removerItem(index, item);
+			setItemSelecionado(null);
+			
 			JSFUtil.addMessage(FacesMessage.SEVERITY_INFO, "Registro removido com sucesso. Para confirmar exclusão salve a venda.");
 		}
-		catch(SiscomandaRuntimeException e) {
+		catch(SiscomandaRuntimeException | SiscomandaException e) {
 			JSFUtil.addMessage(FacesMessage.SEVERITY_ERROR, e.getMessage());
 		}
 	}
@@ -481,7 +539,6 @@ public class PontoDeVendaBean extends BaseBean<Venda> implements Serializable {
 	protected void beforeSearch() {
 		parametros.put("venda", getEntity()); 
 		setElements(pontoDeVendaService.buscarPor(parametros));
-		setEntity(vendaBuilder.construir());
 	}
 
 	public boolean isNovoItem() {
@@ -578,5 +635,21 @@ public class PontoDeVendaBean extends BaseBean<Venda> implements Serializable {
 	
 	public boolean isModificandoItem() {
 		return modificandoItem;
+	}
+
+	public Venda getVendaSelecionada() {
+		return vendaSelecionada;
+	}
+
+	public void setVendaSelecionada(Venda vendaSelecionada) {
+		this.vendaSelecionada = vendaSelecionada;
+	}
+
+	public int getIndex() {
+		return index;
+	}
+
+	public void setIndex(int index) {
+		this.index = index;
 	}
 }

@@ -7,6 +7,7 @@ import java.util.List;
 
 import br.com.siscomanda.enumeration.EStatus;
 import br.com.siscomanda.enumeration.ETipoVenda;
+import br.com.siscomanda.model.Cliente;
 import br.com.siscomanda.model.ItemVenda;
 import br.com.siscomanda.model.Usuario;
 import br.com.siscomanda.model.Venda;
@@ -28,6 +29,9 @@ public class VendaBuilder implements Serializable {
 		this.venda.setStatus(EStatus.EM_ABERTO);
 		this.venda.setDataHora(new Date());
 		this.venda.setDataVenda(new Date());
+		this.venda.setPago(false);
+		this.venda.setOperador(new Usuario());
+		this.venda.setFatorCalculoTaxaServico(new Double(0));
 	}
 	
 	public VendaBuilder comNumeroVenda(Long numeroVenda) {
@@ -46,7 +50,24 @@ public class VendaBuilder implements Serializable {
 	}
 
 	public VendaBuilder comStatus(EStatus status) {
+		boolean pago = false;
+		
+		if(status.equals(EStatus.PAGO)) {
+			pago = true;
+		}
+		
+		this.venda.setPago(pago);
 		this.venda.setStatus(status);
+		return this;
+	}
+	
+	public VendaBuilder comValorPago(Double valorPago) {
+		this.venda.setValorPago(valorPago);
+		return this;
+	}
+	
+	public VendaBuilder comCliente(Cliente cliente) {
+		this.venda.setCliente(cliente);
 		return this;
 	}
 	

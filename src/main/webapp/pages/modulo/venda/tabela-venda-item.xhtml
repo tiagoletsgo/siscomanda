@@ -4,7 +4,7 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:p="http://primefaces.org/ui">
 		
-		<p:commandButton value="Novo Item" styleClass="btn btn-primary" update="@form" global="false" disabled="#{empty crudBean.entity.tipoVenda}" action="#{crudBean.btnNovoItem()}" />
+		<p:commandButton value="Novo Item" styleClass="btn btn-primary" update="@form" global="false" disabled="#{empty crudBean.entity.tipoVenda or crudBean.entity.notEditavel}" action="#{crudBean.btnNovoItem()}" />
 		<p:dataTable id="tabelaVendaItem" styleClass="table table-striped jambo_table" value="#{crudBean.entity.itens}" var="item"
 			emptyMessage="Sem dados" rowIndexVar="index" >
 			
@@ -68,10 +68,13 @@
 			
 			<p:column width="80">
 				<p:commandButton styleClass="btn btn-warning btn-xs" icon="fa fa-pencil" title="Editar item" 
-					action="#{crudBean.btnEditarItem(index, item)}" update="@form" />
+					action="#{crudBean.btnEditarItem(index, item)}" update="@form" disabled="#{crudBean.entity.notEditavel}" />
 					
-				<p:commandButton styleClass="btn btn-danger btn-xs" icon="fa fa-remove" title="Remover item" disabled="#{not empty item.itemPai}" 
-					action="#{crudBean.btnRemoveItem(index, item)}" update="@form" />
+				<p:commandButton styleClass="btn btn-danger btn-xs" icon="fa fa-remove" title="Remover item" disabled="#{not empty item.itemPai or crudBean.entity.notEditavel}" 
+					 oncomplete="PF('dlgConfirmarExclusaoItemVenda').show();" process="@this" update="dialogConfirmarExclusaoItemVenda formExcluirItemVenda">
+					<f:setPropertyActionListener value="#{item}" target="#{crudBean.itemSelecionado}" />
+					<f:setPropertyActionListener value="#{index}" target="#{crudBean.index}" />
+				</p:commandButton>
 			</p:column>
 			
 			<p:rowExpansion>
