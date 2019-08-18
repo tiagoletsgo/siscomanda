@@ -17,16 +17,17 @@
 				<p:link outcome="/pages/modulo/venda/venda?view=search" value="Voltar" styleClass="btn btn-primary pull-right" />
 
 				<p:commandButton styleClass="btn btn-primary pull-right" value="Tipo Venda" oncomplete="PF('dlgTipoVenda').show();" 
-					disabled="#{not crudBean.entity.novo}"/>
+					disabled="#{not crudBean.entity.novo}" update="formTipoVenda" />
 
-				<p:menuButton value="Opções" styleClass="btn btn-primary">
+				<p:menuButton value="Opções" styleClass="btn btn-primary" disabled="#{empty crudBean.entity.tipoVenda}">
 					<p:menuitem value="Cancelar" icon="fa fa-angle-double-right" disabled="#{crudBean.entity.notCancelavel}"
 						action="#{crudBean.btnCancelarVenda()}" update="@form" />
 						
 					<p:menuitem value="Excluir" icon="fa fa-angle-double-right" disabled="#{crudBean.entity.notExcluivel}"
 						action="#{crudBean.btnRemoverVenda()}" update="@form" />
 					
-					<p:menuitem value="Imprimir" icon="fa fa-angle-double-right" />
+					<p:menuitem value="Imprimir" icon="fa fa-angle-double-right" disabled="false"
+						target="_blank" outcome="/pages/modulo/venda/impressao/cupom" />
 					
 					<p:menuitem value="Nova Venda" icon="fa fa-angle-double-right" 
 						outcome="/pages/modulo/venda/venda?view=insert" />

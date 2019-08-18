@@ -475,6 +475,11 @@ public class PontoDeVendaService implements Serializable {
 			controladores.add(new Integer(i));
 		}
 		
+		List<Venda> vendas = vendaDAO.naoPagaDiaCorrente();
+		for(Venda venda : vendas) {
+			controladores.remove(venda.getControle());
+		}
+		
 		return controladores;
 	}
 	
@@ -515,7 +520,21 @@ public class PontoDeVendaService implements Serializable {
 	public Venda salvarTipoVenda(Venda venda) throws SiscomandaException {
 		
 		if(venda.getTipoVenda() == null) {
+			venda.setControle(new Integer(0));
 			throw new SiscomandaException("Para continuar é necessário informar o tipo venda.");
+		}
+
+		if(venda.getTipoVenda().equals(ETipoVenda.DELIVERY)	&& venda.getCliente() == null) {
+			venda.setTipoVenda(null);
+			venda.setControle(new Integer(0));
+			throw new SiscomandaException("Para o tipo de venda Delivery é necessário informar o cliente. Por gentileza informe o cliente, para continuar.");
+		}
+		
+		if(venda.getTipoVenda().equals(ETipoVenda.MESA)	&& venda.getControle().equals(new Integer(0))
+				|| venda.getTipoVenda().equals(ETipoVenda.COMANDA)	&& venda.getControle().equals(new Integer(0))) {
+			venda.setTipoVenda(null);
+			venda.setControle(new Integer(0));
+			throw new SiscomandaException("Por gentileza selecione o número da Mesa / Comanda.");
 		}
 		
 		if(venda.getTipoVenda().equals(ETipoVenda.BALCAO)
@@ -524,7 +543,8 @@ public class PontoDeVendaService implements Serializable {
 		}
 		
 		if(venda.getTipoVenda().equals(ETipoVenda.BALCAO)
-				|| venda.getTipoVenda().equals(ETipoVenda.MESA)) {
+				|| venda.getTipoVenda().equals(ETipoVenda.MESA)
+				|| venda.getTipoVenda().equals(ETipoVenda.COMANDA)) {
 			venda.setCliente(null);
 			venda.setTaxaEntrega(0D);
 		}
@@ -532,10 +552,6 @@ public class PontoDeVendaService implements Serializable {
 		if(Objects.nonNull(venda.getCliente())
 				&& Objects.nonNull(venda.getCliente().getServico())) {
 			venda.setTaxaEntrega(venda.getCliente().getServico().getValor());
-		}
-		
-		if(venda.getTipoVenda().equals(ETipoVenda.DELIVERY)	&& venda.getCliente() == null) {
-			throw new SiscomandaException("Para o tipo de venda Delivery é necessário informar o cliente. Por gentileza informe o cliente, para continuar.");
 		}
 		
 		return venda;

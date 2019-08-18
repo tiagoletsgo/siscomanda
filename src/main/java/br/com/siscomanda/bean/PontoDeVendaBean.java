@@ -414,10 +414,10 @@ public class PontoDeVendaBean extends BaseBean<Venda> implements Serializable {
 		try {
 			setEntity(pontoDeVendaService.salvarTipoVenda(getEntity()));
 			getEntity().calculaValorTotalDaVenda();
-			
-			JSFUtil.addMessage(FacesMessage.SEVERITY_INFO, "Tipo venda selecionado com sucesso.");
+			JSFUtil.addMessage(FacesMessage.SEVERITY_INFO, "Tipo venda " + getEntity().getTipoVenda().name() + " selecionado com sucesso.");
 		}
 		catch(SiscomandaException e) {
+			pesquisaPorNomeCliente = null;
 			JSFUtil.addMessage(FacesMessage.SEVERITY_ERROR, e.getMessage());
 		}
 	}

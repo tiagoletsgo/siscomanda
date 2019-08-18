@@ -18,6 +18,13 @@ public class JSFUtil implements Serializable {
 		getContext().addMessage(null, new FacesMessage(tipo, message, message));
 	}
 	
+	public static void addMessageFailed(String clientId, String message) {
+		if(getContext() != null) {
+			getContext().isValidationFailed();
+			getContext().addMessage(clientId, new FacesMessage(FacesMessage.SEVERITY_ERROR, message, message));
+		}
+	}
+	
 	public static String applicationPath() {
 		return getContext().getExternalContext().getApplicationContextPath();
 	}
