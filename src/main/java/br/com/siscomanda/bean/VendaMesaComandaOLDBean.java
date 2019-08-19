@@ -276,7 +276,8 @@ public class VendaMesaComandaOLDBean extends BaseBean<VendaOLD> implements Seria
 	}
 	
 	public Double calculaSubTotalItem(ItemVendaOLD item) {
-		return service.calculaSubTotalItem(item);
+//		return service.calculaSubTotalItem(item);
+		return null;
 	}
 	
 	@Override

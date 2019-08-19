@@ -44,7 +44,8 @@ public class VendaMesaComandaOLDService extends VendaOLDService implements Seria
 	private ConfiguracaoGeralService definicaoGeralService;
 		
 	public List<VendaOLD> porFiltro(VendaOLD venda, boolean editando) {
-		return vendaDAO.buscaPor(venda, editando);
+//		return vendaDAO.buscaPor(venda, editando);
+		return null;
 	}
 		
 	public List<Adicional> carregaAdicionais(ItemVendaOLD item) {
@@ -58,10 +59,10 @@ public class VendaMesaComandaOLDService extends VendaOLDService implements Seria
 			mesas.add(i);
 		}
 		
-		List<VendaOLD> vendas = vendaDAO.vendasNaoPagasDiaCorrente();
-		for(VendaOLD venda : vendas) {
-			mesas.remove(new Integer(venda.getMesaComanda()));
-		}
+//		List<VendaOLD> vendas = vendaDAO.vendasNaoPagasDiaCorrente();
+//		for(VendaOLD venda : vendas) {
+//			mesas.remove(new Integer(venda.getMesaComanda()));
+//		}
 		
 		return mesas;
 	}
@@ -96,20 +97,21 @@ public class VendaMesaComandaOLDService extends VendaOLDService implements Seria
 				
 		if(venda.isNovo()) {
 			removeIdTemporario(itens);
-			venda = vendaDAO.salvar(venda);	
+//			venda = vendaDAO.salvar(venda);	
 			salvarAdicionais(itens, venda);
 			JSFUtil.addMessage(FacesMessage.SEVERITY_INFO, "Registro salvo com sucesso.");
 			return venda;
 		}
 		
-		if(!venda.isNovo()) {			
-			venda = vendaDAO.salvar(venda);
-			itemVendaAdicionalDAO.remove(venda);
-			salvarAdicionais(itens, venda);
-			JSFUtil.addMessage(FacesMessage.SEVERITY_INFO, "Registro alterado com sucesso.");
-		}
+//		if(!venda.isNovo()) {			
+//			venda = vendaDAO.salvar(venda);
+//			itemVendaAdicionalDAO.remove(venda);
+//			salvarAdicionais(itens, venda);
+//			JSFUtil.addMessage(FacesMessage.SEVERITY_INFO, "Registro alterado com sucesso.");
+//		}
 		
-		return venda;
+//		return venda;
+		return null;
 	}
 	
 	@Transactional
@@ -135,7 +137,7 @@ public class VendaMesaComandaOLDService extends VendaOLDService implements Seria
 		}
 		
 		venda.setStatus(EStatus.CANCELADO);
-		venda = vendaDAO.salvar(venda);
+//		venda = vendaDAO.salvar(venda);
 		
 		return venda;
 	}
@@ -152,7 +154,7 @@ public class VendaMesaComandaOLDService extends VendaOLDService implements Seria
 		}
 		
 		itemVendaAdicionalDAO.remove(venda);
-		vendaDAO.remover(VendaOLD.class, venda.getId());
+//		vendaDAO.remover(VendaOLD.class, venda.getId());
 	}
 	
 	@Transactional

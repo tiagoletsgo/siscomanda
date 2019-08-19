@@ -81,49 +81,16 @@
 				font-family: "montserrat" !important;
 			}
 		</style>
-		<p:dialog widgetVar="dlgConfirmarExclusao" modal="true" showEffect="fade" hideEffect="fade" responsive="true" resizable="false">
-			<f:facet name="header">Confirma exclusão</f:facet>
-			
-			<h:form id="formExcluirProduto">
-				<div class="col-md-12 col-sm-12 col-xs-12 text-center">
-					Tem certeza que deseja remover esse(s) registro(s)?
-				</div>
-			</h:form>
-			
-			<f:facet name="footer">
-				<p:commandButton process="@this" styleClass="btn btn-success" value="Confirmar" oncomplete="PF('dlgConfirmarExclusao').hide();" update="crudform" />
-				<p:commandButton styleClass="btn btn-danger" global="false" value="Cancelar" oncomplete="PF('dlgConfirmarExclusao').hide(); return false;"  />	
-			</f:facet>
-		</p:dialog>
-		
-		<p:dialog id="dialogPersonalizar" widgetVar="dlgPersonalizar" modal="true" showEffect="fade" hideEffect="fade" responsive="true" resizable="false">
-			<f:facet name="header">Adicionar Item Meio a Meio</f:facet>
-			<h:form id="formPersonalizar">
-				<label>Pesquisar :</label>
-				<h:inputText styleClass="form-control" value="#{crudBean.pesquisaDescricaoProduto}">
-					<p:ajax event="keyup" global="false" process="@this" update="formPersonalizar" delay="500" listener="#{crudBean.buscaProdutoParaItemPersonalizado()}" />
-				</h:inputText>
-				<p:selectManyCheckbox value="#{crudBean.produtosSelecionados}" layout="grid" columns="3" converter="entityConverter">
-					<f:selectItems value="#{crudBean.produtos}" var="produto" itemValue="#{produto}" itemLabel="#{produto.descricao}" />
-					<p:ajax event="change" update="@form" global="false" listener="#{crudBean.atualizaListaProdutoSelecionados()}" />
-				</p:selectManyCheckbox>
-			</h:form>
-			<f:facet name="footer">
-				<p:commandButton process="@this" styleClass="btn btn-success" value="Salvar" oncomplete="PF('dlgPersonalizar').hide();" global="false"
-					update="crudform:itensMeioAmeio crudform:observacoes crudform:inpDescricaoProduto crudform:inpTotal scripts crudform:tabelaComplementos crudform:inpQuantidade" action="#{crudBean.btnPersonalizar()}" />
-				
-				<p:commandButton styleClass="btn btn-danger" global="false" value="Cancelar" oncomplete="PF('dlgPersonalizar').hide();" />
-			</f:facet>
-		</p:dialog>
 		
 		<p:dialog id="dialogTipoVenda" widgetVar="dlgTipoVenda" modal="true" showEffect="fade" hideEffect="fade" responsive="true" resizable="false">
 			<f:facet name="header">Selecionar Tipo Venda</f:facet>
+			
 			<h:form id="formTipoVenda" styleClass="form-horizontal">
 				<div class="col-md-12 col-sm-12 col-xs-12">
 					<label>Selecione o Tipo de Venda :</label>
 					<p:selectOneRadio value="#{crudBean.entity.tipoVenda}">
 						<f:selectItems value="#{crudBean.tipoVendas}" var="tipoVenda" itemValue="#{tipoVenda}" itemLabel="#{tipoVenda.descricao}" />
-						<p:ajax event="change" process="@this" update="@form" global="false" />
+						<p:ajax event="change" process="@this" update="formTipoVenda" global="false" />
 					</p:selectOneRadio>
 					
 					<div class="clearfix"></div>
@@ -156,21 +123,47 @@
 						<p:ajax event="change" process="@this" global="false" />
 					</h:selectOneMenu>
 				</div>
+			</h:form>
 			
-				<div class="col-md-12 col-sm-12 col-xs-12">
-					<label>Selecione Entregador :</label>
-					<h:selectOneMenu styleClass="form-control" disabled="#{crudBean.entity.notBloqueiaVendaDelivery}" converter="entityConverter">
-						<f:selectItem itemLabel="Selecione" noSelectionOption="true" />
-					</h:selectOneMenu>
+			<f:facet name="footer">
+				<p:commandButton oncomplete="PF('dlgTipoVenda').hide();" value="Salvar" styleClass="btn btn-success" action="#{crudBean.btnSalvarTipoVenda()}" update="crudform"
+					global="false" />
+				<p:commandButton styleClass="btn btn-danger" global="false" value="Cancelar" oncomplete="PF('dlgTipoVenda').hide();" />
+			</f:facet>
+		</p:dialog>
+		
+		<p:dialog widgetVar="dlgConfirmarExclusao" modal="true" showEffect="fade" hideEffect="fade" responsive="true" resizable="false">
+			<f:facet name="header">Confirma exclusão</f:facet>
+			
+			<h:form id="formExcluirProduto">
+				<div class="col-md-12 col-sm-12 col-xs-12 text-center">
+					Tem certeza que deseja remover esse(s) registro(s)?
 				</div>
 			</h:form>
 			
 			<f:facet name="footer">
-				<p:commandButton value="Salvar" styleClass="btn btn-success" oncomplete="PF('dlgTipoVenda').hide();">
-					<p:ajax event="click" update="crudform" process="@this" global="false" listener="#{crudBean.btnSalvarTipoVenda}" />
-				</p:commandButton>
-				<p:commandButton value="save" action="#{crudBean.btnSalvarTipoVenda}" update="crudform" process="@this" global="false" />
-				<p:commandButton styleClass="btn btn-danger" global="false" value="Cancelar" oncomplete="PF('dlgTipoVenda').hide();" />
+				<p:commandButton process="@this" styleClass="btn btn-success" value="Confirmar" oncomplete="PF('dlgConfirmarExclusao').hide();" update="crudform" />
+				<p:commandButton styleClass="btn btn-danger" global="false" value="Cancelar" oncomplete="PF('dlgConfirmarExclusao').hide(); return false;"  />	
+			</f:facet>
+		</p:dialog>
+		
+		<p:dialog id="dialogPersonalizar" widgetVar="dlgPersonalizar" modal="true" showEffect="fade" hideEffect="fade" responsive="true" resizable="false">
+			<f:facet name="header">Adicionar Item Meio a Meio</f:facet>
+			<h:form id="formPersonalizar">
+				<label>Pesquisar :</label>
+				<h:inputText styleClass="form-control" value="#{crudBean.pesquisaDescricaoProduto}">
+					<p:ajax event="keyup" global="false" process="@this" update="formPersonalizar" delay="500" listener="#{crudBean.buscaProdutoParaItemPersonalizado()}" />
+				</h:inputText>
+				<p:selectManyCheckbox value="#{crudBean.produtosSelecionados}" layout="grid" columns="3" converter="entityConverter">
+					<f:selectItems value="#{crudBean.produtos}" var="produto" itemValue="#{produto}" itemLabel="#{produto.descricao}" />
+					<p:ajax event="change" update="@form" global="false" listener="#{crudBean.atualizaListaProdutoSelecionados()}" />
+				</p:selectManyCheckbox>
+			</h:form>
+			<f:facet name="footer">
+				<p:commandButton process="@this" styleClass="btn btn-success" value="Salvar" oncomplete="PF('dlgPersonalizar').hide();" global="false"
+					update="crudform:itensMeioAmeio crudform:observacoes crudform:inpDescricaoProduto crudform:inpTotal scripts crudform:tabelaComplementos crudform:inpQuantidade" action="#{crudBean.btnPersonalizar()}" />
+				
+				<p:commandButton styleClass="btn btn-danger" global="false" value="Cancelar" oncomplete="PF('dlgPersonalizar').hide();" />
 			</f:facet>
 		</p:dialog>
 		
