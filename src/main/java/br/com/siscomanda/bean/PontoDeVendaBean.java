@@ -542,7 +542,8 @@ public class PontoDeVendaBean extends BaseBean<Venda> implements Serializable {
 			getEntity().setCliente(new Cliente());
 		} catch (SiscomandaException e) {
 			cliente = new Cliente();
-			JSFUtil.addMessage(FacesMessage.SEVERITY_ERROR, e.getMessage());
+//			JSFUtil.addMessage(FacesMessage.SEVERITY_ERROR, e.getMessage());
+			JSFUtil.addMessageFailed("message", e.getMessage());
 		}
 	}
 

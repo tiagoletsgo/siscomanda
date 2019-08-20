@@ -20,7 +20,7 @@ public class JSFUtil implements Serializable {
 	
 	public static void addMessageFailed(String clientId, String message) {
 		if(getContext() != null) {
-			getContext().isValidationFailed();
+			getContext().validationFailed();
 			getContext().addMessage(clientId, new FacesMessage(FacesMessage.SEVERITY_ERROR, message, message));
 		}
 	}
