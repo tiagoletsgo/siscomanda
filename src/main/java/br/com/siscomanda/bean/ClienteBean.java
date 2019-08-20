@@ -89,6 +89,10 @@ public class ClienteBean extends BaseBean<Cliente> implements Serializable {
 		setEntity(new Cliente());
 	}
 	
+	public void novo() {
+		setEntity(new Cliente());
+	}
+	
 	public String maskCelular(String numeroCelular) {
 		return StringUtil.maskCelular(numeroCelular);
 	}

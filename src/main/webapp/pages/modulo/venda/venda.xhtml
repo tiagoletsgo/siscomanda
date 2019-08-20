@@ -131,7 +131,9 @@
 				<p:commandButton styleClass="btn btn-danger" global="false" value="Cancelar" oncomplete="PF('dlgTipoVenda').hide();" />
 				
 				<p:commandButton id="btn_novo_cliente" styleClass="btn btn-primary pull-right" value="Novo Cliente" disabled="#{crudBean.entity.notBloqueiaVendaDelivery}"
-					oncomplete="PF('dlgNovoCliente').show();" />
+					oncomplete="PF('dlgNovoCliente').show();" update="dialogNovoCliente" actionListener="#{clienteBean.novo()}">
+					<p:resetInput target="dialogNovoCliente" />
+				</p:commandButton>
 			</f:facet>
 		</p:dialog>
 		
@@ -185,8 +187,8 @@
 			</h:form>
 			
 			<f:facet name="footer">
-				<p:commandButton id="btn_salvar_cliente" styleClass="btn btn-success" value="Salvar" immediate="true"
-					action="#{crudBean.btnSalvarCliente(clienteBean.entity)}" process="formInclusaoNovoCliente" update="formTipoVenda:comboCliente" />
+				<p:commandButton id="btn_salvar_cliente" styleClass="btn btn-success" value="Salvar" action="#{crudBean.btnSalvarCliente(clienteBean.entity)}"
+					update="formTipoVenda:comboCliente" oncomplete="if(!args.validationFailed) PF('dlgNovoCliente').hide()" />
 				<p:commandButton styleClass="btn btn-danger" global="false" value="Cancelar" oncomplete="PF('dlgNovoCliente').hide(); return false;" />
 			</f:facet>
 		</p:dialog>
