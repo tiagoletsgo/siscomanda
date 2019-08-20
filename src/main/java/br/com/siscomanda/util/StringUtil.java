@@ -5,6 +5,7 @@ import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 
 import br.com.siscomanda.exception.SiscomandaException;
 
@@ -88,10 +89,18 @@ public class StringUtil {
 	}
 	
 	public static String somenteAlfanumerico(String value) {
+		if(Objects.isNull(value)) {
+			return StringUtil.addValorVazio();
+		}
+		
 		return value.replaceAll("[^a-z A-Z 0-9]+", "").trim();
 	}
 	
 	public static String somenteAlfanumericoSemEspaco(String value) {
+		if(Objects.isNull(value)) {
+			return StringUtil.addValorVazio();
+		}
+		
 		return removeEspacoEmBranco(value.replaceAll("[^a-z A-Z 0-9]+", ""));
 	}
 	

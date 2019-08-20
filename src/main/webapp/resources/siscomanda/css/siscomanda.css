@@ -20,6 +20,11 @@
  	font-family: "montserrat";
  }
  
+ .ui-widget select,
+ .font-family-default {
+	font-family: "montserrat" !important;
+}
+
  .btn[disabled] {
  	cursor: no-drop!important;
  }
@@ -493,10 +498,6 @@
 
 .ui-commandlink.ui-state-disabled:hover {
     cursor: no-drop !important;
-}
-
-.font-family-default {
-	font-family: "montserrat" !important;
 }
 
 .ui-button.ui-position-btn {
