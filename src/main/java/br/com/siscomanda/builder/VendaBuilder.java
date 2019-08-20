@@ -32,6 +32,7 @@ public class VendaBuilder implements Serializable {
 		this.venda.setPago(false);
 		this.venda.setOperador(new Usuario());
 		this.venda.setFatorCalculoTaxaServico(new Double(0));
+//		this.venda.setCliente(new Cliente());
 	}
 	
 	public VendaBuilder comNumeroVenda(Long numeroVenda) {

@@ -534,6 +534,17 @@ public class PontoDeVendaBean extends BaseBean<Venda> implements Serializable {
 			JSFUtil.addMessage(FacesMessage.SEVERITY_ERROR, e.getMessage());
 		}
 	}
+	
+	public void btnSalvarCliente(Cliente cliente) {
+		try {
+			clienteService.salvar(cliente);
+			clientes = clienteService.todos();
+			getEntity().setCliente(new Cliente());
+		} catch (SiscomandaException e) {
+			cliente = new Cliente();
+			JSFUtil.addMessage(FacesMessage.SEVERITY_ERROR, e.getMessage());
+		}
+	}
 
 	@Override
 	protected void beforeSearch() {

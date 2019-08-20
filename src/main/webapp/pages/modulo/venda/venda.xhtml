@@ -90,7 +90,7 @@
 					<label>Selecione o Tipo de Venda :</label>
 					<p:selectOneRadio value="#{crudBean.entity.tipoVenda}">
 						<f:selectItems value="#{crudBean.tipoVendas}" var="tipoVenda" itemValue="#{tipoVenda}" itemLabel="#{tipoVenda.descricao}" />
-						<p:ajax event="change" process="@this" update="formTipoVenda" global="false" />
+						<p:ajax event="change" process="@this" update="formTipoVenda btn_novo_cliente" global="false" />
 					</p:selectOneRadio>
 					
 					<div class="clearfix"></div>
@@ -112,7 +112,7 @@
 						<p:ajax event="keyup" delay="500" global="false" update="comboCliente" process="@this" listener="#{crudBean.pesquisaNomeCliente}" />
 					</h:inputText>
 				</div>
-								
+				
 				<div class="col-md-6 col-sm-6 col-xs-12">
 					<label>Selecione Cliente :</label>
 					<h:selectOneMenu id="comboCliente" styleClass="form-control" disabled="#{crudBean.entity.notBloqueiaVendaDelivery}"
@@ -129,8 +129,68 @@
 				<p:commandButton oncomplete="PF('dlgTipoVenda').hide();" value="Salvar" styleClass="btn btn-success" action="#{crudBean.btnSalvarTipoVenda()}" update="crudform"
 					global="false" />
 				<p:commandButton styleClass="btn btn-danger" global="false" value="Cancelar" oncomplete="PF('dlgTipoVenda').hide();" />
+				
+				<p:commandButton id="btn_novo_cliente" styleClass="btn btn-primary pull-right" value="Novo Cliente" disabled="#{crudBean.entity.notBloqueiaVendaDelivery}"
+					oncomplete="PF('dlgNovoCliente').show();" />
 			</f:facet>
 		</p:dialog>
+		
+		<p:dialog widgetVar="dlgNovoCliente" id="dialogNovoCliente" modal="true" showEffect="fade" hideEffect="fade" responsive="true" resizable="false">
+			<f:facet name="header">Inclusão novo cliente</f:facet>
+
+			<h:form id="formInclusaoNovoCliente">
+				<div class="col-md-12 col-sm-12 col-xs-12">
+					<label>Nome Completo * :</label>
+					<p:inputText styleClass="form-control" onkeyup="maiuscula(this)" value="#{clienteBean.entity.nomeCompleto}">
+						<p:ajax process="@this" global="false" />
+					</p:inputText>
+				</div>
+				
+				<div class="col-md-7 col-sm-7 col-xs-12">
+					<label>Endereço * :</label>
+					<p:inputText styleClass="form-control" onkeyup="maiuscula(this)" value="#{clienteBean.entity.endereco.endereco}">
+						<p:ajax process="@this" global="false" />
+					</p:inputText>
+				</div>
+				
+				<div class="col-md-5 col-sm-5 col-xs-12">
+					<label>Taxa Serviço * :</label>
+					<h:selectOneMenu styleClass="form-control" converter="entityConverter" value="#{clienteBean.entity.servico}">
+						<f:selectItem itemLabel="Selecione" noSelectionOption="true" />
+						<f:selectItems value="#{servicoFactoryBean.servicos}" var="taxaServico" itemLabel="#{taxaServico.descricao}" itemValue="#{servico}" />
+						<p:ajax process="@this" global="false" />
+					</h:selectOneMenu>
+				</div>
+				
+				<div class="col-md-4 col-sm-4 col-xs-12">
+					<label>Bairro * :</label>
+					<p:inputText styleClass="form-control" onkeyup="maiuscula(this)" value="#{clienteBean.entity.endereco.bairro}">
+						<p:ajax process="@this" global="false" />
+					</p:inputText>
+				</div>
+				
+				<div class="col-md-4 col-sm-4 col-xs-12">
+					<label>Cidade * :</label>
+					<p:inputText styleClass="form-control" onkeyup="maiuscula(this)" value="#{clienteBean.entity.endereco.cidade}">
+						<p:ajax process="@this" global="false" />
+					</p:inputText>
+				</div>
+				
+				<div class="col-md-4 col-sm-4 col-xs-12">
+					<label>Tel Celular * :</label>
+					<p:inputMask mask="(99) 99999-9999" styleClass="form-control" value="#{clienteBean.entity.telefoneCelular}">
+						<p:ajax process="@this" global="false" />
+					</p:inputMask>
+				</div>
+			</h:form>
+			
+			<f:facet name="footer">
+				<p:commandButton id="btn_salvar_cliente" styleClass="btn btn-success" value="Salvar" immediate="true"
+					action="#{crudBean.btnSalvarCliente(clienteBean.entity)}" process="formInclusaoNovoCliente" update="formTipoVenda:comboCliente" />
+				<p:commandButton styleClass="btn btn-danger" global="false" value="Cancelar" oncomplete="PF('dlgNovoCliente').hide(); return false;" />
+			</f:facet>
+		</p:dialog>
+		
 		
 		<p:dialog widgetVar="dlgConfirmarExclusao" modal="true" showEffect="fade" hideEffect="fade" responsive="true" resizable="false">
 			<f:facet name="header">Confirma exclusão</f:facet>
