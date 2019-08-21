@@ -88,9 +88,9 @@
 			<h:form id="formTipoVenda" styleClass="form-horizontal">
 				<div class="col-md-12 col-sm-12 col-xs-12">
 					<label>Selecione o Tipo de Venda :</label>
-					<p:selectOneRadio value="#{crudBean.entity.tipoVenda}">
+					<p:selectOneRadio id="inpTipoVenda" value="#{crudBean.entity.tipoVenda}">
 						<f:selectItems value="#{crudBean.tipoVendas}" var="tipoVenda" itemValue="#{tipoVenda}" itemLabel="#{tipoVenda.descricao}" />
-						<p:ajax event="change" process="@this" update="formTipoVenda btn_novo_cliente" global="false" />
+						<p:ajax event="change" process="@this" update="formTipoVenda btnNovoCliente" global="false" />
 					</p:selectOneRadio>
 					
 					<div class="clearfix"></div>
@@ -126,11 +126,12 @@
 			</h:form>
 			
 			<f:facet name="footer">
-				<p:commandButton oncomplete="PF('dlgTipoVenda').hide();" value="Salvar" styleClass="btn btn-success" action="#{crudBean.btnSalvarTipoVenda()}" update="crudform"
-					global="false" />
+				<p:commandButton oncomplete="if(!args.validationFailed) PF('dlgTipoVenda').hide()" value="Salvar" 
+					styleClass="btn btn-success" action="#{crudBean.btnSalvarTipoVenda()}" update="crudform formTipoVenda btnNovoCliente" global="false" />
+					
 				<p:commandButton styleClass="btn btn-danger" global="false" value="Cancelar" oncomplete="PF('dlgTipoVenda').hide();" />
 				
-				<p:commandButton id="btn_novo_cliente" styleClass="btn btn-primary pull-right" value="Novo Cliente" disabled="#{crudBean.entity.notBloqueiaVendaDelivery}"
+				<p:commandButton id="btnNovoCliente" styleClass="btn btn-primary pull-right" value="Novo Cliente" disabled="#{crudBean.entity.notBloqueiaVendaDelivery}"
 					oncomplete="PF('dlgNovoCliente').show();" update="dialogNovoCliente" actionListener="#{clienteBean.novo()}">
 					<p:resetInput target="dialogNovoCliente" />
 				</p:commandButton>
@@ -187,8 +188,8 @@
 			</h:form>
 			
 			<f:facet name="footer">
-				<p:commandButton id="btn_salvar_cliente" styleClass="btn btn-success" value="Salvar" action="#{crudBean.btnSalvarCliente(clienteBean.entity)}"
-					update="formTipoVenda:comboCliente" oncomplete="if(!args.validationFailed) PF('dlgNovoCliente').hide()" />
+				<p:commandButton id="btnSalvarCliente" styleClass="btn btn-success" value="Salvar" action="#{crudBean.btnSalvarCliente(clienteBean.entity)}"
+					update="formTipoVenda:comboCliente" global="false" oncomplete="if(!args.validationFailed) PF('dlgNovoCliente').hide()" />
 				<p:commandButton styleClass="btn btn-danger" global="false" value="Cancelar" oncomplete="PF('dlgNovoCliente').hide(); return false;" />
 			</f:facet>
 		</p:dialog>

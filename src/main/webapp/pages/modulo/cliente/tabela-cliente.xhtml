@@ -53,26 +53,4 @@
 				<div class="clearfix"></div>
 			</f:facet>
 		</p:dataTable>
-				
-		<p:dialog widgetVar="dlgConfirmarExclusao" modal="true" responsive="true" showEffect="bounce" hideEffect="bounce"
-			resizable="false" >
-			<f:facet name="header">
-				Confirmar exclusão
-			</f:facet>
-			
-			<div class="col-md-12 col-sm-12 col-xs-12">
-				<span>
-					Tem certeza que deseja remover esse(s) registro(s)?
-				</span>				
-			</div>
-			
-			<f:facet name="footer">
-				<h:form>
-					<h:commandButton type="button"  onclick="PF('dlgConfirmarExclusao').hide();" action="#{crudBean.btnRemover}" styleClass="btn btn-danger btn-xs" value="Sim">
-						<p:ajax update=":crudform:tabelaCliente" process="@form " />
-					</h:commandButton>
-					<h:commandButton onclick="PF('dlgConfirmarExclusao').hide(); return false;" styleClass="btn btn-success btn-xs" value="Não" />
-				</h:form>
-			</f:facet>
-		</p:dialog>
 </ui:composition>
