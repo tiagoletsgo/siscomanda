@@ -115,7 +115,7 @@
 				</h:form>
 
 				<f:facet name="footer">
-					<p:commandLink oncomplete="PF('dialogIncluirFormaPagamento').hide();" styleClass="btn btn-success" value="Salvar" global="false"
+					<p:commandLink oncomplete="if(!args.validationFailed) PF('dialogIncluirFormaPagamento').hide()" styleClass="btn btn-success" value="Salvar" global="false"
 						process="@this" action="#{crudBean.btnIncluirPagamento}" update=":crudform:tabelaFormaPagamento :crudform:gridValores :crudform:gridBotoes :formDialogFormaPagamento" />
 						
 					<p:commandLink oncomplete="PF('dialogIncluirFormaPagamento').hide(); return false;" styleClass="btn btn-primary" value="Voltar" global="false" />
@@ -135,7 +135,7 @@
 				</h:form>
 
 				<f:facet name="footer">
-					<p:commandLink oncomplete="PF('dialogExcluirFormaPagamento').hide();" styleClass="btn btn-danger" value="Sim"
+					<p:commandLink oncomplete="PF('dialogExcluirFormaPagamento').hide();" styleClass="btn btn-danger" value="Sim" global="false"
 						process="@this" action="#{crudBean.btnEstornar}" update=":crudform:tabelaFormaPagamento :crudform:gridValores :crudform:gridBotoes scripts" />
 						
 					<p:commandLink oncomplete="PF('dialogExcluirFormaPagamento').hide(); return false;" styleClass="btn btn-success" value="Não" global="false" />

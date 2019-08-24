@@ -109,7 +109,7 @@ public class FechaContaBean extends BaseBean<Venda> implements Serializable {
 			getPagamento().setValorRecebido(null);
 		}
 		catch(SiscomandaException e) {
-			JSFUtil.addMessage(FacesMessage.SEVERITY_ERROR, "Erro ao incluir pagamento. " + e.getMessage());
+			JSFUtil.addMessageFailed("message", "Erro ao incluir pagamento. " + e.getMessage());
 		}
 	}
 	

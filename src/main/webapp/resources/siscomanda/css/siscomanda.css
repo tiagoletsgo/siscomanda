@@ -165,6 +165,11 @@
 	border-color: none !important;
 }
 
+.ui-link.ui-state-disabled.ui-no-drop {
+	cursor: no-drop!important;
+	opacity: inherit!important;
+}
+
 .ui-state-hover.btn-danger,
 .ui-state-hover.btn-warning,
 .ui-state-hover.btn-primary,
@@ -494,6 +499,7 @@
 
 .ui-commandlink.ui-state-disabled {
     background: #c9302c !important;
+    border-color: #c9302c!important;
 }
 
 .ui-commandlink.ui-state-disabled:hover {

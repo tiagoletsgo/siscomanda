@@ -121,6 +121,7 @@ public class PontoDeVendaBean extends BaseBean<Venda> implements Serializable {
 	private void initEntity() {
 		try {
 			String codigo = JSFUtil.getRequest().getParameter("codigo");
+			parametros.put("from", JSFUtil.getRequest().getParameter("from"));
 			vendaBuilder.comOperador(usuarioService.porCodigo(1L));
 			setEntity(Objects.isNull(codigo) ? vendaBuilder.construir() : pontoDeVendaService.porCodigo(new Long(codigo)));
 			
@@ -133,6 +134,16 @@ public class PontoDeVendaBean extends BaseBean<Venda> implements Serializable {
 		} catch (NumberFormatException | SiscomandaException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public String btnCancel() {
+		String from = (String)parametros.get("from");
+		
+		if(from != null && from.contains("dashboard")) {
+			return "/index.xhtml?faces-redirect=true";
+		}
+		
+		return "/pages/modulo/venda/venda.xhtml?view=search&faces-redirect=true";
 	}
 	
 	public void btnNovoItem() {
@@ -343,8 +354,9 @@ public class PontoDeVendaBean extends BaseBean<Venda> implements Serializable {
 		atualizaObservacao();
 	}
 	
-	// remove um item quando esta sendo personalizado
-	//
+	/* 
+	 * Remove um item quando esta sendo personalizado
+	 */
 	public void btnRemover(int index, ItemVenda item) {
 		try {
 			item.setId(new Long(index));
