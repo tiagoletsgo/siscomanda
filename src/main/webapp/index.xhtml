@@ -5,42 +5,83 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:p="http://primefaces.org/ui">
 	
+	<ui:param name="crudBean" value="#{dashboardBean}" />
+	
 	<ui:define name="dashboard">
-		<div class="right_col" role="main">
-			<div class="row tile_count">
-				<div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
-					<span class="count_top"><i class="fa fa-usd"></i> Total Vendas</span>
-					<div class="count">2500,00</div>
+		<h:form id="formDashboard">
+			<div class="right_col" role="main">
+				<div class="row tile_count">
+					<div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
+						<span class="count_top"><i class="fa fa-usd"></i> Total Vendas</span>
+						<div class="count">2500,00</div>
+					</div>
+					<div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
+						<span class="count_top"><i class="fa fa-cutlery"></i> Mesa em Aberto</span>
+						<div class="count">6</div>
+					</div>
+					<div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
+						<span class="count_top"><i class="fa fa-usd"></i> Venda Balcão</span>
+						<div class="count">10</div>
+					</div>
+					<div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
+						<span class="count_top"><i class="fa fa-usd"></i> Venda Delivery</span>
+						<div class="count">29</div>
+					</div>
+					<div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
+						<span class="count_top"><i class="fa fa-usd"></i> Total Pedidos</span>
+						<div class="count">45</div>
+					</div>
+					<div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
+						<span class="count_top"><i class="fa fa-usd"></i> Vendas Canceladas</span>
+						<div class="count">5</div>
+					</div>
 				</div>
-				<div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
-					<span class="count_top"><i class="fa fa-cutlery"></i> Mesa em Aberto</span>
-					<div class="count">6</div>
-				</div>
-				<div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
-					<span class="count_top"><i class="fa fa-usd"></i> Venda Balcão</span>
-					<div class="count">10</div>
-				</div>
-				<div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
-					<span class="count_top"><i class="fa fa-usd"></i> Venda Delivery</span>
-					<div class="count">29</div>
-				</div>
-				<div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
-					<span class="count_top"><i class="fa fa-usd"></i> Total Pedidos</span>
-					<div class="count">45</div>
-				</div>
-				<div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
-					<span class="count_top"><i class="fa fa-usd"></i> Vendas Canceladas</span>
-					<div class="count">5</div>
-				</div>
-			</div>
-			
-			<div class="row">
-				<div class="col-md-12 col-sm-12 col-xs-12">
-					<div class="dashboard_graph">
-						Graficos sendo carregados...
+				
+				<div class="row">
+					<div class="col-md-12 col-sm-12 col-xs-12">
+						<div class="x_panel">
+							<div class="x_title">
+								<div class="col-md-6">
+									<h2>Painel de #{crudBean.configuracao.sistema eq 'MESA' ? 'Mesas' : 'Comandas'}</h2>
+								</div>
+								<div class="col-md-6">
+									<div class="pull-right">
+										Legenda.: 
+										<label class="label label-success">
+											Disponivel 
+										</label>
+										
+										<label />
+										<label class="label label-danger">
+											Ocupada
+										</label>
+									</div>
+								</div>
+								<div class="clearfix"></div>
+							</div>
+							
+							<div class="x_content">
+								<h:panelGroup id="loopControladores" layout="block">
+									<ui:repeat var="controlador" value="#{crudBean.controladores}">
+										<div class="col-md-2 col-sm-3 col-xs-6">
+											<p:link id="btnControlador" disabled="#{controlador.disponivel}" styleClass="btn #{controlador.disponivel ? 'btn-success ui-no-drop' : 'btn-danger' } btn-block"
+												outcome="/pages/modulo/venda/venda.xhtml?view=insert">
+											  <b class="font-family-default">#{crudBean.configuracao.sistema eq 'MESA' ? 'Mesa' : 'Comanda'}</b> 
+											  <span class="badge fa font-family-default">#{controlador.numero}</span>
+											  <i class="fa fa-cutlery"></i>
+											  <f:param value="#{controlador.venda.id}" name="codigo" />
+											  <f:param value="dashboard" name="from" />
+											</p:link>
+										</div>
+									</ui:repeat>
+									<div class="clearfix"></div>
+									<p:poll listener="#{crudBean.atualizaPainelControladores}" update="loopControladores" interval="15" global="false" />
+								</h:panelGroup>
+							</div>
+						</div>
 					</div>
 				</div>
 			</div>
-		</div>
+		</h:form>
 	</ui:define>
 </ui:composition>

@@ -42,7 +42,7 @@ public abstract class BaseBean<T> implements Serializable {
 			e.printStackTrace();
 		}
 	}
-		
+	
 	@PostConstruct
 	protected abstract void init();
 	

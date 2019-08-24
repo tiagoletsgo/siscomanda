@@ -22,9 +22,6 @@
 		<h:panelGroup layout="block">
 			Ponto de Venda (PDV)<br/>
 		</h:panelGroup>
-		<!-- <h:panelGroup layout="block" styleClass="pull-right" rendered="#{crudBean.entity.tipoVenda eq 'DELIVERY' and not empty crudBean.entity.cliente}">
-			<span class="text-danger"><strong>* Dados do cliente:</strong> #{crudBean.entity.cliente.nomeCompleto} / #{crudBean.entity.cliente.telefoneCelular}</span>
-		</h:panelGroup>  -->
 	</ui:define>
 	<ui:define name="title_form_table"> 
 		<h:panelGroup layout="block" rendered="#{crudBean.estadoViewBean.search}">Minhas Vendas</h:panelGroup>

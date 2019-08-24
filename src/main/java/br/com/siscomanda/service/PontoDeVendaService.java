@@ -475,7 +475,7 @@ public class PontoDeVendaService implements Serializable {
 			controladores.add(new Integer(i));
 		}
 		
-		List<Venda> vendas = vendaDAO.naoPagaDiaCorrente();
+		List<Venda> vendas = vendaDAO.naoPagas();
 		for(Venda venda : vendas) {
 			controladores.remove(venda.getControle());
 		}
