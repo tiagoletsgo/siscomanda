@@ -36,6 +36,8 @@ public class ClienteDAO extends GenericDAO<Cliente> implements Serializable {
 		StringBuilder sql = new StringBuilder();
 		sql.append("FROM Cliente cliente ");
 		sql.append("LEFT JOIN FETCH cliente.servico ");
+		sql.append("WHERE 1 = 1");
+		sql.append("ORDER BY cliente.nomeCompleto ASC ");
 		
 		TypedQuery<Cliente> query = getEntityManager().createQuery(sql.toString(), Cliente.class);
 		List<Cliente> clientes = query.getResultList();

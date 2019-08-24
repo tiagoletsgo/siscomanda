@@ -108,11 +108,14 @@ public class PontoDeVendaBean extends BaseBean<Venda> implements Serializable {
 		produtosSelecionados = new ArrayList<Produto>();
 		complementos = new ArrayList<Adicional>();
 		configuracao = configuracaoService.definicaoSistema();
-		clientes = clienteService.todos();
 		item = new ItemVenda();
 		
 		setElements(pontoDeVendaService.vendasNaoPagas());
 		initEntity();
+	}
+	
+	public void carregarCliente() {
+		clientes = clienteService.todos();
 	}
 	
 	private void initEntity() {
@@ -413,12 +416,14 @@ public class PontoDeVendaBean extends BaseBean<Venda> implements Serializable {
 	public void btnSalvarTipoVenda() {
 		try {
 			setEntity(pontoDeVendaService.salvarTipoVenda(getEntity()));
-			getEntity().calculaValorTotalDaVenda();
 			JSFUtil.addMessage(FacesMessage.SEVERITY_INFO, "Tipo venda " + getEntity().getTipoVenda().name() + " selecionado com sucesso.");
 		}
 		catch(SiscomandaException e) {
+			JSFUtil.addMessageFailed("message", e.getMessage());
+		}
+		finally {
 			pesquisaPorNomeCliente = null;
-			JSFUtil.addMessage(FacesMessage.SEVERITY_ERROR, e.getMessage());
+			getEntity().calculaValorTotalDaVenda();
 		}
 	}
 	
@@ -538,12 +543,13 @@ public class PontoDeVendaBean extends BaseBean<Venda> implements Serializable {
 	public void btnSalvarCliente(Cliente cliente) {
 		try {
 			clienteService.salvar(cliente);
-			clientes = clienteService.todos();
-			getEntity().setCliente(new Cliente());
+			carregarCliente();
+			
 		} catch (SiscomandaException e) {
-			cliente = new Cliente();
-//			JSFUtil.addMessage(FacesMessage.SEVERITY_ERROR, e.getMessage());
 			JSFUtil.addMessageFailed("message", e.getMessage());
+		}
+		finally {
+			cliente = new Cliente();
 		}
 	}
 

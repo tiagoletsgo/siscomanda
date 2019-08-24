@@ -17,7 +17,7 @@
 				<p:link outcome="/pages/modulo/venda/venda?view=search" value="Voltar" styleClass="btn btn-primary pull-right" />
 
 				<p:commandButton styleClass="btn btn-primary pull-right" value="Tipo Venda" oncomplete="PF('dlgTipoVenda').show();" 
-					disabled="#{not crudBean.entity.novo}" update="formTipoVenda" />
+					disabled="#{not crudBean.entity.novo}" update="formTipoVenda" actionListener="#{crudBean.carregarCliente()}" />
 
 				<p:menuButton value="Opções" styleClass="btn btn-primary" disabled="#{empty crudBean.entity.tipoVenda}">
 					<p:menuitem value="Cancelar" icon="fa fa-angle-double-right" disabled="#{crudBean.entity.notCancelavel}"

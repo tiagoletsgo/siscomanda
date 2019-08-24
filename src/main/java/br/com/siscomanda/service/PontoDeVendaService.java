@@ -521,12 +521,14 @@ public class PontoDeVendaService implements Serializable {
 		
 		if(venda.getTipoVenda() == null) {
 			venda.setControle(new Integer(0));
+			venda.setTaxaEntrega(0D);
 			throw new SiscomandaException("Para continuar é necessário informar o tipo venda.");
 		}
 
 		if(venda.getTipoVenda().equals(ETipoVenda.DELIVERY)	&& venda.getCliente() == null) {
 			venda.setTipoVenda(null);
 			venda.setControle(new Integer(0));
+			venda.setTaxaEntrega(0D);
 			throw new SiscomandaException("Para o tipo de venda Delivery é necessário informar o cliente. Por gentileza informe o cliente, para continuar.");
 		}
 		
@@ -534,6 +536,7 @@ public class PontoDeVendaService implements Serializable {
 				|| venda.getTipoVenda().equals(ETipoVenda.COMANDA)	&& venda.getControle().equals(new Integer(0))) {
 			venda.setTipoVenda(null);
 			venda.setControle(new Integer(0));
+			venda.setTaxaEntrega(0D);
 			throw new SiscomandaException("Por gentileza selecione o número da Mesa / Comanda.");
 		}
 		
