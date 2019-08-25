@@ -4,13 +4,16 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.TimeZone;
 
 import br.com.siscomanda.exception.SiscomandaRuntimeException;
 
 public class DateUtil {
-
+	
+	private static TimeZone timeZone = TimeZone.getTimeZone("AMERICA/Sao_Paulo");
+	
 	public static Date primeiroDiaDoMesAtual() {
-		Calendar calendar = new GregorianCalendar();
+		Calendar calendar = new GregorianCalendar(timeZone);
 		calendar.setTime(new Date());
 		calendar.set(Calendar.DATE, 1);
 		calendar.set(Calendar.HOUR_OF_DAY, 0);
@@ -20,13 +23,13 @@ public class DateUtil {
 	}
 	
 	public static int extrairDia(Date date) {
-		Calendar calendar = new GregorianCalendar();
+		Calendar calendar = new GregorianCalendar(timeZone);
 		calendar.setTime(date);
 		return calendar.get(GregorianCalendar.DAY_OF_MONTH);
 	}
 	
 	public static Date ultimoDiaDoMesAtual() {
-		Calendar calendar = new GregorianCalendar();
+		Calendar calendar = new GregorianCalendar(timeZone);
 		calendar.setTime(new Date());
 		calendar.set(Calendar.DATE, calendar.getActualMaximum(Calendar.DAY_OF_MONTH));
 		calendar.set(Calendar.HOUR_OF_DAY, 0);
@@ -36,7 +39,7 @@ public class DateUtil {
 	}
 	
 	public static Date data(int dia, int hora, int minuto, int segundo) {
-		Calendar calendar = new GregorianCalendar();
+		Calendar calendar = new GregorianCalendar(timeZone);
 		calendar.setTime(new Date());
 		calendar.set(Calendar.DATE, dia);
 		calendar.set(Calendar.HOUR_OF_DAY, hora);
@@ -46,7 +49,7 @@ public class DateUtil {
 	}
 	
 	public static Date data(Date data, int hora, int minuto, int segundo) {
-		Calendar calendar = new GregorianCalendar();
+		Calendar calendar = new GregorianCalendar(timeZone);
 		calendar.setTime(data);
 		calendar.set(Calendar.HOUR_OF_DAY, hora);
 		calendar.set(Calendar.MINUTE, minuto);
@@ -63,7 +66,7 @@ public class DateUtil {
 	}
 	
 	public static int totalDiasDoMes(Date data) {
-		Calendar calendar = Calendar.getInstance();
+		Calendar calendar = Calendar.getInstance(timeZone);
 		calendar.setTime(data);
 		
 		return calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
@@ -72,6 +75,7 @@ public class DateUtil {
 	public static Date parseDate(String data) {
 		try {
 			SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+			sdf.setTimeZone(timeZone);
 			Date dt = sdf.parse(data);
 			return dt;
 		}
@@ -82,6 +86,7 @@ public class DateUtil {
 	
 	public static String extrairMesPorExtenso(Date data) {
 		SimpleDateFormat sdf = new SimpleDateFormat("MMMMM");
+		sdf.setTimeZone(timeZone);
 		String nomePorExtenso = sdf.format(data);
 		return nomePorExtenso.toUpperCase();
 	}

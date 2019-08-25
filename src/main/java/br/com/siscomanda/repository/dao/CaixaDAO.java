@@ -73,7 +73,7 @@ public class CaixaDAO extends GenericDAO<Caixa> implements Serializable {
 		sql.append("ORDER BY caixa.id DESC ");
 		
 		TypedQuery<Caixa> query = getEntityManager().createQuery(sql.toString(), Caixa.class);
-		query.setParameter("primeiroDiaMesCorrente", DateUtil.diaAtual());
+		query.setParameter("primeiroDiaMesCorrente", DateUtil.primeiroDiaDoMesAtual());
 		query.setParameter("data", DateUtil.data(dia, 23, 59, 59));
 		List<Caixa> caixas = query.getResultList();
 		return caixas;
