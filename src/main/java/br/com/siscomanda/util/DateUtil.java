@@ -4,13 +4,19 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.Locale;
 import java.util.TimeZone;
 
 import br.com.siscomanda.exception.SiscomandaRuntimeException;
 
 public class DateUtil {
 	
-	private static TimeZone timeZone = TimeZone.getTimeZone("AMERICA/Sao_Paulo");
+	private static TimeZone timeZone = TimeZone.getTimeZone("America/Sao_Paulo");
+	private static Locale locale = new Locale("pt", "BR");
+	
+	public DateUtil() {
+		TimeZone.setDefault(timeZone);
+	}
 	
 	public static Date primeiroDiaDoMesAtual() {
 		Calendar calendar = new GregorianCalendar(timeZone);
@@ -85,7 +91,7 @@ public class DateUtil {
 	}
 	
 	public static String extrairMesPorExtenso(Date data) {
-		SimpleDateFormat sdf = new SimpleDateFormat("MMMMM");
+		SimpleDateFormat sdf = new SimpleDateFormat("MMMMM", locale);
 		sdf.setTimeZone(timeZone);
 		String nomePorExtenso = sdf.format(data);
 		return nomePorExtenso.toUpperCase();

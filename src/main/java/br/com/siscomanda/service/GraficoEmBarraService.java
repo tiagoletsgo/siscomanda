@@ -49,7 +49,7 @@ public class GraficoEmBarraService implements Serializable {
 		BarChartModel chart = initChartBarModel();
 		
 		chart.setTitle("Gráfico de Venda Diário");
-		chart.setAnimate(true);
+		chart.setAnimate(false);
 		chart.setLegendPosition("ne");
 		chart.setShowPointLabels(true);
 		chart.setShowDatatip(false);

@@ -14,6 +14,7 @@ import javax.inject.Named;
 
 import br.com.siscomanda.base.bean.BaseBean;
 import br.com.siscomanda.builder.VendaBuilder;
+import br.com.siscomanda.enumeration.ESistema;
 import br.com.siscomanda.enumeration.EStateView;
 import br.com.siscomanda.enumeration.EStatus;
 import br.com.siscomanda.enumeration.ETipoVenda;
@@ -112,10 +113,21 @@ public class PontoDeVendaBean extends BaseBean<Venda> implements Serializable {
 		
 		setElements(pontoDeVendaService.vendasNaoPagas());
 		initEntity();
+		initTipoVenda();
 	}
 	
 	public void carregarCliente() {
 		clientes = clienteService.todos();
+	}
+	
+	private void initTipoVenda() {
+		String controlador = JSFUtil.getRequest().getParameter("nControlador");
+		if(controlador != null) {
+			ETipoVenda tipoVenda = configuracao.getSistema().equals(ESistema.COMANDA) ? ETipoVenda.COMANDA : ETipoVenda.MESA;
+			getEntity().setTipoVenda(tipoVenda);
+			getEntity().setControle(new Integer(controlador));
+		}
+		controlador = null;
 	}
 	
 	private void initEntity() {
