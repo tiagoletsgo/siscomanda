@@ -8,16 +8,14 @@ import java.util.List;
 import javax.faces.application.FacesMessage;
 import javax.inject.Inject;
 
-import br.com.siscomanda.base.service.VendaOLDService;
+import br.com.siscomanda.base.service.VendaService;
 import br.com.siscomanda.config.jpa.Transactional;
 import br.com.siscomanda.enumeration.EStatus;
 import br.com.siscomanda.exception.SiscomandaException;
 import br.com.siscomanda.interfaces.Calculadora;
-import br.com.siscomanda.model.Adicional;
 import br.com.siscomanda.model.Bandeira;
 import br.com.siscomanda.model.Caixa;
 import br.com.siscomanda.model.FormaPagamento;
-import br.com.siscomanda.model.ItemVendaOLD;
 import br.com.siscomanda.model.Pagamento;
 import br.com.siscomanda.model.Venda;
 import br.com.siscomanda.repository.dao.BandeiraDAO;
@@ -26,7 +24,7 @@ import br.com.siscomanda.repository.dao.FormaPagamentoDAO;
 import br.com.siscomanda.repository.dao.VendaDAO;
 import br.com.siscomanda.util.JSFUtil;
 
-public class FechaContaService extends VendaOLDService implements Serializable {
+public class FechaContaService extends VendaService implements Serializable {
 
 	private static final long serialVersionUID = -3622747048753270872L;
 	
@@ -248,9 +246,5 @@ public class FechaContaService extends VendaOLDService implements Serializable {
 		}
 		
 		return vendas.get(0);
-	}
-	
-	public List<Adicional> carregaAdicionais(ItemVendaOLD item) {
-		return vendaDAO.buscaAdicionalVenda(item);
 	}
 }

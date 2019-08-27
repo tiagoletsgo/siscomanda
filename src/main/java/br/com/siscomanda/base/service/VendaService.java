@@ -17,7 +17,7 @@ import br.com.siscomanda.model.VendaOLD;
 import br.com.siscomanda.service.ConfiguracaoGeralService;
 import br.com.siscomanda.util.JSFUtil;
 
-public abstract class VendaOLDService implements Serializable {
+public abstract class VendaService implements Serializable {
 
 	private static final long serialVersionUID = -8273876283694756574L;
 	

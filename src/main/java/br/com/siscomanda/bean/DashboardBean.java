@@ -44,13 +44,13 @@ public class DashboardBean implements Serializable {
 	public void init() {
 		configuracao = new ConfiguracaoGeral();
 		configuracao = configuracaoService.definicaoSistema();
-		controladores = configuracaoService.controladores();
-		graficoVendaEmBarra = graficoEmBarraService.gerandoGraficoVenda();
-		totalizador = dashboardService.totalizador();
+		atualizaDashboard();
 	}
 	
-	public void atualizaPainelControladores() {
-//		controladores = configuracaoService.controladores();
+	public void atualizaDashboard() {
+		controladores = configuracaoService.controladores();
+		totalizador = dashboardService.totalizador();
+		graficoVendaEmBarra = graficoEmBarraService.gerandoGraficoVenda();
 	}
 	
 	public List<ControladorVO> getControladores() {

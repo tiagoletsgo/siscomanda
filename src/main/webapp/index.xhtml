@@ -10,7 +10,7 @@
 	<ui:define name="dashboard">
 		<h:form id="formDashboard">
 			<div class="right_col" role="main">
-				<div class="row tile_count">
+				<h:panelGroup id="contadores" layout="block" styleClass="row tile_count">
 					<div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
 						<span class="count_top"><i class="fa fa-usd"></i> Total Vendas</span>
 						<div class="count">
@@ -59,7 +59,7 @@
 							</h:outputText>
 						</div>
 					</div>
-				</div>
+				</h:panelGroup>
 				
 				<div class="row">
 					<div class="col-md-12 col-sm-12 col-xs-12">
@@ -88,18 +88,19 @@
 								<h:panelGroup id="loopControladores" layout="block">
 									<ui:repeat var="controlador" value="#{crudBean.controladores}">
 										<div class="col-md-2 col-sm-3 col-xs-6">
-											<p:link id="btnControlador" disabled="#{controlador.disponivel}" styleClass="btn #{controlador.disponivel ? 'btn-success ui-no-drop' : 'btn-danger' } btn-block"
+											<p:link id="btnControlador" styleClass="btn #{controlador.disponivel ? 'btn-success' : 'btn-danger' } btn-block"
 												outcome="/pages/modulo/venda/venda.xhtml?view=insert">
 											  <b class="font-family-default">#{crudBean.configuracao.sistema eq 'MESA' ? 'Mesa' : 'Comanda'}</b> 
 											  <span class="badge fa font-family-default">#{controlador.numero}</span>
 											  <i class="fa fa-cutlery"></i>
 											  <f:param value="#{controlador.venda.id}" name="codigo" />
 											  <f:param value="dashboard" name="from" />
+											  <f:param value="#{controlador.numero}" name="nControlador" />
 											</p:link>
 										</div>
 									</ui:repeat>
 									<div class="clearfix"></div>
-									<p:poll listener="#{crudBean.atualizaPainelControladores}" update="loopControladores" interval="15" global="false" />
+									<p:poll listener="#{crudBean.atualizaDashboard}" update="loopControladores contadores graficoVendaDiaria" interval="15" global="false" />
 								</h:panelGroup>
 							</div>
 						</div>
@@ -108,9 +109,9 @@
 				
 				<div class="row">
 					<div class="col-md-12 col-sm-12 col-xs-12">
-						<div class="dashboard_graph">
+						<h:panelGroup id="graficoVendaDiaria" layout="block" styleClass="dashboard_graph">
 							<p:chart type="bar" model="#{crudBean.graficoVendaEmBarra}" style="width:100%;" responsive="true" />
-						</div>
+						</h:panelGroup>
 					</div>
 				</div>
 			</div>

@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
 import br.com.siscomanda.enumeration.EStatus;
@@ -22,6 +23,43 @@ public class VendaDAO extends GenericDAO<Venda> implements Serializable {
 		sql.append("SELECT venda FROM Venda venda ");
 		TypedQuery<Venda> query = getEntityManager().createQuery(sql.toString(), Venda.class);
 		List<Venda> vendas = query.getResultList();
+		return vendas;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<Venda> buscaPor(Venda venda, boolean editando) {
+		StringBuilder sql = new StringBuilder();
+		sql.append("SELECT DISTINCT venda.* FROM venda venda ");
+		sql.append("INNER JOIN item_venda item ON venda.id = item.venda_id ");
+		sql.append("LEFT OUTER JOIN cliente cliente ON venda.cliente_id = cliente.id ");
+		sql.append("LEFT OUTER JOIN servico servico ON servico.id = cliente.servico_id ");
+		sql.append("LEFT OUTER JOIN caixa caixa ON caixa.id = venda.caixa_id ");
+		sql.append("WHERE 1 = 1 ");
+		sql.append(editando == false ? " AND caixa.caixa_aberto OR NOT venda.pago " : "");
+		sql.append(venda.getId() != null ? "AND venda.id = :venda " : "");
+		sql.append(venda.getStatus() != null ? "AND venda.status = :status " : "");
+		sql.append(venda.getControle() != null && venda.getControle() > 0 ? "AND venda.mesa_comanda = :mesaComanda " : "");
+		sql.append(venda.getTipoVenda() != null ? "AND venda.tipo_venda = :tipoVenda " : "");
+		sql.append("ORDER BY venda.id ASC ");
+		Query query = getEntityManager().createNativeQuery(sql.toString(), Venda.class);
+		
+		if(venda.getId() != null) {			
+			query.setParameter("venda", venda.getId());
+		}
+		
+		if(venda.getStatus() != null) {
+			query.setParameter("status", venda.getStatus().name());
+		}
+		
+		if(venda.getControle() != null && venda.getControle() > 0) {
+			query.setParameter("mesaComanda", venda.getControle());
+		}
+		
+		if(venda.getTipoVenda() != null) {
+			query.setParameter("tipoVenda", venda.getTipoVenda().name());
+		}
+		
+		List<Venda> vendas  = query.getResultList();
 		return vendas;
 	}
 	

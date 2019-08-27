@@ -32,7 +32,6 @@ public class VendaBuilder implements Serializable {
 		this.venda.setPago(false);
 		this.venda.setOperador(new Usuario());
 		this.venda.setFatorCalculoTaxaServico(new Double(0));
-//		this.venda.setCliente(new Cliente());
 	}
 	
 	public VendaBuilder comNumeroVenda(Long numeroVenda) {
@@ -79,6 +78,7 @@ public class VendaBuilder implements Serializable {
 	
 	public VendaBuilder comDataHora(Date dataHora) {
 		this.venda.setDataHora(dataHora);
+		this.venda.setDataVenda(dataHora);
 		return this;
 	}
 	
