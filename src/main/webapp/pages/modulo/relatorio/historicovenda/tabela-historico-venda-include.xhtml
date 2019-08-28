@@ -1,0 +1,108 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+	
+	<p:dataTable id="tabelaHistoricoVenda" styleClass="table table-striped jambo_table" emptyMessage="Sem dados" reflow="true"
+			paginator="true" rows="10" paginatorPosition="top" value="#{crudBean.historicos}" var="venda" scrollable="false">
+			
+		<p:column width="100">
+			<f:facet name="header">
+				<h:outputLabel value="Nº Venda" />
+			</f:facet>
+			<h:outputText value="01">
+				<!-- <f:convertNumber pattern="000000" maxIntegerDigits="6" locale="pt_BR" /> -->
+			</h:outputText>
+		</p:column>
+		
+		<p:column width="200">
+			<f:facet name="header">
+				<h:outputLabel value="Cliente" />
+			</f:facet>
+			<h:outputText value="#{venda.nomeCliente}" rendered="#{not empty venda.nomeCliente}" styleClass="ui-text-left" />
+			<h:outputText value="NÂO INFORMADO" rendered="#{empty venda.nomeCliente}" styleClass="ui-text-left" />
+		</p:column>
+		
+		<p:column width="200">
+			<f:facet name="header">
+				<h:outputLabel value="Funcionário" />
+			</f:facet>
+			<h:outputText value="#{venda.nomeFuncionario}" styleClass="ui-text-left" />
+		</p:column>
+		
+		<p:column width="120">
+			<f:facet name="header">
+				<h:outputLabel value="Tipo Venda" />
+			</f:facet>
+			<h:outputText value="#{venda.tipoVenda.descricao}" />
+		</p:column>
+		
+		<p:column width="80">
+			<f:facet name="header">
+				<h:outputLabel value="Iniciado" />
+			</f:facet>
+			<h:outputText value="#{venda.iniciado}">
+				<f:convertDateTime locale="pt_BR" pattern="dd/MM/yyyy HH:mm" />
+			</h:outputText>
+		</p:column>
+		
+		<p:column width="80">
+			<f:facet name="header">
+				<h:outputLabel value="Fechado" />
+			</f:facet>
+			<h:outputText value="#{venda.finalizado}">
+				<f:convertDateTime locale="pt_BR" pattern="dd/MM/yyyy HH:mm" />
+			</h:outputText>
+		</p:column>
+		
+		<p:column width="90">
+			<f:facet name="header">
+				<h:outputLabel value="+ Serviço" />
+			</f:facet>
+			<h:outputText value="#{venda.servico}" styleClass="ui-text-right">
+				<f:convertNumber minFractionDigits="2" maxFractionDigits="2" locale="pt_BR" />
+			</h:outputText>
+		</p:column>
+		
+		<p:column width="90">
+			<f:facet name="header">
+				<h:outputLabel value="+ Entrega" />
+			</f:facet>
+			<h:outputText value="#{venda.entrega}" styleClass="ui-text-right">
+				<f:convertNumber minFractionDigits="2" maxFractionDigits="2" locale="pt_BR" />
+			</h:outputText>
+		</p:column>
+		
+		<p:column width="150">
+			<f:facet name="header">
+				<h:outputLabel value="= Total a Receber" />
+			</f:facet>
+			<h:outputText value="#{venda.total}" styleClass="ui-text-right">
+				<f:convertNumber minFractionDigits="2" maxFractionDigits="2" locale="pt_BR" />
+			</h:outputText>
+		</p:column>
+		
+		<p:column width="120">
+			<f:facet name="header">
+				<h:outputLabel value="Status" />
+			</f:facet>
+			<h:outputText styleClass="status" value="#{venda.status.descricao}" />
+		</p:column>
+	</p:dataTable>
+	
+	<script>
+	 	/* <![CDATA[ */
+	 		$(document).ready(function(){
+	 			$('.status').each(function(){
+	 				if($(this).text().toUpperCase() == 'CANCELADO') {
+		 				$(this).parent().parent().addClass('text-danger');
+	 				}
+	 				else if($(this).text().toUpperCase() == 'PAGO') {
+	 					$(this).parent().parent().addClass('text-success');
+	 				}
+	 			})
+	 		});
+	 	/* ]]> */
+	</script>
+</ui:composition>

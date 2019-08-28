@@ -1,0 +1,35 @@
+<ui:composition template="/WEB-INF/template/template.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+	
+	<ui:param name="md" value="12" />
+	<ui:param name="sm" value="12" />
+	<ui:param name="xs" value="12" />
+	<ui:param name="crudBean" value="#{relatorioHistoricoVendaBean}" />
+	<ui:param name="hideTableList" value="true" />
+	
+	<ui:define name="title_main"> 
+		<h:panelGroup layout="block">Relatório</h:panelGroup>
+	</ui:define>
+	<ui:define name="title_form"> 
+		<h:panelGroup layout="block">Histórico Venda</h:panelGroup>
+	</ui:define>
+	<ui:define name="title_form_table"> 
+		<h:panelGroup layout="block">Tabela de dados venda</h:panelGroup>
+	</ui:define>
+		
+	<ui:define name="content">
+		<h:panelGroup layout="block">
+			<ui:include src="/pages/modulo/relatorio/historicovenda/historico-venda-include.xhtml" />
+		</h:panelGroup>
+	</ui:define>
+	
+	<ui:define name="table">
+		<h:panelGroup layout="block">
+			<ui:include src="/pages/modulo/relatorio/historicovenda/tabela-historico-venda-include.xhtml" />
+		</h:panelGroup>
+	</ui:define>
+</ui:composition>

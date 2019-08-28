@@ -53,6 +53,14 @@ public class Venda extends BaseEntity implements Serializable {
 	@Column(name = "data_venda", nullable = false)
 	private Date dataVenda;
 	
+	@Temporal(TemporalType.DATE)
+	@Column(name = "data_fechamento")
+	private Date dataFechamento;
+	
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = "data__hora_fechamento")
+	private Date dataHoraFechamento;
+	
 	@Column(name = "subtotal", nullable = false)
 	private Double subtotal;
 	
@@ -130,6 +138,22 @@ public class Venda extends BaseEntity implements Serializable {
 
 	public void setDataHora(Date dataHora) {
 		this.dataHora = dataHora;
+	}
+	
+	public Date getDataFechamento() {
+		return dataFechamento;
+	}
+
+	public void setDataFechamento(Date dataFechamento) {
+		this.dataFechamento = dataFechamento;
+	}
+
+	public Date getDataHoraFechamento() {
+		return dataHoraFechamento;
+	}
+
+	public void setDataHoraFechamento(Date dataHoraFechamento) {
+		this.dataHoraFechamento = dataHoraFechamento;
 	}
 
 	public Double getSubtotal() {

@@ -30,7 +30,7 @@ public class Cliente extends BaseEntity implements Serializable {
 	@Column(name = "cpf")
 	private String cpf;
 	
-	@Temporal(TemporalType.TIMESTAMP)
+	@Temporal(TemporalType.DATE)
 	@Column(name = "data_nascimento")
 	private Date dataNascimento;
 	

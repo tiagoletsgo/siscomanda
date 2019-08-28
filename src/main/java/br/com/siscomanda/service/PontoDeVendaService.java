@@ -27,6 +27,7 @@ import br.com.siscomanda.repository.dao.PrecoDAO;
 import br.com.siscomanda.repository.dao.ProdutoDAO;
 import br.com.siscomanda.repository.dao.VendaDAO;
 import br.com.siscomanda.util.JSFUtil;
+import br.com.siscomanda.vo.HistoricoVendaVO;
 
 public class PontoDeVendaService implements Serializable {
 
@@ -42,6 +43,10 @@ public class PontoDeVendaService implements Serializable {
 	private VendaDAO vendaDAO;
 	
 	private List<Produto> produtosTemp = new ArrayList<Produto>();
+	
+	public List<HistoricoVendaVO> historicoVenda(Map<String, Object> filter) {
+		return vendaDAO.historico(filter);
+	}
 	
 	public void validaSituacaoVenda(Venda venda) throws SiscomandaException {
 		if(venda.getItens().isEmpty()) {
