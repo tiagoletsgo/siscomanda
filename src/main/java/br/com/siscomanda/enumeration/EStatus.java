@@ -9,6 +9,21 @@ public enum EStatus {
 	
 	private String descricao;
 	
+	public static EStatus toStatus(String status) {
+		switch(status.toUpperCase()) {
+		case "EM_ABERTO" :
+			return EM_ABERTO;
+		case "CANCELADO" :
+			return CANCELADO;
+		case "PAGO_PARCIAL" :
+			return PAGO_PARCIAL;
+		case "PAGO" :
+			return PAGO;
+		default:
+			return null;
+		}
+	}
+	
 	private EStatus(String descricao) {
 		this.descricao = descricao;
 	}

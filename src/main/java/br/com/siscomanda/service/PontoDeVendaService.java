@@ -3,6 +3,7 @@ package br.com.siscomanda.service;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,6 +28,7 @@ import br.com.siscomanda.repository.dao.PrecoDAO;
 import br.com.siscomanda.repository.dao.ProdutoDAO;
 import br.com.siscomanda.repository.dao.VendaDAO;
 import br.com.siscomanda.util.JSFUtil;
+import br.com.siscomanda.vo.HistoricoVendaVO;
 
 public class PontoDeVendaService implements Serializable {
 
@@ -42,6 +44,37 @@ public class PontoDeVendaService implements Serializable {
 	private VendaDAO vendaDAO;
 	
 	private List<Produto> produtosTemp = new ArrayList<Produto>();
+	
+	public List<HistoricoVendaVO> historicoVenda(Map<String, Object> filter) throws SiscomandaException {
+		Date dataInicial = (Date)filter.get("dataInicial");
+		Date dataFinal = (Date)filter.get("dataFinal");
+		String nomeCliente = (String)filter.get("nomeCliente");
+		String nomeFuncionario = (String)filter.get("nomeFuncionario");
+		EStatus status = EStatus.toStatus((String)filter.get("status"));
+		
+		double totalDeEntrega = 0D;
+		double totalDeServico = 0D;
+		double totalReceber = 0D;
+		
+		if((dataInicial == null && dataFinal == null && nomeCliente == null && nomeFuncionario == null && status != null)
+				|| (dataInicial == null && dataFinal == null && nomeCliente == null && nomeFuncionario == null && status == null)) {
+			return new ArrayList<>();
+		}
+		
+		List<HistoricoVendaVO> vendas = vendaDAO.historico(dataInicial, dataFinal, nomeCliente, nomeFuncionario, status);
+		
+		for(HistoricoVendaVO venda : vendas) {
+			totalDeEntrega += venda.getEntrega();
+			totalDeServico += venda.getServico();
+			totalReceber += venda.getTotal();
+		}
+		
+		filter.put("totalDeEntrega", totalDeEntrega);
+		filter.put("totalDeServico", totalDeServico);
+		filter.put("totalReceber", totalReceber);
+		filter.put("totalGeral", (totalReceber + totalDeServico + totalDeEntrega));
+		return vendas;
+	}
 	
 	public void validaSituacaoVenda(Venda venda) throws SiscomandaException {
 		if(venda.getItens().isEmpty()) {

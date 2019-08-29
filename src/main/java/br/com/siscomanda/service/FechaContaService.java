@@ -99,6 +99,8 @@ public class FechaContaService extends VendaService implements Serializable {
 		venda.setStatus(statusPagamento(pagamento.getValorPago(), pagamento.getValorTotal()));
 		venda.setPago(isPago(venda));
 		venda.setCaixa(caixa);
+		venda.setDataFechamento(new Date());
+		venda.setDataHoraFechamento(new Date());
 		
 		for(Pagamento pag : venda.getPagamentos()) {
 			pag.setDataPagamento(new Date());
