@@ -8,34 +8,35 @@
 		<div class="col-md-2 col-sm-2 col-xs-12">
 			<label for="crudform:opcoesPesquisa">Opções de pesquisa :</label>
 			<div class="checkbox">
-				<h:selectOneRadio id="opcoesPesquisa" value="#{crudBean.opcoesPesquisa}" layout="pageDirection">
+				<h:selectOneRadio id="opcoesPesquisa" value="#{crudBean.filter.status}" layout="pageDirection">
 					<f:selectItem itemLabel="Todos" itemValue="TODOS" />
 					<f:selectItem itemLabel="Em Aberto"  itemValue="EM_ABERTO" />
 					<f:selectItem itemLabel="Pago"  itemValue="PAGO" />
 					<f:selectItem itemLabel="Pago Parcial"  itemValue="PAGO_PARCIAL" />
 					<f:selectItem itemLabel="Cancelado"  itemValue="CANCELADO" />
+					<p:ajax event="change" update="@form" listener="#{crudBean.btnPesquisar()}" global="false" />
 				</h:selectOneRadio>
 			</div>
 		</div>
 		
 		<div class="col-md-2 col-sm-2 col-xs-12">
 			<label>Período inicial :</label>
-			<p:calendar locale="pt" id="dataInicial" value="#{crudBean.dataInicial}" inputStyleClass="form-control" mask="true" pattern="dd/MM/yyyy" />
+			<p:calendar locale="pt" id="dataInicial" value="#{crudBean.filter.dataInicial}" inputStyleClass="form-control" mask="true" pattern="dd/MM/yyyy" />
 		</div>
 		
 		<div class="col-md-2 col-sm-2 col-xs-12">
 			<label>Período final :</label>
-			<p:calendar locale="pt" id="dataFinal" value="#{crudBean.dataFinal}" inputStyleClass="form-control" mask="true" pattern="dd/MM/yyyy" />
+			<p:calendar locale="pt" id="dataFinal" value="#{crudBean.filter.dataFinal}" inputStyleClass="form-control" mask="true" pattern="dd/MM/yyyy" />
 		</div>
 		
 		<div class="col-md-3 col-sm-3 col-xs-12">
 			<label>Nome Cliente :</label>
-			<p:inputText type="text" value="#{crudBean.nomeCliente}" onkeyup="maiuscula(this)" styleClass="form-control" />
+			<p:inputText type="text" value="#{crudBean.filter.nomeCliente}" onkeyup="maiuscula(this)" styleClass="form-control" />
 		</div>
 		
 		<div class="col-md-3 col-sm-3 col-xs-12">
 			<label>Nome Funcionário :</label>
-			<p:inputText type="text" value="#{crudBean.nomeFuncionario}" onkeyup="maiuscula(this)" styleClass="form-control" />
+			<p:inputText type="text" value="#{crudBean.filter.nomeFuncionario}" onkeyup="maiuscula(this)" styleClass="form-control" />
 		</div>
 	</div>
 	
@@ -44,7 +45,7 @@
 	<div class="ln_solid"></div>
 	<div class="form-group">
 		<div class="col-md-12 col-sm-12 col-xs-12">
-			<p:commandButton styleClass="btn btn-success" value="Pesquisar" update="@form"/>
+			<p:commandButton styleClass="btn btn-success" value="Pesquisar" update="@form" action="#{crudBean.btnPesquisar()}" />
 			<p:commandButton styleClass="btn btn-success" value="Gerar PDF" ajax="false" />
 			<p:commandButton styleClass="btn btn-success" value="Gerar XLS" ajax="false" />
 		</div>	

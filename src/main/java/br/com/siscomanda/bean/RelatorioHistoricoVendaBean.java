@@ -1,16 +1,20 @@
 package br.com.siscomanda.bean;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.PostConstruct;
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import br.com.siscomanda.exception.SiscomandaException;
 import br.com.siscomanda.service.PontoDeVendaService;
+import br.com.siscomanda.util.JSFUtil;
 import br.com.siscomanda.vo.HistoricoVendaVO;
 
 @Named
@@ -20,63 +24,40 @@ public class RelatorioHistoricoVendaBean implements Serializable {
 	private static final long serialVersionUID = 4055775123574692889L;
 
 	private List<HistoricoVendaVO> historicos;
-
-	private Date dataInicial;
-	private Date dataFinal;
-	private String nomeFuncionario;
-	private String nomeCliente;
-	private String opcoesPesquisa;
+	private Map<String, Object> filter = new HashMap<>();;
 
 	@Inject
 	private PontoDeVendaService pontoDeVendaService;
 
 	@PostConstruct
 	public void init() {
-		this.opcoesPesquisa = "TODOS";
-		this.historicos = pontoDeVendaService.historicoVenda(new HashMap<>());
+		this.filter.put("dataInicial", null);
+		this.filter.put("dataFinal", null);
+		this.filter.put("nomeCliente", null);
+		this.filter.put("nomeFuncionario", null);
+		this.filter.put("status", "TODOS");
+		
+		this.filter.put("totalDeEntrega", 0D);
+		this.filter.put("totalDeServico", 0D);
+		this.filter.put("totalReceber", 0D);
+		this.filter.put("totalGeral", 0D);
 	}
-
+	
+	public void btnPesquisar() {
+		try {
+			this.historicos = pontoDeVendaService.historicoVenda(filter);
+		}
+		catch(SiscomandaException e) {
+			this.historicos = new ArrayList<>();
+			JSFUtil.addMessage(FacesMessage.SEVERITY_ERROR, e.getMessage());
+		}
+	}
+	
 	public List<HistoricoVendaVO> getHistoricos() {
 		return historicos;
 	}
 
-	public Date getDataInicial() {
-		return dataInicial;
-	}
-
-	public void setDataInicial(Date dataInicial) {
-		this.dataInicial = dataInicial;
-	}
-
-	public Date getDataFinal() {
-		return dataFinal;
-	}
-
-	public void setDataFinal(Date dataFinal) {
-		this.dataFinal = dataFinal;
-	}
-
-	public String getNomeFuncionario() {
-		return nomeFuncionario;
-	}
-
-	public void setNomeFuncionario(String nomeFuncionario) {
-		this.nomeFuncionario = nomeFuncionario;
-	}
-
-	public String getNomeCliente() {
-		return nomeCliente;
-	}
-
-	public void setNomeCliente(String nomeCliente) {
-		this.nomeCliente = nomeCliente;
-	}
-
-	public String getOpcoesPesquisa() {
-		return opcoesPesquisa;
-	}
-
-	public void setOpcoesPesquisa(String opcoesPesquisa) {
-		this.opcoesPesquisa = opcoesPesquisa;
-	}
+	public Map<String, Object> getFilter() {
+		return filter;
+	}	
 }

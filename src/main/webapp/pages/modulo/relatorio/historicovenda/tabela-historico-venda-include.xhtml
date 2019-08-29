@@ -11,8 +11,8 @@
 			<f:facet name="header">
 				<h:outputLabel value="Nº Venda" />
 			</f:facet>
-			<h:outputText value="01">
-				<!-- <f:convertNumber pattern="000000" maxIntegerDigits="6" locale="pt_BR" /> -->
+			<h:outputText value="#{venda.numeroVenda}">
+				<f:convertNumber pattern="000000" maxIntegerDigits="6" locale="pt_BR" />
 			</h:outputText>
 		</p:column>
 		
@@ -91,6 +91,31 @@
 		</p:column>
 	</p:dataTable>
 	
+	<div class="col-md-3 col-sm-3 col-xs-12">
+		<label>Total em Taxas de Entregas.: </label> 
+		<h:outputText styleClass="pull-right" value="#{crudBean.filter.totalDeEntrega}">
+			<f:convertNumber type="currency" minFractionDigits="2" maxFractionDigits="2" locale="pt_BR" />
+		</h:outputText>
+		<br />
+		
+		<label>Total em Taxas de Serviços.: </label>
+		<h:outputText styleClass="pull-right" value="#{crudBean.filter.totalDeServico}">
+			<f:convertNumber type="currency" minFractionDigits="2" maxFractionDigits="2" locale="pt_BR" />
+		</h:outputText>
+		<br />
+		
+		<label>Total a Receber.: </label>
+		<h:outputText styleClass="pull-right" value="#{crudBean.filter.totalReceber}">
+			<f:convertNumber type="currency" minFractionDigits="2" maxFractionDigits="2" locale="pt_BR" />
+		</h:outputText>
+		<br />
+		
+		<label>Total Geral.: </label>
+		<h:outputText styleClass="pull-right text-danger" value="#{crudBean.filter.totalGeral}">
+			<f:convertNumber type="currency" minFractionDigits="2" maxFractionDigits="2" locale="pt_BR" />
+		</h:outputText>
+	</div>
+	
 	<script>
 	 	/* <![CDATA[ */
 	 		$(document).ready(function(){
@@ -100,6 +125,9 @@
 	 				}
 	 				else if($(this).text().toUpperCase() == 'PAGO') {
 	 					$(this).parent().parent().addClass('text-success');
+	 				}
+	 				else {
+	 					$(this).parent().parent().addClass('text-warning');
 	 				}
 	 			})
 	 		});

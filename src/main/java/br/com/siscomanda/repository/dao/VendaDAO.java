@@ -64,41 +64,50 @@ public class VendaDAO extends GenericDAO<Venda> implements Serializable {
 		return vendas;
 	}
 	
-	public List<HistoricoVendaVO> historico(Map<String, Object> filter) {
-		
-		Date dataInicial = (Date)filter.get("dataInicial");
-		Date dataFinal = (Date)filter.get("dataFinal");
-		String nomeCliente = (String)filter.get("nomeCliente");
-		String nomeFuncionario = (String)filter.get("nomeFuncionario");
-		
-		StringBuilder sql = new StringBuilder();
-		sql.append("SELECT NEW br.com.siscomanda.vo.HistoricoVendaVO( ");
-		sql.append("venda.id, cliente.nomeCompleto, operador.login, venda.tipoVenda, venda.dataHora, venda.dataHoraFechamento, ");
-		sql.append("venda.taxaServico, venda.taxaEntrega, venda.total, venda.status) FROM Venda venda ");
-		sql.append("LEFT JOIN venda.cliente cliente ");
-		sql.append("LEFT JOIN venda.operador operador ");
-		sql.append("WHERE 1 = 1 ");
-		sql.append(Objects.nonNull(dataInicial) && Objects.nonNull(dataFinal) ? "AND venda.dataVenda BETWEEN :dataInicial AND :dataFinal " : " ");
-		sql.append(Objects.nonNull(nomeCliente) ? "AND cliente.nomeCompleto LIKE :nomeCompleto " : " ");
-		sql.append(Objects.nonNull(nomeFuncionario) ? "AND operador.login LIKE :nomeFuncionario " : " ");
-		
-		TypedQuery<HistoricoVendaVO> query = getEntityManager().createQuery(sql.toString(), HistoricoVendaVO.class);
-		
-		if(Objects.nonNull(dataInicial) && Objects.nonNull(dataFinal)) {
-			query.setParameter("dataInicial", dataInicial);
-			query.setParameter("dataFinal", dataFinal);
+	public List<HistoricoVendaVO> historico(Date dataInicial, Date dataFinal, String nomeCliente, String nomeFuncionario, EStatus status) throws SiscomandaException {
+		try {
+			StringBuilder sql = new StringBuilder();
+			sql.append("SELECT NEW br.com.siscomanda.vo.HistoricoVendaVO( ");
+			sql.append("venda.id, cliente.nomeCompleto, operador.login, venda.tipoVenda, venda.dataHora, venda.dataHoraFechamento, ");
+			sql.append("venda.taxaServico, venda.taxaEntrega, venda.total, venda.status) FROM Venda venda ");
+			sql.append("LEFT JOIN venda.cliente cliente ");
+			sql.append("LEFT JOIN venda.operador operador ");
+			sql.append("WHERE 1 = 1 ");
+			sql.append(Objects.nonNull(dataInicial) && Objects.nonNull(dataFinal) ? "AND venda.dataVenda BETWEEN :dataInicial AND :dataFinal " : " ");
+			sql.append(Objects.nonNull(nomeCliente) && !nomeCliente.isEmpty() ? "AND cliente.nomeCompleto LIKE :nomeCliente " : " ");
+			sql.append(Objects.nonNull(nomeFuncionario) && !nomeFuncionario.isEmpty() ? "AND operador.login LIKE :nomeFuncionario " : " ");
+			sql.append(Objects.nonNull(status) ? "AND venda.status = :status " : " ");
+			sql.append("ORDER BY venda.id ASC ");
+			
+			TypedQuery<HistoricoVendaVO> query = getEntityManager().createQuery(sql.toString(), HistoricoVendaVO.class);
+			
+			if(dataInicial != null && dataFinal != null && dataInicial.after(dataFinal)) {
+				throw new SiscomandaException("Por gentileza preencha o periodo corretamente.");
+			}
+			
+			if(Objects.nonNull(dataInicial) && Objects.nonNull(dataFinal)) {
+				query.setParameter("dataInicial", dataInicial);
+				query.setParameter("dataFinal", dataFinal);
+			}
+			
+			if(Objects.nonNull(nomeCliente) && !nomeCliente.isEmpty()) {
+				query.setParameter("nomeCliente", "%"+ nomeCliente.toUpperCase() +"%");
+			}
+			
+			if(Objects.nonNull(nomeFuncionario) && !nomeFuncionario.isEmpty()) {
+				query.setParameter("nomeFuncionario", "%"+ nomeFuncionario.toUpperCase() +"%");
+			}
+			
+			if(Objects.nonNull(status)) {
+				query.setParameter("status", status);
+			}
+			
+			List<HistoricoVendaVO> historicos = query.getResultList();
+			return historicos;
 		}
-		
-		if(Objects.nonNull(nomeCliente)) {
-			query.setParameter("nomeCliente", "%"+ nomeCliente.toUpperCase() +"%");
+		catch(Exception e) {
+			throw new SiscomandaException(e.getMessage());
 		}
-		
-		if(Objects.nonNull(nomeFuncionario)) {
-			query.setParameter("nomeFuncionario", "%"+ nomeFuncionario.toUpperCase() +"%");
-		}
-		
-		List<HistoricoVendaVO> historicos = query.getResultList();
-		return historicos;
 	}
 	
 	public List<Venda> porData(Date dataInicial, Date dataFinal) {
