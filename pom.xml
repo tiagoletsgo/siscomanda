@@ -48,7 +48,7 @@
         <dependency>
 		    <groupId>net.sf.jasperreports</groupId>
 		    <artifactId>jasperreports</artifactId>
-		    <version>5.6.0</version>
+		    <version>6.7.0</version>
 		    <scope>compile</scope>
 		</dependency>
 		
@@ -59,7 +59,7 @@
 		    <version>5.6.1</version>
 		    <scope>compile</scope>
 		</dependency>
-		
+						
 		<dependency>
 		    <groupId>org.apache.poi</groupId>
 		    <artifactId>poi</artifactId>

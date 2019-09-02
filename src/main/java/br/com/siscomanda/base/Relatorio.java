@@ -3,6 +3,7 @@ package br.com.siscomanda.base;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import br.com.siscomanda.enumeration.ETipoRelatorio;
 import br.com.siscomanda.exception.SiscomandaException;
 import br.com.siscomanda.util.JSFUtil;
+import net.sf.jasperreports.engine.JREmptyDataSource;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperFillManager;
@@ -41,10 +43,17 @@ public abstract class Relatorio {
 	private void preparaRelatorio() throws SiscomandaException {
 		try {
 			validador();
+			
 			stream = getClass().getResourceAsStream(pathJasper());
 			JasperReport report = (JasperReport) JRLoader.loadObject(stream);
 			
-			print = JasperFillManager.fillReport(report, getParametros(), new JRBeanCollectionDataSource(dataSource()));
+			JRBeanCollectionDataSource dataSource = new JRBeanCollectionDataSource(fontDeDados());
+			
+			Map<String, Object> parametros = getParametros();
+			parametros.put("LIST_DATA_SOURCE", dataSource);
+			parametros.put("DATA_TEST", new Date());
+			
+			print = JasperFillManager.fillReport(report, parametros, new JREmptyDataSource());
 			baos = new ByteArrayOutputStream();
 		}
 		catch(JRException e) {
@@ -52,7 +61,7 @@ public abstract class Relatorio {
 		}
 	}
 	
-	private List<?> dataSource() {
+	private List<?> fontDeDados() {
 		if(colecaoDeDadosSelecionados() != null && !colecaoDeDadosSelecionados().isEmpty()) {
 			return colecaoDeDadosSelecionados();
 		}

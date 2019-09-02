@@ -103,7 +103,8 @@ public class RelatorioHistoricoVendaBean extends Relatorio implements Serializab
 
 	@Override
 	public String pathJasper() {
-		return "/report/test1.jasper";
+//		return "/report/historicoVendaPDF.jasper";
+		return "/report/test.jasper";
 	}
 
 	@Override
