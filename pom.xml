@@ -44,6 +44,28 @@
 		    <version>8.5.5.0</version>
 		</dependency>
         
+        <!-- JasperReport -->
+        <dependency>
+		    <groupId>net.sf.jasperreports</groupId>
+		    <artifactId>jasperreports</artifactId>
+		    <version>6.7.0</version>
+		    <scope>compile</scope>
+		</dependency>
+		
+		 <!-- Fonts JasperReport -->
+        <dependency>
+		    <groupId>net.sf.jasperreports</groupId>
+		    <artifactId>jasperreports-fonts</artifactId>
+		    <version>5.6.1</version>
+		    <scope>compile</scope>
+		</dependency>
+						
+		<dependency>
+		    <groupId>org.apache.poi</groupId>
+		    <artifactId>poi</artifactId>
+		    <version>3.7</version>
+		    <scope>compile</scope>
+		</dependency>
         
         <!-- PrimeFaces -->
         <dependency>
