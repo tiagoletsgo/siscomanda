@@ -42,7 +42,14 @@
 			<h:panelGroup layout="block" rendered="#{crudBean.incluirItem}">
 				<ui:include src="/pages/modulo/venda/include/incluir-item-include.xhtml" />
 			</h:panelGroup>
+			
+			<h:panelGroup layout="block" rendered="#{crudBean.gerarCupomVendaParaCozinha}">
+				<div id="cupom">
+					cupom gerado com sucesso.
+				</div>
+			</h:panelGroup>
 		</h:panelGroup>
+		
 		<h:panelGroup layout="block" id="formconsulta">
 			<h:panelGroup layout="block" rendered="#{not crudBean.estadoViewBean.insert and not crudBean.estadoViewBean.update and not crudBean.novoItem and not crudBean.incluirItem}">
 				<ui:include src="/pages/modulo/venda/consulta-venda.xhtml" />
@@ -78,6 +85,19 @@
 				font-family: "montserrat" !important;
 			}
 		</style>
+		
+		<p:dialog id="dialogCupomParaCozinha" widgetVar="dlgCupomParaCozinha" modal="true" showEffect="fade" hideEffect="fade" responsive="true" resizable="false">
+			<f:facet name="header">Cupom Venda para Cozinha</f:facet>
+			
+			<h:form id="formCupomParaCozinha">
+				<ui:include src="/WEB-INF/template/cupom/cupom-para-cozinha.xhtml" />	
+			</h:form>
+			
+			<f:facet name="footer">
+				<button id="btnGerarImpressao" onclick="PF('dlgCupomParaCozinha').hide();" class="btn btn-impressao btn-primary">Gerar Impressão</button>
+				<p:commandButton value="Cancelar" styleClass="btn btn-danger" oncomplete="PF('dlgCupomParaCozinha').hide();" global="false" />
+			</f:facet>
+		</p:dialog>	
 		
 		<p:dialog id="dialogTipoVenda" widgetVar="dlgTipoVenda" modal="true" showEffect="fade" hideEffect="fade" responsive="true" resizable="false">
 			<f:facet name="header">Selecionar Tipo Venda</f:facet>
