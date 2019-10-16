@@ -14,6 +14,14 @@
     	<h:outputStylesheet library="siscomanda" name="css/siscomanda.css" />
     	
 		<title>Siscomanda</title>
+		
+		<style>
+			@media print {
+				.print {
+					display: none!important;
+				}
+			}
+		</style>
 	</h:head>
 	<h:body styleClass="nav-md">
 		<div class="container body">
@@ -120,11 +128,20 @@
 		<h:outputScript library="build" name="js/custom.min.js" target="body" />
 		<h:outputScript library="siscomanda" name="js/jquery.maskMoney.js" target="body" />
 		<h:outputScript library="siscomanda" name="js/siscomanda.js" target="body" />
+		<h:outputScript library="siscomanda" name="js/print.js" target="body" />
 
 		<h:panelGroup id="scripts">
 			<script>
 			 	/* <![CDATA[ */
+			 	
+			 	$(document).ready(function(){
+			 		configMoeda();
 			 		
+			 		$('#btnGerarImpressao').click(function(){
+			 			$('#cupom').printElement();
+			 		});
+			 	})
+			 	
 			 	function configMoeda() {
 					$(".currency").maskMoney({
 						thousands:".", 
@@ -132,10 +149,6 @@
 						allowZero: true
 					});
 			 	}
-				
-			 	$(document).ready(function(){
-			 		configMoeda();
-			 	})
 			 	
 			 	function somenteNumero(num) {
 			 		var expressaoRegular = /[^0-9]/;

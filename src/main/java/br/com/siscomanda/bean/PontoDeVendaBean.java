@@ -101,6 +101,8 @@ public class PontoDeVendaBean extends BaseBean<Venda> implements Serializable {
 	
 	private int index;
 	
+	private boolean gerarCupomVendaParaCozinha;
+	
 	@Override
 	protected void init() {
 		vendaBuilder = new VendaBuilder(getEntity());
@@ -576,7 +578,11 @@ public class PontoDeVendaBean extends BaseBean<Venda> implements Serializable {
 			cliente = new Cliente();
 		}
 	}
-
+	
+	public void gerarCupomParaCozinha() {
+		this.gerarCupomVendaParaCozinha = true;
+	}
+	
 	@Override
 	protected void beforeSearch() {
 		parametros.put("venda", getEntity()); 
@@ -693,5 +699,9 @@ public class PontoDeVendaBean extends BaseBean<Venda> implements Serializable {
 
 	public void setIndex(int index) {
 		this.index = index;
+	}
+	
+	public boolean isGerarCupomVendaParaCozinha() {
+		return gerarCupomVendaParaCozinha;
 	}
 }

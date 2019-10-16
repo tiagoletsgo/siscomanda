@@ -23,11 +23,11 @@
 					<p:menuitem value="Cancelar" icon="fa fa-angle-double-right" disabled="#{crudBean.entity.notCancelavel}"
 						action="#{crudBean.btnCancelarVenda()}" update="@form" />
 						
+					<p:menuitem value="Cupom p/ Cozinha" icon="fa fa-angle-double-right" 
+						oncomplete="PF('dlgCupomParaCozinha').show();" global="false" />
+						
 					<p:menuitem value="Excluir" icon="fa fa-angle-double-right" disabled="#{crudBean.entity.notExcluivel}"
-						action="#{crudBean.btnRemoverVenda()}" update="@form" />
-					
-					<p:menuitem value="Imprimir" icon="fa fa-angle-double-right" disabled="false"
-						target="_blank" outcome="/pages/modulo/venda/impressao/cupom" />
+						action="#{crudBean.btnRemoverVenda()}" update="@form" />					
 					
 					<p:menuitem value="Nova Venda" icon="fa fa-angle-double-right" 
 						outcome="/pages/modulo/venda/venda?view=insert" />
@@ -41,5 +41,4 @@
 			</div>	
 			<div class="clearfix"></div>
 		</div>
-		
 </ui:composition>
