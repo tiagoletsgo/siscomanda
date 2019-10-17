@@ -149,6 +149,8 @@
 		<div class="form-group">
 			<div class="col-md-12 col-sm-12 col-xs-12">
 				<p:commandButton styleClass="btn btn-success" value="Fechar Conta" update="@form" disabled="#{crudBean.entity.notPagavel}" action="#{crudBean.btnFecharConta}"  />
+				<p:commandButton styleClass="btn btn-primary" disabled="true" value="Cupom Não Fiscal" />
+				
 				<p:commandButton value="Voltar" styleClass="btn btn-primary pull-right">
 					<p:ajax listener="#{crudBean.btnVoltar}" />
 				</p:commandButton>
