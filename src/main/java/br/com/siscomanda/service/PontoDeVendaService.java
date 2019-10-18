@@ -29,6 +29,7 @@ import br.com.siscomanda.repository.dao.ProdutoDAO;
 import br.com.siscomanda.repository.dao.VendaDAO;
 import br.com.siscomanda.util.JSFUtil;
 import br.com.siscomanda.vo.HistoricoVendaVO;
+import br.com.siscomanda.vo.ItemCupomVO;
 
 public class PontoDeVendaService implements Serializable {
 
@@ -576,5 +577,27 @@ public class PontoDeVendaService implements Serializable {
 		}
 		
 		return venda;
+	}
+	
+	public List<ItemCupomVO> itensDoCupom(Venda venda) {
+		List<ItemCupomVO> itens	= new ArrayList<>();
+		
+		for(ItemVenda item : venda.getItens()) {
+			ItemCupomVO itemCupom = new ItemCupomVO();
+			itemCupom.setDescricao(item.getProduto().getDescricao() + " " + item.getTamanho().getSigla());
+			itemCupom.setQuantidade(item.getQuantidade());
+			itens.add(itemCupom);
+			
+			if(item.getAdicionais() != null) {
+				for(Adicional adicional : item.getAdicionais()) {					
+					itemCupom = new ItemCupomVO();
+					itemCupom.setDescricao(" - " + adicional.getDescricao());
+					itemCupom.setQuantidade(1D);
+					itens.add(itemCupom);
+				}
+			}
+		}
+		
+		return itens;
 	}
 }

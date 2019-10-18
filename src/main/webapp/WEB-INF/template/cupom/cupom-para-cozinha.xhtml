@@ -9,7 +9,7 @@
 			<thead style="font-size: 9px; text-transform: uppercase;">
 				<tr>
 					<th colspan="6" style="text-align: center; border-bottom: 1px dashed;">
-						napulle pizzaria epp
+						#{crudBean.cupomCozinha.titulo}
 					</th>
 				</tr>
 				
@@ -17,31 +17,40 @@
 					<td colspan="4">
 						<div class="row">
 							<div class="col-md-12">
-								n° venda: 001
+								n° venda: 
+								<h:outputText value="#{crudBean.cupomCozinha.numeroVenda}">
+									<f:convertNumber pattern="000000" />
+								</h:outputText>
 							</div>
 						</div>
 						
 						<div class="row">
 							<div class="col-md-12">
-								nº comanda: 01
+								nº operação: 
+								<h:outputText value="#{crudBean.cupomCozinha.numeroOperacao}">
+									<f:convertNumber pattern="000000" />
+								</h:outputText>
 							</div>
 						</div>
 												
 						<div class="row">
 							<div class="col-md-12">
-								tipo venda: comanda
+								tipo venda: #{crudBean.cupomCozinha.tipoVenda}
 							</div>
 						</div>
 						
 						<div class="row">
 							<div class="col-md-12">
-								operador: administrador
+								operador: #{crudBean.cupomCozinha.operador}
 							</div>
 						</div>	
 						
 						<div class="row">
 							<div class="col-md-12">
-								data/hora: 16/10/2019 23:56							
+								data/hora:	
+								<h:outputText value="#{crudBean.cupomCozinha.dataHora}">
+									<f:convertDateTime pattern="dd/MM/yyyy HH:mm" />
+								</h:outputText>						
 							</div>
 						</div>						
 					</td>
@@ -53,7 +62,7 @@
 					</th>
 				</tr>
 				
-				<tr>
+				<tr style="border-bottom: 1px dashed;">
 					<th colspan="2" style="text-align: left">Descrição</th>
 					<th></th>
 					<th></th>
@@ -61,48 +70,38 @@
 				</tr>
 			</thead>
 			
-			<tbody style="font-size: 9px; text-transform: uppercase;">			
-				<tr>
-					<td colspan="2">pizza camarão g</td>
-					<td></td>
-					<td></td>
-					<td style="text-align: right;">1/2</td>
-				</tr>
-				
-				<tr>
-					<td colspan="2">pizza chocolate g</td>
-					<td></td>
-					<td></td>
-					<td style="text-align: right;">1/2</td>
-				</tr>
-				
-				<tr>
-					<td colspan="2">pizza marguerita g</td>
-					<td></td>
-					<td></td>
-					<td style="text-align: right;">2</td>
-				</tr>				
+			<tbody style="font-size: 9px; text-transform: uppercase;">	
+				<ui:repeat var="item" value="#{crudBean.cupomCozinha.itens}">
+					<tr>
+						<td colspan="2">#{item.descricao}</td>
+						<td></td>
+						<td></td>
+						<td style="text-align: right;">#{crudBean.converteValorFracionado(item.quantidade)}</td>
+					</tr>
+				</ui:repeat>		
 			</tbody>
 			
 			<tfoot style="font-size: 9px; text-transform: uppercase;">
-				<tr>
-					<th colspan="6" style="text-align: center; border-bottom: 1px dashed; border-top: 1px dashed;">
-						dados cliente
-					</th>
-				</tr>
+				<h:panelGroup layout="block" rendered="#{not crudBean.cupomCozinha.cliente.novo}">
+					<tr>
+						<th colspan="6" style="text-align: center; border-bottom: 1px dashed; border-top: 1px dashed;">
+							dados cliente
+						</th>
+					</tr>
 				
-				<tr>
-					<td>carlos tiago de sousa</td>
-				</tr>
-				
-				<tr>
-					<td>rua xyz, nº 001</td>
-				</tr>
-				
-				<tr>
-					<td>(00) 0 0000 - 0000</td>
-				</tr>
-				
+					<tr>
+						<td>#{crudBean.cupomCozinha.cliente.nomeCompleto}</td>
+					</tr>
+					
+					<tr>
+						<td>#{crudBean.cupomCozinha.cliente.endereco.endereco}, #{crudBean.cupomCozinha.cliente.endereco.bairro}</td>
+					</tr>
+					
+					<tr>
+						<td>#{crudBean.cupomCozinha.cliente.telefoneCelular}</td>
+					</tr>
+				</h:panelGroup>
+								
 				<tr>
 					<th colspan="6" style="text-align: center; border-bottom: 1px dashed; border-top: 1px dashed;">
 						saudações

@@ -37,6 +37,7 @@ import br.com.siscomanda.service.ProdutoService;
 import br.com.siscomanda.service.UsuarioService;
 import br.com.siscomanda.util.JSFUtil;
 import br.com.siscomanda.util.StringUtil;
+import br.com.siscomanda.vo.CupomCozinhaVO;
 
 @Named
 @ViewScoped
@@ -101,7 +102,7 @@ public class PontoDeVendaBean extends BaseBean<Venda> implements Serializable {
 	
 	private int index;
 	
-	private boolean gerarCupomVendaParaCozinha;
+	private CupomCozinhaVO cupomCozinha;
 	
 	@Override
 	protected void init() {
@@ -579,8 +580,15 @@ public class PontoDeVendaBean extends BaseBean<Venda> implements Serializable {
 		}
 	}
 	
-	public void gerarCupomParaCozinha() {
-		this.gerarCupomVendaParaCozinha = true;
+	public void gerarCupom() {
+		cupomCozinha = new CupomCozinhaVO();
+		cupomCozinha.setTitulo(configuracao.getNomeFantasia());
+		cupomCozinha.setNumeroVenda(getEntity().getId());
+		cupomCozinha.setNumeroOperacao(new Long(getEntity().getControle()));
+		cupomCozinha.setTipoVenda(getEntity().getTipoVenda().getDescricao());
+		cupomCozinha.setDataHora(getEntity().getDataHora());
+		cupomCozinha.setOperador("sem operador");
+		cupomCozinha.setItens(pontoDeVendaService.itensDoCupom(getEntity()));
 	}
 	
 	@Override
@@ -701,7 +709,7 @@ public class PontoDeVendaBean extends BaseBean<Venda> implements Serializable {
 		this.index = index;
 	}
 	
-	public boolean isGerarCupomVendaParaCozinha() {
-		return gerarCupomVendaParaCozinha;
+	public CupomCozinhaVO getCupomCozinha() {
+		return cupomCozinha;
 	}
 }
