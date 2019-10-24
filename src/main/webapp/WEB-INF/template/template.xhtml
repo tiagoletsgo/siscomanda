@@ -14,14 +14,6 @@
     	<h:outputStylesheet library="siscomanda" name="css/siscomanda.css" />
     	
 		<title>Siscomanda</title>
-		
-		<style>
-			@media print {
-				.print {
-					display: none!important;
-				}
-			}
-		</style>
 	</h:head>
 	<h:body styleClass="nav-md">
 		<div class="container body">
@@ -134,6 +126,8 @@
 			<script>
 			 	/* <![CDATA[ */
 			 	
+			 	$('.inputTelefoneCelular').text(maskNumeroCelular($('.inputTelefoneCelular').text()));
+			 	
 			 	$(document).ready(function(){
 			 		configMoeda();
 			 		
@@ -141,6 +135,13 @@
 			 			$('#cupom').printElement();
 			 		});
 			 	})
+			 				 	
+			 	function maskNumeroCelular(numeroCelular) {
+			 		numeroCelular = numeroCelular.replace(/\D/g, "");
+			 		numeroCelular = numeroCelular.replace(/^(\d{2})(\d)/g,"($1) $2");
+			 		numeroCelular = numeroCelular.replace(/(\d)(\d{4})$/,"$1-$2"); 
+			 		return numeroCelular;
+			 	}
 			 	
 			 	function configMoeda() {
 					$(".currency").maskMoney({

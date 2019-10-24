@@ -591,7 +591,7 @@ public class PontoDeVendaService implements Serializable {
 			if(item.getAdicionais() != null) {
 				for(Adicional adicional : item.getAdicionais()) {					
 					itemCupom = new ItemCupomVO();
-					itemCupom.setDescricao(" - " + adicional.getDescricao());
+					itemCupom.setDescricao(" *** " + adicional.getDescricao());
 					itemCupom.setQuantidade(1D);
 					itens.add(itemCupom);
 				}

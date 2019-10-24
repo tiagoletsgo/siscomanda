@@ -430,7 +430,8 @@ public class PontoDeVendaBean extends BaseBean<Venda> implements Serializable {
 		.comTipoVenda(getEntity().getTipoVenda())
 		.comStatus(getEntity().getStatus())
 		.comDataHora(getEntity().getDataHora())
-		.comOperador(usuarioService.porCodigo(1L));
+		.comOperador(usuarioService.porCodigo(1L))
+		.comCliente(getEntity().getCliente());
 		
 		setEntity(vendaBuilder.construir());
 		getEntity().calculaValorTotalDaVenda();
@@ -523,8 +524,9 @@ public class PontoDeVendaBean extends BaseBean<Venda> implements Serializable {
 			.comOperador(venda.getOperador())
 			.comTipoVenda(venda.getTipoVenda())
 			.comStatus(venda.getStatus())
-			.comDataHora(venda.getDataHora());
-			
+			.comDataHora(venda.getDataHora())
+			.comCliente(venda.getCliente());
+						
 			setEntity(vendaBuilder.construir());
 			getEntity().calculaValorTotalDaVenda();
 			
@@ -588,6 +590,7 @@ public class PontoDeVendaBean extends BaseBean<Venda> implements Serializable {
 		cupomCozinha.setTipoVenda(getEntity().getTipoVenda().getDescricao());
 		cupomCozinha.setDataHora(getEntity().getDataHora());
 		cupomCozinha.setOperador("sem operador");
+		cupomCozinha.setCliente(getEntity().getCliente());
 		cupomCozinha.setItens(pontoDeVendaService.itensDoCupom(getEntity()));
 	}
 	

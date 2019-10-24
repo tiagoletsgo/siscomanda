@@ -58,7 +58,7 @@ public class Venda extends BaseEntity implements Serializable {
 	private Date dataFechamento;
 	
 	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "data__hora_fechamento")
+	@Column(name = "data_hora_fechamento")
 	private Date dataHoraFechamento;
 	
 	@Column(name = "subtotal", nullable = false)

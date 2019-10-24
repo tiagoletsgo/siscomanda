@@ -157,6 +157,7 @@ public abstract class Relatorio {
 	}
 	
 	protected boolean isRelatorioNaoDisponivel() {
-		return !isRelatorioDisponivel();
+//		return !isRelatorioDisponivel();
+		return true;
 	}
 }

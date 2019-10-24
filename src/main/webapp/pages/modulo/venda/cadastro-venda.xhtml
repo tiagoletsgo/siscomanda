@@ -23,7 +23,7 @@
 					<p:menuitem value="Cancelar" icon="fa fa-angle-double-right" disabled="#{crudBean.entity.notCancelavel}"
 						action="#{crudBean.btnCancelarVenda()}" update="@form" />
 						
-					<p:menuitem value="Cupom p/ Cozinha" icon="fa fa-angle-double-right" 
+					<p:menuitem value="Cupom p/ Cozinha" icon="fa fa-angle-double-right" disabled="#{crudBean.entity.notPagavel}"
 						oncomplete="PF('dlgCupomParaCozinha').show();" update="scripts dialogCupomParaCozinha" global="false" actionListener="#{crudBean.gerarCupom()}" />
 						
 					<p:menuitem value="Excluir" icon="fa fa-angle-double-right" disabled="#{crudBean.entity.notExcluivel}"

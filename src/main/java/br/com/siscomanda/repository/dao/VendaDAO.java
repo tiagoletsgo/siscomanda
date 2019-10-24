@@ -198,6 +198,7 @@ public class VendaDAO extends GenericDAO<Venda> implements Serializable {
 			sql.append("INNER JOIN FETCH venda.operador operador ");
 			sql.append("INNER JOIN FETCH item.tamanho tamanho ");
 			sql.append("INNER JOIN FETCH item.produto produto ");
+			sql.append("LEFT JOIN FETCH venda.cliente cliente ");
 			sql.append("WHERE venda.id = :codigo ");
 			TypedQuery<Venda> query = getEntityManager().createQuery(sql.toString(), Venda.class);
 			query.setParameter("codigo", codigo);

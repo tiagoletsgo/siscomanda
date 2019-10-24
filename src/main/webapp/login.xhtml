@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+	<h:head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    	<meta name="viewport" content="width=device-width, initial-scale=1" />
+    	<h:outputStylesheet library="bootstrap" name="css/bootstrap.min.css" />
+    	<h:outputStylesheet library="build" name="css/custom.min.css" />
+    	<h:outputStylesheet library="siscomanda" name="css/siscomanda.css" />
+    	
+		<title>Siscomanda</title>
+	</h:head>
+	<h:body styleClass="login">
+		<div>
+			<a class="hiddenanchor" id="signup"></a>
+     		<a class="hiddenanchor" id="signin"></a>
+     		
+     		<div class="login_wrapper">
+     			<div class="animate form login_form">
+     				<div class="login_content">
+     					<h:form>
+     						<h1 class="font-family-default">Bem vindo!</h1>
+     						<span >Por favor, digite seu usuário e senha.</span>
+     						<hr />
+     						<div>
+     							<label class="pull-left">Usuário:</label>
+     							<p:focus for="inpUsuario" />
+     							<p:inputText id="inpUsuario" type="text" styleClass="form-control" />
+     						</div>
+     						
+     						<div>
+     							<label class="pull-left">Senha:</label>
+     							<p:inputText id="inpSenha" type="password" styleClass="form-control" />
+     						</div>
+     						
+     						<div>
+     							<p:commandButton action="#{loginBean.login()}" value="Log in" styleClass="btn btn-default submit" />
+     							<p:commandLink styleClass="reset_pass font-family-default" value="Perdeu sua senha?" />
+     						</div>
+     						
+     						<div class="clearfix"></div>
+     						
+     						<div class="separator">
+     							<div class="clearfix"></div>
+              					<br />
+              					
+              					<div>
+				                  <p>© 2019 - 2019 Todos os Direitos Reservados.</p>
+				                </div>
+     						</div>
+     						
+     						<p:ajaxStatus onstart="PF('statusDialog').show();" onsuccess="PF('statusDialog').hide();" />
+							<p:dialog widgetVar="statusDialog" showHeader="false" width="250" showEffect="fade" 
+								closable="false" modal="true" resizable="false" responsive="true">
+								<div class="row">
+									<div class="col-md-4 col-sm-4 col-xs-4">
+										<p:graphicImage library="build" name="images/loading.gif" width="50" height="50" />
+									</div>
+									<div class="col-md-4 col-sm-4 col-xs-4">
+										<span style="position: relative; top: 16px;">Processando...</span>
+									</div>
+								</div>
+							</p:dialog>
+							
+							<p:growl autoUpdate="true" life="6000" id="message" />
+     					</h:form>
+     				</div>
+     			</div>
+     		</div>
+		</div>
+		
+		<h:outputScript library="primefaces" name="jquery/jquery.js" />
+		<h:outputScript library="bootstrap" name="js/bootstrap.min.js" target="body" />
+		<h:outputScript library="build" name="js/custom.min.js" target="body" />
+		<h:outputScript library="siscomanda" name="js/jquery.maskMoney.js" target="body" />
+		<h:outputScript library="siscomanda" name="js/siscomanda.js" target="body" />
+		<h:outputScript library="siscomanda" name="js/print.js" target="body" />
+	</h:body>
+</html>

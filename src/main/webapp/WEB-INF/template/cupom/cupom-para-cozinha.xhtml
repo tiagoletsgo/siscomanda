@@ -6,7 +6,7 @@
 	
 	<div id="cupom" style="margin-left: 10px;">
 		<table>
-			<thead style="font-size: 9px; text-transform: uppercase;">
+			<thead style="font-size: 8px; text-transform: uppercase;">
 				<tr>
 					<th colspan="6" style="text-align: center; border-bottom: 1px dashed;">
 						#{crudBean.cupomCozinha.titulo}
@@ -70,7 +70,7 @@
 				</tr>
 			</thead>
 			
-			<tbody style="font-size: 9px; text-transform: uppercase;">	
+			<tbody style="font-size: 8px; text-transform: uppercase;">	
 				<ui:repeat var="item" value="#{crudBean.cupomCozinha.itens}">
 					<tr>
 						<td colspan="2">#{item.descricao}</td>
@@ -81,8 +81,8 @@
 				</ui:repeat>		
 			</tbody>
 			
-			<tfoot style="font-size: 9px; text-transform: uppercase;">
-				<h:panelGroup layout="block" rendered="#{not crudBean.cupomCozinha.cliente.novo}">
+			<tfoot style="font-size: 8px; text-transform: uppercase;">
+				<h:panelGroup layout="block" rendered="#{crudBean.cupomCozinha.cliente != null}">
 					<tr>
 						<th colspan="6" style="text-align: center; border-bottom: 1px dashed; border-top: 1px dashed;">
 							dados cliente
@@ -94,11 +94,15 @@
 					</tr>
 					
 					<tr>
-						<td>#{crudBean.cupomCozinha.cliente.endereco.endereco}, #{crudBean.cupomCozinha.cliente.endereco.bairro}</td>
+						<td>#{crudBean.cupomCozinha.cliente.endereco.endereco}</td>
 					</tr>
 					
 					<tr>
-						<td>#{crudBean.cupomCozinha.cliente.telefoneCelular}</td>
+						<td>#{crudBean.cupomCozinha.cliente.endereco.bairro}</td>
+					</tr>
+					
+					<tr>
+						<td class="inputTelefoneCelular">#{crudBean.cupomCozinha.cliente.telefoneCelular}</td>
 					</tr>
 				</h:panelGroup>
 								

@@ -38,6 +38,10 @@ public class StringUtil {
 			valorConvertido = formater.format(new Double(valorConvertido));
 		}
 		
+		if(valorConvertido.contains("1/-1")) {
+			valorConvertido = "";
+		}
+		
 		return valorConvertido;
 	}
 	
