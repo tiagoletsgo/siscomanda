@@ -14,7 +14,7 @@ public class LoginBean implements Serializable {
 	public String login() {
 		
 		try {
-			Thread.sleep(600000);
+			Thread.sleep(6000);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
